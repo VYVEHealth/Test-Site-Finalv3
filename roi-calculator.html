@@ -705,7 +705,7 @@
 
         <div class="cta-row">
           <button class="btn btn-primary" onclick="window.print()">⬇ Download Report</button>
-          <a href="/cdn-cgi/l/email-protection#b5ddd0d9d9daf5c3ccc3d0ddd0d4d9c1dd9bd6da9bc0de8ac6c0d7dfd0d6c188e3ece3f095e7fafc95f1dcc6d6c0c6c6dcdadb" class="btn btn-ghost">Talk to us about your numbers →</a>
+          <a href="mailto:hello@vyvehealth.co.uk?subject=VYVE ROI Discussion" class="btn btn-ghost">Talk to us about your numbers →</a>
         </div>
       </div>
     </div>
@@ -719,7 +719,7 @@
   Figures are illustrative projections only and do not constitute a guarantee of outcomes. © 2026 VYVE Health Ltd.</p>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 function fmt(n) {
   if (n >= 1000000) return '£' + (n/1000000).toFixed(1) + 'm';
   if (n >= 1000) return '£' + Math.round(n/1000) + 'k';
@@ -879,4 +879,16 @@ function calc() {
     Presenteeism applied at ${presenteeism.toFixed(1)}× absence cost (Deloitte Wellbeing Research 2023).
     Replacement cost estimated at 85% of annual salary, inclusive of recruitment fees, onboarding and productivity loss.
     Figures are conservative projections. Actual outcomes will vary by organisation, engagement rate, and programme maturity.
-    <strong>Active members: ~${Math.round(employees * engagementPct/100)} employees</strong> (${engagementPct}% of ${employees}
+    <strong>Active members: ~${Math.round(employees * engagementPct/100)} employees</strong> (${engagementPct}% of ${employees} enrolled).
+  `;
+}
+
+// Init
+updateSlider('presenteeism');
+updateSlider('engagement');
+updateSlider('absreduction');
+updateSlider('turnreduction');
+calc();
+</script>
+</body>
+</html>
