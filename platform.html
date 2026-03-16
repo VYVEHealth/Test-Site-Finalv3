@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The VYVE Platform — Five Pillars of Workforce Health</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --teal: #1B7878; --teal-lt: #4DAAAA; --teal-xl: #E0F2F2; --teal-md: #B2DEDE; --dark: #0D2B2B; --charcoal: #1E293B; --grey: #64748B; --white: #FFFFFF; --off-white: #F4FAFA; --font-head: 'Playfair Display', Georgia, serif; --font-body: 'Inter', system-ui, sans-serif; --transition: 0.3s ease; --shadow-lg: 0 12px 40px rgba(0,0,0,0.15); }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); color: var(--charcoal); background: var(--white); overflow-x: hidden; line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 8px; font-family: var(--font-body); font-size: 0.95rem; font-weight: 600; cursor: pointer; border: 2px solid transparent; transition: var(--transition); }
+    .btn-primary { background: var(--teal); color: var(--white); border-color: var(--teal); }
+    .btn-primary:hover { background: var(--teal-lt); transform: translateY(-2px); }
+    .btn-outline { background: transparent; color: var(--white); border-color: rgba(255,255,255,0.5); }
+    .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .btn-teal-outline { background: transparent; color: var(--teal); border-color: var(--teal); }
+    .btn-teal-outline:hover { background: var(--teal); color: var(--white); transform: translateY(-2px); }
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .section-tag { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal); margin-bottom: 12px; }
+
+    #navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 18px 0; background: var(--dark); box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; }
+    .nav-logo-badge { width: 36px; height: 36px; background: var(--teal); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; color: var(--white); border-radius: 4px; }
+    .nav-logo-text { font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; color: var(--white); letter-spacing: 0.1em; }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { font-size: 0.88rem; font-weight: 500; color: rgba(255,255,255,0.85); transition: color var(--transition); }
+    .nav-links a:hover, .nav-links a.active { color: var(--teal-lt); }
+    .nav-cta { display: flex; align-items: center; gap: 10px; }
+    .members-btn { background: var(--teal-lt); color: var(--white) !important; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem !important; font-weight: 600 !important; transition: var(--transition); }
+    .members-btn:hover { background: var(--teal); }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+    .nav-hamburger span { display: block; width: 24px; height: 2px; background: var(--white); border-radius: 2px; }
+    .mobile-menu { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--dark); z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 1.2rem; font-weight: 600; color: var(--white); }
+    .mobile-menu a:hover { color: var(--teal-lt); }
+    .mobile-close { position: absolute; top: 24px; right: 24px; font-size: 1.8rem; color: var(--white); cursor: pointer; background: none; border: none; }
+
+    .page-hero { background: var(--dark); padding: 140px 0 80px; position: relative; overflow: hidden; }
+    .page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(27,120,120,0.15) 0%, transparent 70%); }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 680px; }
+    .page-hero h1 { font-family: var(--font-head); font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; color: var(--white); line-height: 1.1; margin-bottom: 20px; }
+    .page-hero h1 span { color: var(--teal-lt); }
+    .page-hero p { color: var(--teal-md); font-size: 1.1rem; line-height: 1.75; margin-bottom: 32px; }
+
+    .pillar-section { padding: 100px 0; }
+    .pillar-section:nth-child(even) { background: var(--off-white); }
+    .pillar-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .pillar-inner.reverse { direction: rtl; }
+    .pillar-inner.reverse > * { direction: ltr; }
+    .pillar-num { font-family: var(--font-head); font-size: 6rem; font-weight: 800; color: var(--teal-xl); line-height: 1; margin-bottom: -20px; }
+    .pillar-heading { font-family: var(--font-head); font-size: clamp(1.8rem, 3vw, 2.4rem); color: var(--dark); margin-bottom: 16px; line-height: 1.2; }
+    .pillar-body { color: var(--grey); font-size: 1.05rem; line-height: 1.8; margin-bottom: 16px; }
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+    .feature-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; color: var(--charcoal); }
+    .feature-list li::before { content: ''; width: 8px; height: 8px; background: var(--teal); border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+    .pillar-visual { background: var(--dark); border-radius: 16px; padding: 36px; text-align: center; }
+    .pillar-big-icon { font-size: 5rem; margin-bottom: 16px; display: block; }
+    .pillar-visual h4 { font-family: var(--font-head); font-size: 1.3rem; color: var(--white); margin-bottom: 10px; }
+    .pillar-visual p { color: var(--teal-md); font-size: 0.9rem; line-height: 1.6; }
+    .stat-highlight { display: inline-block; background: rgba(77,170,170,0.15); border: 1px solid rgba(77,170,170,0.3); border-radius: 8px; padding: 12px 20px; margin: 16px 0; }
+    .stat-highlight strong { display: block; font-family: var(--font-head); font-size: 2rem; color: var(--teal-lt); }
+    .stat-highlight span { font-size: 0.82rem; color: var(--teal-md); }
+
+    .features-section { padding: 100px 0; background: var(--dark); }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+    .feature-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(77,170,170,0.15); border-radius: 12px; padding: 28px; transition: var(--transition); }
+    .feature-card:hover { border-color: var(--teal-lt); background: rgba(27,120,120,0.1); transform: translateY(-4px); }
+    .feature-card-icon { font-size: 1.8rem; margin-bottom: 14px; display: block; }
+    .feature-card h4 { font-family: var(--font-head); font-size: 1.1rem; color: var(--white); margin-bottom: 8px; }
+    .feature-card p { font-size: 0.88rem; color: var(--teal-md); line-height: 1.6; }
+
+    .app-section { padding: 100px 0; background: var(--teal); }
+    .app-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .app-heading { font-family: var(--font-head); font-size: clamp(2rem, 3.5vw, 2.8rem); color: var(--white); margin-bottom: 20px; }
+    .app-body { color: rgba(255,255,255,0.85); font-size: 1.05rem; line-height: 1.75; margin-bottom: 24px; }
+    .app-screens { background: rgba(0,0,0,0.15); border-radius: 16px; padding: 32px; }
+    .app-screen-items { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .app-screen-item { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 16px; }
+    .app-screen-item strong { display: block; color: var(--white); font-size: 0.88rem; margin-bottom: 4px; }
+    .app-screen-item span { font-size: 0.8rem; color: rgba(255,255,255,0.7); }
+
+    footer { background: #060f0f; padding: 60px 0 32px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-brand p { color: #4b7070; font-size: 0.9rem; line-height: 1.7; margin-top: 16px; max-width: 260px; }
+    .footer-col h4 { color: var(--white); font-size: 0.88rem; font-weight: 600; margin-bottom: 16px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a { color: #4b7070; font-size: 0.88rem; transition: color var(--transition); }
+    .footer-col ul li a:hover { color: var(--teal-lt); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-bottom p { color: #4b7070; font-size: 0.85rem; }
+    .footer-tagline { font-size: 0.8rem; color: #2e5050; font-style: italic; }
+
+    @media (max-width: 900px) {
+      .pillar-inner, .app-inner { grid-template-columns: 1fr; gap: 40px; }
+      .pillar-inner.reverse { direction: ltr; }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+    }
+    @media (max-width: 600px) { .features-grid { grid-template-columns: 1fr; } .footer-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav id="navbar">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo"><div class="nav-logo-badge">V</div><span class="nav-logo-text">VYVE</span></a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="platform.html" class="active">Platform</a></li>
+          <li><a href="employers.html">For Employers</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="roi-calculator.html">ROI Calculator</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-cta">
+          <a href="https://online.vyvehealth.co.uk" target="_blank" class="members-btn">Member Login</a>
+          <a href="contact.html" class="btn btn-primary" style="padding:10px 20px;font-size:0.88rem;">Book a Demo</a>
+        </div>
+        <button class="nav-hamburger" onclick="openMobileMenu()"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" onclick="closeMobileMenu()">&#x2715;</button>
+    <a href="index.html" onclick="closeMobileMenu()">Home</a>
+    <a href="platform.html" onclick="closeMobileMenu()">Platform</a>
+    <a href="employers.html" onclick="closeMobileMenu()">For Employers</a>
+    <a href="about.html" onclick="closeMobileMenu()">About</a>
+    <a href="roi-calculator.html" onclick="closeMobileMenu()">ROI Calculator</a>
+    <a href="contact.html" onclick="closeMobileMenu()">Contact</a>
+    <a href="https://online.vyvehealth.co.uk" target="_blank" style="color:var(--teal-lt);">Member Login</a>
+  </div>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-inner">
+        <div class="section-tag" style="color:var(--teal-lt);">The Platform</div>
+        <h1>One platform. <span>Five pillars.</span> Infinite impact.</h1>
+        <p>VYVE brings together physical health, mental wellbeing, nutrition, education and purpose into one seamless, data-driven platform — giving your workforce the tools to thrive and your organisation the evidence to prove it.</p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;">
+          <a href="contact.html" class="btn btn-primary">Book a Demo</a>
+          <a href="roi-calculator.html" class="btn btn-outline">Calculate ROI</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pillar-section" id="physical">
+    <div class="container">
+      <div class="pillar-inner">
+        <div class="fade-in">
+          <div class="pillar-num">01</div>
+          <div class="section-tag">Physical Health</div>
+          <h2 class="pillar-heading">Movement that fits every body, every lifestyle.</h2>
+          <p class="pillar-body">Physical health is the foundation of everything. VYVE gives every team member access to personalised workout programmes, movement tracking and fitness goals — whether they're at a desk, on the factory floor or working from home.</p>
+          <ul class="feature-list">
+            <li>Personalised workout plans for all fitness levels</li>
+            <li>Daily step tracking and movement challenges</li>
+            <li>Wearable device integration</li>
+            <li>Live and on-demand exercise classes</li>
+            <li>Recovery and injury prevention guidance</li>
+          </ul>
+        </div>
+        <div class="pillar-visual fade-in">
+          <span class="pillar-big-icon">&#x1F4AA;</span>
+          <h4>Physical Activity Stats</h4>
+          <p>VYVE users average 34% more daily movement within the first 60 days</p>
+          <div class="stat-highlight">
+            <strong>34%</strong>
+            <span>increase in daily movement</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pillar-section" id="mental">
+    <div class="container">
+      <div class="pillar-inner reverse">
+        <div class="pillar-visual fade-in">
+          <span class="pillar-big-icon">&#x1F9E0;</span>
+          <h4>Mental Wellbeing</h4>
+          <p>Stress and burnout cost UK employers &#xA3;28 billion a year. VYVE's proactive mental health tools change that.</p>
+          <div class="stat-highlight">
+            <strong>44%</strong>
+            <span>fewer mental health sick days</span>
+          </div>
+        </div>
+        <div class="fade-in">
+          <div class="pillar-num">02</div>
+          <div class="section-tag">Mental Wellbeing</div>
+          <h2 class="pillar-heading">Proactive mental health before crisis hits.</h2>
+          <p class="pillar-body">The UK's mental health crisis is costing businesses more than ever — yet most organisations only intervene when someone breaks down. VYVE provides the tools to check in, catch problems early and build genuine resilience.</p>
+          <ul class="feature-list">
+            <li>Daily mood and stress check-ins</li>
+            <li>Guided mindfulness and breathing exercises</li>
+            <li>Sleep quality tracking and improvement programmes</li>
+            <li>Anonymous mental health reporting for HR insight</li>
+            <li>Access to expert mental health content</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pillar-section" id="nutrition">
+    <div class="container">
+      <div class="pillar-inner">
+        <div class="fade-in">
+          <div class="pillar-num">03</div>
+          <div class="section-tag">Nutrition</div>
+          <h2 class="pillar-heading">Energy through better eating and hydration.</h2>
+          <p class="pillar-body">What your team eats directly affects how they think, feel and perform. VYVE's nutrition pillar makes healthy eating practical, not prescriptive — supporting energy, focus and long-term habit change.</p>
+          <ul class="feature-list">
+            <li>Hydration tracking with daily goals and reminders</li>
+            <li>Meal planning and nutritional guidance</li>
+            <li>Energy optimisation strategies</li>
+            <li>Practical healthy eating content for busy lives</li>
+            <li>Gut health and immunity awareness programmes</li>
+          </ul>
+        </div>
+        <div class="pillar-visual fade-in">
+          <span class="pillar-big-icon">&#x1F957;</span>
+          <h4>Nutrition &amp; Energy</h4>
+          <p>Teams with strong nutritional habits report significantly higher afternoon productivity and focus scores.</p>
+          <div class="stat-highlight">
+            <strong>82%</strong>
+            <span>feel more energised at work</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pillar-section" id="education">
+    <div class="container">
+      <div class="pillar-inner reverse">
+        <div class="pillar-visual fade-in">
+          <span class="pillar-big-icon">&#x1F4DA;</span>
+          <h4>Education &amp; Knowledge</h4>
+          <p>Understanding health is the first step to changing it. VYVE's education content builds lasting knowledge and confidence.</p>
+          <div class="stat-highlight">
+            <strong>3.2x</strong>
+            <span>more likely to sustain health habits</span>
+          </div>
+        </div>
+        <div class="fade-in">
+          <div class="pillar-num">04</div>
+          <div class="section-tag">Education</div>
+          <h2 class="pillar-heading">Knowledge that changes behaviour for good.</h2>
+          <p class="pillar-body">Sustainable health change requires understanding, not just willpower. VYVE's education library gives your team expert-led content across every aspect of health — delivered in formats that fit into working life.</p>
+          <ul class="feature-list">
+            <li>Expert-led video content and articles</li>
+            <li>Health topic deep-dives across all five pillars</li>
+            <li>Manager training on supporting team wellbeing</li>
+            <li>Evidence-based behavioural change frameworks</li>
+            <li>Monthly health challenges and learning pathways</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pillar-section" id="purpose">
+    <div class="container">
+      <div class="pillar-inner">
+        <div class="fade-in">
+          <div class="pillar-num">05</div>
+          <div class="section-tag">Purpose &amp; Connection</div>
+          <h2 class="pillar-heading">Health is better together.</h2>
+          <p class="pillar-body">Loneliness, disconnection and lack of purpose are hidden performance killers. VYVE's purpose pillar builds team culture, creates shared goals and gives every individual a reason to show up — and show up well.</p>
+          <ul class="feature-list">
+            <li>Team challenges and leaderboards</li>
+            <li>Streak rewards and milestone recognition</li>
+            <li>Social health goals and group accountability</li>
+            <li>Community feed and peer celebration</li>
+            <li>Purpose-driven health campaigns aligned to company values</li>
+          </ul>
+        </div>
+        <div class="pillar-visual fade-in">
+          <span class="pillar-big-icon">&#x1F3AF;</span>
+          <h4>Purpose &amp; Retention</h4>
+          <p>Employees who feel connected to a wider purpose are 3x more likely to stay with their employer.</p>
+          <div class="stat-highlight">
+            <strong>3x</strong>
+            <span>improvement in staff retention</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features-section" id="features">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:60px;" class="fade-in">
+        <div class="section-tag" style="color:var(--teal-lt);">Platform Features</div>
+        <h2 style="font-family:var(--font-head);font-size:clamp(2rem,4vw,3rem);color:var(--white);margin-bottom:14px;">Everything you need in one place.</h2>
+        <p style="color:var(--teal-md);max-width:540px;margin:0 auto;font-size:1.05rem;">VYVE is built for real organisations with real people — intuitive, engaging and backed by hard data.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card fade-in"><span class="feature-card-icon">&#x1F4CA;</span><h4>Employer Dashboard</h4><p>Real-time visibility of team engagement, absence trends and programme effectiveness — all in one board-ready view.</p></div>
+        <div class="feature-card fade-in"><span class="feature-card-icon">&#x1F4F1;</span><h4>iOS &amp; Android App</h4><p>A beautifully designed mobile app your team will actually want to use — available on all devices with seamless sync.</p></div>
+        <div class="feature-card fade-in"><span class="feature-card-icon">&#x231A;</span><h4>Wearable Integration</h4><p>Sync with Apple Watch, Fitbit, Garmin and more for effortless health tracking across the working day.</p></div>
+        <div class="feature-card fade-in"><span class="feature-card-icon">&#x1F525;</span><h4>Streaks &amp; Challenges</h4><p>Gamified engagement that keeps participation high — daily streaks, team challenges and milestone rewards.</p></div>
+        <div class="feature-card fade-in"><span class="feature-card-icon">&#x1F512;</span><h4>Privacy-First Design</h4><p>Individual data stays private. HR sees aggregated insights — never individual health information.</p></div>
+        <div class="feature-card fade-in"><span class="feature-card-icon">&#x1F91D;</span><h4>Dedicated Support</h4><p>A dedicated VYVE account manager supports your rollout, engagement campaigns and ongoing programme optimisation.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="app-section" id="app">
+    <div class="container">
+      <div class="app-inner">
+        <div class="fade-in">
+          <div class="section-tag" style="color:rgba(255,255,255,0.7);">The VYVE App</div>
+          <h2 class="app-heading">Your team's health in their pocket.</h2>
+          <p class="app-body">The VYVE app is where your people live the programme — daily check-ins, workouts, content and community all in one beautifully simple interface.</p>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;">
+            <a href="contact.html" class="btn" style="background:var(--dark);color:var(--white);border-color:var(--dark);">Get Started</a>
+            <a href="https://online.vyvehealth.co.uk" target="_blank" class="btn btn-outline">Member Login</a>
+          </div>
+        </div>
+        <div class="fade-in">
+          <div class="app-screens">
+            <p style="color:rgba(255,255,255,0.7);font-size:0.85rem;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.1em;">App Features</p>
+            <div class="app-screen-items">
+              <div class="app-screen-item"><strong>Daily Check-In</strong><span>Quick wellbeing pulse — takes 30 seconds</span></div>
+              <div class="app-screen-item"><strong>Workout Library</strong><span>Hundreds of workouts for all levels</span></div>
+              <div class="app-screen-item"><strong>Nutrition Log</strong><span>Hydration and meal tracking made simple</span></div>
+              <div class="app-screen-item"><strong>Health Content</strong><span>Expert articles and videos on demand</span></div>
+              <div class="app-screen-item"><strong>Team Challenges</strong><span>Compete, collaborate and celebrate</span></div>
+              <div class="app-screen-item"><strong>Progress Tracking</strong><span>Visual goal progress and streak rewards</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo"><div class="nav-logo-badge">V</div><span class="nav-logo-text">VYVE</span></a>
+          <p>Proactive workplace wellbeing built on lived experience, expert knowledge and measurable outcomes.</p>
+        </div>
+        <div class="footer-col"><h4>Platform</h4><ul><li><a href="platform.html">What is VYVE</a></li><li><a href="platform.html">The Five Pillars</a></li><li><a href="platform.html">Features</a></li><li><a href="platform.html">The App</a></li></ul></div>
+        <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">Our Story</a></li><li><a href="about.html">Social Mission</a></li><li><a href="employers.html">For Employers</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+        <div class="footer-col"><h4>Resources</h4><ul><li><a href="roi-calculator.html">ROI Calculator</a></li><li><a href="https://online.vyvehealth.co.uk" target="_blank">Member Login</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <p>&#xA9; 2025 VYVE Health Ltd. All rights reserved.</p>
+        <span class="footer-tagline">Proactive Wellbeing for a Healthier, Higher-Performing World</span>
+      </div>
+    </div>
+  </footer>
+  <script>
+    const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    function openMobileMenu() { document.getElementById('mobileMenu').classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); document.body.style.overflow = ''; }
+  </script>
+</body>
+</html>

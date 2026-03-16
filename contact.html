@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact VYVE — Book a Demo or Get in Touch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--teal:#1B7878;--teal-lt:#4DAAAA;--teal-xl:#E0F2F2;--teal-md:#B2DEDE;--dark:#0D2B2B;--charcoal:#1E293B;--grey:#64748B;--white:#FFFFFF;--off-white:#F4FAFA;--font-head:'Playfair Display',Georgia,serif;--font-body:'Inter',system-ui,sans-serif;--transition:0.3s ease}
+    html{scroll-behavior:smooth}body{font-family:var(--font-body);color:var(--charcoal);background:var(--white);overflow-x:hidden;line-height:1.6}
+    a{text-decoration:none;color:inherit}.container{max-width:1140px;margin:0 auto;padding:0 24px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:8px;font-family:var(--font-body);font-size:0.95rem;font-weight:600;cursor:pointer;border:2px solid transparent;transition:var(--transition)}
+    .btn-primary{background:var(--teal);color:var(--white)}.btn-primary:hover{background:var(--teal-lt);transform:translateY(-2px)}
+    .btn-outline{background:transparent;color:var(--white);border-color:rgba(255,255,255,0.5)}.btn-outline:hover{border-color:var(--white);background:rgba(255,255,255,0.1)}
+    .fade-in{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}.fade-in.visible{opacity:1;transform:translateY(0)}
+    .section-tag{font-size:0.75rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+
+    #navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 0;background:var(--dark);box-shadow:0 2px 20px rgba(0,0,0,0.3)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{display:flex;align-items:center;gap:10px}
+    .nav-logo-badge{width:36px;height:36px;background:var(--teal);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--white);border-radius:4px}
+    .nav-logo-text{font-family:var(--font-head);font-size:1.4rem;font-weight:700;color:var(--white);letter-spacing:0.1em}
+    .nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+    .nav-links a{font-size:0.88rem;font-weight:500;color:rgba(255,255,255,0.85);transition:color var(--transition)}.nav-links a:hover,.nav-links a.active{color:var(--teal-lt)}
+    .nav-cta{display:flex;align-items:center;gap:10px}
+    .members-btn{background:var(--teal-lt);color:var(--white)!important;padding:8px 16px;border-radius:6px;font-size:0.82rem!important;font-weight:600!important}.members-btn:hover{background:var(--teal)}
+    .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+    .nav-hamburger span{display:block;width:24px;height:2px;background:var(--white);border-radius:2px}
+    .mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--dark);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:28px}
+    .mobile-menu.open{display:flex}.mobile-menu a{font-size:1.2rem;font-weight:600;color:var(--white)}.mobile-menu a:hover{color:var(--teal-lt)}
+    .mobile-close{position:absolute;top:24px;right:24px;font-size:1.8rem;color:var(--white);cursor:pointer;background:none;border:none}
+
+    .contact-hero{background:var(--dark);padding:140px 0 80px;position:relative;overflow:hidden}
+    .contact-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 50%,rgba(27,120,120,0.15) 0%,transparent 70%)}
+    .contact-hero-inner{position:relative;z-index:1;text-align:center;max-width:640px;margin:0 auto}
+    .contact-hero h1{font-family:var(--font-head);font-size:clamp(2.5rem,5vw,4rem);font-weight:800;color:var(--white);line-height:1.1;margin-bottom:16px}
+    .contact-hero h1 span{color:var(--teal-lt)}
+    .contact-hero p{color:var(--teal-md);font-size:1.1rem;line-height:1.75}
+
+    .contact-main{padding:80px 0 100px;background:var(--off-white)}
+    .contact-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:60px;align-items:start}
+    .contact-info h3{font-family:var(--font-head);font-size:1.5rem;color:var(--dark);margin-bottom:12px}
+    .contact-info p{color:var(--grey);font-size:0.95rem;line-height:1.75;margin-bottom:28px}
+    .contact-links{display:flex;flex-direction:column;gap:16px;margin-bottom:36px}
+    .contact-link{display:flex;align-items:center;gap:14px;background:var(--white);border-radius:10px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:var(--transition)}
+    .contact-link:hover{box-shadow:0 4px 20px rgba(0,0,0,0.12)}
+    .link-icon{width:44px;height:44px;background:var(--teal-xl);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .link-icon-member{background:var(--teal);color:var(--white);font-family:var(--font-head);font-size:1rem;font-weight:700}
+    .link-text strong{display:block;color:var(--dark);font-size:0.9rem;margin-bottom:2px}
+    .link-text span{color:var(--grey);font-size:0.85rem}
+    .link-arrow{margin-left:auto;color:var(--teal);font-size:1.1rem}
+
+    .member-cta{background:var(--dark);border-radius:12px;padding:24px;text-align:center}
+    .member-cta h4{font-family:var(--font-head);font-size:1.2rem;color:var(--white);margin-bottom:8px}
+    .member-cta p{color:var(--teal-md);font-size:0.88rem;margin-bottom:16px;line-height:1.6}
+
+    .form-card{background:var(--white);border-radius:16px;padding:40px;box-shadow:0 4px 24px rgba(0,0,0,0.08)}
+    .form-card h3{font-family:var(--font-head);font-size:1.5rem;color:var(--dark);margin-bottom:8px}
+    .form-card > p{color:var(--grey);font-size:0.92rem;margin-bottom:28px}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .form-group{margin-bottom:18px}
+    .form-group label{display:block;font-size:0.8rem;font-weight:600;color:var(--grey);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em}
+    .form-group input,.form-group select,.form-group textarea{width:100%;background:var(--off-white);border:1.5px solid #e2e8f0;border-radius:8px;padding:12px 14px;color:var(--charcoal);font-family:var(--font-body);font-size:0.95rem;transition:border-color var(--transition)}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--teal);background:var(--white)}
+    .form-group textarea{resize:vertical;min-height:120px}
+    .form-submit{width:100%;background:var(--teal);color:var(--white);border:none;border-radius:8px;padding:16px;font-family:var(--font-body);font-size:1rem;font-weight:600;cursor:pointer;transition:var(--transition)}
+    .form-submit:hover{background:var(--teal-lt);transform:translateY(-2px)}
+    .form-note{font-size:0.8rem;color:var(--grey);text-align:center;margin-top:12px}
+
+    footer{background:#060f0f;padding:60px 0 32px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+    .footer-brand p{color:#4b7070;font-size:0.9rem;line-height:1.7;margin-top:16px;max-width:260px}
+    .footer-col h4{color:var(--white);font-size:0.88rem;font-weight:600;margin-bottom:16px;letter-spacing:0.06em;text-transform:uppercase}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+    .footer-col ul li a{color:#4b7070;font-size:0.88rem;transition:color var(--transition)}.footer-col ul li a:hover{color:var(--teal-lt)}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,0.06);padding-top:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+    .footer-bottom p{color:#4b7070;font-size:0.85rem}.footer-tagline{font-size:0.8rem;color:#2e5050;font-style:italic}
+
+    @media(max-width:900px){.contact-grid{grid-template-columns:1fr;gap:40px}.form-row{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}.nav-links,.nav-cta{display:none}.nav-hamburger{display:flex}}
+    @media(max-width:600px){.footer-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <nav id="navbar">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo"><div class="nav-logo-badge">V</div><span class="nav-logo-text">VYVE</span></a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li><li><a href="platform.html">Platform</a></li><li><a href="employers.html">For Employers</a></li><li><a href="about.html">About</a></li><li><a href="roi-calculator.html">ROI Calculator</a></li><li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+        <div class="nav-cta">
+          <a href="https://online.vyvehealth.co.uk" target="_blank" class="members-btn">Member Login</a>
+        </div>
+        <button class="nav-hamburger" onclick="openMobileMenu()"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" onclick="closeMobileMenu()">&#x2715;</button>
+    <a href="index.html">Home</a><a href="platform.html">Platform</a><a href="employers.html">For Employers</a><a href="about.html">About</a><a href="roi-calculator.html">ROI Calculator</a><a href="contact.html">Contact</a>
+    <a href="https://online.vyvehealth.co.uk" target="_blank" style="color:var(--teal-lt);">Member Login</a>
+  </div>
+
+  <section class="contact-hero">
+    <div class="container"><div class="contact-hero-inner fade-in">
+      <div class="section-tag" style="color:var(--teal-lt);">Contact VYVE</div>
+      <h1>Let's build a <span>healthier workforce</span> together.</h1>
+      <p>Book a free demo, ask us anything, or get a personalised ROI estimate for your organisation. We're here to help.</p>
+    </div></div>
+  </section>
+
+  <section class="contact-main">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="fade-in">
+          <h3>Get in touch</h3>
+          <p>Whether you're exploring VYVE for the first time or ready to get started — we'd love to hear from you. Expect a response within 24 hours.</p>
+          <div class="contact-links">
+            <div class="contact-link">
+              <div class="link-icon">&#x2709;</div>
+              <div class="link-text"><strong>Email</strong><span>hello@vyvehealth.co.uk</span></div>
+            </div>
+            <div class="contact-link">
+              <div class="link-icon">&#x1F310;</div>
+              <div class="link-text"><strong>Website</strong><span>www.vyvehealth.co.uk</span></div>
+            </div>
+            <a href="https://online.vyvehealth.co.uk" target="_blank" class="contact-link">
+              <div class="link-icon link-icon-member">M</div>
+              <div class="link-text"><strong>Member Portal</strong><span>online.vyvehealth.co.uk</span></div>
+              <span class="link-arrow">&#x2192;</span>
+            </a>
+          </div>
+          <div class="member-cta">
+            <h4>Already a VYVE Member?</h4>
+            <p>Log in to the VYVE member portal to access your workouts, check-ins, challenges and health content.</p>
+            <a href="https://online.vyvehealth.co.uk" target="_blank" class="btn btn-primary" style="justify-content:center;width:100%;">Go to Member Portal</a>
+          </div>
+        </div>
+        <div class="form-card fade-in">
+          <h3>Book a Free Demo</h3>
+          <p>Tell us about your organisation and we'll arrange a personalised 30-minute walkthrough — no commitment required.</p>
+          <form id="contactForm" onsubmit="handleSubmit(event)">
+            <div class="form-row">
+              <div class="form-group"><label>First Name</label><input type="text" placeholder="Sarah" required/></div>
+              <div class="form-group"><label>Last Name</label><input type="text" placeholder="Johnson" required/></div>
+            </div>
+            <div class="form-group"><label>Work Email</label><input type="email" placeholder="sarah@company.com" required/></div>
+            <div class="form-group"><label>Organisation Name</label><input type="text" placeholder="Your company name"/></div>
+            <div class="form-row">
+              <div class="form-group"><label>Team Size</label>
+                <select>
+                  <option value="">Select size</option>
+                  <option>Under 25</option><option>25 to 100</option><option>100 to 500</option><option>500 or more</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Industry</label>
+                <select>
+                  <option value="">Select industry</option>
+                  <option>Manufacturing</option><option>Professional Services</option><option>Retail</option><option>Healthcare</option><option>Technology</option><option>Logistics</option><option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group"><label>How can we help?</label><textarea placeholder="Tell us about your current workforce health challenges or what you're hoping to achieve with VYVE..."></textarea></div>
+            <button type="submit" class="form-submit">Send Message — We'll be in touch within 24 hours</button>
+            <p class="form-note">By submitting this form you agree to be contacted by the VYVE team. We never share your data.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand"><a href="index.html" class="nav-logo"><div class="nav-logo-badge">V</div><span class="nav-logo-text">VYVE</span></a><p>Proactive workplace wellbeing built on lived experience, expert knowledge and measurable outcomes.</p></div>
+        <div class="footer-col"><h4>Platform</h4><ul><li><a href="platform.html">What is VYVE</a></li><li><a href="platform.html">The Five Pillars</a></li><li><a href="platform.html">Features</a></li></ul></div>
+        <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">Our Story</a></li><li><a href="employers.html">For Employers</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+        <div class="footer-col"><h4>Resources</h4><ul><li><a href="roi-calculator.html">ROI Calculator</a></li><li><a href="https://online.vyvehealth.co.uk" target="_blank">Member Login</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><p>&#xA9; 2025 VYVE Health Ltd. All rights reserved.</p><span class="footer-tagline">Proactive Wellbeing for a Healthier, Higher-Performing World</span></div>
+    </div>
+  </footer>
+  <script>
+    const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    function openMobileMenu() { document.getElementById('mobileMenu').classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); document.body.style.overflow = ''; }
+    function handleSubmit(e) {
+      e.preventDefault();
+      document.getElementById('contactForm').innerHTML = '<div style="text-align:center;padding:40px 20px;"><div style="font-size:3rem;margin-bottom:16px;">&#x2713;</div><h3 style="font-family:var(--font-head);font-size:1.6rem;color:var(--dark);margin-bottom:10px;">Message received!</h3><p style="color:var(--grey);font-size:1rem;line-height:1.7;">Thank you for getting in touch. A member of the VYVE team will be in contact within 24 hours to arrange your demo.</p><div style="margin-top:24px;"><a href="roi-calculator.html" style="color:var(--teal);font-weight:600;font-size:0.95rem;">While you wait, calculate your potential ROI &#x2192;</a></div></div>';
+    }
+  </script>
+</body>
+</html>

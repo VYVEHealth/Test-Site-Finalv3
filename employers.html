@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VYVE for Employers — Proactive Workforce Health Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--teal:#1B7878;--teal-lt:#4DAAAA;--teal-xl:#E0F2F2;--teal-md:#B2DEDE;--dark:#0D2B2B;--charcoal:#1E293B;--grey:#64748B;--white:#FFFFFF;--off-white:#F4FAFA;--font-head:'Playfair Display',Georgia,serif;--font-body:'Inter',system-ui,sans-serif;--transition:0.3s ease;--shadow-lg:0 12px 40px rgba(0,0,0,0.15)}
+    html{scroll-behavior:smooth}body{font-family:var(--font-body);color:var(--charcoal);background:var(--white);overflow-x:hidden;line-height:1.6}
+    a{text-decoration:none;color:inherit}.container{max-width:1140px;margin:0 auto;padding:0 24px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:8px;font-family:var(--font-body);font-size:0.95rem;font-weight:600;cursor:pointer;border:2px solid transparent;transition:var(--transition)}
+    .btn-primary{background:var(--teal);color:var(--white)}.btn-primary:hover{background:var(--teal-lt);transform:translateY(-2px)}
+    .btn-outline{background:transparent;color:var(--white);border-color:rgba(255,255,255,0.5)}.btn-outline:hover{border-color:var(--white);background:rgba(255,255,255,0.1)}
+    .btn-dark{background:var(--dark);color:var(--white)}.btn-dark:hover{background:var(--charcoal);transform:translateY(-2px)}
+    .btn-teal-outline{background:transparent;color:var(--teal);border-color:var(--teal)}.btn-teal-outline:hover{background:var(--teal);color:var(--white)}
+    .fade-in{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}.fade-in.visible{opacity:1;transform:translateY(0)}
+    .section-tag{font-size:0.75rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+
+    #navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 0;background:var(--dark);box-shadow:0 2px 20px rgba(0,0,0,0.3)}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{display:flex;align-items:center;gap:10px}
+    .nav-logo-badge{width:36px;height:36px;background:var(--teal);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:var(--white);border-radius:4px}
+    .nav-logo-text{font-family:var(--font-head);font-size:1.4rem;font-weight:700;color:var(--white);letter-spacing:0.1em}
+    .nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+    .nav-links a{font-size:0.88rem;font-weight:500;color:rgba(255,255,255,0.85);transition:color var(--transition)}.nav-links a:hover,.nav-links a.active{color:var(--teal-lt)}
+    .nav-cta{display:flex;align-items:center;gap:10px}
+    .members-btn{background:var(--teal-lt);color:var(--white)!important;padding:8px 16px;border-radius:6px;font-size:0.82rem!important;font-weight:600!important}.members-btn:hover{background:var(--teal)}
+    .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+    .nav-hamburger span{display:block;width:24px;height:2px;background:var(--white);border-radius:2px}
+    .mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--dark);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:28px}
+    .mobile-menu.open{display:flex}.mobile-menu a{font-size:1.2rem;font-weight:600;color:var(--white)}.mobile-menu a:hover{color:var(--teal-lt)}
+    .mobile-close{position:absolute;top:24px;right:24px;font-size:1.8rem;color:var(--white);cursor:pointer;background:none;border:none}
+
+    .page-hero{background:var(--dark);padding:140px 0 80px;position:relative;overflow:hidden}
+    .page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 50%,rgba(27,120,120,0.15) 0%,transparent 70%)}
+    .page-hero-inner{position:relative;z-index:1;max-width:680px}
+    .page-hero h1{font-family:var(--font-head);font-size:clamp(2.5rem,5vw,4rem);font-weight:800;color:var(--white);line-height:1.1;margin-bottom:20px}
+    .page-hero h1 span{color:var(--teal-lt)}
+    .page-hero p{color:var(--teal-md);font-size:1.1rem;line-height:1.75;margin-bottom:32px}
+
+    .problem-section{padding:100px 0;background:var(--off-white)}
+    .problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+    .problem-heading{font-family:var(--font-head);font-size:clamp(1.8rem,3vw,2.4rem);color:var(--dark);margin-bottom:16px;line-height:1.2}
+    .problem-body{color:var(--grey);font-size:1.05rem;line-height:1.8;margin-bottom:16px}
+    .cost-items{display:flex;flex-direction:column;gap:12px}
+    .cost-item{background:var(--white);border-radius:10px;padding:20px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+    .cost-num{font-family:var(--font-head);font-size:1.8rem;color:var(--teal);font-weight:700;min-width:80px}
+    .cost-label{font-size:0.9rem;color:var(--charcoal);line-height:1.4}
+
+    .solution-section{padding:100px 0;background:var(--dark)}
+    .solution-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:60px}
+    .solution-card{background:rgba(255,255,255,0.05);border:1px solid rgba(77,170,170,0.15);border-radius:12px;padding:28px;transition:var(--transition)}
+    .solution-card:hover{border-color:var(--teal-lt);transform:translateY(-4px)}
+    .sol-icon{font-size:2rem;margin-bottom:14px;display:block}
+    .sol-title{font-family:var(--font-head);font-size:1.2rem;color:var(--white);margin-bottom:10px}
+    .sol-body{font-size:0.9rem;color:var(--teal-md);line-height:1.6}
+
+    .pricing-section{padding:100px 0;background:var(--white)}
+    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:60px}
+    .pricing-card{border:2px solid #e2e8f0;border-radius:16px;padding:36px;text-align:center;transition:var(--transition)}
+    .pricing-card:hover,.pricing-card.featured{border-color:var(--teal);background:var(--off-white)}
+    .pricing-card.featured{background:var(--dark);border-color:var(--teal-lt)}
+    .pricing-badge{display:inline-block;background:var(--teal);color:var(--white);font-size:0.75rem;font-weight:600;padding:4px 12px;border-radius:100px;margin-bottom:16px;letter-spacing:0.08em}
+    .pricing-name{font-family:var(--font-head);font-size:1.4rem;color:var(--dark);margin-bottom:8px}
+    .pricing-card.featured .pricing-name{color:var(--white)}
+    .pricing-price{font-family:var(--font-head);font-size:2.5rem;color:var(--teal);margin-bottom:4px}
+    .pricing-per{font-size:0.85rem;color:var(--grey);margin-bottom:24px}
+    .pricing-card.featured .pricing-per{color:var(--teal-md)}
+    .pricing-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px;text-align:left}
+    .pricing-features li{font-size:0.88rem;color:var(--charcoal);display:flex;align-items:flex-start;gap:10px}
+    .pricing-card.featured .pricing-features li{color:var(--teal-md)}
+    .pricing-features li::before{content:'';width:8px;height:8px;background:var(--teal);border-radius:50%;flex-shrink:0;margin-top:5px}
+
+    .dashboard-section{padding:100px 0;background:var(--teal)}
+    .dash-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+    .dash-heading{font-family:var(--font-head);font-size:clamp(2rem,3.5vw,2.8rem);color:var(--white);margin-bottom:20px}
+    .dash-body{color:rgba(255,255,255,0.85);font-size:1.05rem;line-height:1.75;margin-bottom:24px}
+    .dash-features{background:rgba(0,0,0,0.15);border-radius:12px;padding:28px}
+    .dash-feature{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.1)}
+    .dash-feature:last-child{border-bottom:none}
+    .dash-dot{width:10px;height:10px;background:var(--teal-lt);border-radius:50%;flex-shrink:0;margin-top:5px}
+    .dash-feature strong{display:block;color:var(--white);font-size:0.9rem;margin-bottom:2px}
+    .dash-feature span{font-size:0.83rem;color:rgba(255,255,255,0.7)}
+
+    .testimonial-section{padding:100px 0;background:var(--charcoal)}
+    .testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:60px}
+    .testimonial-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:28px}
+    .testimonial-stars{color:var(--teal-lt);font-size:1.1rem;margin-bottom:12px}
+    .testimonial-text{font-family:var(--font-head);font-size:1rem;color:var(--white);line-height:1.6;margin-bottom:20px;font-style:italic}
+    .testimonial-author strong{display:block;color:var(--white);font-size:0.9rem}
+    .testimonial-author span{font-size:0.83rem;color:var(--teal-md)}
+
+    footer{background:#060f0f;padding:60px 0 32px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+    .footer-brand p{color:#4b7070;font-size:0.9rem;line-height:1.7;margin-top:16px;max-width:260px}
+    .footer-col h4{color:var(--white);font-size:0.88rem;font-weight:600;margin-bottom:16px;letter-spacing:0.06em;text-transform:uppercase}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+    .footer-col ul li a{color:#4b7070;font-size:0.88rem;transition:color var(--transition)}.footer-col ul li a:hover{color:var(--teal-lt)}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,0.06);padding-top:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+    .footer-bottom p{color:#4b7070;font-size:0.85rem}.footer-tagline{font-size:0.8rem;color:#2e5050;font-style:italic}
+
+    @media(max-width:900px){.problem-grid,.dash-inner{grid-template-columns:1fr;gap:40px}.solution-grid,.pricing-grid,.testimonials-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr}.nav-links,.nav-cta{display:none}.nav-hamburger{display:flex}}
+    @media(max-width:600px){.solution-grid,.pricing-grid,.testimonials-grid,.footer-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <nav id="navbar">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo"><div class="nav-logo-badge">V</div><span class="nav-logo-text">VYVE</span></a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li><li><a href="platform.html">Platform</a></li><li><a href="employers.html" class="active">For Employers</a></li><li><a href="about.html">About</a></li><li><a href="roi-calculator.html">ROI Calculator</a></li><li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-cta">
+          <a href="https://online.vyvehealth.co.uk" target="_blank" class="members-btn">Member Login</a>
+          <a href="contact.html" class="btn btn-primary" style="padding:10px 20px;font-size:0.88rem;">Book a Demo</a>
+        </div>
+        <button class="nav-hamburger" onclick="openMobileMenu()"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" onclick="closeMobileMenu()">&#x2715;</button>
+    <a href="index.html">Home</a><a href="platform.html">Platform</a><a href="employers.html">For Employers</a><a href="about.html">About</a><a href="roi-calculator.html">ROI Calculator</a><a href="contact.html">Contact</a>
+    <a href="https://online.vyvehealth.co.uk" target="_blank" style="color:var(--teal-lt);">Member Login</a>
+  </div>
+
+  <section class="page-hero">
+    <div class="container"><div class="page-hero-inner">
+      <div class="section-tag" style="color:var(--teal-lt);">For Employers</div>
+      <h1>Turn wellbeing into your <span>competitive advantage.</span></h1>
+      <p>VYVE gives HR leaders and business owners a proactive, data-led approach to workforce health — reducing costs, improving performance and retaining the talent you've worked hard to build.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <a href="contact.html" class="btn btn-primary">Book a Free Demo</a>
+        <a href="roi-calculator.html" class="btn btn-outline">Calculate Your ROI</a>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="problem-section">
+    <div class="container">
+      <div class="problem-grid">
+        <div class="fade-in">
+          <div class="section-tag">The Business Case</div>
+          <h2 class="problem-heading">Poor workforce health is costing your business more than you think.</h2>
+          <p class="problem-body">Sickness absence. Presenteeism. Stress-related attrition. Recruitment costs. Most organisations treat these as separate HR challenges — but they share a common root cause: reactive, not proactive, health management.</p>
+          <p class="problem-body">VYVE gives you the tools to change that — and the data to prove it at every level of the business.</p>
+          <div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;">
+            <a href="roi-calculator.html" class="btn btn-primary">Calculate Your ROI</a>
+            <a href="contact.html" class="btn btn-teal-outline">Talk to Our Team</a>
+          </div>
+        </div>
+        <div class="fade-in">
+          <div class="cost-items">
+            <div class="cost-item"><span class="cost-num">&#xA3;28B</span><span class="cost-label">Lost annually to UK workplace sickness absence</span></div>
+            <div class="cost-item"><span class="cost-num">&#xA3;6,500</span><span class="cost-label">Average annual cost of sickness per employee</span></div>
+            <div class="cost-item"><span class="cost-num">&#xA3;20K+</span><span class="cost-label">Average cost to replace a mid-level employee</span></div>
+            <div class="cost-item"><span class="cost-num">76%</span><span class="cost-label">Of employees say wellbeing affects their decision to stay</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="solution-section">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:60px;" class="fade-in">
+        <div class="section-tag" style="color:var(--teal-lt);">The VYVE Solution</div>
+        <h2 style="font-family:var(--font-head);font-size:clamp(2rem,4vw,3rem);color:var(--white);margin-bottom:14px;">Everything you need to build a healthier workforce.</h2>
+        <p style="color:var(--teal-md);max-width:540px;margin:0 auto;font-size:1.05rem;">VYVE is designed for HR leaders who need results — not just good intentions.</p>
+      </div>
+      <div class="solution-grid">
+        <div class="solution-card fade-in"><span class="sol-icon">&#x1F4CA;</span><div class="sol-title">Employer Dashboard</div><div class="sol-body">Real-time data on team engagement, health trends, absence patterns and programme ROI — all in one place, ready for the boardroom.</div></div>
+        <div class="solution-card fade-in"><span class="sol-icon">&#x1F3AF;</span><div class="sol-title">Personalised Programmes</div><div class="sol-body">Every employee gets a personalised health journey across all five pillars — not a one-size-fits-all wellness newsletter.</div></div>
+        <div class="solution-card fade-in"><span class="sol-icon">&#x1F91D;</span><div class="sol-title">Dedicated Support</div><div class="sol-body">A named VYVE account manager supports your rollout, runs engagement campaigns and optimises the programme with you.</div></div>
+        <div class="solution-card fade-in"><span class="sol-icon">&#x1F512;</span><div class="sol-title">Privacy-First Architecture</div><div class="sol-body">HR sees aggregated, anonymised insights. Individual health data stays completely private. Trust by design.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing-section" id="pricing">
+    <div class="container">
+      <div style="text-align:center;max-width:680px;margin:0 auto;" class="fade-in">
+        <div class="section-tag">Pricing</div>
+        <h2 style="font-family:var(--font-head);font-size:clamp(2rem,4vw,3rem);color:var(--dark);margin-bottom:14px;">Priced for your organisation.</h2>
+        <p style="color:var(--grey);font-size:1.05rem;margin-bottom:40px;">Every organisation is different — team size, structure, goals. We'll put together a package that works for you and your people. Book a call and we'll walk you through everything.</p>
+        <div style="background:var(--dark);border-radius:20px;padding:48px;text-align:left;">
+          <h3 style="font-family:var(--font-head);font-size:1.4rem;color:var(--white);margin-bottom:24px;">Every package includes:</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px;">
+            <div style="display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--teal-md);"><span style="color:var(--teal-lt);">✓</span>Full five-pillar platform</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--teal-md);"><span style="color:var(--teal-lt);">✓</span>iOS &amp; Android app</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--teal-md);"><span style="color:var(--teal-lt);">✓</span>Employer reporting dashboard</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--teal-md);"><span style="color:var(--teal-lt);">✓</span>Expert speaker sessions</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--teal-md);"><span style="color:var(--teal-lt);">✓</span>Live podcast episodes</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--teal-md);"><span style="color:var(--teal-lt);">✓</span>Group therapy sessions</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--teal-md);"><span style="color:var(--teal-lt);">✓</span>Community events</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--teal-md);"><span style="color:var(--teal-lt);">✓</span>Give Back charity mechanic</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--teal-md);"><span style="color:var(--teal-lt);">✓</span>Dedicated onboarding support</div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:0.9rem;color:var(--teal-md);"><span style="color:var(--teal-lt);">✓</span>GDPR-compliant, aggregate-only reporting</div>
+          </div>
+          <a href="contact.html" class="btn btn-primary" style="width:100%;justify-content:center;font-size:1rem;">Book a free discovery call →</a>
+        </div>
+        <p style="margin-top:20px;font-size:0.88rem;color:var(--grey);">Or use our <a href="roi-calculator.html" style="color:var(--teal);font-weight:600;">ROI Calculator</a> to see the potential return before you speak to us.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-section">
+    <div class="container">
+      <div class="dash-inner">
+        <div class="fade-in">
+          <div class="section-tag" style="color:rgba(255,255,255,0.7);">The Employer Dashboard</div>
+          <h2 class="dash-heading">Your workforce health. At a glance.</h2>
+          <p class="dash-body">The VYVE employer dashboard gives you everything you need to understand, optimise and prove the value of your wellbeing programme — without needing a data science degree.</p>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:28px;">
+            <a href="contact.html" class="btn btn-dark">Request a Demo</a>
+            <a href="roi-calculator.html" class="btn btn-outline">Calculate ROI</a>
+          </div>
+        </div>
+        <div class="fade-in">
+          <div class="dash-features">
+            <div class="dash-feature"><div class="dash-dot"></div><div><strong>Programme Engagement Rate</strong><span>See exactly who is active and who may need nudging — without breaching individual privacy.</span></div></div>
+            <div class="dash-feature"><div class="dash-dot"></div><div><strong>Absence Trend Analysis</strong><span>Track sickness patterns over time and measure the impact of your VYVE investment on absence rates.</span></div></div>
+            <div class="dash-feature"><div class="dash-dot"></div><div><strong>Five-Pillar Health Scores</strong><span>Aggregated team wellbeing data across all five health pillars — physical, mental, nutrition, education and purpose.</span></div></div>
+            <div class="dash-feature"><div class="dash-dot"></div><div><strong>ROI Calculator &amp; Reporting</strong><span>Hard numbers on what VYVE is saving your organisation — exportable for board presentations.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonial-section">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:60px;" class="fade-in">
+        <div class="section-tag" style="color:var(--teal-lt);">What Employers Say</div>
+        <h2 style="font-family:var(--font-head);font-size:clamp(2rem,4vw,3rem);color:var(--white);margin-bottom:14px;">Trusted by forward-thinking organisations.</h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+          <div class="testimonial-text">"Since implementing VYVE, we've seen a 40% reduction in stress-related absence. The data we now have for board reporting is something we never had before."</div>
+          <div class="testimonial-author"><strong>Sarah M.</strong><span>HR Director, 200-person manufacturing business</span></div>
+        </div>
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+          <div class="testimonial-text">"The engagement we've seen has exceeded everything we expected. People are actually using it — and talking about it. That never happened with our previous wellbeing provider."</div>
+          <div class="testimonial-author"><strong>James T.</strong><span>CEO, professional services firm</span></div>
+        </div>
+        <div class="testimonial-card fade-in">
+          <div class="testimonial-stars">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</div>
+          <div class="testimonial-text">"VYVE paid for itself within six months. The ROI reporting made it incredibly easy to justify the investment internally and get full leadership buy-in."</div>
+          <div class="testimonial-author"><strong>Rachel W.</strong><span>People Manager, logistics company</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand"><a href="index.html" class="nav-logo"><div class="nav-logo-badge">V</div><span class="nav-logo-text">VYVE</span></a><p>Proactive workplace wellbeing built on lived experience, expert knowledge and measurable outcomes.</p></div>
+        <div class="footer-col"><h4>Platform</h4><ul><li><a href="platform.html">What is VYVE</a></li><li><a href="platform.html">The Five Pillars</a></li><li><a href="platform.html">Features</a></li></ul></div>
+        <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">Our Story</a></li><li><a href="employers.html">For Employers</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+        <div class="footer-col"><h4>Resources</h4><ul><li><a href="roi-calculator.html">ROI Calculator</a></li><li><a href="https://online.vyvehealth.co.uk" target="_blank">Member Login</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><p>&#xA9; 2025 VYVE Health Ltd. All rights reserved.</p><span class="footer-tagline">Proactive Wellbeing for a Healthier, Higher-Performing World</span></div>
+    </div>
+  </footer>
+  <script>
+    const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    function openMobileMenu() { document.getElementById('mobileMenu').classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); document.body.style.overflow = ''; }
+  </script>
+</body>
+</html>

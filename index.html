@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VYVE Health — Proactive Wellbeing for Everyone</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #1B7878; --teal-lt: #4DAAAA; --teal-xl: #E0F2F2;
+      --dark: #0D2B2B; --white: #FFFFFF; --off-white: #F4FAFA;
+      --font-head: 'Playfair Display', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font-body);
+      background: var(--dark);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 0%, rgba(27,120,120,0.25) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 100%, rgba(27,120,120,0.15) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .site-header {
+      position: relative;
+      z-index: 10;
+      padding: 32px 40px;
+      display: flex;
+      justify-content: center;
+    }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-badge {
+      width: 44px; height: 44px;
+      background: var(--teal);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-head);
+      font-size: 1.3rem; font-weight: 700; color: var(--white);
+    }
+    .logo-text { font-family: var(--font-head); font-size: 1.6rem; font-weight: 700; color: var(--white); letter-spacing: 0.1em; }
+    .main {
+      position: relative; z-index: 1; flex: 1;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 40px 24px 60px; text-align: center;
+    }
+    .tagline { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal-lt); margin-bottom: 20px; }
+    .headline { font-family: var(--font-head); font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 800; line-height: 1.1; margin-bottom: 16px; max-width: 700px; }
+    .headline span { color: var(--teal-lt); }
+    .subheadline { font-size: 1.05rem; color: rgba(255,255,255,0.6); max-width: 480px; line-height: 1.7; margin-bottom: 64px; }
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1000px; width: 100%; }
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(77,170,170,0.2);
+      border-radius: 20px; padding: 40px 32px;
+      text-decoration: none; color: var(--white);
+      transition: all 0.3s ease;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      cursor: pointer; position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(27,120,120,0.15) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .card:hover { border-color: var(--teal-lt); transform: translateY(-8px); box-shadow: 0 20px 60px rgba(27,120,120,0.25); }
+    .card:hover::before { opacity: 1; }
+    .card-icon { font-size: 3rem; margin-bottom: 20px; display: block; position: relative; z-index: 1; }
+    .card-title { font-family: var(--font-head); font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; position: relative; z-index: 1; }
+    .card-desc { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.65; margin-bottom: 28px; position: relative; z-index: 1; }
+    .card-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 8px; font-size: 0.88rem; font-weight: 600; transition: all 0.2s; position: relative; z-index: 1; }
+    .card-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(77,170,170,0.15); border: 1px solid rgba(77,170,170,0.3); border-radius: 20px; padding: 4px 12px; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal-lt); margin-bottom: 16px; position: relative; z-index: 1; }
+    .card-individual .card-btn { background: var(--teal); color: var(--white); }
+    .card-individual:hover .card-btn { background: var(--teal-lt); }
+    .card-corporate .card-btn { background: rgba(255,255,255,0.1); color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
+    .card-corporate:hover .card-btn { background: rgba(255,255,255,0.2); }
+    .card-members { background: rgba(27,120,120,0.12); border-color: rgba(77,170,170,0.35); }
+    .card-members .card-btn { background: var(--teal-lt); color: var(--white); }
+    .card-members:hover .card-btn { background: var(--teal); }
+    .site-footer { position: relative; z-index: 1; text-align: center; padding: 24px; font-size: 0.78rem; color: rgba(255,255,255,0.25); }
+    .site-footer a { color: rgba(255,255,255,0.35); text-decoration: none; }
+    .site-footer a:hover { color: var(--teal-lt); }
+    @media(max-width: 800px) { .cards { grid-template-columns: 1fr; max-width: 420px; } .site-header { padding: 24px; } }
+    @media(max-width: 480px) { .headline { font-size: 2rem; } .card { padding: 32px 24px; } }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a href="index.html" class="logo">
+      <div class="logo-badge">V</div>
+      <span class="logo-text">VYVE</span>
+    </a>
+  </header>
+
+  <main class="main">
+    <div class="tagline">Proactive Workforce Health</div>
+    <h1 class="headline">Health that works for <span>everyone.</span></h1>
+    <p class="subheadline">Whether you're looking to transform your own health or your entire organisation — VYVE is built for you.</p>
+
+    <div class="cards">
+      <a href="individual.html" class="card card-individual">
+        <span class="card-badge">✨ Personal</span>
+        <span class="card-icon">🧘</span>
+        <div class="card-title">I'm an Individual</div>
+        <p class="card-desc">Take control of your physical health, mental wellbeing, nutrition and more. VYVE gives you the tools to thrive — at work and beyond.</p>
+        <span class="card-btn">Start my journey →</span>
+      </a>
+
+      <a href="corporate.html" class="card card-corporate">
+        <span class="card-badge">🏢 Business</span>
+        <span class="card-icon">📊</span>
+        <div class="card-title">I'm an Employer</div>
+        <p class="card-desc">Reduce absence, improve performance and retain your best people. VYVE delivers measurable ROI for forward-thinking organisations.</p>
+        <span class="card-btn">See the business case →</span>
+      </a>
+
+      <a href="https://online.vyvehealth.co.uk" target="_blank" class="card card-members">
+        <span class="card-badge">🔑 Existing Member</span>
+        <span class="card-icon">💚</span>
+        <div class="card-title">Members Area</div>
+        <p class="card-desc">Already part of the VYVE community? Head straight to your dashboard, sessions, and programmes.</p>
+        <span class="card-btn">Go to my dashboard →</span>
+      </a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 VYVE Health Ltd. All rights reserved. &nbsp;|&nbsp; <a href="corporate.html">For Employers</a> &nbsp;|&nbsp; <a href="#">Privacy Policy</a></p>
+  </footer>
+</body>
+</html>

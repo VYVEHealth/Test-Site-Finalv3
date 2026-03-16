@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VYVE — Proactive Workforce Health</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #1B7878; --teal-lt: #4DAAAA; --teal-xl: #E0F2F2; --teal-md: #B2DEDE;
+      --dark: #0D2B2B; --charcoal: #1E293B; --grey: #64748B; --white: #FFFFFF; --off-white: #F4FAFA;
+      --amber: #D4711A; --font-head: 'Playfair Display', Georgia, serif; --font-body: 'Inter', system-ui, sans-serif;
+      --transition: 0.3s ease; --radius: 8px; --shadow: 0 4px 20px rgba(0,0,0,0.10); --shadow-lg: 0 12px 40px rgba(0,0,0,0.15);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); color: var(--charcoal); background: var(--white); overflow-x: hidden; line-height: 1.6; }
+    img { max-width: 100%; height: auto; display: block; }
+    a { text-decoration: none; color: inherit; }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: var(--radius); font-family: var(--font-body); font-size: 0.95rem; font-weight: 600; cursor: pointer; border: 2px solid transparent; transition: var(--transition); }
+    .btn-primary { background: var(--teal); color: var(--white); border-color: var(--teal); }
+    .btn-primary:hover { background: var(--teal-lt); border-color: var(--teal-lt); transform: translateY(-2px); }
+    .btn-outline { background: transparent; color: var(--white); border-color: rgba(255,255,255,0.5); }
+    .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .btn-dark { background: var(--dark); color: var(--white); border-color: var(--dark); }
+    .btn-dark:hover { background: var(--charcoal); transform: translateY(-2px); }
+    .btn-teal-outline { background: transparent; color: var(--teal); border-color: var(--teal); }
+    .btn-teal-outline:hover { background: var(--teal); color: var(--white); transform: translateY(-2px); }
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .section-tag { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal); margin-bottom: 12px; }
+
+    /* NAV */
+    #navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 18px 0; transition: background 0.4s, padding 0.4s, box-shadow 0.4s; }
+    #navbar.scrolled { background: var(--dark); padding: 12px 0; box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; }
+    .nav-logo-badge { width: 36px; height: 36px; background: var(--teal); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; color: var(--white); border-radius: 4px; }
+    .nav-logo-text { font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; color: var(--white); letter-spacing: 0.1em; }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { font-size: 0.88rem; font-weight: 500; color: rgba(255,255,255,0.85); transition: color var(--transition); }
+    .nav-links a:hover, .nav-links a.active { color: var(--teal-lt); }
+    .nav-cta { display: flex; align-items: center; gap: 10px; }
+    .members-btn { background: var(--teal-lt); color: var(--white) !important; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem !important; font-weight: 600 !important; transition: var(--transition); border: 1px solid rgba(255,255,255,0.2); }
+    .members-btn:hover { background: var(--teal); }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+    .nav-hamburger span { display: block; width: 24px; height: 2px; background: var(--white); border-radius: 2px; }
+    .mobile-menu { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--dark); z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 1.2rem; font-weight: 600; color: var(--white); }
+    .mobile-menu a:hover { color: var(--teal-lt); }
+    .mobile-close { position: absolute; top: 24px; right: 24px; font-size: 1.8rem; color: var(--white); cursor: pointer; background: none; border: none; }
+
+    /* HERO */
+    #hero { min-height: 100vh; background: var(--dark); position: relative; display: flex; align-items: center; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; background: url('images/hero.jpg') center/cover no-repeat; opacity: 0.28; }
+    .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(13,43,43,0.95) 45%, rgba(13,43,43,0.4) 100%); }
+    .hero-inner { position: relative; z-index: 1; padding: 140px 0 100px; }
+    .hero-tag { display: inline-block; padding: 6px 16px; background: rgba(27,120,120,0.25); border: 1px solid rgba(77,170,170,0.4); border-radius: 100px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; color: var(--teal-lt); text-transform: uppercase; margin-bottom: 24px; }
+    .hero-headline { font-family: var(--font-head); font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 800; color: var(--white); line-height: 1.08; max-width: 700px; }
+    .hero-headline span { color: var(--teal-lt); }
+    .hero-sub { font-size: 1.15rem; line-height: 1.75; color: var(--teal-md); margin: 24px 0 40px; max-width: 520px; }
+    .hero-ctas { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 60px; }
+    .hero-stats { display: flex; flex-wrap: wrap; gap: 32px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .hero-stat-num { font-family: var(--font-head); font-size: 2rem; font-weight: 700; color: var(--white); }
+    .hero-stat-label { font-size: 0.8rem; color: var(--teal-md); margin-top: 2px; max-width: 120px; line-height: 1.35; }
+
+    /* TICKER */
+    #stats-band { background: var(--teal); padding: 20px 0; overflow: hidden; }
+    .stats-band-inner { display: flex; gap: 60px; white-space: nowrap; animation: ticker 30s linear infinite; }
+    .stats-band-item { display: inline-flex; align-items: center; gap: 14px; font-size: 0.9rem; font-weight: 500; color: var(--white); }
+    .stats-band-dot { width: 6px; height: 6px; background: rgba(255,255,255,0.5); border-radius: 50%; flex-shrink: 0; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* WHO WE ARE */
+    #who-we-are { padding: 100px 0; background: var(--off-white); }
+    .who-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .who-heading { font-family: var(--font-head); font-size: clamp(2rem, 3.5vw, 2.8rem); color: var(--dark); line-height: 1.15; margin-bottom: 20px; }
+    .who-body { color: var(--grey); line-height: 1.8; margin-bottom: 16px; font-size: 1.05rem; }
+    .who-card { background: var(--white); border-radius: 16px; padding: 32px; box-shadow: var(--shadow-lg); }
+    .who-card-icon { width: 52px; height: 52px; background: var(--teal-xl); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+    .who-card-icon svg { width: 26px; height: 26px; stroke: var(--teal); fill: none; stroke-width: 2; }
+    .who-pillars { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+    .pillar-chip { background: var(--teal-xl); color: var(--teal); padding: 8px 14px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; text-align: center; }
+
+    /* WHAT WE DO */
+    #what-we-do { padding: 100px 0; background: var(--dark); }
+    .section-center { text-align: center; margin-bottom: 60px; }
+    .section-heading-light { font-family: var(--font-head); font-size: clamp(2rem, 4vw, 3rem); color: var(--white); margin-bottom: 14px; }
+    .section-heading-dark { font-family: var(--font-head); font-size: clamp(2rem, 4vw, 3rem); color: var(--dark); margin-bottom: 14px; }
+    .section-sub-light { color: var(--teal-md); max-width: 580px; margin: 0 auto; font-size: 1.05rem; line-height: 1.7; }
+    .section-sub-dark { color: var(--grey); max-width: 540px; margin: 0 auto; font-size: 1.05rem; }
+    .pillars-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .pillar-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(77,170,170,0.2); border-radius: 12px; padding: 28px 20px; text-align: center; transition: var(--transition); }
+    .pillar-card:hover { background: rgba(27,120,120,0.2); border-color: var(--teal-lt); transform: translateY(-4px); }
+    .pillar-icon { font-size: 2rem; margin-bottom: 14px; display: block; }
+    .pillar-title { font-family: var(--font-head); font-size: 1.05rem; color: var(--white); margin-bottom: 8px; }
+    .pillar-desc { font-size: 0.82rem; color: var(--teal-md); line-height: 1.55; }
+
+    /* HOW IT WORKS */
+    #how-it-works { padding: 100px 0; background: var(--white); }
+    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .step-card { text-align: center; padding: 32px 20px; background: var(--off-white); border-radius: 12px; }
+    .step-num { width: 48px; height: 48px; background: var(--teal); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; margin: 0 auto 18px; }
+    .step-title { font-family: var(--font-head); font-size: 1.1rem; color: var(--dark); margin-bottom: 10px; }
+    .step-desc { font-size: 0.88rem; color: var(--grey); line-height: 1.6; }
+
+    /* RESULTS */
+    #results { padding: 100px 0; background: var(--charcoal); }
+    .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .result-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 32px; }
+    .result-num { font-family: var(--font-head); font-size: 3.5rem; font-weight: 700; color: var(--teal-lt); line-height: 1; }
+    .result-label { font-size: 1rem; font-weight: 600; color: var(--white); margin: 8px 0 4px; }
+    .result-desc { font-size: 0.88rem; color: #94a3b8; line-height: 1.6; }
+
+    /* EMPLOYERS CTA */
+    #employers-cta { padding: 100px 0; background: var(--teal); }
+    .emp-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .emp-heading { font-family: var(--font-head); font-size: clamp(2rem, 3.5vw, 2.8rem); color: var(--white); margin-bottom: 20px; }
+    .emp-body { color: rgba(255,255,255,0.85); font-size: 1.05rem; line-height: 1.75; margin-bottom: 28px; }
+    .emp-benefits { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 28px; }
+    .emp-benefit-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .emp-benefit-item:last-child { border-bottom: none; }
+    .emp-check { width: 22px; height: 22px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; font-size: 0.75rem; color: var(--white); }
+    .emp-benefit-text strong { display: block; color: var(--white); font-size: 0.95rem; margin-bottom: 2px; }
+    .emp-benefit-text span { color: rgba(255,255,255,0.7); font-size: 0.85rem; }
+
+    /* CONTACT */
+    #contact { padding: 100px 0; background: var(--dark); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .contact-heading { font-family: var(--font-head); font-size: clamp(2rem, 3.5vw, 2.6rem); color: var(--white); margin-bottom: 20px; }
+    .contact-body { color: var(--teal-md); font-size: 1.05rem; line-height: 1.75; margin-bottom: 36px; }
+    .contact-items { display: flex; flex-direction: column; gap: 16px; }
+    .contact-item { display: flex; align-items: center; gap: 16px; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 16px; }
+    .contact-icon { width: 44px; height: 44px; background: var(--teal); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .contact-item-text strong { display: block; color: var(--white); font-size: 0.9rem; margin-bottom: 2px; }
+    .contact-item-text span { color: var(--teal-md); font-size: 0.85rem; }
+    .form-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(77,170,170,0.2); border-radius: 16px; padding: 36px; }
+    .form-box h3 { font-family: var(--font-head); font-size: 1.5rem; color: var(--white); margin-bottom: 8px; }
+    .form-box p { color: var(--teal-md); font-size: 0.9rem; margin-bottom: 24px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 12px 14px; color: var(--white); font-family: var(--font-body); font-size: 0.95rem; transition: border-color var(--transition); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--teal-lt); }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.3); }
+    .form-group select option { background: var(--dark); color: var(--white); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-submit { width: 100%; background: var(--teal); color: var(--white); border: none; border-radius: 8px; padding: 14px; font-family: var(--font-body); font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
+    .form-submit:hover { background: var(--teal-lt); transform: translateY(-2px); }
+
+    /* FOOTER */
+    footer { background: #060f0f; padding: 60px 0 32px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-brand p { color: #4b7070; font-size: 0.9rem; line-height: 1.7; margin-top: 16px; max-width: 260px; }
+    .footer-col h4 { color: var(--white); font-size: 0.88rem; font-weight: 600; margin-bottom: 16px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a { color: #4b7070; font-size: 0.88rem; transition: color var(--transition); }
+    .footer-col ul li a:hover { color: var(--teal-lt); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-bottom p { color: #4b7070; font-size: 0.85rem; }
+    .footer-tagline { font-size: 0.8rem; color: #2e5050; font-style: italic; }
+
+    @media (max-width: 900px) {
+      .pillars-grid { grid-template-columns: repeat(3, 1fr); }
+      .steps-grid { grid-template-columns: repeat(2, 1fr); }
+      .results-grid { grid-template-columns: repeat(2, 1fr); }
+      .who-grid, .emp-inner, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+    }
+    @media (max-width: 600px) {
+      .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps-grid { grid-template-columns: 1fr; }
+      .results-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+          <div class="nav-logo-badge">V</div>
+          <span class="nav-logo-text">VYVE</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="corporate.html" class="active">Home</a></li>
+          <li><a href="platform.html">Platform</a></li>
+          <li><a href="employers.html">For Employers</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="roi-calculator.html">ROI Calculator</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-cta">
+          <a href="https://online.vyvehealth.co.uk" target="_blank" class="members-btn">Member Login</a>
+          <a href="contact.html" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.88rem;">Book a Demo</a>
+        </div>
+        <button class="nav-hamburger" onclick="openMobileMenu()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" onclick="closeMobileMenu()">&#x2715;</button>
+    <a href="corporate.html" onclick="closeMobileMenu()">Home</a>
+    <a href="platform.html" onclick="closeMobileMenu()">Platform</a>
+    <a href="employers.html" onclick="closeMobileMenu()">For Employers</a>
+    <a href="about.html" onclick="closeMobileMenu()">About</a>
+    <a href="roi-calculator.html" onclick="closeMobileMenu()">ROI Calculator</a>
+    <a href="contact.html" onclick="closeMobileMenu()">Contact</a>
+    <a href="https://online.vyvehealth.co.uk" target="_blank" style="color: var(--teal-lt);">Member Login</a>
+  </div>
+
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-tag fade-in">Proactive Workforce Health</div>
+        <h1 class="hero-headline fade-in">Reduce sickness.<br><span>Improve performance.</span><br>Retain talent.</h1>
+        <p class="hero-sub fade-in">VYVE is the proactive workplace wellbeing platform combining physical health, mental wellbeing, nutrition, education and purpose — built on lived experience and measurable outcomes.</p>
+        <div class="hero-ctas fade-in">
+          <a href="contact.html" class="btn btn-primary">Book a Free Demo</a>
+          <a href="roi-calculator.html" class="btn btn-outline">Calculate Your ROI</a>
+        </div>
+        <div class="hero-stats fade-in">
+          <div>
+            <div class="hero-stat-num">28B</div>
+            <div class="hero-stat-label">Lost annually to UK workplace sickness</div>
+          </div>
+          <div>
+            <div class="hero-stat-num">15.8M</div>
+            <div class="hero-stat-label">Working days lost to stress each year</div>
+          </div>
+          <div>
+            <div class="hero-stat-num">3x</div>
+            <div class="hero-stat-label">Higher ROI vs traditional wellbeing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="stats-band">
+    <div class="stats-band-inner">
+      <span class="stats-band-item"><strong>Fewer Absences</strong> &nbsp; Health Risk Prevention <span class="stats-band-dot"></span></span>
+      <span class="stats-band-item"><strong>Higher Performance</strong> &nbsp; Energy &amp; Resilience <span class="stats-band-dot"></span></span>
+      <span class="stats-band-item"><strong>Stronger Retention</strong> &nbsp; Engaged Workforce <span class="stats-band-dot"></span></span>
+      <span class="stats-band-item"><strong>Measurable Outcomes</strong> &nbsp; Real Data, Real Results <span class="stats-band-dot"></span></span>
+      <span class="stats-band-item"><strong>5 Pillars of Health</strong> &nbsp; Whole-Person Wellbeing <span class="stats-band-dot"></span></span>
+      <span class="stats-band-item"><strong>Fewer Absences</strong> &nbsp; Health Risk Prevention <span class="stats-band-dot"></span></span>
+      <span class="stats-band-item"><strong>Higher Performance</strong> &nbsp; Energy &amp; Resilience <span class="stats-band-dot"></span></span>
+      <span class="stats-band-item"><strong>Stronger Retention</strong> &nbsp; Engaged Workforce <span class="stats-band-dot"></span></span>
+      <span class="stats-band-item"><strong>Measurable Outcomes</strong> &nbsp; Real Data, Real Results <span class="stats-band-dot"></span></span>
+      <span class="stats-band-item"><strong>5 Pillars of Health</strong> &nbsp; Whole-Person Wellbeing <span class="stats-band-dot"></span></span>
+    </div>
+  </div>
+
+  <section id="who-we-are">
+    <div class="container">
+      <div class="who-grid">
+        <div class="fade-in">
+          <div class="section-tag">Who We Are</div>
+          <h2 class="who-heading">Built on lived experience. Backed by science.</h2>
+          <p class="who-body">VYVE was born from a simple truth: most workplace wellbeing is reactive. By the time a team member is struggling, the damage to them and the business is already done.</p>
+          <p class="who-body">We built VYVE to flip the script. Our platform gives organisations a proactive, data-driven approach to workforce health that prevents problems before they become costly absences.</p>
+          <p class="who-body">Founded by health and fitness professionals with a deep understanding of what actually changes behaviour, VYVE is not just another wellness app — it's a measurable business tool.</p>
+          <div style="margin-top: 28px; display: flex; gap: 14px; flex-wrap: wrap;">
+            <a href="about.html" class="btn btn-teal-outline">Our Story</a>
+            <a href="platform.html" class="btn btn-primary">The Platform</a>
+          </div>
+        </div>
+        <div class="fade-in">
+          <div class="who-card">
+            <div class="who-card-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <h3 style="font-family: var(--font-head); font-size: 1.3rem; color: var(--dark); margin-bottom: 10px;">The Five Pillars of VYVE</h3>
+            <p style="color: var(--grey); font-size: 0.9rem; margin-bottom: 18px; line-height: 1.6;">Every VYVE programme is built across five interconnected pillars — because your people are whole humans, not just employees.</p>
+            <div class="who-pillars">
+              <div class="pillar-chip">&#x1F4AA; Physical</div>
+              <div class="pillar-chip">&#x1F9E0; Mental</div>
+              <div class="pillar-chip">&#x1F957; Nutrition</div>
+              <div class="pillar-chip">&#x1F4DA; Education</div>
+              <div class="pillar-chip" style="grid-column: span 2;">&#x1F3AF; Purpose &amp; Connection</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="what-we-do">
+    <div class="container">
+      <div class="section-center fade-in">
+        <div class="section-tag" style="color: var(--teal-lt);">What We Do</div>
+        <h2 class="section-heading-light">One platform. Five dimensions of health.</h2>
+        <p class="section-sub-light">Explore each pillar of the VYVE platform, designed to build healthier, happier, higher-performing workplaces.</p>
+      </div>
+      <div class="pillars-grid">
+        <a href="platform.html" class="pillar-card fade-in" style="text-decoration:none">
+          <span class="pillar-icon">&#x1F4AA;</span>
+          <div class="pillar-title">Physical Health</div>
+          <div class="pillar-desc">Workouts, step tracking, fitness goals and daily movement challenges tailored to every individual.</div>
+        </a>
+        <a href="platform.html" class="pillar-card fade-in" style="text-decoration:none">
+          <span class="pillar-icon">&#x1F9E0;</span>
+          <div class="pillar-title">Mental Wellbeing</div>
+          <div class="pillar-desc">Stress management, mindfulness, sleep quality tracking and mental health check-ins.</div>
+        </a>
+        <a href="platform.html" class="pillar-card fade-in" style="text-decoration:none">
+          <span class="pillar-icon">&#x1F957;</span>
+          <div class="pillar-title">Nutrition</div>
+          <div class="pillar-desc">Hydration tracking, meal guidance, energy optimisation and healthy habit building.</div>
+        </a>
+        <a href="platform.html" class="pillar-card fade-in" style="text-decoration:none">
+          <span class="pillar-icon">&#x1F4DA;</span>
+          <div class="pillar-title">Education</div>
+          <div class="pillar-desc">Expert-led content on health, performance and lifestyle to build lasting knowledge.</div>
+        </a>
+        <a href="platform.html" class="pillar-card fade-in" style="text-decoration:none">
+          <span class="pillar-icon">&#x1F3AF;</span>
+          <div class="pillar-title">Purpose</div>
+          <div class="pillar-desc">Team challenges, streaks, social connection and mission-driven health goals.</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-it-works">
+    <div class="container">
+      <div class="section-center fade-in">
+        <div class="section-tag">How It Works</div>
+        <h2 class="section-heading-dark">Simple to deploy. Powerful in practice.</h2>
+        <p class="section-sub-dark">VYVE integrates seamlessly into your organisation in four steps, from setup to measurable results.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card fade-in">
+          <div class="step-num">1</div>
+          <div class="step-title">Onboard</div>
+          <div class="step-desc">We configure your programme, set up your organisation profile and onboard your team — typically within one week.</div>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-num">2</div>
+          <div class="step-title">Personalise</div>
+          <div class="step-desc">Each team member gets a personalised health profile, goals and tailored programme across all five pillars.</div>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-num">3</div>
+          <div class="step-title">Engage</div>
+          <div class="step-desc">Daily check-ins, challenges and streaks keep your people motivated and consistent through the VYVE app.</div>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-num">4</div>
+          <div class="step-title">Measure</div>
+          <div class="step-desc">Your employer dashboard shows real-time engagement data, absence trends and full ROI reporting.</div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top: 48px;" class="fade-in">
+        <a href="platform.html" class="btn btn-teal-outline">Explore the Full Platform</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="results">
+    <div class="container">
+      <div class="section-center fade-in">
+        <div class="section-tag" style="color: var(--teal-lt);">Proven Results</div>
+        <h2 class="section-heading-light" style="color: var(--white);">The numbers speak for themselves.</h2>
+        <p class="section-sub-light">Organisations using VYVE see measurable improvements across health, performance and retention.</p>
+      </div>
+      <div class="results-grid">
+        <div class="result-card fade-in">
+          <div class="result-num">37%</div>
+          <div class="result-label">Reduction in Sickness Absence</div>
+          <div class="result-desc">Proactive health management reduces the frequency and duration of employee illness.</div>
+        </div>
+        <div class="result-card fade-in">
+          <div class="result-num">&#xA3;4.1</div>
+          <div class="result-label">Return for Every &#xA3;1 Spent</div>
+          <div class="result-desc">Strong ROI from proactive wellbeing versus reactive HR and occupational health costs.</div>
+        </div>
+        <div class="result-card fade-in">
+          <div class="result-num">82%</div>
+          <div class="result-label">Feel More Energised at Work</div>
+          <div class="result-desc">VYVE users report higher energy, focus and resilience — directly impacting daily performance.</div>
+        </div>
+        <div class="result-card fade-in">
+          <div class="result-num">91%</div>
+          <div class="result-label">App Retention After 90 Days</div>
+          <div class="result-desc">Our engagement-first design means people actually stick with the programme long-term.</div>
+        </div>
+        <div class="result-card fade-in">
+          <div class="result-num">44%</div>
+          <div class="result-label">Fewer Mental Health Sick Days</div>
+          <div class="result-desc">Proactive mental wellbeing support significantly reduces stress-related absence.</div>
+        </div>
+        <div class="result-card fade-in">
+          <div class="result-num">3x</div>
+          <div class="result-label">Improvement in Staff Retention</div>
+          <div class="result-desc">Employees who feel looked after stay longer, saving recruitment and onboarding costs.</div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top: 48px;" class="fade-in">
+        <a href="roi-calculator.html" class="btn btn-primary">Calculate Your ROI</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="employers-cta">
+    <div class="container">
+      <div class="emp-inner">
+        <div class="fade-in">
+          <div class="section-tag" style="color: rgba(255,255,255,0.7);">For Employers</div>
+          <h2 class="emp-heading">Your people are your most valuable asset. Protect them.</h2>
+          <p class="emp-body">VYVE gives HR leaders and business owners a proactive, data-led approach to workforce health — transforming wellbeing from a cost centre into a competitive advantage.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px;">
+            <a href="employers.html" class="btn btn-dark">Employer Solutions</a>
+            <a href="roi-calculator.html" class="btn btn-outline">Calculate ROI</a>
+          </div>
+        </div>
+        <div class="fade-in">
+          <div class="emp-benefits">
+            <div class="emp-benefit-item">
+              <div class="emp-check">&#x2713;</div>
+              <div class="emp-benefit-text">
+                <strong>Real-time workforce health dashboard</strong>
+                <span>Monitor engagement, absence trends and programme impact in one place.</span>
+              </div>
+            </div>
+            <div class="emp-benefit-item">
+              <div class="emp-check">&#x2713;</div>
+              <div class="emp-benefit-text">
+                <strong>Dedicated account management</strong>
+                <span>A VYVE health expert supports your rollout and ongoing programme.</span>
+              </div>
+            </div>
+            <div class="emp-benefit-item">
+              <div class="emp-check">&#x2713;</div>
+              <div class="emp-benefit-text">
+                <strong>Tailored to your organisation</strong>
+                <span>Every package is built around your team size, structure and goals. Book a call to discuss.</span>
+              </div>
+            </div>
+            <div class="emp-benefit-item">
+              <div class="emp-check">&#x2713;</div>
+              <div class="emp-benefit-text">
+                <strong>Board-ready ROI reporting</strong>
+                <span>Hard data on absence reduction, engagement uplift and cost savings.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="fade-in">
+          <div class="section-tag" style="color: var(--teal-lt);">Get Started</div>
+          <h2 class="contact-heading">Ready to transform your workplace health?</h2>
+          <p class="contact-body">Book a free 30-minute demo and see exactly how VYVE can reduce absence, improve performance and retain your best people.</p>
+          <div class="contact-items">
+            <div class="contact-item">
+              <div class="contact-icon">&#x2709;</div>
+              <div class="contact-item-text">
+                <strong>Email Us</strong>
+                <span>hello@vyvehealth.co.uk</span>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon">&#x1F310;</div>
+              <div class="contact-item-text">
+                <strong>Visit Online</strong>
+                <span>www.vyvehealth.co.uk</span>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon" style="font-size: 0.85rem; font-weight: 700; font-family: var(--font-head);">M</div>
+              <div class="contact-item-text">
+                <strong>Member Portal</strong>
+                <span><a href="https://online.vyvehealth.co.uk" target="_blank" style="color: var(--teal-lt);">online.vyvehealth.co.uk</a></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-box fade-in">
+          <h3>Book a Demo</h3>
+          <p>Tell us about your organisation and we'll be in touch within 24 hours.</p>
+          <form onsubmit="handleSubmit(event)">
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" placeholder="e.g. Sarah Johnson" required />
+            </div>
+            <div class="form-group">
+              <label>Work Email</label>
+              <input type="email" placeholder="sarah@company.com" required />
+            </div>
+            <div class="form-group">
+              <label>Organisation</label>
+              <input type="text" placeholder="Your company name" />
+            </div>
+            <div class="form-group">
+              <label>Team Size</label>
+              <select>
+                <option value="">Select team size</option>
+                <option>Under 25 employees</option>
+                <option>25 to 100 employees</option>
+                <option>100 to 500 employees</option>
+                <option>500 or more employees</option>
+              </select>
+            </div>
+            <button type="submit" class="form-submit">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <div class="nav-logo-badge">V</div>
+            <span class="nav-logo-text">VYVE</span>
+          </a>
+          <p>Proactive workplace wellbeing built on lived experience, expert knowledge and measurable outcomes.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <ul>
+            <li><a href="platform.html">What is VYVE</a></li>
+            <li><a href="platform.html">The Five Pillars</a></li>
+            <li><a href="platform.html">Features</a></li>
+            <li><a href="platform.html">The App</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">Our Story</a></li>
+            <li><a href="about.html">Social Mission</a></li>
+            <li><a href="employers.html">For Employers</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="roi-calculator.html">ROI Calculator</a></li>
+            <li><a href="https://online.vyvehealth.co.uk" target="_blank">Member Login</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&#xA9; 2025 VYVE Health Ltd. All rights reserved.</p>
+        <span class="footer-tagline">Proactive Wellbeing for a Healthier, Higher-Performing World</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+    });
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    function openMobileMenu() { document.getElementById('mobileMenu').classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); document.body.style.overflow = ''; }
+    function handleSubmit(e) {
+      e.preventDefault();
+      e.target.innerHTML = '<p style="color:var(--teal-lt);font-size:1.1rem;text-align:center;padding:20px;">Thank you! We\'ll be in touch within 24 hours.</p>';
+    }
+  </script>
+</body>
+</html>
