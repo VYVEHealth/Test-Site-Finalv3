@@ -528,14 +528,63 @@
 
 </style>
 </head>
+<style>
+  #navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 0;background:#0D2B2B;box-shadow:0 2px 20px rgba(0,0,0,0.3)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;max-width:1140px;margin:0 auto;padding:0 24px}
+  .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .nav-logo-badge{width:36px;height:36px;background:#1B7878;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:#fff;border-radius:4px}
+  .nav-logo-text{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:#fff;letter-spacing:0.1em}
+  .nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+  .nav-links a{font-size:0.88rem;font-weight:500;color:rgba(255,255,255,0.85);text-decoration:none;transition:color 0.3s}
+  .nav-links a:hover,.nav-links a.active{color:#4DAAAA}
+  .nav-cta{display:flex;align-items:center;gap:10px}
+  .members-btn{background:#4DAAAA;color:#fff!important;padding:8px 16px;border-radius:6px;font-size:0.82rem;font-weight:600;text-decoration:none;transition:background 0.3s}.members-btn:hover{background:#1B7878}
+  .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+  .nav-hamburger span{display:block;width:24px;height:2px;background:#fff;border-radius:2px}
+  .mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0D2B2B;z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:28px}
+  .mobile-menu.open{display:flex}.mobile-menu a{font-size:1.2rem;font-weight:600;color:#fff;text-decoration:none}.mobile-menu a:hover{color:#4DAAAA}
+  .mobile-close{position:absolute;top:24px;right:24px;font-size:1.8rem;color:#fff;cursor:pointer;background:none;border:none}
+  .vyve-footer{background:#060f0f;padding:60px 0 32px;margin-top:60px}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px;max-width:1140px;margin-left:auto;margin-right:auto;padding:0 24px}
+  .footer-brand p{color:#4b7070;font-size:0.9rem;line-height:1.7;margin-top:16px}
+  .footer-col h4{color:#fff;font-size:0.88rem;font-weight:600;margin-bottom:16px;letter-spacing:0.06em;text-transform:uppercase}
+  .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .footer-col ul li a{color:#4b7070;font-size:0.88rem;text-decoration:none;transition:color 0.3s}.footer-col ul li a:hover{color:#4DAAAA}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,0.06);padding:28px 24px 0;max-width:1140px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+  .footer-bottom p{color:#4b7070;font-size:0.85rem}
+  .footer-tagline{font-size:0.8rem;color:#2e5050;font-style:italic}
+  @media(max-width:900px){.nav-links,.nav-cta{display:none}.nav-hamburger{display:flex}.footer-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:600px){.footer-grid{grid-template-columns:1fr}}
+</style>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><div class="nav-logo-badge">V</div><span class="nav-logo-text">VYVE</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="platform.html">Platform</a></li>
+      <li><a href="employers.html">For Employers</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="roi-calculator.html" class="active">ROI Calculator</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://online.vyvehealth.co.uk" target="_blank" class="members-btn">Member Login</a>
+    </div>
+    <button class="nav-hamburger" onclick="document.getElementById('mobileMenu').classList.add('open')"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="document.getElementById('mobileMenu').classList.remove('open')">&#x2715;</button>
+  <a href="index.html">Home</a><a href="platform.html">Platform</a><a href="employers.html">For Employers</a><a href="about.html">About</a><a href="roi-calculator.html">ROI Calculator</a><a href="contact.html">Contact</a>
+  <a href="https://online.vyvehealth.co.uk" target="_blank" style="color:#4DAAAA;">Member Login</a>
+</div>
+
 <body>
-<div class="wrap">
+<div class="wrap" style="padding-top:80px;">
 
   <header>
-    <div class="logo">
-      <div class="logo-mark">V</div>
-      <div class="logo-text">VYVE</div>
-    </div>
     <div class="badge">📊 Enterprise ROI Calculator</div>
     <h1>What's the <span>true cost</span><br>of doing nothing?</h1>
     <p class="subtitle">Enter your organisation's details below to see a projected return on investment from your VYVE Health programme.</p>
@@ -714,10 +763,21 @@
 
 </div>
 
-<footer>
-  <p>Calculations based on CIPD Health and Wellbeing at Work Report 2025, Deloitte Global Wellbeing Survey, and independent occupational health research.<br>
-  Figures are illustrative projections only and do not constitute a guarantee of outcomes. © 2026 VYVE Health Ltd.</p>
-</footer>
+<div class="vyve-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo"><div class="nav-logo-badge">V</div><span class="nav-logo-text">VYVE</span></a>
+      <p>Proactive workplace wellbeing built on lived experience, expert knowledge and measurable outcomes.</p>
+    </div>
+    <div class="footer-col"><h4>Platform</h4><ul><li><a href="platform.html">What is VYVE</a></li><li><a href="platform.html">The Five Pillars</a></li><li><a href="platform.html">Features</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">Our Story</a></li><li><a href="employers.html">For Employers</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+    <div class="footer-col"><h4>Resources</h4><ul><li><a href="roi-calculator.html">ROI Calculator</a></li><li><a href="https://online.vyvehealth.co.uk" target="_blank">Member Login</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 VYVE Health Ltd. Figures are illustrative projections based on CIPD 2025 data.</p>
+    <span class="footer-tagline">Proactive Wellbeing for a Healthier, Higher-Performing World</span>
+  </div>
+</div>
 
 <script>
 function fmt(n) {
