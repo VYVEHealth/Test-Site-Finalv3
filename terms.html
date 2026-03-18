@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service — VYVE Health</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --teal: #1B7878; --teal-lt: #4DAAAA; --teal-xl: #E0F2F2; --teal-md: #B2DEDE; --dark: #0D2B2B; --charcoal: #1E293B; --grey: #64748B; --white: #FFFFFF; --off-white: #F4FAFA; --font-head: 'Playfair Display', Georgia, serif; --font-body: 'Inter', system-ui, sans-serif; --transition: 0.3s ease; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); color: var(--charcoal); background: var(--white); overflow-x: hidden; line-height: 1.6; }
+    a { text-decoration: none; color: var(--teal); }
+    a:hover { color: var(--teal-lt); }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+    #navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 18px 0; background: var(--dark); box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; }
+    .nav-logo-badge { width: 36px; height: 36px; background: var(--teal); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; color: var(--white); border-radius: 4px; }
+    .nav-logo-text { font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; color: var(--white); letter-spacing: 0.1em; }
+    .nav-back { font-size: 0.88rem; color: rgba(255,255,255,0.7); transition: color var(--transition); }
+    .nav-back:hover { color: var(--teal-lt); }
+
+    .page-hero { background: var(--dark); padding: 120px 0 60px; }
+    .page-hero .section-tag { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal-lt); margin-bottom: 12px; }
+    .page-hero h1 { font-family: var(--font-head); font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; color: var(--white); line-height: 1.15; margin-bottom: 16px; }
+    .page-hero .meta { color: var(--teal-md); font-size: 0.9rem; }
+
+    .legal-body { padding: 60px 0 100px; }
+    .legal-intro { background: var(--off-white); border-left: 4px solid var(--teal); padding: 24px 28px; border-radius: 0 8px 8px 0; margin-bottom: 48px; font-size: 0.95rem; color: var(--charcoal); line-height: 1.75; }
+    .legal-intro strong { color: var(--dark); }
+
+    .legal-section { margin-bottom: 48px; }
+    .legal-section h2 { font-family: var(--font-head); font-size: 1.5rem; color: var(--dark); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--teal-xl); }
+    .legal-section h3 { font-size: 1rem; font-weight: 600; color: var(--dark); margin: 20px 0 8px; }
+    .legal-section p { color: var(--grey); font-size: 0.95rem; line-height: 1.8; margin-bottom: 12px; }
+    .legal-section ul { list-style: none; padding: 0; margin: 12px 0 16px; display: flex; flex-direction: column; gap: 8px; }
+    .legal-section ul li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.92rem; color: var(--grey); line-height: 1.6; }
+    .legal-section ul li::before { content: ''; width: 7px; height: 7px; background: var(--teal); border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+
+    .toc { background: var(--off-white); border-radius: 12px; padding: 28px 32px; margin-bottom: 48px; }
+    .toc h4 { font-family: var(--font-head); font-size: 1rem; color: var(--dark); margin-bottom: 16px; }
+    .toc ol { padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .toc ol li a { font-size: 0.88rem; color: var(--teal); transition: color var(--transition); }
+    .toc ol li a:hover { color: var(--dark); }
+
+    .contact-box { background: var(--dark); border-radius: 12px; padding: 32px; margin-top: 48px; }
+    .contact-box h3 { font-family: var(--font-head); font-size: 1.3rem; color: var(--white); margin-bottom: 12px; }
+    .contact-box p { color: var(--teal-md); font-size: 0.92rem; line-height: 1.7; margin-bottom: 6px; }
+    .contact-box a { color: var(--teal-lt); }
+
+    footer { background: #060f0f; padding: 40px 0; text-align: center; }
+    footer p { color: #4b7070; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-badge">V</div>
+        <span class="nav-logo-text">VYVE</span>
+      </a>
+      <a href="index.html" class="nav-back">← Back to site</a>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="section-tag">Legal</div>
+      <h1>Terms of Service</h1>
+      <p class="meta">Last updated: March 2026 &nbsp;·&nbsp; VYVE Health Ltd</p>
+    </div>
+  </section>
+
+  <div class="legal-body">
+    <div class="container">
+
+      <div class="legal-intro">
+        <strong>Please read these Terms carefully before using VYVE.</strong> By creating an account or accessing the VYVE platform, you agree to be bound by these Terms of Service. If you do not agree, you must not use the service. These Terms form a legally binding agreement between you and VYVE Health Ltd.
+      </div>
+
+      <div class="toc">
+        <h4>Contents</h4>
+        <ol>
+          <li><a href="#about">About VYVE</a></li>
+          <li><a href="#eligibility">Eligibility</a></li>
+          <li><a href="#account">Your account</a></li>
+          <li><a href="#membership">Membership and payment</a></li>
+          <li><a href="#acceptable-use">Acceptable use</a></li>
+          <li><a href="#health-disclaimer">Health disclaimer</a></li>
+          <li><a href="#content">Content and intellectual property</a></li>
+          <li><a href="#employer">Corporate memberships</a></li>
+          <li><a href="#charity">Give Back mechanic</a></li>
+          <li><a href="#availability">Service availability</a></li>
+          <li><a href="#liability">Limitation of liability</a></li>
+          <li><a href="#termination">Termination</a></li>
+          <li><a href="#governing-law">Governing law</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ol>
+      </div>
+
+      <div class="legal-section" id="about">
+        <h2>1. About VYVE</h2>
+        <p>VYVE Health Ltd ("VYVE", "we", "us", "our") provides a digital workforce wellbeing platform available at www.vyvehealth.co.uk and online.vyvehealth.co.uk. The platform delivers live and on-demand wellness sessions, activity tracking, wellbeing check-ins, and related content to individual and corporate members.</p>
+        <p>These Terms govern your use of all VYVE websites, the member portal, and related services (collectively the "Service").</p>
+      </div>
+
+      <div class="legal-section" id="eligibility">
+        <h2>2. Eligibility</h2>
+        <p>To use the VYVE Service you must:</p>
+        <ul>
+          <li>Be aged 18 or over</li>
+          <li>Be resident in the United Kingdom, or be a corporate member accessing the service through an employer with a UK presence</li>
+          <li>Have been invited to join by VYVE or by an employer with a corporate membership agreement</li>
+          <li>Agree to these Terms and our Privacy Policy</li>
+        </ul>
+        <p>VYVE is an invite-only platform. Self-registration is not available without a valid invitation link.</p>
+      </div>
+
+      <div class="legal-section" id="account">
+        <h2>3. Your account</h2>
+        <p>When you create a VYVE account, you agree to:</p>
+        <ul>
+          <li>Provide accurate and truthful information during registration</li>
+          <li>Keep your login credentials secure and confidential</li>
+          <li>Notify us immediately at <a href="mailto:hello@vyvehealth.co.uk">hello@vyvehealth.co.uk</a> if you suspect unauthorised access to your account</li>
+          <li>Not share your account with any other person</li>
+          <li>Not create multiple accounts</li>
+        </ul>
+        <p>You are responsible for all activity that occurs under your account. VYVE is not liable for any loss or damage arising from unauthorised use of your account where you have failed to keep your credentials secure.</p>
+      </div>
+
+      <div class="legal-section" id="membership">
+        <h2>4. Membership and payment</h2>
+        <h3>Individual membership</h3>
+        <p>Individual membership is priced at £20 per month. Payment is taken monthly in advance. By subscribing you authorise VYVE to charge your payment method on a recurring monthly basis until you cancel.</p>
+        <h3>Corporate membership</h3>
+        <p>Corporate memberships are subject to a separate agreement between VYVE Health Ltd and the employer. The terms of that agreement govern payment, user access, and data reporting for corporate members.</p>
+        <h3>Cancellation</h3>
+        <p>You may cancel your individual membership at any time. Cancellation takes effect at the end of the current billing period. No refunds are provided for partial months unless required by applicable consumer law.</p>
+        <h3>Free trial periods</h3>
+        <p>Where a free trial is offered, no payment is taken during the trial period. At the end of the trial, your membership will automatically convert to a paid subscription unless you cancel before the trial ends.</p>
+        <h3>Price changes</h3>
+        <p>We will give you at least 30 days' notice of any price change by email. Continued use of the Service after the effective date of a price change constitutes acceptance.</p>
+      </div>
+
+      <div class="legal-section" id="acceptable-use">
+        <h2>5. Acceptable use</h2>
+        <p>You agree to use the VYVE Service only for its intended purpose. You must not:</p>
+        <ul>
+          <li>Use the Service for any unlawful purpose or in violation of any applicable law or regulation</li>
+          <li>Attempt to gain unauthorised access to any part of the platform, other accounts, or VYVE's systems</li>
+          <li>Upload, share, or transmit any content that is abusive, defamatory, obscene, or otherwise objectionable</li>
+          <li>Reproduce, copy, distribute, or resell any content from the platform without prior written permission from VYVE</li>
+          <li>Use automated tools to scrape, crawl, or harvest data from the platform</li>
+          <li>Attempt to reverse-engineer or decompile any part of the Service</li>
+          <li>Interfere with or disrupt the integrity or performance of the Service</li>
+          <li>Impersonate any person or entity, or misrepresent your affiliation with any person or entity</li>
+        </ul>
+        <p>VYVE reserves the right to suspend or terminate any account that violates these provisions.</p>
+      </div>
+
+      <div class="legal-section" id="health-disclaimer">
+        <h2>6. Health disclaimer</h2>
+        <p><strong>VYVE is a wellness platform, not a medical service.</strong> The content, sessions, and programmes provided through VYVE are for general health and wellbeing purposes only and do not constitute medical advice, diagnosis, or treatment.</p>
+        <ul>
+          <li>Always consult a qualified healthcare professional before starting any new exercise programme, particularly if you have an existing medical condition, injury, or health concern</li>
+          <li>If you experience pain, dizziness, shortness of breath, or any other unusual symptoms during any VYVE session or activity, stop immediately and seek medical advice</li>
+          <li>VYVE's wellbeing check-ins and mood tracking are self-reported tools and are not a substitute for professional mental health support</li>
+          <li>Group therapy and wellbeing sessions provided through VYVE are peer-support and educational in nature and do not replace clinical therapy or psychiatric care</li>
+        </ul>
+        <p>VYVE accepts no liability for any injury, illness, or adverse health outcome arising from participation in sessions or following content provided through the platform.</p>
+      </div>
+
+      <div class="legal-section" id="content">
+        <h2>7. Content and intellectual property</h2>
+        <p>All content on the VYVE platform — including session recordings, written content, brand assets, design, and software — is the intellectual property of VYVE Health Ltd or its licensors and is protected by UK copyright law.</p>
+        <p>You may not reproduce, distribute, modify, or create derivative works from any VYVE content without our prior written consent.</p>
+        <p>By using the platform, you do not acquire any ownership rights to any content. Your right to access content is a personal, non-transferable licence that terminates when your membership ends.</p>
+      </div>
+
+      <div class="legal-section" id="employer">
+        <h2>8. Corporate memberships</h2>
+        <p>Where you access VYVE as part of a corporate membership arranged by your employer:</p>
+        <ul>
+          <li>Your employer has agreed to a separate Data Processing Agreement with VYVE governing how data is handled</li>
+          <li>Your employer receives aggregated, anonymised engagement reports only — your individual activity, health data, and personal information are never disclosed to your employer</li>
+          <li>Your access to VYVE may end if your employer's corporate membership is terminated, in which case VYVE will notify you and offer you the option to continue on an individual membership</li>
+          <li>These Terms apply to you personally regardless of whether your access is employer-funded</li>
+        </ul>
+      </div>
+
+      <div class="legal-section" id="charity">
+        <h2>9. Give Back mechanic</h2>
+        <p>VYVE operates a "Help Yourself, Help Others" charity mechanic. When a member completes 30 activities of any qualifying type, VYVE donates a free month of membership to a recipient referred by one of our charity partners.</p>
+        <ul>
+          <li>The 30-activity milestone is tracked automatically within the platform</li>
+          <li>Qualifying activities include: daily habits, workouts, cardio sessions, live session attendance, replay session views, and weekly check-ins</li>
+          <li>The donation is made by VYVE at no additional cost to the member</li>
+          <li>VYVE reserves the right to modify the qualifying activity count, activity types, or charity partners with reasonable notice</li>
+          <li>The charity mechanic is a goodwill gesture and does not form part of the contractual membership entitlement</li>
+        </ul>
+      </div>
+
+      <div class="legal-section" id="availability">
+        <h2>10. Service availability</h2>
+        <p>VYVE aims to provide a reliable, high-quality service but does not guarantee uninterrupted availability. We may need to carry out maintenance, updates, or emergency fixes that temporarily affect access.</p>
+        <p>We will endeavour to provide advance notice of planned maintenance where possible. VYVE is not liable for any loss or inconvenience caused by temporary service unavailability.</p>
+        <p>Live sessions are delivered on a scheduled basis. VYVE reserves the right to reschedule, cancel, or modify sessions where necessary. Where a scheduled session cannot be delivered, a replay or alternative will be provided where possible.</p>
+      </div>
+
+      <div class="legal-section" id="liability">
+        <h2>11. Limitation of liability</h2>
+        <p>To the fullest extent permitted by applicable law:</p>
+        <ul>
+          <li>VYVE's total liability to you in connection with the Service shall not exceed the total membership fees paid by you in the 12 months preceding the claim</li>
+          <li>VYVE is not liable for any indirect, incidental, special, or consequential losses, including loss of data, loss of profits, or loss of opportunity</li>
+          <li>VYVE is not liable for any health or medical outcomes resulting from use of the platform (see Health Disclaimer above)</li>
+          <li>Nothing in these Terms limits VYVE's liability for death or personal injury caused by our negligence, fraud or fraudulent misrepresentation, or any other liability that cannot be excluded by law</li>
+        </ul>
+        <p>Your statutory rights as a consumer are not affected by these Terms.</p>
+      </div>
+
+      <div class="legal-section" id="termination">
+        <h2>12. Termination</h2>
+        <p>You may cancel your membership at any time through the platform or by contacting us at <a href="mailto:hello@vyvehealth.co.uk">hello@vyvehealth.co.uk</a>.</p>
+        <p>VYVE may suspend or terminate your account immediately if you:</p>
+        <ul>
+          <li>Breach these Terms of Service</li>
+          <li>Engage in conduct that VYVE reasonably believes is harmful to other members, VYVE, or third parties</li>
+          <li>Fail to pay membership fees when due</li>
+          <li>Provide false or misleading information during registration</li>
+        </ul>
+        <p>On termination, your access to the platform will cease. VYVE will handle your personal data in accordance with our Privacy Policy following termination.</p>
+      </div>
+
+      <div class="legal-section" id="governing-law">
+        <h2>13. Governing law</h2>
+        <p>These Terms are governed by and construed in accordance with the laws of England and Wales. Any disputes arising under or in connection with these Terms shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+        <p>If any provision of these Terms is found to be unenforceable, the remaining provisions shall continue in full force and effect.</p>
+        <p>These Terms, together with our Privacy Policy, constitute the entire agreement between you and VYVE Health Ltd in relation to the Service.</p>
+      </div>
+
+      <div class="legal-section" id="contact">
+        <h2>14. Contact</h2>
+        <div class="contact-box">
+          <h3>VYVE Health Ltd</h3>
+          <p>Email: <a href="mailto:hello@vyvehealth.co.uk">hello@vyvehealth.co.uk</a></p>
+          <p style="margin-top:16px;">For any questions about these Terms, please email us with the subject line <strong>"Terms Query"</strong> and we will respond within 5 working days.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 VYVE Health Ltd. All rights reserved. &nbsp;·&nbsp; <a href="privacy-policy.html" style="color:var(--teal-lt);">Privacy Policy</a> &nbsp;·&nbsp; <a href="terms.html" style="color:var(--teal-lt);">Terms of Service</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
