@@ -48,9 +48,29 @@
 
   .wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 24px 80px; }
 
+  /* ── Navbar ── */
+  #navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 18px 0; background: #0D2B2B; box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo-badge { width: 36px; height: 36px; background: var(--teal); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--white); border-radius: 4px; }
+  .nav-logo-text { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--white); letter-spacing: 0.1em; }
+  .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+  .nav-links a { font-size: 0.88rem; font-weight: 500; color: rgba(255,255,255,0.85); text-decoration: none; transition: color 0.3s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--teal-lt); }
+  .nav-cta { display: flex; align-items: center; gap: 10px; }
+  .members-btn { background: var(--teal-lt); color: var(--white) !important; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; text-decoration: none; transition: background 0.3s; } .members-btn:hover { background: var(--teal); }
+  .demo-btn { background: var(--teal); color: var(--white); padding: 10px 20px; border-radius: 6px; font-size: 0.88rem; font-weight: 600; text-decoration: none; border: 2px solid var(--teal); transition: all 0.3s; } .demo-btn:hover { background: var(--teal-lt); }
+  .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; }
+  .nav-hamburger span { display: block; width: 24px; height: 2px; background: var(--white); border-radius: 2px; }
+  .mobile-menu { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #0D2B2B; z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { font-size: 1.2rem; font-weight: 600; color: var(--white); text-decoration: none; } .mobile-menu a:hover { color: var(--teal-lt); }
+  .mobile-close { position: absolute; top: 24px; right: 24px; font-size: 1.8rem; color: var(--white); cursor: pointer; background: none; border: none; }
+  @media(max-width:900px) { .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } }
+
   /* ── Header ── */
   header {
-    padding: 48px 0 56px;
+    padding: 128px 0 56px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -529,6 +549,42 @@
 </style>
 </head>
 <body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-badge">V</div>
+      <span class="nav-logo-text">VYVE</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="platform.html">Our Service</a></li>
+      <li><a href="employers.html">For Employers</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="give-back-employers.html">Give Back</a></li>
+      <li><a href="roi-calculator.html" class="active">ROI Calculator</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://online.vyvehealth.co.uk" target="_blank" class="members-btn">Member Login</a>
+      <a href="contact.html" class="demo-btn">Book a Demo</a>
+    </div>
+    <button class="nav-hamburger" onclick="openMobileMenu()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="closeMobileMenu()">&#x2715;</button>
+  <a href="index.html" onclick="closeMobileMenu()">Home</a>
+  <a href="platform.html" onclick="closeMobileMenu()">Our Service</a>
+  <a href="employers.html" onclick="closeMobileMenu()">For Employers</a>
+  <a href="about.html" onclick="closeMobileMenu()">About</a>
+  <a href="give-back-employers.html" onclick="closeMobileMenu()">Give Back</a>
+  <a href="roi-calculator.html" onclick="closeMobileMenu()">ROI Calculator</a>
+  <a href="contact.html" onclick="closeMobileMenu()">Contact</a>
+  <a href="https://online.vyvehealth.co.uk" target="_blank" style="color:var(--teal-lt);">Member Login</a>
+</div>
+
 <div class="wrap">
 
   <header>
@@ -892,6 +948,8 @@ updateSlider('engagement');
 updateSlider('absreduction');
 updateSlider('turnreduction');
 calc();
+function openMobileMenu() { document.getElementById('mobileMenu').classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); document.body.style.overflow = ''; }
 </script>
 </body>
 </html>
