@@ -79,16 +79,17 @@
     .card:hover::before { opacity: 1; }
     .card-icon { font-size: 3rem; margin-bottom: 20px; display: block; position: relative; z-index: 1; }
     .card-title { font-family: var(--font-head); font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; position: relative; z-index: 1; }
-    .card-desc { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.65; margin-bottom: 28px; position: relative; z-index: 1; }
-    .card-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 8px; font-size: 0.88rem; font-weight: 600; transition: all 0.2s; position: relative; z-index: 1; }
+    .card-desc { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.65; margin-bottom: 28px; position: relative; z-index: 1; flex: 1; }
+    .card-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 100%;
+      padding: 14px 24px;
+      border-radius: 8px; font-size: 0.88rem; font-weight: 600;
+      transition: all 0.2s; position: relative; z-index: 1;
+      background: var(--teal); color: var(--white);
+    }
+    .card:hover .card-btn { background: var(--teal-lt); }
     .card-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(77,170,170,0.15); border: 1px solid rgba(77,170,170,0.3); border-radius: 20px; padding: 4px 12px; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal-lt); margin-bottom: 16px; position: relative; z-index: 1; }
-    .card-individual .card-btn { background: var(--teal); color: var(--white); }
-    .card-individual:hover .card-btn { background: var(--teal-lt); }
-    .card-corporate .card-btn { background: rgba(255,255,255,0.1); color: var(--white); border: 1px solid rgba(255,255,255,0.25); }
-    .card-corporate:hover .card-btn { background: rgba(255,255,255,0.2); }
-    .card-members { background: rgba(27,120,120,0.12); border-color: rgba(77,170,170,0.35); }
-    .card-members .card-btn { background: var(--teal-lt); color: var(--white); }
-    .card-members:hover .card-btn { background: var(--teal); }
     .site-footer { position: relative; z-index: 1; text-align: center; padding: 24px; font-size: 0.78rem; color: rgba(255,255,255,0.25); }
     .site-footer a { color: rgba(255,255,255,0.35); text-decoration: none; }
     .site-footer a:hover { color: var(--teal-lt); }
@@ -110,7 +111,7 @@
     <p class="subheadline">Whether you're looking to transform your own health or your entire organisation — VYVE is built for you.</p>
 
     <div class="cards">
-      <a href="individual.html" class="card card-individual">
+      <a href="individual.html" class="card">
         <span class="card-badge">✨ Personal</span>
         <span class="card-icon">🧘</span>
         <div class="card-title">I'm an Individual</div>
@@ -118,7 +119,7 @@
         <span class="card-btn">Start my journey →</span>
       </a>
 
-      <a href="corporate.html" class="card card-corporate">
+      <a href="corporate.html" class="card">
         <span class="card-badge">🏢 Business</span>
         <span class="card-icon">📊</span>
         <div class="card-title">I'm an Employer</div>
@@ -126,7 +127,7 @@
         <span class="card-btn">See the business case →</span>
       </a>
 
-      <a href="https://online.vyvehealth.co.uk" target="_blank" class="card card-members">
+      <a href="https://online.vyvehealth.co.uk" target="_blank" class="card">
         <span class="card-badge">🔑 Existing Member</span>
         <span class="card-icon">💚</span>
         <div class="card-title">Members Area</div>
