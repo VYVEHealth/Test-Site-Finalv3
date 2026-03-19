@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VYVE Health — Live Employer Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal:    #1B7878; --teal-lt: #4DAAAA; --teal-dim: rgba(77,170,170,0.12);
+      --dark:    #091818; --panel:   #0D2020; --panel2:  #112626;
+      --border:  rgba(77,170,170,0.1); --border2: rgba(77,170,170,0.22);
+      --white:   #FFFFFF; --muted:   rgba(255,255,255,0.42); --dim: rgba(255,255,255,0.16);
+      --green:   #22c55e; --amber:   #f97316; --red: #ef4444; --purple: #a78bfa; --blue: #60a5fa;
+      --font-h:  'Playfair Display', Georgia, serif;
+      --font-b:  'DM Sans', system-ui, sans-serif;
+      --r: 10px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-b); background: var(--dark); color: var(--white); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+
+    /* LOADER */
+    #loader { position:fixed; inset:0; background:var(--dark); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; transition:opacity 0.6s ease; }
+    #loader.gone { opacity:0; pointer-events:none; }
+    .l-logo { font-family:var(--font-h); font-size:2.8rem; font-weight:800; color:var(--teal-lt); letter-spacing:0.12em; }
+    .l-bar { width:180px; height:2px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; }
+    .l-fill { height:100%; background:linear-gradient(90deg,var(--teal),var(--teal-lt)); animation:lp 2s ease forwards; }
+    @keyframes lp { from{width:0} to{width:100%} }
+    .l-txt { font-size:0.78rem; color:var(--dim); letter-spacing:0.08em; }
+
+    /* NAV */
+    nav { position:sticky; top:0; z-index:100; background:rgba(9,24,24,0.96); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); }
+    .nav-i { max-width:1380px; margin:0 auto; padding:0 28px; height:58px; display:flex; align-items:center; justify-content:space-between; }
+    .nav-l { display:flex; align-items:center; gap:14px; }
+    .nav-badge { width:32px; height:32px; background:var(--teal); border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:var(--font-h); font-weight:800; font-size:0.95rem; }
+    .nav-brand { font-family:var(--font-h); font-size:1.2rem; font-weight:800; letter-spacing:0.1em; }
+    .nav-sep { width:1px; height:20px; background:var(--border2); }
+    .nav-sub { font-size:0.8rem; color:var(--muted); }
+    .nav-r { display:flex; align-items:center; gap:12px; }
+    .live-pill { display:flex; align-items:center; gap:6px; font-size:0.72rem; color:var(--muted); background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:20px; padding:4px 12px; }
+    .dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; flex-shrink:0; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ERROR */
+    #err-bar { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.25); border-radius:var(--r); padding:14px 20px; margin:20px 28px 0; font-size:0.82rem; color:#fca5a5; display:none; }
+
+    /* COMPANY TABS */
+    .ctabs { max-width:1380px; margin:0 auto; padding:20px 28px 0; display:flex; gap:8px; flex-wrap:wrap; }
+    .ct { font-size:0.78rem; font-weight:600; padding:6px 16px; border-radius:6px; border:1px solid var(--border); background:rgba(255,255,255,0.03); color:var(--muted); cursor:pointer; transition:all 0.18s; }
+    .ct:hover { border-color:var(--border2); color:var(--white); }
+    .ct.on { background:var(--teal); border-color:var(--teal); color:var(--white); }
+
+    /* WRAP */
+    .wrap { max-width:1380px; margin:0 auto; padding:24px 28px 60px; }
+
+    /* KPI ROW */
+    .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:12px; margin-bottom:20px; }
+    .kpi { background:var(--panel); border:1px solid var(--border); border-radius:var(--r); padding:20px 18px; position:relative; overflow:hidden; transition:background 0.2s, transform 0.2s; cursor:default; }
+    .kpi::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--teal),var(--teal-lt)); opacity:0; transition:opacity 0.2s; }
+    .kpi:hover { background:var(--panel2); transform:translateY(-2px); }
+    .kpi:hover::after { opacity:1; }
+    .kpi.hi { background:rgba(27,120,120,0.18); border-color:var(--border2); }
+    .kpi.gr { background:rgba(34,197,94,0.08); border-color:rgba(34,197,94,0.2); }
+    .kpi.se { background:rgba(96,165,250,0.08); border-color:rgba(96,165,250,0.2); }
+    .kl { font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+    .kv { font-family:var(--font-h); font-size:2rem; font-weight:800; line-height:1; letter-spacing:-0.03em; color:var(--white); }
+    .kpi.hi .kv { color:var(--teal-lt); }
+    .kpi.gr .kv { color:var(--green); }
+    .kpi.se .kv { color:var(--blue); }
+    .ks { font-size:0.7rem; color:var(--dim); margin-top:6px; }
+
+    /* GRID */
+    .g2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+    .gf { margin-bottom:16px; }
+    @media(max-width:960px) { .g2 { grid-template-columns:1fr; } }
+
+    /* PANEL */
+    .p { background:var(--panel); border:1px solid var(--border); border-radius:var(--r); overflow:hidden; }
+    .ph { padding:15px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .pt { font-size:0.86rem; font-weight:700; color:var(--white); }
+    .ps { font-size:0.7rem; color:var(--muted); margin-top:2px; }
+    .tag { font-size:0.63rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:3px 10px; border-radius:20px; }
+    .tt { background:var(--teal-dim); color:var(--teal-lt); }
+    .tg { background:rgba(34,197,94,0.1); color:var(--green); }
+    .pb { padding:20px; }
+
+    /* BARS */
+    .bars { display:flex; flex-direction:column; gap:13px; }
+    .br { display:flex; align-items:center; gap:10px; }
+    .bl { font-size:0.76rem; color:rgba(255,255,255,0.6); width:120px; flex-shrink:0; text-align:right; }
+    .bt { flex:1; height:9px; background:rgba(255,255,255,0.05); border-radius:5px; overflow:hidden; }
+    .bf { height:100%; border-radius:5px; transition:width 1.2s cubic-bezier(.22,1,.36,1); }
+    .b-teal   { background:linear-gradient(90deg,var(--teal),var(--teal-lt)); }
+    .b-amber  { background:linear-gradient(90deg,#c2410c,var(--amber)); }
+    .b-green  { background:linear-gradient(90deg,#15803d,var(--green)); }
+    .b-purple { background:linear-gradient(90deg,#5b21b6,var(--purple)); }
+    .b-blue   { background:linear-gradient(90deg,#1d4ed8,var(--blue)); }
+    .b-pink   { background:linear-gradient(90deg,#9d174d,#f472b6); }
+    .bn { font-size:0.78rem; font-weight:700; color:var(--white); width:38px; text-align:right; }
+    .bp { font-size:0.68rem; color:var(--dim); width:34px; }
+
+    /* TREND */
+    .trend { display:flex; align-items:flex-end; gap:5px; height:110px; }
+    .tc { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; height:100%; justify-content:flex-end; }
+    .tc:hover .tb2 { filter:brightness(1.4); }
+    .tb2 { width:100%; border-radius:3px 3px 0 0; min-height:3px; transition:height 1.2s cubic-bezier(.22,1,.36,1); background:linear-gradient(180deg,var(--teal-lt),var(--teal)); }
+    .tm { font-size:0.6rem; color:var(--dim); margin-top:3px; }
+    .tv { font-size:0.6rem; color:var(--muted); }
+
+    /* SESSION TABLE */
+    .st { width:100%; border-collapse:collapse; }
+    .st th { font-size:0.65rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); padding:0 8px 10px 0; text-align:left; border-bottom:1px solid var(--border); }
+    .st td { padding:11px 8px 11px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.8rem; vertical-align:middle; }
+    .st tr:last-child td { border-bottom:none; }
+    .st tr:hover td { background:rgba(255,255,255,0.015); }
+    .sn2 { font-weight:600; color:var(--white); }
+    .sty { font-size:0.68rem; color:var(--muted); margin-top:2px; }
+    .nc { font-weight:700; color:var(--white); }
+    .mc2 { color:var(--teal-lt); font-weight:600; }
+
+    /* STATUS GRID */
+    .sg { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .sc { background:rgba(255,255,255,0.03); border-radius:8px; padding:14px; text-align:center; }
+    .sv { font-family:var(--font-h); font-size:1.7rem; font-weight:800; line-height:1; }
+    .sl2 { font-size:0.68rem; color:var(--muted); margin-top:5px; }
+    .s-gr { color:var(--green); } .s-am { color:var(--amber); } .s-rd { color:var(--red); }
+
+    /* ENG ROWS */
+    .er { display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .er:last-child { border-bottom:none; }
+    .el { font-size:0.8rem; color:rgba(255,255,255,0.65); }
+    .ev { font-family:var(--font-h); font-size:1.05rem; font-weight:800; color:var(--white); }
+
+    /* CHARITY */
+    .ch-hero { padding:22px 20px; background:rgba(34,197,94,0.07); border-bottom:1px solid rgba(34,197,94,0.14); display:flex; align-items:center; gap:18px; }
+    .ch-num { font-family:var(--font-h); font-size:3rem; font-weight:800; color:var(--green); line-height:1; letter-spacing:-0.04em; }
+    .ch-sub { font-size:0.7rem; color:var(--green); font-weight:600; margin-top:4px; }
+    .ch-desc { font-size:0.84rem; color:rgba(255,255,255,0.6); line-height:1.5; }
+    .ch-desc strong { color:var(--white); display:block; font-size:0.9rem; margin-bottom:3px; }
+    .prog { padding:18px 20px; border-bottom:1px solid var(--border); }
+    .prog-row { display:flex; justify-content:space-between; margin-bottom:7px; }
+    .prog-l { font-size:0.72rem; color:var(--muted); }
+    .prog-v { font-size:0.72rem; font-weight:700; color:var(--green); }
+    .prog-t { height:9px; background:rgba(255,255,255,0.05); border-radius:5px; overflow:hidden; }
+    .prog-f { height:100%; border-radius:5px; background:linear-gradient(90deg,#15803d,var(--green)); transition:width 1.4s cubic-bezier(.22,1,.36,1); }
+    .prog-n { font-size:0.67rem; color:var(--dim); margin-top:5px; }
+    .ms-wrap { padding:18px 20px; }
+    .ms-hd { font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+    .mr { display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .mr:last-child { border-bottom:none; }
+    .mr-l { display:flex; align-items:center; gap:10px; }
+    .mi { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.82rem; flex-shrink:0; }
+    .mi-d { background:rgba(34,197,94,0.16); } .mi-n { background:rgba(77,170,170,0.12); } .mi-f { background:rgba(255,255,255,0.04); }
+    .mc3 { font-size:0.82rem; font-weight:700; color:var(--white); }
+    .md2 { font-size:0.68rem; color:var(--muted); }
+    .mb { font-size:0.66rem; font-weight:700; padding:3px 9px; border-radius:20px; }
+    .mb-d { background:rgba(34,197,94,0.12); color:var(--green); }
+    .mb-n { background:rgba(77,170,170,0.1); color:var(--teal-lt); }
+    .mb-f { background:rgba(255,255,255,0.04); color:var(--dim); }
+
+    .empty { color:var(--muted); font-size:0.8rem; text-align:center; padding:28px; }
+
+    footer { max-width:1380px; margin:0 auto; padding:20px 28px 40px; border-top:1px solid var(--border); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:0.72rem; color:var(--dim); }
+    footer a { color:var(--teal-lt); }
+  </style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="l-logo">VYVE</div>
+  <div class="l-bar"><div class="l-fill"></div></div>
+  <div class="l-txt" id="l-msg">Connecting to live data…</div>
+</div>
+
+<nav>
+  <div class="nav-i">
+    <div class="nav-l">
+      <div class="nav-badge">V</div>
+      <span class="nav-brand">VYVE</span>
+      <div class="nav-sep"></div>
+      <span class="nav-sub">Employer Engagement Dashboard</span>
+    </div>
+    <div class="nav-r">
+      <span id="active-co-label" style="font-size:0.82rem;font-weight:600;color:var(--teal-lt);">All Companies</span>
+      <div class="live-pill"><div class="dot"></div><span id="ts">Loading…</span></div>
+    </div>
+  </div>
+</nav>
+
+<div id="err-bar"></div>
+
+<div class="ctabs" id="ctabs">
+  <button class="ct on" data-co="ALL" onclick="switchCo('ALL',this)">All Companies</button>
+</div>
+
+<div class="wrap">
+
+  <div class="kpis">
+    <div class="kpi hi"><div class="kl">Total Members</div><div class="kv" id="k-members">—</div><div class="ks">Active subscriptions</div></div>
+    <div class="kpi gr"><div class="kl">Engagement Rate</div><div class="kv" id="k-engage">—</div><div class="ks">Active last 30 days</div></div>
+    <div class="kpi">   <div class="kl">Total Activities</div><div class="kv" id="k-total">—</div><div class="ks">All time</div></div>
+    <div class="kpi">   <div class="kl">This Month</div><div class="kv" id="k-month">—</div><div class="ks">Activities</div></div>
+    <div class="kpi">   <div class="kl">Avg / Member</div><div class="kv" id="k-avg">—</div><div class="ks">Activities all time</div></div>
+    <div class="kpi gr"><div class="kl">Months Donated</div><div class="kv" id="k-charity">—</div><div class="ks">Charity impact</div></div>
+    <div class="kpi se"><div class="kl">Live Views</div><div class="kv" id="k-lv">—</div><div class="ks" id="k-lm">— mins</div></div>
+    <div class="kpi se"><div class="kl">Replay Views</div><div class="kv" id="k-rv">—</div><div class="ks" id="k-rm">— mins</div></div>
+  </div>
+
+  <div class="g2">
+    <div class="p">
+      <div class="ph"><div><div class="pt">Activity Breakdown</div><div class="ps">All activity types — all time</div></div><span class="tag tt" id="total-tag">—</span></div>
+      <div class="pb">
+        <div class="bars" id="act-bars"><div class="empty">Loading…</div></div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);display:flex;gap:24px;flex-wrap:wrap;">
+          <div><div style="font-size:0.63rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:4px;">Avg / member</div><div style="font-family:var(--font-h);font-size:1.3rem;font-weight:800;" id="avg-disp">—</div></div>
+          <div><div style="font-size:0.63rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:4px;">Top activity</div><div style="font-family:var(--font-h);font-size:1.3rem;font-weight:800;color:var(--teal-lt);" id="top-act">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="p">
+      <div class="ph"><div><div class="pt">Monthly Trend</div><div class="ps">Total activities per month</div></div><span class="tag tg" id="trend-tag">—</span></div>
+      <div class="pb"><div class="trend" id="trend-chart"><div class="empty">Loading…</div></div></div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="p">
+      <div class="ph"><div><div class="pt">Session Engagement</div><div class="ps">Live &amp; replay data from Session Log</div></div><span class="tag tt">Sessions</span></div>
+      <div class="pb">
+        <table class="st">
+          <thead><tr><th>Session</th><th>Live</th><th>Mins</th><th>Replays</th><th>Mins</th></tr></thead>
+          <tbody id="sess-body"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="p">
+      <div class="ph"><div><div class="pt">Member Status</div><div class="ps">Engagement health</div></div><span class="tag tt">Live</span></div>
+      <div class="pb" style="display:flex;flex-direction:column;gap:18px;">
+        <div class="sg">
+          <div class="sc"><div class="sv s-gr" id="s-active">—</div><div class="sl2">🟢 Active</div></div>
+          <div class="sc"><div class="sv s-am" id="s-amber">—</div><div class="sl2">🟡 Quiet</div></div>
+          <div class="sc"><div class="sv s-rd" id="s-red">—</div><div class="sl2">🔴 Inactive</div></div>
+        </div>
+        <div>
+          <div class="er"><span class="el">Total Members</span><span class="ev" id="e-total">—</span></div>
+          <div class="er"><span class="el">Daily Habits</span><span class="ev" id="e-habits">—</span></div>
+          <div class="er"><span class="el">Weekly Check-ins</span><span class="ev" id="e-checkins">—</span></div>
+          <div class="er"><span class="el">Workouts</span><span class="ev" id="e-workouts">—</span></div>
+          <div class="er"><span class="el">Cardio Sessions</span><span class="ev" id="e-cardio">—</span></div>
+          <div class="er"><span class="el">Peak Month</span><span class="ev" id="e-peak">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gf">
+    <div class="p">
+      <div class="ph"><div><div class="pt">Charity Impact</div><div class="ps">Every 30 activities = 1 donated month of wellbeing support</div></div><span class="tag tg">Impact</span></div>
+      <div style="display:grid;grid-template-columns:280px 1fr;">
+        <div class="ch-hero">
+          <div><div class="ch-num" id="ch-num">—</div><div class="ch-sub">months donated</div></div>
+          <div class="ch-desc"><strong>Collective Wellbeing Impact</strong>Your team's activity directly funds support for others in need.</div>
+        </div>
+        <div>
+          <div class="prog">
+            <div class="prog-row"><span class="prog-l">Progress to next milestone</span><span class="prog-v" id="prog-lbl">—</span></div>
+            <div class="prog-t"><div class="prog-f" id="prog-f" style="width:0%"></div></div>
+            <div class="prog-n" id="prog-n">—</div>
+          </div>
+          <div class="ms-wrap">
+            <div class="ms-hd">Collective Milestones</div>
+            <div id="ms-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span>© 2026 VYVE Health Ltd · All data is aggregate only · GDPR compliant · Auto-refreshes every 5 minutes</span>
+  <span><a href="/cdn-cgi/l/email-protection#ee868b828281ae9897988b868b8f829a86c08d81c09b85"><span class="__cf_email__" data-cfemail="0c64696060634c7a757a6964696d607864226f63227967">[email&#160;protected]</span></a></span>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ═══════════════════════════════════════
+// APPS SCRIPT API — live data relay
+// ═══════════════════════════════════════
+const API_URL = 'https://script.google.com/macros/s/AKfycbygoj5S-tcZjLbcmqTJRoZsGkUxA6YIoobpDNV-XE1Hmxy2ZwaV5Yof8xxv8tU3Mn4/exec';
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let activeCo = 'ALL';
+let DATA = null;
+
+// ═══════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => setTimeout(loadAll, 500));
+
+// ═══════════════════════════════════════
+// FETCH
+// ═══════════════════════════════════════
+async function fetchTab(tab) {
+  const url = `${API_URL}?tab=${tab}`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`HTTP ${r.status} on tab: ${tab}`);
+  const json = await r.json();
+  if (json.error) throw new Error(json.error);
+  return json.rows || [];
+}
+
+// ═══════════════════════════════════════
+// LOAD ALL
+// ═══════════════════════════════════════
+async function loadAll() {
+  msg('Loading members…');
+  try {
+    // Fetch with timeout to avoid silent hangs
+    const withTimeout = (promise, ms=15000) => Promise.race([
+      promise,
+      new Promise((_,rej)=>setTimeout(()=>rej(new Error('Request timed out after '+ms/1000+'s')),ms))
+    ]);
+    const members = await withTimeout(fetchTab('members'));
+    msg('Loading activities…');
+    const [sessions, habits, checkins, workouts, cardio, dashdata] = await Promise.all([
+      withTimeout(fetchTab('sessionLog')), withTimeout(fetchTab('habits')),
+      withTimeout(fetchTab('checkins')),   withTimeout(fetchTab('workouts')),
+      withTimeout(fetchTab('cardio')),     withTimeout(fetchTab('dashboard')),
+    ]);
+    DATA = {members, sessions, habits, checkins, workouts, cardio, dashdata};
+    buildCoTabs();
+    render('ALL');
+    document.getElementById('ts').textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('loader').classList.add('gone');
+    setInterval(refresh, 5*60*1000);
+  } catch(e) {
+    console.error(e);
+    document.getElementById('loader').classList.add('gone');
+    const eb = document.getElementById('err-bar');
+    eb.style.display = 'block';
+    eb.innerHTML = `⚠️ Could not load data: <strong>${e.message}</strong>`;
+    document.getElementById('ts').textContent = 'Error';
+  }
+}
+
+async function refresh() {
+  try {
+    const [members,sessions,habits,checkins,workouts,cardio,dashdata] = await Promise.all([
+      fetchTab('members'), fetchTab('sessionLog'),
+      fetchTab('habits'),  fetchTab('checkins'),
+      fetchTab('workouts'),fetchTab('cardio'),
+      fetchTab('dashboard'),
+    ]);
+    DATA={members,sessions,habits,checkins,workouts,cardio,dashdata};
+    render(activeCo);
+    document.getElementById('ts').textContent = 'Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  } catch(e){console.warn('Refresh failed',e);}
+}
+
+function msg(t){document.getElementById('l-msg').textContent=t;}
+
+// ═══════════════════════════════════════
+// COMPANY TABS
+// ═══════════════════════════════════════
+function buildCoTabs() {
+  const cos = [...new Set(DATA.members.map(r=>(r['Company']||r['company']||'').trim()).filter(Boolean).filter(c=>c.length>0))].sort();
+  const wrap = document.getElementById('ctabs');
+  wrap.innerHTML = `<button class="ct on" data-co="ALL" onclick="switchCo('ALL',this)">All Companies</button>`;
+  cos.forEach(co => {
+    const b = document.createElement('button');
+    b.className='ct'; b.dataset.co=co; b.textContent=co;
+    b.onclick=function(){switchCo(co,this);}; wrap.appendChild(b);
+  });
+}
+
+function switchCo(co, btn) {
+  activeCo=co;
+  document.querySelectorAll('.ct').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('active-co-label').textContent = co==='ALL'?'All Companies':co;
+  if(DATA) render(co);
+}
+
+// ═══════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════
+function render(co) {
+  // Build email->company lookup from Members tab
+  const emailCo = {};
+  DATA.members.forEach(m => {
+    const email = (m['Email Address']||m['Email']||m['email']||'').trim().toLowerCase();
+    const company = (m['Company']||m['company']||'').trim();
+    if(email) emailCo[email] = company;
+  });
+
+  // Filter members by company
+  const fm = rows => co==='ALL' ? rows : rows.filter(r=>(r['Company']||r['company']||'').trim()===co);
+
+  // Filter activity rows by looking up email in Members tab
+  const fa = rows => {
+    if(co==='ALL') return rows;
+    return rows.filter(r=>{
+      const email = (r['Email']||r['email']||r['Email Address']||'').trim().toLowerCase();
+      // Also try Company column if it exists on the row
+      const rowCo = (r['Company']||r['company']||'').trim();
+      if(rowCo) return rowCo === co;
+      return emailCo[email] === co;
+    });
+  };
+
+  // Filter session log rows by email lookup
+  const fs = rows => {
+    if(co==='ALL') return rows;
+    return rows.filter(r=>{
+      const email = (r['Email']||r['email']||r['Email Address']||'').trim().toLowerCase();
+      const rowCo = (r['Company']||r['company']||'').trim();
+      if(rowCo) return rowCo === co;
+      return emailCo[email] === co;
+    });
+  };
+
+  const members  = fm(DATA.members);
+  const habits   = fa(DATA.habits);
+  const checkins = fa(DATA.checkins);
+  const workouts = fa(DATA.workouts);
+  const cardio   = fa(DATA.cardio);
+  const sessions = fs(DATA.sessions);
+
+  const totalM = members.length;
+  const hC=habits.length, cC=checkins.length, wC=workouts.length, caC=cardio.length;
+  const totalA = hC+cC+wC+caC;
+  const avg = totalM>0 ? (totalA/totalM).toFixed(1) : '—';
+
+  // This month
+  const now=new Date();
+  const ym=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const thisM=[...habits,...checkins,...workouts,...cardio].filter(r=>{
+    const d=pd(r['Completed']||r['Date']||r['date']||'');
+    return d&&`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`===ym;
+  }).length;
+
+  // Charity
+  const donated=Math.floor(totalA/30);
+  const rem=totalA%30;
+  const pct=Math.round((rem/30)*100);
+
+  // Sessions
+  let lv=0,lm=0,rv=0,rm=0;
+  sessions.forEach(r=>{
+    // Session Log columns: Timestamp, First Name, Last Name, Email, Event Type, Session, Page URL, Minutes Watched
+    // We'll aggregate by event_type: live_accessed vs session_watched
+    const et=(r['Event Type']||r['event_type']||'').toLowerCase();
+    const mins=parseFloat(r['Minutes Watched']||r['minutes_watched']||0)||0;
+    if(et==='live_accessed')      { lv++; lm+=mins; }
+    else if(et==='session_watched'){ rv++; rm+=mins; }
+    else if(et==='live_viewed')    { lv++; lm+=mins; }
+    else if(et==='replay_viewed')  { rv++; rm+=mins; }
+    // Also handle explicit columns if present
+    lv += num(r['Live Views']||r['live_views']||0);
+    lm += parseFloat(r['Live Minutes']||r['live_minutes']||0)||0;
+    rv += num(r['Replay Views']||r['replay_views']||0);
+    rm += parseFloat(r['Replay Minutes']||r['replay_minutes']||0)||0;
+  });
+  // Deduplicate: if explicit columns exist, don't double count event_type
+  // Simple approach — if explicit Live Views col exists and >0, use that instead
+  const hasExplicitCols = sessions.some(r=>r['Live Views']||r['live_views']);
+  let finalLV=lv, finalLM=Math.round(lm), finalRV=rv, finalRM=Math.round(rm);
+  if(!hasExplicitCols) {
+    // Used event_type counting above — that's correct
+    finalLV=lv; finalLM=Math.round(lm); finalRV=rv; finalRM=Math.round(rm);
+  }
+
+  // Member status — calculated from days_inactive in Dashboard tab
+  // Active = 0-7 days inactive, Quiet = 8-60 days, Inactive = 60+ or never logged
+  let sAc=0, sAm=0, sRd=0;
+  const dashRows = DATA.dashdata
+    ? (co === 'ALL' ? DATA.dashdata : DATA.dashdata.filter(r=>(r['Company']||'').trim()===co))
+    : [];
+  if (dashRows.length > 0) {
+    dashRows.forEach(r => {
+      if (!r['Email']) return;
+      const lastAct = (r['Last Active']||'').toLowerCase();
+      const days = parseInt(r['days_inactive']||'999') || 999;
+      if (lastAct === 'never' || days > 60) sRd++;
+      else if (days >= 8) sAm++;
+      else sAc++;
+    });
+  } else {
+    // Fallback to members tab status emoji if dashboard tab unavailable
+    members.forEach(m=>{
+      const s=(m['Status']||m['status']||'').toLowerCase();
+      if(s.includes('inactive')) sRd++;
+      else if(s.includes('active')) sAc++;
+      else sAm++;
+    });
+  }
+  if(sAc+sAm+sRd===0) sAc=totalM;
+
+  // Trend
+  const trend = buildTrend([...habits,...checkins,...workouts,...cardio]);
+  const peak = trend.length ? trend.reduce((a,b)=>a.n>b.n?a:b,trend[0]) : null;
+
+  // Activity bar data
+  const actD=[
+    {label:'Daily Habits',    n:hC,  cls:'b-teal'},
+    {label:'Weekly Check-ins',n:cC,  cls:'b-green'},
+    {label:'Workouts',        n:wC,  cls:'b-amber'},
+    {label:'Cardio',          n:caC, cls:'b-purple'},
+    {label:'Live Views',      n:finalLV, cls:'b-blue'},
+    {label:'Replay Views',    n:finalRV, cls:'b-pink'},
+  ];
+  const maxBar=Math.max(...actD.map(a=>a.n),1);
+  const grandT=actD.reduce((s,a)=>s+a.n,0)||1;
+  const topAct=[...actD].sort((a,b)=>b.n-a.n)[0];
+
+  // ── Set KPIs ──
+  const engageRate = totalM > 0 ? Math.round((sAc / totalM) * 100) : 0;
+  set('k-members',  totalM);
+  set('k-engage',   engageRate + '%');
+  set('k-total',    totalA);
+  set('k-month',    thisM);
+  set('k-avg',      avg);
+  set('k-charity',  donated);
+  set('k-lv',       finalLV);
+  set('k-rv',       finalRV);
+  set('k-lm',       finalLM+' mins');
+  set('k-rm',       finalRM+' mins');
+  set('total-tag',  totalA+' total');
+  set('avg-disp',   avg+' acts');
+  set('top-act',    topAct?topAct.label:'—');
+
+  // ── Activity bars ──
+  document.getElementById('act-bars').innerHTML = actD.map(a=>`
+    <div class="br">
+      <span class="bl">${a.label}</span>
+      <div class="bt"><div class="bf ${a.cls}" style="width:${Math.round((a.n/maxBar)*100)}%"></div></div>
+      <span class="bn">${a.n}</span>
+      <span class="bp">${Math.round((a.n/grandT)*100)}%</span>
+    </div>`).join('');
+
+  // ── Trend ──
+  renderTrend(trend, peak);
+
+  // ── Session table ──
+  // Group sessions by session name and aggregate
+  const sessMap={};
+  sessions.forEach(r=>{
+    const name=r['Session']||r['session']||r['Session Name']||'Unknown';
+    const et=(r['Event Type']||r['event_type']||'').toLowerCase();
+    const mins=parseFloat(r['Minutes Watched']||r['minutes_watched']||0)||0;
+    if(!sessMap[name]) sessMap[name]={name,lv:0,lm:0,rv:0,rm:0};
+    if(et.includes('live')) { sessMap[name].lv++; sessMap[name].lm+=mins; }
+    else if(et.includes('session')||et.includes('watch')||et.includes('replay')) { sessMap[name].rv++; sessMap[name].rm+=mins; }
+    else if(et==='live_accessed'||et==='live_viewed') { sessMap[name].lv++; sessMap[name].lm+=mins; }
+    else { sessMap[name].rv++; sessMap[name].rm+=mins; }
+  });
+  const sessArr=Object.values(sessMap).filter(s=>s.name&&s.name!=='Unknown');
+  document.getElementById('sess-body').innerHTML = sessArr.length===0
+    ? '<tr><td colspan="5" class="empty">No session data yet — Session Log will populate as members view sessions</td></tr>'
+    : sessArr.map(s=>`<tr>
+        <td><div class="sn2">${s.name}</div></td>
+        <td class="nc">${s.lv}</td><td class="mc2">${Math.round(s.lm)}</td>
+        <td class="nc">${s.rv}</td><td class="mc2">${Math.round(s.rm)}</td>
+      </tr>`).join('');
+
+  // ── Status ──
+  set('s-active',sAc); set('s-amber',sAm); set('s-red',sRd);
+  set('e-total',totalM); set('e-habits',hC); set('e-checkins',cC);
+  set('e-workouts',wC); set('e-cardio',caC);
+  set('e-peak', peak?peak.label:'—');
+
+  // ── Charity ──
+  set('ch-num',donated);
+  set('prog-lbl',`${rem} / 30 activities`);
+  document.getElementById('prog-f').style.width=pct+'%';
+  set('prog-n',`${30-rem} more activities until the next donated month`);
+  renderMilestones(totalA);
+}
+
+// ═══════════════════════════════════════
+// TREND
+// ═══════════════════════════════════════
+function buildTrend(rows) {
+  const map={};
+  rows.forEach(r=>{
+    const d=pd(r['Completed']||r['Date']||r['date']||'');
+    if(!d) return;
+    const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    map[k]=(map[k]||0)+1;
+  });
+  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return Object.keys(map).sort().map(k=>({
+    key:k, label:MONTHS[parseInt(k.split('-')[1])-1]+" '"+k.split('-')[0].slice(2), n:map[k]
+  }));
+}
+
+function renderTrend(trend, peak) {
+  if(!trend.length){document.getElementById('trend-chart').innerHTML='<div class="empty">No activity data yet</div>';return;}
+  const recent=trend.slice(-10);
+  const max=Math.max(...recent.map(t=>t.n),1);
+  set('trend-tag', peak?'Peak: '+peak.label:'—');
+  document.getElementById('trend-chart').innerHTML=recent.map(t=>`
+    <div class="tc" title="${t.label}: ${t.n} activities">
+      <div class="tv">${t.n}</div>
+      <div class="tb2" style="height:${Math.max(Math.round((t.n/max)*95),3)}px"></div>
+      <div class="tm">${t.label}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// MILESTONES
+// ═══════════════════════════════════════
+function renderMilestones(total){
+  const MS=[
+    {a:30,  mo:1,  lbl:'First Impact',       icon:'🌱'},
+    {a:300, mo:10, lbl:'Growing Impact',      icon:'🌿'},
+    {a:900, mo:30, lbl:'Major Milestone',     icon:'🌳'},
+    {a:1500,mo:50, lbl:'Community Champion',  icon:'⭐'},
+    {a:3000,mo:100,lbl:'Century of Care',     icon:'🏆'},
+  ];
+  document.getElementById('ms-list').innerHTML=MS.map((m,i)=>{
+    const done=total>=m.a;
+    const next=!done&&(i===0||total>=MS[i-1].a);
+    const ic=done?'mi-d':next?'mi-n':'mi-f';
+    const bc=done?'mb-d':next?'mb-n':'mb-f';
+    const bt=done?'Achieved ✓':next?`${m.a-total} to go`:`${(m.a-total).toLocaleString()} away`;
+    return `<div class="mr">
+      <div class="mr-l">
+        <div class="mi ${ic}">${m.icon}</div>
+        <div><div class="mc3">${m.a.toLocaleString()} activities — ${m.mo} donated months</div><div class="md2">${m.lbl}</div></div>
+      </div>
+      <span class="mb ${bc}">${bt}</span>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════
+function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function num(v){return parseInt(String(v).replace(/[^0-9.-]/g,''))||0;}
+function pd(s){
+  if(!s)return null;
+  s=String(s).trim();
+  if(!s)return null;
+  // DD/MM/YYYY
+  let m=s.match(/^(\d{1,2})[\-\/](\d{1,2})[\-\/](\d{4})/);
+  if(m) return new Date(+m[3],+m[2]-1,+m[1]);
+  // YYYY-MM-DD
+  m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m) return new Date(+m[1],+m[2]-1,+m[3]);
+  // Long format from Apps Script: "Mon Dec 01 2025 00:00:00 GMT..."
+  const d=new Date(s);
+  return isNaN(d.getTime())?null:d;
+}
+</script>
+</body>
+</html>
