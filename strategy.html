@@ -982,7 +982,7 @@ const phases = [
   }
 ];
 
-const TICKS_URL = 'https://script.google.com/macros/s/AKfycbwsZls9aQAgAyw_LQrNu3VCFdMgtlt7SiwnoF9AmGeXBs7Xmmu_YKrBASj4uaxWnD1x/exec';
+const TICKS_API = 'https://script.google.com/macros/s/AKfycbwsZls9aQAgAyw_LQrNu3VCFdMgtlt7SiwnoF9AmGeXBs7Xmmu_YKrBASj4uaxWnD1x/exec';
 let tickState = {};
 
 const deanActions = [
@@ -1135,14 +1135,14 @@ phases.forEach(p => {
 });
 
 // ── RENDER ACTIONS WITH TICKS ────────────────────────────────────────────────
-async // ── TICK API ──────────────────────────────────────────────────────────────────
+// ── TICK API ──────────────────────────────────────────────────────────────────
 const TICKS_API = 'https://script.google.com/macros/s/AKfycbwsZls9aQAgAyw_LQrNu3VCFdMgtlt7SiwnoF9AmGeXBs7Xmmu_YKrBASj4uaxWnD1x/exec';
 
-function loadTicks() {
+async function loadTicks() {
   try {
-    const r = await fetch(TICKS_URL + '?action=get');
+    const r = await fetch(TICKS_API + '?action=get');
     const d = await r.json();
-    if (d.status === 'ok') tickState = d.ticks || {};
+    if (d.status === 'ok') { tickState = d.ticks || {}; renderAll(); }
   } catch(e) { console.warn('Could not load ticks', e); }
 }
 
@@ -1152,7 +1152,7 @@ async function toggleTick(key, owner) {
   tickState[key] = { ticked: !wasTicked, by: owner, at: '' };
   renderAll(); // optimistic update
   try {
-    await fetch(`${TICKS_URL}?action=${action}&key=${encodeURIComponent(key)}&by=${encodeURIComponent(owner)}`);
+    await fetch(`${TICKS_API}?action=${action}&key=${encodeURIComponent(key)}&by=${encodeURIComponent(owner)}`);
   } catch(e) { console.warn('Tick save failed', e); }
 }
 
