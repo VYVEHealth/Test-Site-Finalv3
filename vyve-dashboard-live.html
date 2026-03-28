@@ -258,66 +258,33 @@
 </footer>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbynIhz4y74Dvlk0FFwyIrGyLjsfYssAAkPj9EcRxsLlQlYkvSnDhVpj4WkD8OczDS_i/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxLN5K45NhbY-8KPdliI4p1SK2FaLCXQVcJZ3HYTESK6MGRqxhTrSP3RJVCyGfOnWXQ2A/exec';
 
 let activeCo = 'ALL';
 let DATA = null;
 
-// Session name -> display category mapping
-// Based on actual Session Log data observed
-function getSessionCategory(sessionName, pageUrl) {
-  const n = (sessionName||'').toLowerCase();
-  const u = (pageUrl||'').toLowerCase();
-  if (u.includes('/podcast') || n.includes('podcast')) return 'Podcast';
-  if (n.includes('yoga') || n.includes('pilates') || n.includes('stretch')) return 'Yoga, Pilates & Stretch';
-  if (n.includes('mindfulness') || n.includes('mindset')) return 'Mindfulness & Mindset';
-  if (n.includes('workout')) return 'Workouts';
-  if (n.includes('check-in') || n.includes('check in') || n.includes('weekly')) return 'Weekly Check-In';
-  if (n.includes('therapy')) return 'Group Therapy';
-  if (n.includes('education') || n.includes('expert')) return 'Education & Experts';
-  if (n.includes('event') || n.includes('run club')) return 'Events & Run Club';
-  return null; // drop unknowns
-}
-
-const SESS_ORDER = [
-  'Yoga, Pilates & Stretch',
-  'Mindfulness & Mindset',
-  'Workouts',
-  'Weekly Check-In',
-  'Group Therapy',
-  'Education & Experts',
-  'Events & Run Club',
-  'Podcast',
-];
-
+// ── BOOT ──────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => setTimeout(loadAll, 500));
 
-async function fetchTab(tab) {
-  const url = `${API_URL}?tab=${tab}`;
+// ── FETCH ─────────────────────────────────────────────────
+async function fetchDashboard(company) {
+  const url = `${API_URL}?action=dashboard_full&company=${encodeURIComponent(company)}`;
   const r = await fetch(url);
-  if (!r.ok) throw new Error(`HTTP ${r.status} on tab: ${tab}`);
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
   const json = await r.json();
   if (json.error) throw new Error(json.error);
-  return json.rows || [];
+  return json;
 }
 
+// ── LOAD ALL ──────────────────────────────────────────────
 async function loadAll() {
-  msg('Loading members…');
+  msg('Connecting to live data…');
   try {
-    const withTimeout = (promise, ms=15000) => Promise.race([
-      promise,
-      new Promise((_,rej)=>setTimeout(()=>rej(new Error('Request timed out after '+ms/1000+'s')),ms))
-    ]);
-    const members = await withTimeout(fetchTab('members'));
-    msg('Loading activities…');
-    const [sessions, habits, checkins, workouts, cardio, dashdata] = await Promise.all([
-      withTimeout(fetchTab('sessionLog')), withTimeout(fetchTab('habits')),
-      withTimeout(fetchTab('checkins')),   withTimeout(fetchTab('workouts')),
-      withTimeout(fetchTab('cardio')),     withTimeout(fetchTab('dashboard')),
-    ]);
-    DATA = {members, sessions, habits, checkins, workouts, cardio, dashdata};
+    const withTimeout = (p, ms=20000) => Promise.race([p,
+      new Promise((_,rej)=>setTimeout(()=>rej(new Error('Timed out')),ms))]);
+    DATA = await withTimeout(fetchDashboard('ALL'));
     buildCoTabs();
-    render('ALL');
+    render(DATA);
     document.getElementById('ts').textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
     document.getElementById('loader').classList.add('gone');
     setInterval(refresh, 5*60*1000);
@@ -333,245 +300,158 @@ async function loadAll() {
 
 async function refresh() {
   try {
-    const [members,sessions,habits,checkins,workouts,cardio,dashdata] = await Promise.all([
-      fetchTab('members'), fetchTab('sessionLog'),
-      fetchTab('habits'),  fetchTab('checkins'),
-      fetchTab('workouts'),fetchTab('cardio'),
-      fetchTab('dashboard'),
-    ]);
-    DATA={members,sessions,habits,checkins,workouts,cardio,dashdata};
-    render(activeCo);
-    document.getElementById('ts').textContent = 'Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  } catch(e){console.warn('Refresh failed',e);}
+    const fresh = await fetchDashboard(activeCo);
+    DATA = fresh;
+    render(DATA);
+    document.getElementById('ts').textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  } catch(e) { console.warn('Refresh failed', e); }
 }
 
-function msg(t){document.getElementById('l-msg').textContent=t;}
+function msg(t) { document.getElementById('l-msg').textContent = t; }
 
+// ── COMPANY TABS ──────────────────────────────────────────
 function buildCoTabs() {
-  const cos = [...new Set(DATA.members.map(r=>(r['Company']||r['company']||'').trim()).filter(Boolean).filter(c=>c.length>0))].sort();
   const wrap = document.getElementById('ctabs');
   wrap.innerHTML = `<button class="ct on" data-co="ALL" onclick="switchCo('ALL',this)">All Companies</button>`;
-  cos.forEach(co => {
+  (DATA.companies || []).forEach(co => {
+    if (co === 'Individual') return; // hide individuals from employer dashboard
     const b = document.createElement('button');
-    b.className='ct'; b.dataset.co=co; b.textContent=co;
-    b.onclick=function(){switchCo(co,this);}; wrap.appendChild(b);
+    b.className = 'ct'; b.dataset.co = co; b.textContent = co;
+    b.onclick = function() { switchCo(co, this); };
+    wrap.appendChild(b);
   });
 }
 
-function switchCo(co, btn) {
-  activeCo=co;
-  document.querySelectorAll('.ct').forEach(b=>b.classList.remove('on'));
+async function switchCo(co, btn) {
+  activeCo = co;
+  document.querySelectorAll('.ct').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
-  document.getElementById('active-co-label').textContent = co==='ALL'?'All Companies':co;
-  if(DATA) render(co);
+  document.getElementById('active-co-label').textContent = co === 'ALL' ? 'All Companies' : co;
+  msg('Loading ' + (co === 'ALL' ? 'all companies' : co) + '…');
+  document.getElementById('loader').classList.remove('gone');
+  try {
+    DATA = await fetchDashboard(co);
+    render(DATA);
+    document.getElementById('ts').textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  } catch(e) { console.warn('Switch failed', e); }
+  document.getElementById('loader').classList.add('gone');
 }
 
-function render(co) {
-  const emailCo = {};
-  DATA.members.forEach(m => {
-    const email = (m['Email Address']||m['Email']||m['email']||'').trim().toLowerCase();
-    const company = (m['Company']||m['company']||'').trim();
-    if(email) emailCo[email] = company;
-  });
+// ── RENDER ────────────────────────────────────────────────
+function render(d) {
+  const m = d.members || {};
+  const a = d.activities || {};
+  const c = d.charity || {};
+  const s = d.sessions || {};
+  const trend = d.trend || [];
 
-  const fm = rows => co==='ALL' ? rows : rows.filter(r=>(r['Company']||r['company']||'').trim()===co);
-  const fa = rows => {
-    if(co==='ALL') return rows;
-    return rows.filter(r=>{
-      const email = (r['Email']||r['email']||r['Email Address']||'').trim().toLowerCase();
-      const rowCo = (r['Company']||r['company']||'').trim();
-      if(rowCo) return rowCo === co;
-      return emailCo[email] === co;
-    });
-  };
-  const fs = rows => {
-    if(co==='ALL') return rows;
-    return rows.filter(r=>{
-      const email = (r['Email']||r['email']||r['Email Address']||'').trim().toLowerCase();
-      const rowCo = (r['Company']||r['company']||'').trim();
-      if(rowCo) return rowCo === co;
-      return emailCo[email] === co;
-    });
-  };
+  // KPIs
+  set('k-members',  m.total || 0);
+  set('k-engage',   (m.engagementRate || 0) + '%');
+  set('k-total',    a.total || 0);
+  set('k-month',    a.thisMonth || 0);
+  set('k-avg',      a.avgPerMember || '0');
+  set('k-charity',  c.monthsDonated || 0);
+  set('k-lv',       s.totalLiveViews || 0);
+  set('k-rv',       s.totalReplayViews || 0);
+  set('k-lm',       (s.totalLiveMins || 0) + ' mins');
+  set('k-rm',       (s.totalReplayMins || 0) + ' mins');
 
-  const members  = fm(DATA.members);
-  const habits   = fa(DATA.habits);
-  const checkins = fa(DATA.checkins);
-  const workouts = fa(DATA.workouts);
-  const cardio   = fa(DATA.cardio);
-  const sessions = fs(DATA.sessions);
-
-  const totalM = members.length;
-  const hC=habits.length, cC=checkins.length, wC=workouts.length, caC=cardio.length;
-  const totalA = hC+cC+wC+caC;
-  const avg = totalM>0 ? (totalA/totalM).toFixed(1) : '—';
-
-  const now=new Date();
-  const ym=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  const thisM=[...habits,...checkins,...workouts,...cardio].filter(r=>{
-    const d=pd(r['Completed']||r['Date']||r['date']||'');
-    return d&&`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`===ym;
-  }).length;
-
-  const donated=Math.floor(totalA/30);
-  const rem=totalA%30;
-  const pct=Math.round((rem/30)*100);
-
-  // Sessions — aggregate by event_type first for KPI totals
-  let lv=0,lm=0,rv=0,rm=0;
-  sessions.forEach(r=>{
-    const et=(r['Event Type']||r['event_type']||'').toLowerCase();
-    const mins=parseFloat(r['Minutes Watched']||r['minutes_watched']||0)||0;
-    if(et==='live_accessed'||et==='live_viewed')       { lv++; lm+=mins; }
-    else if(et==='session_watched'||et==='replay_accessed'||et==='replay_viewed') { rv++; rm+=mins; }
-  });
-  const finalLV=lv, finalLM=Math.round(lm), finalRV=rv, finalRM=Math.round(rm);
-
-  // Member status
-  let sAc=0, sAm=0, sRd=0;
-  const dashRows = DATA.dashdata
-    ? (co === 'ALL' ? DATA.dashdata : DATA.dashdata.filter(r=>(r['Company']||'').trim()===co))
-    : [];
-  if (dashRows.length > 0) {
-    dashRows.forEach(r => {
-      if (!r['Email']) return;
-      const lastAct = (r['Last Active']||'').toLowerCase();
-      const days = parseInt(r['days_inactive']||'999') || 999;
-      if (lastAct === 'never' || days > 60) sRd++;
-      else if (days >= 8) sAm++;
-      else sAc++;
-    });
-  } else {
-    members.forEach(m=>{
-      const s=(m['Status']||m['status']||'').toLowerCase();
-      if(s.includes('inactive')) sRd++;
-      else if(s.includes('active')) sAc++;
-      else sAm++;
-    });
-  }
-  if(sAc+sAm+sRd===0) sAc=totalM;
-
-  const trend = buildTrend([...habits,...checkins,...workouts,...cardio]);
-  const peak = trend.length ? trend.reduce((a,b)=>a.n>b.n?a:b,trend[0]) : null;
-
-  const actD=[
-    {label:'Daily Habits',    n:hC,  cls:'b-teal'},
-    {label:'Weekly Check-ins',n:cC,  cls:'b-green'},
-    {label:'Workouts',        n:wC,  cls:'b-amber'},
-    {label:'Cardio',          n:caC, cls:'b-purple'},
-    {label:'Live Views',      n:finalLV, cls:'b-blue'},
-    {label:'Replay Views',    n:finalRV, cls:'b-pink'},
+  // Activity bars
+  const actD = [
+    {label:'Daily Habits',     n: a.habits   || 0, cls:'b-teal'},
+    {label:'Weekly Check-ins', n: a.checkins || 0, cls:'b-green'},
+    {label:'Workouts',         n: a.workouts || 0, cls:'b-amber'},
+    {label:'Cardio',           n: a.cardio   || 0, cls:'b-purple'},
+    {label:'Live Views',       n: s.totalLiveViews   || 0, cls:'b-blue'},
+    {label:'Replay Views',     n: s.totalReplayViews || 0, cls:'b-pink'},
   ];
-  const maxBar=Math.max(...actD.map(a=>a.n),1);
-  const grandT=actD.reduce((s,a)=>s+a.n,0)||1;
-  const topAct=[...actD].sort((a,b)=>b.n-a.n)[0];
+  const maxBar  = Math.max(...actD.map(x => x.n), 1);
+  const grandT  = actD.reduce((t, x) => t + x.n, 0) || 1;
+  const topAct  = [...actD].sort((a,b) => b.n - a.n)[0];
 
-  const engageRate = totalM > 0 ? Math.round((sAc / totalM) * 100) : 0;
-  set('k-members',  totalM);
-  set('k-engage',   engageRate + '%');
-  set('k-total',    totalA);
-  set('k-month',    thisM);
-  set('k-avg',      avg);
-  set('k-charity',  donated);
-  set('k-lv',       finalLV);
-  set('k-rv',       finalRV);
-  set('k-lm',       finalLM+' mins');
-  set('k-rm',       finalRM+' mins');
-  set('total-tag',  totalA+' total');
-  set('avg-disp',   avg+' acts');
-  set('top-act',    topAct?topAct.label:'—');
+  set('total-tag', (a.total || 0) + ' total');
+  set('avg-disp',  (a.avgPerMember || '0') + ' acts');
+  set('top-act',   topAct ? topAct.label : '—');
 
-  document.getElementById('act-bars').innerHTML = actD.map(a=>`
+  document.getElementById('act-bars').innerHTML = actD.map(x => `
     <div class="br">
-      <span class="bl">${a.label}</span>
-      <div class="bt"><div class="bf ${a.cls}" style="width:${Math.round((a.n/maxBar)*100)}%"></div></div>
-      <span class="bn">${a.n}</span>
-      <span class="bp">${Math.round((a.n/grandT)*100)}%</span>
+      <span class="bl">${x.label}</span>
+      <div class="bt"><div class="bf ${x.cls}" style="width:${Math.round((x.n/maxBar)*100)}%"></div></div>
+      <span class="bn">${x.n}</span>
+      <span class="bp">${Math.round((x.n/grandT)*100)}%</span>
     </div>`).join('');
 
-  renderTrend(trend, peak);
+  // Monthly trend
+  renderTrend(trend);
 
-  // ── Session table — group by category ──
-  const catMap = {};
-  sessions.forEach(r => {
-    const sessionName = r['Session']||r['session']||r['Session Name']||'';
-    const pageUrl = r['Page URL']||r['page_url']||'';
-    const cat = getSessionCategory(sessionName, pageUrl);
-    if (!cat) return; // drop page_viewed and unknown non-session events
-    const et = (r['Event Type']||r['event_type']||'').toLowerCase();
-    const mins = parseFloat(r['Minutes Watched']||r['minutes_watched']||0)||0;
-    if (!catMap[cat]) catMap[cat] = {lv:0,lm:0,rv:0,rm:0};
-    if (et==='live_accessed'||et==='live_viewed') { catMap[cat].lv++; catMap[cat].lm+=mins; }
-    else if (et==='session_watched'||et==='replay_accessed'||et==='replay_viewed') { catMap[cat].rv++; catMap[cat].rm+=mins; }
-  });
-
-  const sessRows = SESS_ORDER
-    .filter(cat => catMap[cat])
-    .map(cat => ({cat, ...catMap[cat]}));
-
-  document.getElementById('sess-body').innerHTML = sessRows.length===0
-    ? '<tr><td colspan="5" class="empty">No session data yet — Session Log will populate as members view sessions</td></tr>'
-    : sessRows.map(s=>`<tr>
-        <td><div class="sn2">${s.cat}</div></td>
-        <td class="nc">${s.lv}</td>
-        <td class="mc2">${Math.round(s.lm)}</td>
-        <td class="nc">${s.rv}</td>
-        <td class="mc2">${Math.round(s.rm)}</td>
+  // Session table — by category
+  const cats = s.byCategory || [];
+  document.getElementById('sess-body').innerHTML = cats.length === 0
+    ? '<tr><td colspan="5" class="empty">No session data yet — will populate as members view sessions</td></tr>'
+    : cats.map(cat => `<tr>
+        <td><div class="sn2">${cat.category}</div></td>
+        <td class="nc">${cat.liveViews}</td>
+        <td class="mc2">${cat.liveMins}</td>
+        <td class="nc">${cat.replayViews}</td>
+        <td class="mc2">${cat.replayMins}</td>
       </tr>`).join('');
 
-  set('s-active',sAc); set('s-amber',sAm); set('s-red',sRd);
-  set('e-total',totalM); set('e-habits',hC); set('e-checkins',cC);
-  set('e-workouts',wC); set('e-cardio',caC);
-  set('e-peak', peak?peak.label:'—');
+  // Member status
+  set('s-active', m.active   || 0);
+  set('s-amber',  m.quiet    || 0);
+  set('s-red',    m.inactive || 0);
+  set('e-total',    m.total    || 0);
+  set('e-habits',   a.habits   || 0);
+  set('e-checkins', a.checkins || 0);
+  set('e-workouts', a.workouts || 0);
+  set('e-cardio',   a.cardio   || 0);
 
-  set('ch-num',donated);
-  set('prog-lbl',`${rem} / 30 activities`);
-  document.getElementById('prog-f').style.width=pct+'%';
-  set('prog-n',`${30-rem} more activities until the next donated month`);
-  renderMilestones(totalA);
+  // Peak month from trend
+  const peak = trend.length ? trend.reduce((a,b) => a.count > b.count ? a : b) : null;
+  set('e-peak', peak ? peak.label : '—');
+  set('trend-tag', peak ? 'Peak: ' + peak.label : '—');
+
+  // Charity
+  set('ch-num', c.monthsDonated || 0);
+  set('prog-lbl', `${c.remainder || 0} / 30 activities`);
+  document.getElementById('prog-f').style.width = (c.progressPct || 0) + '%';
+  const nm = c.nextMilestone || {};
+  set('prog-n', nm.remaining ? `${nm.remaining} more activities until the next donated month` : 'All milestones reached!');
+  renderMilestones(a.total || 0);
 }
 
-function buildTrend(rows) {
-  const map={};
-  rows.forEach(r=>{
-    const d=pd(r['Completed']||r['Date']||r['date']||'');
-    if(!d) return;
-    const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    map[k]=(map[k]||0)+1;
-  });
-  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return Object.keys(map).sort().map(k=>({
-    key:k, label:MONTHS[parseInt(k.split('-')[1])-1]+" '"+k.split('-')[0].slice(2), n:map[k]
-  }));
-}
-
-function renderTrend(trend, peak) {
-  if(!trend.length){document.getElementById('trend-chart').innerHTML='<div class="empty">No activity data yet</div>';return;}
-  const recent=trend.slice(-10);
-  const max=Math.max(...recent.map(t=>t.n),1);
-  set('trend-tag', peak?'Peak: '+peak.label:'—');
-  document.getElementById('trend-chart').innerHTML=recent.map(t=>`
-    <div class="tc" title="${t.label}: ${t.n} activities">
-      <div class="tv">${t.n}</div>
-      <div class="tb2" style="height:${Math.max(Math.round((t.n/max)*95),3)}px"></div>
+// ── TREND ─────────────────────────────────────────────────
+function renderTrend(trend) {
+  if (!trend.length) {
+    document.getElementById('trend-chart').innerHTML = '<div class="empty">No activity data yet</div>';
+    return;
+  }
+  const recent = trend.slice(-10);
+  const max = Math.max(...recent.map(t => t.count), 1);
+  document.getElementById('trend-chart').innerHTML = recent.map(t => `
+    <div class="tc" title="${t.label}: ${t.count} activities">
+      <div class="tv">${t.count}</div>
+      <div class="tb2" style="height:${Math.max(Math.round((t.count/max)*95),3)}px"></div>
       <div class="tm">${t.label}</div>
     </div>`).join('');
 }
 
-function renderMilestones(total){
-  const MS=[
-    {a:30,  mo:1,  lbl:'First Impact',       icon:'🌱'},
-    {a:300, mo:10, lbl:'Growing Impact',      icon:'🌿'},
-    {a:900, mo:30, lbl:'Major Milestone',     icon:'🌳'},
-    {a:1500,mo:50, lbl:'Community Champion',  icon:'⭐'},
-    {a:3000,mo:100,lbl:'Century of Care',     icon:'🏆'},
+// ── MILESTONES ────────────────────────────────────────────
+function renderMilestones(total) {
+  const MS = [
+    {a:30,   mo:1,   lbl:'First Impact',      icon:'🌱'},
+    {a:300,  mo:10,  lbl:'Growing Impact',     icon:'🌿'},
+    {a:900,  mo:30,  lbl:'Major Milestone',    icon:'🌳'},
+    {a:1500, mo:50,  lbl:'Community Champion', icon:'⭐'},
+    {a:3000, mo:100, lbl:'Century of Care',    icon:'🏆'},
   ];
-  document.getElementById('ms-list').innerHTML=MS.map((m,i)=>{
-    const done=total>=m.a;
-    const next=!done&&(i===0||total>=MS[i-1].a);
-    const ic=done?'mi-d':next?'mi-n':'mi-f';
-    const bc=done?'mb-d':next?'mb-n':'mb-f';
-    const bt=done?'Achieved ✓':next?`${m.a-total} to go`:`${(m.a-total).toLocaleString()} away`;
+  document.getElementById('ms-list').innerHTML = MS.map((m, i) => {
+    const done = total >= m.a;
+    const next = !done && (i === 0 || total >= MS[i-1].a);
+    const ic = done ? 'mi-d' : next ? 'mi-n' : 'mi-f';
+    const bc = done ? 'mb-d' : next ? 'mb-n' : 'mb-f';
+    const bt = done ? 'Achieved ✓' : next ? `${m.a - total} to go` : `${(m.a - total).toLocaleString()} away`;
     return `<div class="mr">
       <div class="mr-l">
         <div class="mi ${ic}">${m.icon}</div>
@@ -582,19 +462,8 @@ function renderMilestones(total){
   }).join('');
 }
 
-function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
-function num(v){return parseInt(String(v).replace(/[^0-9.-]/g,''))||0;}
-function pd(s){
-  if(!s)return null;
-  s=String(s).trim();
-  if(!s)return null;
-  let m=s.match(/^(\d{1,2})[\-\/](\d{1,2})[\-\/](\d{4})/);
-  if(m) return new Date(+m[3],+m[2]-1,+m[1]);
-  m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if(m) return new Date(+m[1],+m[2]-1,+m[3]);
-  const d=new Date(s);
-  return isNaN(d.getTime())?null:d;
-}
+// ── UTILS ─────────────────────────────────────────────────
+function set(id, v) { const e = document.getElementById(id); if (e) e.textContent = v; }
 </script>
 </body>
 </html>
