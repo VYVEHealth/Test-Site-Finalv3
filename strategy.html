@@ -1193,9 +1193,14 @@ function renderAll() {
   renderOwnerList(lewisActions, 'lewisGrid', '#c9a84c', 'Lewis');
 }
 
-// Load ticks then render — poll every 30s so Lewis sees Dean's ticks
-loadTicks().then(renderAll);
-setInterval(() => loadTicks().then(renderAll), 30000);
+// Render immediately with empty tick state, then load ticks in background
+renderAll();
+
+// Load ticks in background — never crash page if API fails
+setTimeout(() => {
+  loadTicks().then(renderAll).catch(() => {});
+  setInterval(() => loadTicks().then(renderAll).catch(() => {}), 30000);
+}, 500);
 
 // Legacy
 const actionsGrid = document.getElementById('actionsGrid');
