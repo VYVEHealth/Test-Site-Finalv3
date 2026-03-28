@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VYVE Homepage Concepts — Internal Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── VYVE TOKENS ── */
+:root {
+  --dark:    #0d1f1c;
+  --dark2:   #122420;
+  --dark3:   #1a2e2a;
+  --teal:    #3db89f;
+  --teal-dim:    rgba(61,184,159,0.12);
+  --teal-border: rgba(61,184,159,0.22);
+  --gold:    #c9a84c;
+  --w55:     rgba(255,255,255,0.55);
+  --w35:     rgba(255,255,255,0.35);
+  --w15:     rgba(255,255,255,0.15);
+  --w08:     rgba(255,255,255,0.08);
+  --sep:     rgba(255,255,255,0.06);
+  --ff-h: 'Playfair Display', serif;
+  --ff-b: 'DM Sans', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: #0a1815;
+  font-family: var(--ff-b);
+  color: #fff;
+  min-height: 100vh;
+}
+
+/* ── REVIEWER SHELL ── */
+.shell-header {
+  background: #071310;
+  border-bottom: 1px solid rgba(61,184,159,0.2);
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.shell-logo { font-family: var(--ff-h); font-size: 22px; color: var(--teal); font-weight: 700; }
+.shell-title { font-size: 12px; color: var(--w35); letter-spacing: .06em; }
+.shell-badge {
+  background: rgba(201,168,76,0.15);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold);
+  font-size: 11px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  letter-spacing: .05em;
+}
+
+/* ── TAB NAVIGATION ── */
+.tab-nav {
+  background: #071310;
+  border-bottom: 1px solid var(--sep);
+  padding: 0 32px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+}
+.tab-btn {
+  padding: 14px 22px;
+  border: none;
+  background: transparent;
+  font-family: var(--ff-b);
+  font-size: 13px;
+  color: var(--w35);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all .2s;
+}
+.tab-btn:hover { color: var(--w55); }
+.tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+/* ── CONCEPT WRAPPER ── */
+.concept { display: none; }
+.concept.visible { display: block; }
+
+/* ── CONCEPT META BAR ── */
+.concept-meta {
+  background: rgba(61,184,159,0.06);
+  border-bottom: 1px solid var(--teal-border);
+  padding: 16px 32px;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+.meta-num {
+  font-family: var(--ff-h);
+  font-size: 36px;
+  color: rgba(61,184,159,0.25);
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.meta-content { flex: 1; }
+.meta-name { font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 4px; }
+.meta-desc { font-size: 12px; color: var(--w35); line-height: 1.6; max-width: 680px; }
+.meta-tag {
+  display: inline-block;
+  background: var(--teal);
+  color: #fff;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 6px;
+}
+
+/* ── SHARED PAGE STYLES ── */
+.page { background: var(--dark); font-family: var(--ff-b); }
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 40px;
+  border-bottom: 1px solid var(--sep);
+}
+.logo { font-family: var(--ff-h); font-size: 22px; color: var(--teal); font-weight: 700; }
+.nav-links { display: flex; gap: 28px; }
+.nav-link { font-size: 13px; color: var(--w35); cursor: pointer; text-decoration: none; }
+.nav-link:hover { color: var(--w55); }
+.nav-cta {
+  font-size: 13px;
+  background: var(--teal);
+  color: #fff;
+  padding: 9px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+.section-tag {
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--w35);
+  margin-bottom: 14px;
+}
+.teal-tag {
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 14px;
+}
+.gold-line { width: 36px; height: 2px; background: var(--gold); border-radius: 1px; margin-bottom: 18px; }
+
+.h1 {
+  font-family: var(--ff-h);
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.h1 em { color: var(--teal); font-style: italic; }
+
+.h2 {
+  font-family: var(--ff-h);
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.body-txt {
+  font-size: 15px;
+  color: var(--w55);
+  line-height: 1.75;
+  max-width: 540px;
+}
+
+.btns { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-p {
+  background: var(--teal);
+  color: #fff;
+  padding: 12px 26px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 500;
+  display: inline-block;
+}
+.btn-g {
+  background: transparent;
+  color: var(--w55);
+  border: 1px solid var(--w15);
+  padding: 12px 26px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.section { padding: 48px 40px; border-bottom: 1px solid var(--sep); }
+
+/* Stat strip */
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--sep);
+  border-top: 1px solid var(--sep);
+  border-bottom: 1px solid var(--sep);
+}
+.stat-cell { background: var(--dark); padding: 24px 32px; }
+.stat-num {
+  font-family: var(--ff-h);
+  font-size: 28px;
+  color: var(--teal);
+  font-weight: 700;
+}
+.stat-label { font-size: 12px; color: var(--w35); margin-top: 5px; line-height: 1.5; }
+
+/* Pillar cards */
+.pillar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 40px;
+  border-bottom: 1px solid var(--sep);
+}
+.pillar {
+  background: var(--teal-dim);
+  border: 1px solid var(--teal-border);
+  border-radius: 10px;
+  padding: 22px 18px;
+}
+.pillar-img {
+  width: 100%;
+  height: 60px;
+  background: rgba(61,184,159,0.08);
+  border-radius: 8px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pillar-name { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: 6px; }
+.pillar-desc { font-size: 12px; color: var(--w35); line-height: 1.65; }
+
+/* Photo placeholder */
+.photo-ph {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--w08);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+}
+.ph-label { font-size: 10px; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: .06em; }
+.ph-icon { width: 24px; height: 16px; background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+/* Audience row */
+.aud-row {
+  display: grid;
+  border-top: 1px solid var(--sep);
+}
+.aud-cell { padding: 28px 32px; border-right: 1px solid var(--sep); }
+.aud-cell:last-child { border-right: none; }
+.aud-img { width: 100%; height: 80px; margin-bottom: 14px; border-radius: 8px; }
+.aud-tag { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--gold); margin-bottom: 6px; }
+.aud-name { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: 5px; }
+.aud-desc { font-size: 12px; color: var(--w35); line-height: 1.6; }
+.aud-link { font-size: 12px; color: var(--teal); margin-top: 10px; cursor: pointer; display: block; }
+
+/* ── CONCEPT-SPECIFIC ── */
+
+/* C3 contrast strip */
+.contrast-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--sep);
+  border-top: 1px solid var(--sep);
+  border-bottom: 1px solid var(--sep);
+}
+.contrast-col { padding: 28px 32px; }
+.contrast-col.old { background: var(--dark2); }
+.contrast-col.new { background: rgba(61,184,159,0.06); border-left: 1px solid var(--teal-border); }
+.contrast-label { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 14px; }
+.contrast-col.old .contrast-label { color: var(--w35); }
+.contrast-col.new .contrast-label { color: var(--teal); }
+.contrast-point {
+  font-size: 13px;
+  padding: 7px 0 7px 14px;
+  border-left: 2px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.contrast-point.pos { border-left-color: var(--teal); color: var(--w55); }
+
+/* C4 Give Back strip */
+.giveback-strip {
+  background: rgba(201,168,76,0.06);
+  border-top: 1px solid rgba(201,168,76,0.15);
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+  padding: 22px 40px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.giveback-icon {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.25);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.giveback-title { font-size: 13px; font-weight: 500; color: var(--gold); margin-bottom: 4px; }
+.giveback-body { font-size: 13px; color: var(--w35); line-height: 1.55; }
+
+/* C4 mechanic steps */
+.mechanic-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.mechanic-step { display: flex; gap: 16px; align-items: flex-start; }
+.mechanic-num { font-family: var(--ff-h); font-size: 28px; color: var(--teal); font-weight: 700; min-width: 32px; line-height: 1; }
+.mechanic-name { font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 4px; }
+.mechanic-desc { font-size: 12px; color: var(--w35); line-height: 1.6; }
+
+/* C5 dashboard mock */
+.dash-mock {
+  background: rgba(61,184,159,0.05);
+  border: 1px solid var(--teal-border);
+  border-radius: 10px;
+  padding: 22px;
+  margin-top: 4px;
+}
+.dash-metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 16px; }
+.dash-metric {
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
+  padding: 14px 12px;
+}
+.dash-metric-num { font-family: var(--ff-h); font-size: 22px; font-weight: 700; }
+.dash-metric-num.teal { color: var(--teal); }
+.dash-metric-num.gold { color: var(--gold); }
+.dash-metric-label { font-size: 11px; color: var(--w35); margin-top: 3px; }
+.dash-footer { font-size: 11px; color: var(--w35); text-align: center; border-top: 1px solid var(--sep); padding-top: 12px; }
+
+/* Bar chart mini */
+.bar-chart { display: flex; gap: 5px; align-items: flex-end; height: 36px; }
+.bar { border-radius: 2px 2px 0 0; }
+
+/* Responsive */
+@media (max-width: 760px) {
+  .nav-links { display: none; }
+  .h1 { font-size: 26px; }
+  .stat-strip { grid-template-columns: 1fr; }
+  .pillar-grid { grid-template-columns: 1fr; }
+  .aud-row { grid-template-columns: 1fr !important; }
+  .contrast-strip { grid-template-columns: 1fr; }
+  .mechanic-grid { grid-template-columns: 1fr; }
+  .dash-metrics { grid-template-columns: repeat(2,1fr); }
+  .section { padding: 32px 20px; }
+  .nav { padding: 14px 20px; }
+  .pillar-grid { padding: 24px 20px; }
+  .tab-nav { padding: 0 16px; }
+  .concept-meta { padding: 16px 20px; }
+  .shell-header { padding: 14px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── REVIEWER SHELL ── -->
+<header class="shell-header">
+  <div>
+    <div class="shell-logo">VYVE</div>
+    <div class="shell-title">Homepage Concepts · Internal Review</div>
+  </div>
+  <div class="shell-badge">For Lewis — 5 Concepts</div>
+</header>
+
+<!-- ── TAB NAV ── -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="show(1,this)">1 · The Silent Crisis</button>
+  <button class="tab-btn" onclick="show(2,this)">2 · Build Health Before It Breaks</button>
+  <button class="tab-btn" onclick="show(3,this)">3 · The System Is Broken</button>
+  <button class="tab-btn" onclick="show(4,this)">4 · Help Yourself. Help Others.</button>
+  <button class="tab-btn" onclick="show(5,this)">5 · The Proof</button>
+</nav>
+
+<!-- ══════════════════════════════════════
+     CONCEPT 1 — THE SILENT CRISIS
+══════════════════════════════════════ -->
+<div class="concept visible" id="c1">
+  <div class="concept-meta">
+    <div class="meta-num">01</div>
+    <div class="meta-content">
+      <div class="meta-tag">Angle 1</div>
+      <div class="meta-name">The Silent Crisis — Lead with the employer pain, land with the solution</div>
+      <div class="meta-desc">Opens on the uncomfortable truth employers already know but can't solve. Bold and confrontational. Resonates with HR Directors and CHROs who are already aware of the problem but haven't found a systematic fix.</div>
+    </div>
+  </div>
+
+  <div class="page">
+    <nav class="nav">
+      <div class="logo">VYVE</div>
+      <div class="nav-links">
+        <a class="nav-link" href="#">For Employers</a>
+        <a class="nav-link" href="#">For Individuals</a>
+        <a class="nav-link" href="#">How It Works</a>
+      </div>
+      <div class="nav-cta">Book a Demo</div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="section">
+      <div class="eyebrow">Prevention over cure · UK corporate wellbeing</div>
+      <div class="h1">Your employees are unwell<br>before the <em>diagnosis.</em></div>
+      <div class="body-txt" style="margin-bottom:26px">Most wellbeing spend reaches people after the crisis. VYVE builds the daily foundations — expert-led sessions, habit accountability, and measurable outcomes — that mean your people never get there.</div>
+      <div class="btns">
+        <div class="btn-p">Book an employer demo</div>
+        <div class="btn-g">Join as an individual</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-strip">
+      <div class="stat-cell">
+        <div class="stat-num">£56B</div>
+        <div class="stat-label">Cost of poor mental health to UK employers annually — Deloitte 2024</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">&lt;5%</div>
+        <div class="stat-label">Average EAP utilisation — the reactive model is broken</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">137M</div>
+        <div class="stat-label">Working days lost to sickness absence in the UK each year</div>
+      </div>
+    </div>
+
+    <!-- Why we exist -->
+    <div class="section">
+      <div class="section-tag">Why We Exist</div>
+      <div class="h2">Healthcare reacts. VYVE prevents.</div>
+      <div class="body-txt">The NHS treats illness. EAPs manage crises. VYVE exists in the space before both — building physical, mental and lifestyle foundations so your people never reach crisis point. We were created because most wellbeing spend reaches people too late, too rarely, and with zero proof of impact.</div>
+    </div>
+
+    <!-- How we work -->
+    <div class="pillar-grid">
+      <div class="pillar">
+        <div class="pillar-img">
+          <div style="width:38px;height:38px;background:rgba(61,184,159,0.25);border-radius:50%"></div>
+        </div>
+        <div class="pillar-name">Expert-led sessions</div>
+        <div class="pillar-desc">Live & on-demand across movement, mindset, nutrition, group therapy and more — from qualified professionals</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-img">
+          <div class="bar-chart">
+            <div class="bar" style="width:10px;height:22px;background:rgba(61,184,159,0.35)"></div>
+            <div class="bar" style="width:10px;height:36px;background:rgba(61,184,159,0.55)"></div>
+            <div class="bar" style="width:10px;height:28px;background:rgba(61,184,159,0.45)"></div>
+            <div class="bar" style="width:10px;height:44px;background:rgba(61,184,159,0.7)"></div>
+          </div>
+        </div>
+        <div class="pillar-name">Daily habit tracking</div>
+        <div class="pillar-desc">Members log activities. Engagement scores rise. Streaks build the habit loop that makes wellbeing stick.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-img">
+          <div style="width:44px;height:32px;background:rgba(201,168,76,0.15);border-radius:5px;border:1px solid rgba(201,168,76,0.2)"></div>
+        </div>
+        <div class="pillar-name">Employer dashboard</div>
+        <div class="pillar-desc">Aggregate, GDPR-safe insights your board can act on — no individual data, ever</div>
+      </div>
+    </div>
+
+    <!-- Audience -->
+    <div class="aud-row" style="grid-template-columns:repeat(3,1fr)">
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Enterprise photo</span></div>
+        <div class="aud-tag">Enterprise</div>
+        <div class="aud-name">For employers & HR leaders</div>
+        <div class="aud-desc">Workforce wellbeing at scale. GDPR-safe reporting. ROI you can show your board.</div>
+        <a class="aud-link">Explore enterprise plans →</a>
+      </div>
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Individual photo</span></div>
+        <div class="aud-tag">Individual</div>
+        <div class="aud-name">Join as an individual</div>
+        <div class="aud-desc">£20/month. Expert sessions, habit tracking, and a Give Back mechanic that helps others too.</div>
+        <a class="aud-link">Start your journey →</a>
+      </div>
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Portal screenshot</span></div>
+        <div class="aud-tag">Members</div>
+        <div class="aud-name">Already a member?</div>
+        <div class="aud-desc">Access your dashboard, log habits, and track your wellbeing progress.</div>
+        <a class="aud-link">Go to member portal →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CONCEPT 2 — BUILD HEALTH BEFORE IT BREAKS
+══════════════════════════════════════ -->
+<div class="concept" id="c2">
+  <div class="concept-meta">
+    <div class="meta-num">02</div>
+    <div class="meta-content">
+      <div class="meta-tag">Angle 2</div>
+      <div class="meta-name">Build Health Before It Breaks — Lead with the mission statement + Give Back front and centre</div>
+      <div class="meta-desc">Opens with VYVE's core mission as a direct headline. Pairs it with the Give Back mechanic immediately to differentiate from every competitor. Resonates with purpose-driven individuals and CSR-conscious employers.</div>
+    </div>
+  </div>
+
+  <div class="page">
+    <nav class="nav">
+      <div class="logo">VYVE</div>
+      <div class="nav-links">
+        <a class="nav-link" href="#">For Employers</a>
+        <a class="nav-link" href="#">For Individuals</a>
+        <a class="nav-link" href="#">Give Back</a>
+      </div>
+      <div class="nav-cta">Get Started</div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="section">
+      <div class="eyebrow">Help yourself. Help others. Change the world.</div>
+      <div class="h1">Build health before<br>it has a reason to <em>break.</em></div>
+      <div class="body-txt" style="margin-bottom:26px">VYVE is the UK's prevention-first wellbeing platform. Expert-led sessions, daily habit accountability, and a Give Back mechanic that means every time you hit 30 activities, someone who couldn't afford it gets a free month.</div>
+      <div class="btns">
+        <div class="btn-p">For employers</div>
+        <div class="btn-g">Join personally — £20/month</div>
+      </div>
+    </div>
+
+    <!-- Give Back strip -->
+    <div class="giveback-strip">
+      <div class="giveback-icon">
+        <div style="width:20px;height:12px;background:rgba(201,168,76,0.5);border-radius:2px"></div>
+      </div>
+      <div>
+        <div class="giveback-title">The Give Back Mechanic</div>
+        <div class="giveback-body">Complete 30 activities and VYVE unlocks a free month for a charity partner recipient. Your health journey funds someone else's — every single time.</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-strip">
+      <div class="stat-cell">
+        <div class="stat-num">30</div>
+        <div class="stat-label">Activities to unlock a free charity membership — every time, no cap</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">£20</div>
+        <div class="stat-label">Per month for individuals · cancel anytime · no lock-in</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">8</div>
+        <div class="stat-label">Expert session types: movement, mindset, nutrition, therapy & more</div>
+      </div>
+    </div>
+
+    <!-- Why -->
+    <div class="section">
+      <div class="section-tag">Why We Exist</div>
+      <div class="h2">Wellbeing shouldn't be reactive — and it shouldn't be a perk for the privileged.</div>
+      <div class="body-txt">VYVE was built on two beliefs: that people deserve support before they reach crisis, and that access to that support shouldn't depend on your postcode or your employer. The Give Back mechanic exists because we mean it.</div>
+    </div>
+
+    <!-- How -->
+    <div class="pillar-grid">
+      <div class="pillar">
+        <div class="pillar-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Session photo</span></div>
+        <div class="pillar-name">Live expert sessions, weekly</div>
+        <div class="pillar-desc">Yoga, mindfulness, workouts, group therapy, nutrition, education — from qualified professionals every week</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-img" style="flex-direction:column;gap:5px;padding:8px">
+          <div style="height:6px;background:rgba(201,168,76,0.5);border-radius:2px;width:100%"></div>
+          <div style="height:6px;background:rgba(201,168,76,0.3);border-radius:2px;width:65%"></div>
+          <div style="height:6px;background:rgba(201,168,76,0.4);border-radius:2px;width:85%"></div>
+          <div style="height:6px;background:rgba(201,168,76,0.6);border-radius:2px;width:50%"></div>
+        </div>
+        <div class="pillar-name">Track 30 activities, unlock Give Back</div>
+        <div class="pillar-desc">Log your habits daily. Hit 30 and watch your progress translate into someone else's access.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-img">
+          <div style="width:44px;height:32px;background:rgba(61,184,159,0.12);border-radius:5px;border:1px solid var(--teal-border)"></div>
+        </div>
+        <div class="pillar-name">Employer reporting that proves ROI</div>
+        <div class="pillar-desc">Your workforce's aggregate engagement and wellbeing trends — GDPR-safe and board-ready</div>
+      </div>
+    </div>
+
+    <!-- Audience -->
+    <div class="aud-row" style="grid-template-columns:repeat(3,1fr)">
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Workplace photo</span></div>
+        <div class="aud-tag">Enterprise</div>
+        <div class="aud-name">For employers</div>
+        <div class="aud-desc">A wellbeing platform with a social impact story. Measurable outcomes. GDPR-safe reporting.</div>
+        <a class="aud-link">Book a demo →</a>
+      </div>
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Individual photo</span></div>
+        <div class="aud-tag">Individual</div>
+        <div class="aud-name">Join individually</div>
+        <div class="aud-desc">£20/month. Build better habits. Help yourself — and fund access for someone else.</div>
+        <a class="aud-link">Start today →</a>
+      </div>
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Portal screenshot</span></div>
+        <div class="aud-tag">Members</div>
+        <div class="aud-name">Already a member?</div>
+        <div class="aud-desc">Access your dashboard and track your Give Back progress.</div>
+        <a class="aud-link">Go to member portal →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CONCEPT 3 — THE SYSTEM IS BROKEN
+══════════════════════════════════════ -->
+<div class="concept" id="c3">
+  <div class="concept-meta">
+    <div class="meta-num">03</div>
+    <div class="meta-content">
+      <div class="meta-tag">Angle 3</div>
+      <div class="meta-name">The System Is Broken — Name the category failure, then own the fix</div>
+      <div class="meta-desc">Opens by naming what's broken — EAPs, reactive models, wasted budget — before presenting VYVE as the systematic replacement. The contrast sells itself. Strongest for enterprise sales conversations where the HR buyer already knows the existing model isn't working.</div>
+    </div>
+  </div>
+
+  <div class="page">
+    <nav class="nav">
+      <div class="logo">VYVE</div>
+      <div class="nav-links">
+        <a class="nav-link" href="#">For Employers</a>
+        <a class="nav-link" href="#">For Individuals</a>
+        <a class="nav-link" href="#">How It Works</a>
+      </div>
+      <div class="nav-cta">Book a Demo</div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="section">
+      <div class="eyebrow">The prevention-first corporate wellbeing platform</div>
+      <div class="h1">Your EAP is reaching<br><em>5% of your people.</em></div>
+      <div class="body-txt" style="margin-bottom:26px">The reactive model was never designed to build health — it was designed to manage crises. VYVE is built for the other 95%: prevention-first, expert-led, and measurable from day one.</div>
+      <div class="btns">
+        <div class="btn-p">Book a demo</div>
+        <div class="btn-g">Join as an individual</div>
+      </div>
+    </div>
+
+    <!-- Contrast: old vs VYVE -->
+    <div class="contrast-strip">
+      <div class="contrast-col old">
+        <div class="contrast-label">The old model</div>
+        <div class="contrast-point">Waits until someone is struggling</div>
+        <div class="contrast-point">EAP: under 5% engagement, no data trail</div>
+        <div class="contrast-point">One-off workshops, no habit loop</div>
+        <div class="contrast-point">No proof of impact for the board</div>
+      </div>
+      <div class="contrast-col new">
+        <div class="contrast-label">The VYVE model</div>
+        <div class="contrast-point pos">Daily habits built before crisis hits</div>
+        <div class="contrast-point pos">Live tracking, aggregate dashboards, real data</div>
+        <div class="contrast-point pos">Expert sessions every week, streaks that stick</div>
+        <div class="contrast-point pos">Measurable ROI you can present to leadership</div>
+      </div>
+    </div>
+
+    <!-- Why -->
+    <div class="section">
+      <div class="section-tag">Why We Exist</div>
+      <div class="h2">Not another app. A prevention infrastructure for your whole workforce.</div>
+      <div class="body-txt">VYVE exists because the systems meant to protect employee health were built for the wrong moment. We build the habit architecture — expert sessions, daily tracking, AI-powered coaching, and a Give Back mechanic — that creates real, measurable change before crisis becomes the only option.</div>
+    </div>
+
+    <!-- How -->
+    <div class="pillar-grid">
+      <div class="pillar">
+        <div class="pillar-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Session photo</span></div>
+        <div class="pillar-name">Weekly expert sessions</div>
+        <div class="pillar-desc">Movement, mindset, nutrition, group therapy, education — qualified professionals every single week</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-img">
+          <div class="bar-chart">
+            <div class="bar" style="width:10px;height:18px;background:rgba(61,184,159,0.3)"></div>
+            <div class="bar" style="width:10px;height:30px;background:rgba(61,184,159,0.5)"></div>
+            <div class="bar" style="width:10px;height:24px;background:rgba(61,184,159,0.4)"></div>
+            <div class="bar" style="width:10px;height:40px;background:rgba(61,184,159,0.7)"></div>
+            <div class="bar" style="width:10px;height:32px;background:rgba(61,184,159,0.55)"></div>
+          </div>
+        </div>
+        <div class="pillar-name">Habit tracking with engagement scores</div>
+        <div class="pillar-desc">Daily logging creates the behaviour loop. Scores become the evidence HR has been missing.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-img" style="flex-direction:column;gap:5px;padding:8px">
+          <div style="height:7px;background:rgba(201,168,76,0.35);border-radius:2px;width:100%"></div>
+          <div style="height:7px;background:rgba(201,168,76,0.2);border-radius:2px;width:75%"></div>
+          <div style="height:7px;background:rgba(201,168,76,0.15);border-radius:2px;width:55%"></div>
+        </div>
+        <div class="pillar-name">Board-ready employer reporting</div>
+        <div class="pillar-desc">Aggregate, GDPR-safe dashboards that speak the language of ROI, not wellness jargon</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-strip">
+      <div class="stat-cell">
+        <div class="stat-num">£56B</div>
+        <div class="stat-label">Annual cost of poor mental health to UK employers — Deloitte 2024</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">£26B</div>
+        <div class="stat-label">Estimated cost of mental health problems to UK employers annually</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">25%</div>
+        <div class="stat-label">Increase in that cost since 2019 — the trend is accelerating</div>
+      </div>
+    </div>
+
+    <!-- Audience -->
+    <div class="aud-row" style="grid-template-columns:repeat(3,1fr)">
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">HR team photo</span></div>
+        <div class="aud-tag">Enterprise</div>
+        <div class="aud-name">For employers & HR</div>
+        <div class="aud-desc">Replace the reactive model. Get the data your board needs. Prove wellbeing works.</div>
+        <a class="aud-link">Book a demo →</a>
+      </div>
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Individual photo</span></div>
+        <div class="aud-tag">Individual</div>
+        <div class="aud-name">Join individually</div>
+        <div class="aud-desc">£20/month. Don't wait for your employer. Start building your foundation today.</div>
+        <a class="aud-link">Start today →</a>
+      </div>
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">App screenshot</span></div>
+        <div class="aud-tag">Members</div>
+        <div class="aud-name">Already a member?</div>
+        <div class="aud-desc">Your dashboard, sessions, and habit tracker are waiting.</div>
+        <a class="aud-link">Go to portal →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CONCEPT 4 — HELP YOURSELF. HELP OTHERS.
+══════════════════════════════════════ -->
+<div class="concept" id="c4">
+  <div class="concept-meta">
+    <div class="meta-num">04</div>
+    <div class="meta-content">
+      <div class="meta-tag">Angle 4</div>
+      <div class="meta-name">Help Yourself. Help Others. — Lead with the Give Back mechanic as the unique differentiator</div>
+      <div class="meta-desc">Positions VYVE's charity mechanic as the opening hook. Prevention lands as the philosophy, but Give Back is the conversation-starter that no competitor can replicate. Strongest for individual conversion, social media, and ESG-conscious enterprise buyers.</div>
+    </div>
+  </div>
+
+  <div class="page">
+    <nav class="nav">
+      <div class="logo">VYVE</div>
+      <div class="nav-links">
+        <a class="nav-link" href="#">For Employers</a>
+        <a class="nav-link" href="#">For Individuals</a>
+        <a class="nav-link" href="#">Give Back</a>
+      </div>
+      <div class="nav-cta">Join VYVE</div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="section">
+      <div class="gold-line"></div>
+      <div class="h1">Help yourself.<br>Help others.<br><em>Change the world.</em></div>
+      <div class="body-txt" style="margin-bottom:26px">VYVE is the only wellbeing platform where improving your own health directly funds access for someone who can't afford it. Build 30 habits. Unlock a free month for a charity partner. Repeat.</div>
+      <div class="btns">
+        <div class="btn-p">Start building — £20/month</div>
+        <div class="btn-g">For employers</div>
+      </div>
+    </div>
+
+    <!-- How Give Back works -->
+    <div class="section" style="background:rgba(201,168,76,0.04);border-top:1px solid rgba(201,168,76,0.12);border-bottom:1px solid rgba(201,168,76,0.12)">
+      <div class="teal-tag" style="color:var(--gold)">How Give Back Works</div>
+      <div class="mechanic-grid">
+        <div class="mechanic-step">
+          <div class="mechanic-num">1</div>
+          <div>
+            <div class="mechanic-name">Join & track</div>
+            <div class="mechanic-desc">Log daily activities — sessions, exercise, nutrition, mindfulness. Every one counts.</div>
+          </div>
+        </div>
+        <div class="mechanic-step">
+          <div class="mechanic-num">2</div>
+          <div>
+            <div class="mechanic-name">Hit 30 activities</div>
+            <div class="mechanic-desc">VYVE automatically unlocks a free month for a verified charity partner recipient.</div>
+          </div>
+        </div>
+        <div class="mechanic-step">
+          <div class="mechanic-num">3</div>
+          <div>
+            <div class="mechanic-name">Keep going</div>
+            <div class="mechanic-desc">Every 30 activities = another free month. Your habits have compounding impact.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-strip">
+      <div class="stat-cell">
+        <div class="stat-num">30</div>
+        <div class="stat-label">Activities = 1 free charity month. Every time. No cap.</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">£20</div>
+        <div class="stat-label">Per month for individuals. Your subscription effectively funds two memberships.</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">8</div>
+        <div class="stat-label">Session types: yoga, mindfulness, workouts, group therapy, nutrition & more</div>
+      </div>
+    </div>
+
+    <!-- Why -->
+    <div class="section">
+      <div class="section-tag">Why We Exist</div>
+      <div class="h2">Wellbeing shouldn't be a luxury. Prevention shouldn't be an afterthought.</div>
+      <div class="body-txt">VYVE exists because the people who need wellbeing support most are often least able to access it — and because most wellbeing products arrive too late. We built the Give Back mechanic to solve both problems at once: your daily habits fund a system that reaches people before crisis, not after.</div>
+    </div>
+
+    <!-- How it works -->
+    <div class="pillar-grid">
+      <div class="pillar">
+        <div class="pillar-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Session photo</span></div>
+        <div class="pillar-name">Expert-led sessions</div>
+        <div class="pillar-desc">Live & on-demand every week. Qualified professionals across every wellbeing pillar.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-img" style="flex-direction:column;gap:5px;padding:8px">
+          <div style="height:6px;background:rgba(201,168,76,0.5);border-radius:2px;width:100%"></div>
+          <div style="height:6px;background:rgba(201,168,76,0.3);border-radius:2px;width:65%"></div>
+          <div style="height:6px;background:rgba(201,168,76,0.4);border-radius:2px;width:85%"></div>
+          <div style="height:6px;background:rgba(61,184,159,0.4);border-radius:2px;width:100%"></div>
+        </div>
+        <div class="pillar-name">Habit tracking toward 30</div>
+        <div class="pillar-desc">Every activity logged moves you closer to unlocking your next Give Back milestone.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-img" style="gap:12px">
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(61,184,159,0.25);border:1px solid var(--teal-border)"></div>
+          <div style="width:1px;height:16px;background:var(--teal-border)"></div>
+          <div style="width:24px;height:24px;border-radius:50%;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.2)"></div>
+        </div>
+        <div class="pillar-name">Individual to charity — directly</div>
+        <div class="pillar-desc">You improve, someone else gains access. The platform tracks and delivers every single time.</div>
+      </div>
+    </div>
+
+    <!-- Audience -->
+    <div class="aud-row" style="grid-template-columns:repeat(3,1fr)">
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Individual photo</span></div>
+        <div class="aud-tag">Individual</div>
+        <div class="aud-name">Start your journey</div>
+        <div class="aud-desc">£20/month. Build lasting habits. Give Back with every milestone you hit.</div>
+        <a class="aud-link">Join today →</a>
+      </div>
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Enterprise photo</span></div>
+        <div class="aud-tag">Enterprise</div>
+        <div class="aud-name">For employers</div>
+        <div class="aud-desc">A wellbeing platform with a social impact story your ESG report will love.</div>
+        <a class="aud-link">Book a demo →</a>
+      </div>
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Portal screenshot</span></div>
+        <div class="aud-tag">Members</div>
+        <div class="aud-name">Already a member?</div>
+        <div class="aud-desc">Check your Give Back progress and access your sessions.</div>
+        <a class="aud-link">Go to portal →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CONCEPT 5 — THE PROOF
+══════════════════════════════════════ -->
+<div class="concept" id="c5">
+  <div class="concept-meta">
+    <div class="meta-num">05</div>
+    <div class="meta-content">
+      <div class="meta-tag">Angle 5</div>
+      <div class="meta-name">The Proof — Lead with outcomes and evidence, not emotion</div>
+      <div class="meta-desc">Opens with hard metrics and a data-led argument. No story-setting, just results. Strongest for enterprise procurement cycles where the decision-maker needs evidence first, inspiration second. Features a mock employer dashboard to show what HR actually gets.</div>
+    </div>
+  </div>
+
+  <div class="page">
+    <nav class="nav">
+      <div class="logo">VYVE</div>
+      <div class="nav-links">
+        <a class="nav-link" href="#">For Employers</a>
+        <a class="nav-link" href="#">For Individuals</a>
+        <a class="nav-link" href="#">The Evidence</a>
+      </div>
+      <div class="nav-cta">Book a Demo</div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="section">
+      <div class="eyebrow">Prevention-first · Measurable outcomes · GDPR-safe reporting</div>
+      <div class="h1">Wellbeing that your<br>board can <em>actually measure.</em></div>
+      <div class="body-txt" style="margin-bottom:26px">Most wellbeing platforms can't tell you if they're working. VYVE tracks habit formation, engagement scores, and wellbeing trends across your workforce — aggregate, anonymised, and presented in dashboards your leadership team can act on.</div>
+      <div class="btns">
+        <div class="btn-p">See the employer dashboard</div>
+        <div class="btn-g">Join as an individual</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-strip">
+      <div class="stat-cell">
+        <div class="stat-num">£56B</div>
+        <div class="stat-label">Annual cost of poor mental health to UK employers — Deloitte 2024</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">&lt;5%</div>
+        <div class="stat-label">Average EAP utilisation — despite rising mental health needs across the workforce</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">£522</div>
+        <div class="stat-label">Average absence cost per employee per year — the cost VYVE is built to reduce</div>
+      </div>
+    </div>
+
+    <!-- Dashboard mock -->
+    <div class="section">
+      <div class="teal-tag">What Employers See — Aggregate & GDPR-Safe</div>
+      <div class="dash-mock">
+        <div class="dash-metrics">
+          <div class="dash-metric">
+            <div class="dash-metric-num teal">87%</div>
+            <div class="dash-metric-label">Engagement rate</div>
+          </div>
+          <div class="dash-metric">
+            <div class="dash-metric-num teal">↑24%</div>
+            <div class="dash-metric-label">Wellbeing score</div>
+          </div>
+          <div class="dash-metric">
+            <div class="dash-metric-num teal">4,218</div>
+            <div class="dash-metric-label">Activities logged</div>
+          </div>
+          <div class="dash-metric">
+            <div class="dash-metric-num gold">12</div>
+            <div class="dash-metric-label">Give Back unlocked</div>
+          </div>
+        </div>
+        <div class="dash-footer">Aggregate data only · No individual names · No personal data · GDPR-safe by design</div>
+      </div>
+    </div>
+
+    <!-- Why -->
+    <div class="section">
+      <div class="section-tag">Why We Exist</div>
+      <div class="h2">Prevention is cheaper than cure. But only if you can prove it's working.</div>
+      <div class="body-txt">VYVE was built for the HR Director who believes in prevention but can't get budget without evidence. Our platform generates the engagement data, wellbeing trends, and ROI metrics that turn wellbeing from a cost centre into a boardroom conversation — while actually building healthier people.</div>
+    </div>
+
+    <!-- How -->
+    <div class="pillar-grid">
+      <div class="pillar">
+        <div class="pillar-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Session photo</span></div>
+        <div class="pillar-name">Expert sessions members attend</div>
+        <div class="pillar-desc">Live & on-demand. Every session logged becomes a meaningful employer data point.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-img">
+          <div class="bar-chart">
+            <div class="bar" style="width:10px;height:14px;background:rgba(61,184,159,0.25)"></div>
+            <div class="bar" style="width:10px;height:22px;background:rgba(61,184,159,0.35)"></div>
+            <div class="bar" style="width:10px;height:18px;background:rgba(61,184,159,0.3)"></div>
+            <div class="bar" style="width:10px;height:34px;background:rgba(61,184,159,0.6)"></div>
+            <div class="bar" style="width:10px;height:28px;background:rgba(61,184,159,0.5)"></div>
+          </div>
+        </div>
+        <div class="pillar-name">Habit data that builds over time</div>
+        <div class="pillar-desc">Daily logging creates trend data. 30 days in, you have a clear workforce health picture.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-img" style="flex-direction:column;gap:5px;padding:8px">
+          <div style="height:7px;background:rgba(201,168,76,0.4);border-radius:2px;width:100%"></div>
+          <div style="height:7px;background:rgba(201,168,76,0.25);border-radius:2px;width:80%"></div>
+          <div style="height:7px;background:rgba(201,168,76,0.15);border-radius:2px;width:55%"></div>
+        </div>
+        <div class="pillar-name">Board-ready employer dashboard</div>
+        <div class="pillar-desc">Aggregate, GDPR-safe. Engagement scores, wellbeing trends, ROI metrics — all in one view.</div>
+      </div>
+    </div>
+
+    <!-- Audience -->
+    <div class="aud-row" style="grid-template-columns:repeat(3,1fr)">
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Leadership photo</span></div>
+        <div class="aud-tag">Enterprise</div>
+        <div class="aud-name">For HR & leadership</div>
+        <div class="aud-desc">Prevention-first, data-led, board-ready. Book a demo and see your dashboard live.</div>
+        <a class="aud-link">Book a demo →</a>
+      </div>
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">Individual photo</span></div>
+        <div class="aud-tag">Individual</div>
+        <div class="aud-name">Join individually</div>
+        <div class="aud-desc">£20/month. Your own data. Your own progress. Give Back with every 30 activities.</div>
+        <a class="aud-link">Start today →</a>
+      </div>
+      <div class="aud-cell">
+        <div class="aud-img photo-ph"><div class="ph-icon"></div><span class="ph-label">App screenshot</span></div>
+        <div class="aud-tag">Members</div>
+        <div class="aud-name">Already a member?</div>
+        <div class="aud-desc">Your dashboard and wellbeing scores are ready and waiting.</div>
+        <a class="aud-link">Go to portal →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCRIPT ── -->
+<script>
+function show(n, btn) {
+  document.querySelectorAll('.concept').forEach(c => c.classList.remove('visible'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('c' + n).classList.add('visible');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
