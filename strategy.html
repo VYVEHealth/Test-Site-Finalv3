@@ -813,9 +813,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   <!-- TAB: TOP ACTIONS -->
   <div class="tab-panel" id="tab-actions">
-    <div class="section-title">Top 5 Actions — Highest ROI</div>
-    <div class="section-sub">Actions that will move the overall score the most, fastest</div>
-    <div id="actionsGrid" class="fade-up"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
+      <div>
+        <div class="section-title" style="color:var(--teal)">🔧 Dean — Technical</div>
+        <div class="section-sub">Ordered by impact on overall score</div>
+        <div id="deanGrid"></div>
+      </div>
+      <div>
+        <div class="section-title" style="color:var(--gold)">📈 Lewis — Commercial</div>
+        <div class="section-sub">Ordered by impact on overall score</div>
+        <div id="lewisGrid"></div>
+      </div>
+    </div>
   </div>
 
   <!-- TAB: COMPETITIVE -->
@@ -973,13 +982,56 @@ const phases = [
   }
 ];
 
-const actions = [
-  { name: 'Build marketing homepage (3 audience paths)', when: 'This week', why: 'Site is live but has no front door. Cannot approach Sage contact without it. 4 concepts designed — Lewis to pick.', owner: 'Dean + Lewis' },
-  { name: 'Align pricing across Stripe, HubSpot and sales decks', when: 'This week', why: 'Mixed pricing signals will stall Sage before a conversation even starts. Must be identical everywhere.', owner: 'Lewis' },
-  { name: 'Appoint Clinical Advisory Board (minimum 3)', when: 'Month 1', why: 'No clinical validation = no NHS, no insurance partnerships, no credible HR director conversation.', owner: 'Lewis' },
-  { name: 'Build certificate system + charity mechanic', when: 'Month 1–2', why: 'Both fully designed and ready to build. Primary retention and differentiation tools sitting idle.', owner: 'Dean' },
-  { name: 'Onboard 2-3 named charity partners', when: 'Month 1–2', why: "The Give Back mechanic is VYVE's biggest differentiator and cannot be marketed without real beneficiaries.", owner: 'Lewis' }
+const TICKS_URL = 'https://script.google.com/macros/s/AKfycbwsZls9aQAgAyw_LQrNu3VCFdMgtlt7SiwnoF9AmGeXBs7Xmmu_YKrBASj4uaxWnD1x/exec';
+let tickState = {};
+
+const deanActions = [
+  { key: 'dean_0',  name: 'Build marketing homepage', when: 'This week', why: 'Lewis picks concept, Dean builds. No front door = no Sage approach.', impact: 'Brand +8pts' },
+  { key: 'dean_1',  name: 'Build certificate automation (5 types)', when: 'Month 1', why: 'Fully designed, just needs building. Primary retention mechanic sitting idle.', impact: 'UX +10pts, CS +8pts' },
+  { key: 'dean_2',  name: 'Build charity mechanic — collective counter + progress', when: 'Month 1', why: 'Biggest differentiator. Cannot be marketed without it being built.', impact: 'UX +6pts, Partner +5pts' },
+  { key: 'dean_3',  name: 'Fix welcome email webhook (15min polling to instant)', when: 'Month 1', why: 'Known fix. Every new member waits up to 15 mins for welcome email.', impact: 'Automation +2pts' },
+  { key: 'dean_4',  name: 'Build 2 remaining re-engagement automations', when: 'Month 1', why: 'Questionnaire not done + questionnaire done/no activity. Core retention gaps.', impact: 'CS +5pts' },
+  { key: 'dean_5',  name: 'Document technical architecture + emergency protocols', when: 'Month 1', why: 'Single point of failure risk. If Dean is unavailable, platform stops.', impact: 'Team +8pts' },
+  { key: 'dean_6',  name: 'PAD failover protocol document', when: 'Month 1', why: 'If PAD machine is offline, onboarding stops completely.', impact: 'Product +3pts' },
+  { key: 'dean_7',  name: 'YouTube stream keys + playlist IDs in replay pages', when: 'Month 1', why: 'All 8 channels verified. Stream infrastructure ready but not wired up.', impact: 'Content +3pts' },
+  { key: 'dean_8',  name: 'Auth0-gate the employer dashboard', when: 'Month 2', why: 'Currently unauthenticated. Enterprise procurement will flag this.', impact: 'Data +4pts' },
+  { key: 'dean_9',  name: 'Dashboard time filters (This Month / Quarter / All Time)', when: 'Month 2', why: 'Employers need trend data, not just all-time totals.', impact: 'Sales +2pts' },
+  { key: 'dean_10', name: 'Per-employer Auth0 URL (e.g. vyvehealth.co.uk/sage)', when: 'Month 2', why: 'Proper enterprise-grade dashboard delivery for Sage trial.', impact: 'Sales +3pts' },
+  { key: 'dean_11', name: 'Web push notifications via service worker', when: 'Month 2', why: 'Re-engagement currently email-only. Push dramatically improves response rate.', impact: 'UX +5pts' },
+  { key: 'dean_12', name: 'Wellbeing score cross-device sync', when: 'Month 2', why: 'Score currently lost when switching devices.', impact: 'UX +3pts' },
+  { key: 'dean_13', name: 'PostHog — fully wire and validate across all portal pages', when: 'Month 2', why: 'Analytics not validated. Cannot make product decisions without data.', impact: 'Product +3pts' },
+  { key: 'dean_14', name: 'Brevo email integration (replace Kahunas email)', when: 'Month 2', why: 'Kahunas strips CSS from emails. Fix identified, not yet built.', impact: 'Automation +3pts' },
+  { key: 'dean_15', name: 'Running plan email delivery via Make + Brevo', when: 'Month 2', why: 'Members get plans on screen but no email copy to refer back to.', impact: 'UX +2pts' },
+  { key: 'dean_16', name: 'VYVE Knowledge Base Google Sheet (AI context)', when: 'Month 3', why: 'AI responses are generic. Expert-curated content will improve quality dramatically.', impact: 'AI +5pts' },
+  { key: 'dean_17', name: 'Automated employer monthly PDF report', when: 'Month 3', why: 'Every QBR requires manual data pull. Automation removes bottleneck.', impact: 'CS +4pts' },
+  { key: 'dean_18', name: 'Custom intake form per employer (/join/sage etc)', when: 'Month 3', why: 'Branded intake improves enterprise credibility vs generic Typeform.', impact: 'Sales +2pts' },
+  { key: 'dean_19', name: 'Supabase migration planning (Activity Tracking first)', when: 'Month 4', why: 'Google Sheets 10M cell cap = ceiling at ~50,000 members. Plan now.', impact: 'Product +5pts' },
 ];
+
+const lewisActions = [
+  { key: 'lewis_0',  name: 'Pick homepage concept and confirm copy', when: 'This week', why: 'Dean cannot build until Lewis decides. 4 concepts ready. This is the Sage blocker.', impact: 'Brand +8pts' },
+  { key: 'lewis_1',  name: 'Facebook Make connection refresh (expires 22 May)', when: 'This week', why: 'CRITICAL — publishing breaks completely if this lapses. Takes 5 minutes.', impact: 'Automation critical' },
+  { key: 'lewis_2',  name: 'Align pricing — Stripe, HubSpot, sales decks identical', when: 'This week', why: 'Mixed signals will kill Sage before a conversation starts.', impact: 'Sales +5pts, Revenue +3pts' },
+  { key: 'lewis_3',  name: 'vyve-analytics-feedback-loop first manual run', when: 'This week', why: 'Needs permission approval. 5 minutes. Unlocks content intelligence loop.', impact: 'Automation +1pt' },
+  { key: 'lewis_4',  name: 'Onboard 2-3 named charity partners', when: 'Month 1', why: 'Give Back mechanic is biggest differentiator. Cannot be marketed without real beneficiaries.', impact: 'Partner +15pts' },
+  { key: 'lewis_5',  name: 'Appoint Clinical Advisory Board (3 unpaid advisors)', when: 'Month 1', why: 'Occupational psychologist + GP + exercise physiologist. Unpaid with equity. Unlocks NHS conversations.', impact: 'Clinical +20pts' },
+  { key: 'lewis_6',  name: 'Approach Sage contact with demo-ready product', when: 'Month 1', why: 'Warm lead, senior contact, expressed interest. Homepage is the last blocker.', impact: 'Revenue +18pts' },
+  { key: 'lewis_7',  name: 'Host Wellbeing Scorecard on live domain', when: 'Month 1', why: 'Built and sitting unused. Immediate lead capture activation at zero cost.', impact: 'Sales +3pts' },
+  { key: 'lewis_8',  name: 'Enable PR pitch task in Make (5 pitches/month)', when: 'Month 1', why: 'Already built, costs nothing, currently disabled. Zero reason not to enable.', impact: 'Brand +4pts' },
+  { key: 'lewis_9',  name: 'Decide on 5 disabled Make tasks', when: 'Month 1', why: 'LinkedIn article, podcast brief, newsletter, PR pitch, advocacy pack. Keep or remove.', impact: 'Automation clarity' },
+  { key: 'lewis_10', name: 'DPA to Sage — confirm their legal entity name + data contact', when: 'Month 1', why: 'DPA is ready. Just needs Sage legal entity confirmed and sent.', impact: 'Compliance +3pts' },
+  { key: 'lewis_11', name: 'Add annual pricing option (10-15% discount)', when: 'Month 1', why: 'Enterprise buyers expect annual commitment option. Currently missing.', impact: 'Sales +3pts' },
+  { key: 'lewis_12', name: 'Build ROI calculator (Deloitte 5.30:1 multiplier)', when: 'Month 1', why: 'CFO conversations need a packaged ROI tool. Research exists, just needs packaging.', impact: 'Sales +4pts' },
+  { key: 'lewis_13', name: 'Submit to 5 UK awards (GBE, Health Tech, CIPD, StartUp)', when: 'Month 1', why: 'Zero third-party validation. Awards provide credibility at zero cost.', impact: 'Brand +6pts' },
+  { key: 'lewis_14', name: 'Stripe display name update (CIC to VYVE Health)', when: 'Month 1', why: 'Members see CIC on payment receipts. Small but professional detail.', impact: 'Brand +1pt' },
+  { key: 'lewis_15', name: 'Outreach to 5 HR consultancies (commission-based referral)', when: 'Month 2', why: 'Distribution partners at zero cost. HR consultancies already own this conversation.', impact: 'Partner +5pts' },
+  { key: 'lewis_16', name: 'Migrate team@ to Google Workspace (5.20/month)', when: 'Month 2', why: 'Personal Google account means SCCs not automatic. Required before large enterprise contract.', impact: 'Compliance +5pts' },
+  { key: 'lewis_17', name: 'Apply to speak at CIPD Conference, MAD World Summit', when: 'Month 2', why: 'Speaking equals credibility. Applications are free and open.', impact: 'Brand +4pts' },
+  { key: 'lewis_18', name: 'Cyber Essentials certification', when: 'Month 3', why: 'Required for public sector contracts. Fast and relatively inexpensive (~500 GBP).', impact: 'Compliance +8pts' },
+  { key: 'lewis_19', name: 'NPS measurement — quarterly survey to members and HR contacts', when: 'Month 3', why: 'No satisfaction data anywhere. Needed for investor conversations.', impact: 'CS +4pts, Investor +3pts' },
+];
+
+const actions = deanActions.slice(0,5).map(a => ({...a, owner: 'Dean'}));
 
 const advantages = [
   { icon: '♻', title: 'Charity / Give Back mechanic', desc: "Structurally unique — no direct competitor equivalent. Wellhub has none. YuLife's version is incidental. VYVE's is driven by member behaviour. It cannot be copied without rebuilding the product." },
@@ -1082,19 +1134,78 @@ phases.forEach(p => {
   phasesGrid.appendChild(div);
 });
 
-// ── RENDER ACTIONS ────────────────────────────────────────────────────────────
+// ── RENDER ACTIONS WITH TICKS ────────────────────────────────────────────────
+async // ── TICK API ──────────────────────────────────────────────────────────────────
+const TICKS_API = 'https://script.google.com/macros/s/AKfycbwsZls9aQAgAyw_LQrNu3VCFdMgtlt7SiwnoF9AmGeXBs7Xmmu_YKrBASj4uaxWnD1x/exec';
+let tickState = {};
+
+function loadTicks() {
+  try {
+    const r = await fetch(TICKS_URL + '?action=get');
+    const d = await r.json();
+    if (d.status === 'ok') tickState = d.ticks || {};
+  } catch(e) { console.warn('Could not load ticks', e); }
+}
+
+async function toggleTick(key, owner) {
+  const wasTicked = tickState[key] && tickState[key].ticked;
+  const action = wasTicked ? 'untick' : 'tick';
+  tickState[key] = { ticked: !wasTicked, by: owner, at: '' };
+  renderAll(); // optimistic update
+  try {
+    await fetch(`${TICKS_URL}?action=${action}&key=${encodeURIComponent(key)}&by=${encodeURIComponent(owner)}`);
+  } catch(e) { console.warn('Tick save failed', e); }
+}
+
+function renderOwnerList(items, containerId, color, owner) {
+  const grid = document.getElementById(containerId);
+  if (!grid) return;
+  grid.innerHTML = '';
+  items.forEach((a, i) => {
+    const t = tickState[a.key];
+    const ticked = t && t.ticked;
+    const by = t && t.by ? t.by : '';
+    const div = document.createElement('div');
+    div.style.cssText = 'display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:12px 16px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;transition:border-color 0.2s,background 0.2s;' + (ticked ? 'opacity:0.5;' : '');
+    div.addEventListener('mouseenter', () => { if(!ticked) { div.style.borderColor = 'var(--border-hover)'; div.style.background = 'var(--card-hover)'; }});
+    div.addEventListener('mouseleave', () => { div.style.borderColor = 'var(--border)'; div.style.background = 'var(--card-bg)'; });
+    const checkStyle = ticked
+      ? `width:20px;height:20px;border-radius:4px;background:${color};border:1.5px solid ${color};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:1px;`
+      : `width:20px;height:20px;border-radius:4px;background:transparent;border:1.5px solid var(--text-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:1px;`;
+    div.innerHTML = `
+      <div style="${checkStyle}" onclick="toggleTick('${a.key}','${owner}')" title="${ticked ? 'Mark incomplete' : 'Mark complete'}">
+        ${ticked ? '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''}
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;${ticked ? 'text-decoration:line-through;color:var(--text-dim);' : ''}">${i+1}. ${a.name}</div>
+        <div style="font-size:11.5px;color:var(--text-muted);line-height:1.5;">${a.why}</div>
+        <div style="display:flex;gap:12px;margin-top:6px;align-items:center;">
+          <span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--text-dim);">⬆ ${a.impact}</span>
+          ${ticked && by ? `<span style="font-size:10px;font-family:'DM Mono',monospace;color:${color};opacity:0.7;">✓ ${by}</span>` : ''}
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-size:10px;font-family:'DM Mono',monospace;color:${color};background:${color}22;border:1px solid ${color}44;padding:2px 8px;border-radius:3px;white-space:nowrap;">${a.when}</div>
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+function renderAll() {
+  renderOwnerList(deanActions, 'deanGrid', '#3db89f', 'Dean');
+  renderOwnerList(lewisActions, 'lewisGrid', '#c9a84c', 'Lewis');
+
+loadTicks();
+setInterval(loadTicks, 30000);
+}
+
+// Load ticks then render — poll every 30s so Lewis sees Dean's ticks
+loadTicks().then(renderAll);
+setInterval(() => loadTicks().then(renderAll), 30000);
+
+// Legacy
 const actionsGrid = document.getElementById('actionsGrid');
-actions.forEach((a, i) => {
-  const div = document.createElement('div');
-  div.className = 'action-row';
-  div.innerHTML = `
-    <div class="action-name">${i + 1}. ${a.name}</div>
-    <div class="action-when">${a.when}</div>
-    <div class="action-why">${a.why}</div>
-    <div class="action-owner">${a.owner}</div>
-  `;
-  actionsGrid.appendChild(div);
-});
 
 // ── RENDER ADVANTAGES ─────────────────────────────────────────────────────────
 const advGrid = document.getElementById('advGrid');
