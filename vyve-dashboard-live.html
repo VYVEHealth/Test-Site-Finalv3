@@ -22,8 +22,6 @@
     html { scroll-behavior: smooth; }
     body { font-family: var(--font-b); background: var(--dark); color: var(--white); min-height: 100vh; }
     a { text-decoration: none; color: inherit; }
-
-    /* LOADER */
     #loader { position:fixed; inset:0; background:var(--dark); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; transition:opacity 0.6s ease; }
     #loader.gone { opacity:0; pointer-events:none; }
     .l-logo { font-family:var(--font-h); font-size:2.8rem; font-weight:800; color:var(--teal-lt); letter-spacing:0.12em; }
@@ -31,8 +29,6 @@
     .l-fill { height:100%; background:linear-gradient(90deg,var(--teal),var(--teal-lt)); animation:lp 2s ease forwards; }
     @keyframes lp { from{width:0} to{width:100%} }
     .l-txt { font-size:0.78rem; color:var(--dim); letter-spacing:0.08em; }
-
-    /* NAV */
     nav { position:sticky; top:0; z-index:100; background:rgba(9,24,24,0.96); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); }
     .nav-i { max-width:1380px; margin:0 auto; padding:0 28px; height:58px; display:flex; align-items:center; justify-content:space-between; }
     .nav-l { display:flex; align-items:center; gap:14px; }
@@ -44,20 +40,12 @@
     .live-pill { display:flex; align-items:center; gap:6px; font-size:0.72rem; color:var(--muted); background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:20px; padding:4px 12px; }
     .dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; flex-shrink:0; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-    /* ERROR */
     #err-bar { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.25); border-radius:var(--r); padding:14px 20px; margin:20px 28px 0; font-size:0.82rem; color:#fca5a5; display:none; }
-
-    /* COMPANY TABS */
     .ctabs { max-width:1380px; margin:0 auto; padding:20px 28px 0; display:flex; gap:8px; flex-wrap:wrap; }
     .ct { font-size:0.78rem; font-weight:600; padding:6px 16px; border-radius:6px; border:1px solid var(--border); background:rgba(255,255,255,0.03); color:var(--muted); cursor:pointer; transition:all 0.18s; }
     .ct:hover { border-color:var(--border2); color:var(--white); }
     .ct.on { background:var(--teal); border-color:var(--teal); color:var(--white); }
-
-    /* WRAP */
     .wrap { max-width:1380px; margin:0 auto; padding:24px 28px 60px; }
-
-    /* KPI ROW */
     .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:12px; margin-bottom:20px; }
     .kpi { background:var(--panel); border:1px solid var(--border); border-radius:var(--r); padding:20px 18px; position:relative; overflow:hidden; transition:background 0.2s, transform 0.2s; cursor:default; }
     .kpi::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--teal),var(--teal-lt)); opacity:0; transition:opacity 0.2s; }
@@ -72,13 +60,9 @@
     .kpi.gr .kv { color:var(--green); }
     .kpi.se .kv { color:var(--blue); }
     .ks { font-size:0.7rem; color:var(--dim); margin-top:6px; }
-
-    /* GRID */
     .g2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
     .gf { margin-bottom:16px; }
     @media(max-width:960px) { .g2 { grid-template-columns:1fr; } }
-
-    /* PANEL */
     .p { background:var(--panel); border:1px solid var(--border); border-radius:var(--r); overflow:hidden; }
     .ph { padding:15px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
     .pt { font-size:0.86rem; font-weight:700; color:var(--white); }
@@ -87,8 +71,6 @@
     .tt { background:var(--teal-dim); color:var(--teal-lt); }
     .tg { background:rgba(34,197,94,0.1); color:var(--green); }
     .pb { padding:20px; }
-
-    /* BARS */
     .bars { display:flex; flex-direction:column; gap:13px; }
     .br { display:flex; align-items:center; gap:10px; }
     .bl { font-size:0.76rem; color:rgba(255,255,255,0.6); width:120px; flex-shrink:0; text-align:right; }
@@ -102,16 +84,12 @@
     .b-pink   { background:linear-gradient(90deg,#9d174d,#f472b6); }
     .bn { font-size:0.78rem; font-weight:700; color:var(--white); width:38px; text-align:right; }
     .bp { font-size:0.68rem; color:var(--dim); width:34px; }
-
-    /* TREND */
     .trend { display:flex; align-items:flex-end; gap:5px; height:110px; }
     .tc { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; height:100%; justify-content:flex-end; }
     .tc:hover .tb2 { filter:brightness(1.4); }
     .tb2 { width:100%; border-radius:3px 3px 0 0; min-height:3px; transition:height 1.2s cubic-bezier(.22,1,.36,1); background:linear-gradient(180deg,var(--teal-lt),var(--teal)); }
     .tm { font-size:0.6rem; color:var(--dim); margin-top:3px; }
     .tv { font-size:0.6rem; color:var(--muted); }
-
-    /* SESSION TABLE */
     .st { width:100%; border-collapse:collapse; }
     .st th { font-size:0.65rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); padding:0 8px 10px 0; text-align:left; border-bottom:1px solid var(--border); }
     .st td { padding:11px 8px 11px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.8rem; vertical-align:middle; }
@@ -121,21 +99,15 @@
     .sty { font-size:0.68rem; color:var(--muted); margin-top:2px; }
     .nc { font-weight:700; color:var(--white); }
     .mc2 { color:var(--teal-lt); font-weight:600; }
-
-    /* STATUS GRID */
     .sg { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
     .sc { background:rgba(255,255,255,0.03); border-radius:8px; padding:14px; text-align:center; }
     .sv { font-family:var(--font-h); font-size:1.7rem; font-weight:800; line-height:1; }
     .sl2 { font-size:0.68rem; color:var(--muted); margin-top:5px; }
     .s-gr { color:var(--green); } .s-am { color:var(--amber); } .s-rd { color:var(--red); }
-
-    /* ENG ROWS */
     .er { display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
     .er:last-child { border-bottom:none; }
     .el { font-size:0.8rem; color:rgba(255,255,255,0.65); }
     .ev { font-family:var(--font-h); font-size:1.05rem; font-weight:800; color:var(--white); }
-
-    /* CHARITY */
     .ch-hero { padding:22px 20px; background:rgba(34,197,94,0.07); border-bottom:1px solid rgba(34,197,94,0.14); display:flex; align-items:center; gap:18px; }
     .ch-num { font-family:var(--font-h); font-size:3rem; font-weight:800; color:var(--green); line-height:1; letter-spacing:-0.04em; }
     .ch-sub { font-size:0.7rem; color:var(--green); font-weight:600; margin-top:4px; }
@@ -161,9 +133,7 @@
     .mb-d { background:rgba(34,197,94,0.12); color:var(--green); }
     .mb-n { background:rgba(77,170,170,0.1); color:var(--teal-lt); }
     .mb-f { background:rgba(255,255,255,0.04); color:var(--dim); }
-
     .empty { color:var(--muted); font-size:0.8rem; text-align:center; padding:28px; }
-
     footer { max-width:1380px; margin:0 auto; padding:20px 28px 40px; border-top:1px solid var(--border); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:0.72rem; color:var(--dim); }
     footer a { color:var(--teal-lt); }
   </style>
@@ -229,10 +199,10 @@
 
   <div class="g2">
     <div class="p">
-      <div class="ph"><div><div class="pt">Session Engagement</div><div class="ps">Live &amp; replay data from Session Log</div></div><span class="tag tt">Sessions</span></div>
+      <div class="ph"><div><div class="pt">Session Engagement</div><div class="ps">Grouped by session type — live &amp; replay</div></div><span class="tag tt">Sessions</span></div>
       <div class="pb">
         <table class="st">
-          <thead><tr><th>Session</th><th>Live</th><th>Mins</th><th>Replays</th><th>Mins</th></tr></thead>
+          <thead><tr><th>Session Type</th><th>Live</th><th>Mins</th><th>Replays</th><th>Mins</th></tr></thead>
           <tbody id="sess-body"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
         </table>
       </div>
@@ -283,30 +253,45 @@
 </div>
 
 <footer>
-  <span>© 2026 VYVE Health Ltd · All data is aggregate only · GDPR compliant · Auto-refreshes every 5 minutes</span>
-  <span><a href="/cdn-cgi/l/email-protection#ee868b828281ae9897988b868b8f829a86c08d81c09b85"><span class="__cf_email__" data-cfemail="0c64696060634c7a757a6964696d607864226f63227967">[email&#160;protected]</span></a></span>
+  <span>© 2026 VYVE Health CIC · All data is aggregate only · GDPR compliant · ICO: C1897826 · Auto-refreshes every 5 minutes</span>
+  <span><a href="mailto:team@vyvehealth.co.uk">team@vyvehealth.co.uk</a></span>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// ═══════════════════════════════════════
-// APPS SCRIPT API — live data relay
-// ═══════════════════════════════════════
-const API_URL = 'https://script.google.com/macros/s/AKfycbygoj5S-tcZjLbcmqTJRoZsGkUxA6YIoobpDNV-XE1Hmxy2ZwaV5Yof8xxv8tU3Mn4/exec';
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbynIhz4y74Dvlk0FFwyIrGyLjsfYssAAkPj9EcRxsLlQlYkvSnDhVpj4WkD8OczDS_i/exec';
 
-// ═══════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════
 let activeCo = 'ALL';
 let DATA = null;
 
-// ═══════════════════════════════════════
-// BOOT
-// ═══════════════════════════════════════
+// Session name -> display category mapping
+// Based on actual Session Log data observed
+function getSessionCategory(sessionName, pageUrl) {
+  const n = (sessionName||'').toLowerCase();
+  const u = (pageUrl||'').toLowerCase();
+  if (u.includes('/podcast') || n.includes('podcast')) return 'Podcast';
+  if (n.includes('yoga') || n.includes('pilates') || n.includes('stretch')) return 'Yoga, Pilates & Stretch';
+  if (n.includes('mindfulness') || n.includes('mindset')) return 'Mindfulness & Mindset';
+  if (n.includes('workout')) return 'Workouts';
+  if (n.includes('check-in') || n.includes('check in') || n.includes('weekly')) return 'Weekly Check-In';
+  if (n.includes('therapy')) return 'Group Therapy';
+  if (n.includes('education') || n.includes('expert')) return 'Education & Experts';
+  if (n.includes('event') || n.includes('run club')) return 'Events & Run Club';
+  return null; // drop unknowns
+}
+
+const SESS_ORDER = [
+  'Yoga, Pilates & Stretch',
+  'Mindfulness & Mindset',
+  'Workouts',
+  'Weekly Check-In',
+  'Group Therapy',
+  'Education & Experts',
+  'Events & Run Club',
+  'Podcast',
+];
+
 window.addEventListener('DOMContentLoaded', () => setTimeout(loadAll, 500));
 
-// ═══════════════════════════════════════
-// FETCH
-// ═══════════════════════════════════════
 async function fetchTab(tab) {
   const url = `${API_URL}?tab=${tab}`;
   const r = await fetch(url);
@@ -316,13 +301,9 @@ async function fetchTab(tab) {
   return json.rows || [];
 }
 
-// ═══════════════════════════════════════
-// LOAD ALL
-// ═══════════════════════════════════════
 async function loadAll() {
   msg('Loading members…');
   try {
-    // Fetch with timeout to avoid silent hangs
     const withTimeout = (promise, ms=15000) => Promise.race([
       promise,
       new Promise((_,rej)=>setTimeout(()=>rej(new Error('Request timed out after '+ms/1000+'s')),ms))
@@ -366,9 +347,6 @@ async function refresh() {
 
 function msg(t){document.getElementById('l-msg').textContent=t;}
 
-// ═══════════════════════════════════════
-// COMPANY TABS
-// ═══════════════════════════════════════
 function buildCoTabs() {
   const cos = [...new Set(DATA.members.map(r=>(r['Company']||r['company']||'').trim()).filter(Boolean).filter(c=>c.length>0))].sort();
   const wrap = document.getElementById('ctabs');
@@ -388,11 +366,7 @@ function switchCo(co, btn) {
   if(DATA) render(co);
 }
 
-// ═══════════════════════════════════════
-// RENDER
-// ═══════════════════════════════════════
 function render(co) {
-  // Build email->company lookup from Members tab
   const emailCo = {};
   DATA.members.forEach(m => {
     const email = (m['Email Address']||m['Email']||m['email']||'').trim().toLowerCase();
@@ -400,22 +374,16 @@ function render(co) {
     if(email) emailCo[email] = company;
   });
 
-  // Filter members by company
   const fm = rows => co==='ALL' ? rows : rows.filter(r=>(r['Company']||r['company']||'').trim()===co);
-
-  // Filter activity rows by looking up email in Members tab
   const fa = rows => {
     if(co==='ALL') return rows;
     return rows.filter(r=>{
       const email = (r['Email']||r['email']||r['Email Address']||'').trim().toLowerCase();
-      // Also try Company column if it exists on the row
       const rowCo = (r['Company']||r['company']||'').trim();
       if(rowCo) return rowCo === co;
       return emailCo[email] === co;
     });
   };
-
-  // Filter session log rows by email lookup
   const fs = rows => {
     if(co==='ALL') return rows;
     return rows.filter(r=>{
@@ -438,7 +406,6 @@ function render(co) {
   const totalA = hC+cC+wC+caC;
   const avg = totalM>0 ? (totalA/totalM).toFixed(1) : '—';
 
-  // This month
   const now=new Date();
   const ym=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
   const thisM=[...habits,...checkins,...workouts,...cardio].filter(r=>{
@@ -446,39 +413,21 @@ function render(co) {
     return d&&`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`===ym;
   }).length;
 
-  // Charity
   const donated=Math.floor(totalA/30);
   const rem=totalA%30;
   const pct=Math.round((rem/30)*100);
 
-  // Sessions
+  // Sessions — aggregate by event_type first for KPI totals
   let lv=0,lm=0,rv=0,rm=0;
   sessions.forEach(r=>{
-    // Session Log columns: Timestamp, First Name, Last Name, Email, Event Type, Session, Page URL, Minutes Watched
-    // We'll aggregate by event_type: live_accessed vs session_watched
     const et=(r['Event Type']||r['event_type']||'').toLowerCase();
     const mins=parseFloat(r['Minutes Watched']||r['minutes_watched']||0)||0;
-    if(et==='live_accessed')      { lv++; lm+=mins; }
-    else if(et==='session_watched'){ rv++; rm+=mins; }
-    else if(et==='live_viewed')    { lv++; lm+=mins; }
-    else if(et==='replay_viewed')  { rv++; rm+=mins; }
-    // Also handle explicit columns if present
-    lv += num(r['Live Views']||r['live_views']||0);
-    lm += parseFloat(r['Live Minutes']||r['live_minutes']||0)||0;
-    rv += num(r['Replay Views']||r['replay_views']||0);
-    rm += parseFloat(r['Replay Minutes']||r['replay_minutes']||0)||0;
+    if(et==='live_accessed'||et==='live_viewed')       { lv++; lm+=mins; }
+    else if(et==='session_watched'||et==='replay_accessed'||et==='replay_viewed') { rv++; rm+=mins; }
   });
-  // Deduplicate: if explicit columns exist, don't double count event_type
-  // Simple approach — if explicit Live Views col exists and >0, use that instead
-  const hasExplicitCols = sessions.some(r=>r['Live Views']||r['live_views']);
-  let finalLV=lv, finalLM=Math.round(lm), finalRV=rv, finalRM=Math.round(rm);
-  if(!hasExplicitCols) {
-    // Used event_type counting above — that's correct
-    finalLV=lv; finalLM=Math.round(lm); finalRV=rv; finalRM=Math.round(rm);
-  }
+  const finalLV=lv, finalLM=Math.round(lm), finalRV=rv, finalRM=Math.round(rm);
 
-  // Member status — calculated from days_inactive in Dashboard tab
-  // Active = 0-7 days inactive, Quiet = 8-60 days, Inactive = 60+ or never logged
+  // Member status
   let sAc=0, sAm=0, sRd=0;
   const dashRows = DATA.dashdata
     ? (co === 'ALL' ? DATA.dashdata : DATA.dashdata.filter(r=>(r['Company']||'').trim()===co))
@@ -493,7 +442,6 @@ function render(co) {
       else sAc++;
     });
   } else {
-    // Fallback to members tab status emoji if dashboard tab unavailable
     members.forEach(m=>{
       const s=(m['Status']||m['status']||'').toLowerCase();
       if(s.includes('inactive')) sRd++;
@@ -503,11 +451,9 @@ function render(co) {
   }
   if(sAc+sAm+sRd===0) sAc=totalM;
 
-  // Trend
   const trend = buildTrend([...habits,...checkins,...workouts,...cardio]);
   const peak = trend.length ? trend.reduce((a,b)=>a.n>b.n?a:b,trend[0]) : null;
 
-  // Activity bar data
   const actD=[
     {label:'Daily Habits',    n:hC,  cls:'b-teal'},
     {label:'Weekly Check-ins',n:cC,  cls:'b-green'},
@@ -520,7 +466,6 @@ function render(co) {
   const grandT=actD.reduce((s,a)=>s+a.n,0)||1;
   const topAct=[...actD].sort((a,b)=>b.n-a.n)[0];
 
-  // ── Set KPIs ──
   const engageRate = totalM > 0 ? Math.round((sAc / totalM) * 100) : 0;
   set('k-members',  totalM);
   set('k-engage',   engageRate + '%');
@@ -536,7 +481,6 @@ function render(co) {
   set('avg-disp',   avg+' acts');
   set('top-act',    topAct?topAct.label:'—');
 
-  // ── Activity bars ──
   document.getElementById('act-bars').innerHTML = actD.map(a=>`
     <div class="br">
       <span class="bl">${a.label}</span>
@@ -545,38 +489,41 @@ function render(co) {
       <span class="bp">${Math.round((a.n/grandT)*100)}%</span>
     </div>`).join('');
 
-  // ── Trend ──
   renderTrend(trend, peak);
 
-  // ── Session table ──
-  // Group sessions by session name and aggregate
-  const sessMap={};
-  sessions.forEach(r=>{
-    const name=r['Session']||r['session']||r['Session Name']||'Unknown';
-    const et=(r['Event Type']||r['event_type']||'').toLowerCase();
-    const mins=parseFloat(r['Minutes Watched']||r['minutes_watched']||0)||0;
-    if(!sessMap[name]) sessMap[name]={name,lv:0,lm:0,rv:0,rm:0};
-    if(et.includes('live')) { sessMap[name].lv++; sessMap[name].lm+=mins; }
-    else if(et.includes('session')||et.includes('watch')||et.includes('replay')) { sessMap[name].rv++; sessMap[name].rm+=mins; }
-    else if(et==='live_accessed'||et==='live_viewed') { sessMap[name].lv++; sessMap[name].lm+=mins; }
-    else { sessMap[name].rv++; sessMap[name].rm+=mins; }
+  // ── Session table — group by category ──
+  const catMap = {};
+  sessions.forEach(r => {
+    const sessionName = r['Session']||r['session']||r['Session Name']||'';
+    const pageUrl = r['Page URL']||r['page_url']||'';
+    const cat = getSessionCategory(sessionName, pageUrl);
+    if (!cat) return; // drop page_viewed and unknown non-session events
+    const et = (r['Event Type']||r['event_type']||'').toLowerCase();
+    const mins = parseFloat(r['Minutes Watched']||r['minutes_watched']||0)||0;
+    if (!catMap[cat]) catMap[cat] = {lv:0,lm:0,rv:0,rm:0};
+    if (et==='live_accessed'||et==='live_viewed') { catMap[cat].lv++; catMap[cat].lm+=mins; }
+    else if (et==='session_watched'||et==='replay_accessed'||et==='replay_viewed') { catMap[cat].rv++; catMap[cat].rm+=mins; }
   });
-  const sessArr=Object.values(sessMap).filter(s=>s.name&&s.name!=='Unknown');
-  document.getElementById('sess-body').innerHTML = sessArr.length===0
+
+  const sessRows = SESS_ORDER
+    .filter(cat => catMap[cat])
+    .map(cat => ({cat, ...catMap[cat]}));
+
+  document.getElementById('sess-body').innerHTML = sessRows.length===0
     ? '<tr><td colspan="5" class="empty">No session data yet — Session Log will populate as members view sessions</td></tr>'
-    : sessArr.map(s=>`<tr>
-        <td><div class="sn2">${s.name}</div></td>
-        <td class="nc">${s.lv}</td><td class="mc2">${Math.round(s.lm)}</td>
-        <td class="nc">${s.rv}</td><td class="mc2">${Math.round(s.rm)}</td>
+    : sessRows.map(s=>`<tr>
+        <td><div class="sn2">${s.cat}</div></td>
+        <td class="nc">${s.lv}</td>
+        <td class="mc2">${Math.round(s.lm)}</td>
+        <td class="nc">${s.rv}</td>
+        <td class="mc2">${Math.round(s.rm)}</td>
       </tr>`).join('');
 
-  // ── Status ──
   set('s-active',sAc); set('s-amber',sAm); set('s-red',sRd);
   set('e-total',totalM); set('e-habits',hC); set('e-checkins',cC);
   set('e-workouts',wC); set('e-cardio',caC);
   set('e-peak', peak?peak.label:'—');
 
-  // ── Charity ──
   set('ch-num',donated);
   set('prog-lbl',`${rem} / 30 activities`);
   document.getElementById('prog-f').style.width=pct+'%';
@@ -584,9 +531,6 @@ function render(co) {
   renderMilestones(totalA);
 }
 
-// ═══════════════════════════════════════
-// TREND
-// ═══════════════════════════════════════
 function buildTrend(rows) {
   const map={};
   rows.forEach(r=>{
@@ -614,9 +558,6 @@ function renderTrend(trend, peak) {
     </div>`).join('');
 }
 
-// ═══════════════════════════════════════
-// MILESTONES
-// ═══════════════════════════════════════
 function renderMilestones(total){
   const MS=[
     {a:30,  mo:1,  lbl:'First Impact',       icon:'🌱'},
@@ -641,22 +582,16 @@ function renderMilestones(total){
   }).join('');
 }
 
-// ═══════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════
 function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
 function num(v){return parseInt(String(v).replace(/[^0-9.-]/g,''))||0;}
 function pd(s){
   if(!s)return null;
   s=String(s).trim();
   if(!s)return null;
-  // DD/MM/YYYY
   let m=s.match(/^(\d{1,2})[\-\/](\d{1,2})[\-\/](\d{4})/);
   if(m) return new Date(+m[3],+m[2]-1,+m[1]);
-  // YYYY-MM-DD
   m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if(m) return new Date(+m[1],+m[2]-1,+m[3]);
-  // Long format from Apps Script: "Mon Dec 01 2025 00:00:00 GMT..."
   const d=new Date(s);
   return isNaN(d.getTime())?null:d;
 }
