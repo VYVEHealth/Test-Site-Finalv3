@@ -1191,9 +1191,6 @@ function renderOwnerList(items, containerId, color, owner) {
 function renderAll() {
   renderOwnerList(deanActions, 'deanGrid', '#3db89f', 'Dean');
   renderOwnerList(lewisActions, 'lewisGrid', '#c9a84c', 'Lewis');
-
-loadTicks();
-setInterval(loadTicks, 30000);
 }
 
 // Load ticks then render — poll every 30s so Lewis sees Dean's ticks
