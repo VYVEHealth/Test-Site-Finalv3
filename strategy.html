@@ -4,49 +4,49 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VYVE Health — Business Intelligence Dashboard</title>
-<script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  const ALLOWED = ['deanonbrown@hotmail.com', 'lewisvines@hotmail.com'];
-  const DOMAIN  = 'dev-340hbcgnjubvwb85.uk.auth0.com';
-  const CLIENT  = 'F7LMC3G7QCZOiAyxheEhAz3lhLcsAA7v';
-  const REDIRECT = window.location.origin + window.location.pathname;
-
-  const auth0 = await window.auth0.createAuth0Client({
-    domain: DOMAIN,
-    clientId: CLIENT,
-    authorizationParams: { redirect_uri: REDIRECT }
-  });
-
-  if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-    await auth0.handleRedirectCallback();
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-
-  const isAuthenticated = await auth0.isAuthenticated();
-
-  if (!isAuthenticated) {
-    await auth0.loginWithRedirect({ authorizationParams: { redirect_uri: REDIRECT } });
+(function() {
+  const PASS = 'vyve2026';
+  const KEY  = 'vyve_strategy_auth';
+  if (sessionStorage.getItem(KEY) === 'ok') {
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.style.display = 'block';
+    });
     return;
   }
-
-  const user = await auth0.getUser();
-
-  if (!ALLOWED.includes((user.email || '').toLowerCase())) {
+  document.addEventListener('DOMContentLoaded', () => {
     document.body.style.display = 'flex';
+    document.body.style.alignItems = 'center';
+    document.body.style.justifyContent = 'center';
+    document.body.style.minHeight = '100vh';
+    document.body.style.background = '#0d1f1c';
     document.body.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;width:100%;background:#0d1f1c;font-family:sans-serif;flex-direction:column;gap:16px">
-        <div style="color:#e05555;font-size:18px;font-weight:500">Access restricted</div>
-        <div style="color:#7a9e99;font-size:14px">This dashboard is for authorised VYVE team members only.</div>
-        <div style="color:#4a6b66;font-size:12px">${user.email}</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:20px;padding:40px;">
+        <div style="font-family:'Playfair Display',serif;font-size:28px;color:#3db89f;font-weight:700;">VYVE</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:14px;color:#7a9e99;">Strategy Dashboard · Confidential</div>
+        <input id="passInput" type="password" placeholder="Enter password"
+          style="padding:12px 20px;border-radius:8px;border:1px solid rgba(61,184,159,0.3);background:rgba(255,255,255,0.05);color:#e8f0ef;font-size:15px;font-family:'DM Sans',sans-serif;width:260px;outline:none;"
+          onkeydown="if(event.key==='Enter')checkPass()" />
+        <button onclick="checkPass()"
+          style="padding:10px 32px;background:#3db89f;color:#0d1f1c;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">
+          Enter
+        </button>
+        <div id="passError" style="color:#e05555;font-size:13px;font-family:'DM Sans',sans-serif;display:none;">Incorrect password</div>
       </div>`;
-    return;
-  }
-
-  document.body.style.display = 'block';
-  const emailEl = document.getElementById('user-email');
-  if (emailEl) emailEl.textContent = user.email;
-});
+    setTimeout(() => document.getElementById('passInput').focus(), 100);
+  });
+  window.checkPass = function() {
+    const val = document.getElementById('passInput').value;
+    if (val === PASS) {
+      sessionStorage.setItem(KEY, 'ok');
+      location.reload();
+    } else {
+      document.getElementById('passError').style.display = 'block';
+      document.getElementById('passInput').value = '';
+      document.getElementById('passInput').focus();
+    }
+  };
+})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
