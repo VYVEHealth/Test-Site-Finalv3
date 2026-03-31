@@ -1,0 +1,2513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VYVE Health — Your Personal Wellbeing Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dark:    #0D2B2B;
+  --dark2:   #0a2020;
+  --teal:    #1B7878;
+  --teal-lt: #4DAAAA;
+  --teal-xl: #7AC8C8;
+  --gold:    #C9A84C;
+  --white:   #FFFFFF;
+  --off:     #E8F4F4;
+  --muted:   rgba(255,255,255,0.65);
+  --border:  rgba(77,170,170,0.3);
+  --error:   #FF6B6B;
+  --success: #4DAAAA;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--dark);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Background texture ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 20%, rgba(27,120,120,0.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 80%, rgba(201,168,76,0.06) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Progress bar ── */
+.progress-wrap {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(13,43,43,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  letter-spacing: 4px;
+  color: var(--white);
+  white-space: nowrap;
+}
+
+.progress-track {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--teal-lt));
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0%;
+}
+
+.progress-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.75);
+  white-space: nowrap;
+  min-width: 60px;
+  text-align: right;
+}
+
+/* ── Main container ── */
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 100px 24px 80px;
+}
+
+/* ── Sections ── */
+.section {
+  display: none;
+  animation: fadeUp 0.4s ease;
+}
+
+.section.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Section header ── */
+.section-tag {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--teal-xl);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 5vw, 38px);
+  font-weight: 400;
+  line-height: 1.25;
+  margin-bottom: 10px;
+  color: var(--white);
+}
+
+.section-sub {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 40px;
+  max-width: 520px;
+}
+
+/* ── Question groups ── */
+.q-group {
+  margin-bottom: 32px;
+}
+
+.q-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--white);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.q-hint {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* ── Inputs ── */
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.input-row.three { grid-template-columns: 1fr 1fr 1fr; }
+.input-row.single { grid-template-columns: 1fr; }
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--white);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  -webkit-appearance: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(0.5);
+}
+
+input::placeholder { color: rgba(255,255,255,0.3); }
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--teal-lt);
+  background: rgba(77,170,170,0.08);
+}
+
+input.error { border-color: var(--error); }
+
+select option { background: var(--dark); color: var(--white); }
+
+.field-error {
+  font-size: 12px;
+  color: var(--error);
+  margin-top: 6px;
+  display: none;
+}
+
+.field-error.show { display: block; }
+
+/* ── Toggle unit buttons ── */
+.unit-toggle {
+  display: flex;
+  gap: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+  width: fit-content;
+}
+
+.unit-btn {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.unit-btn.active {
+  background: var(--teal);
+  color: var(--white);
+}
+
+/* ── Choice chips ── */
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.choice {
+  padding: 11px 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.9);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.choice:hover {
+  border-color: var(--teal-lt);
+  background: rgba(77,170,170,0.08);
+}
+
+.choice.selected {
+  border-color: var(--teal-lt);
+  background: rgba(77,170,170,0.15);
+  color: var(--teal-lt);
+}
+
+/* ── Slider ── */
+.slider-wrap {
+  margin-top: 8px;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 8px;
+}
+
+.slider-value-display {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 8px;
+  font-family: 'Playfair Display', serif;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 2px;
+  outline: none;
+  border: none;
+  padding: 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--teal-lt);
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(77,170,170,0.2);
+  transition: box-shadow 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 6px rgba(77,170,170,0.3);
+}
+
+/* ── TDEE result block ── */
+.tdee-result {
+  background: rgba(77,170,170,0.08);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  margin-top: 24px;
+  display: none;
+}
+
+.tdee-result.show { display: block; }
+
+.tdee-number {
+  font-size: 48px;
+  font-family: 'Playfair Display', serif;
+  color: var(--teal-lt);
+  font-weight: 600;
+}
+
+.tdee-unit {
+  font-size: 16px;
+  color: var(--muted);
+  margin-left: 6px;
+}
+
+.tdee-label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+  margin-bottom: 20px;
+}
+
+.tdee-adjust-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.tdee-warning {
+  font-size: 13px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+}
+
+.tdee-warning.ok    { color: #4ade80; }
+.tdee-warning.amber { color: var(--gold); }
+.tdee-warning.red   { color: var(--error); }
+
+/* ── Section divider ── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 32px 0;
+}
+
+/* ── Navigation buttons ── */
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 48px;
+  gap: 16px;
+}
+
+.btn-back {
+  padding: 14px 24px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-back:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
+
+.btn-next {
+  padding: 16px 40px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, var(--teal), var(--teal-lt));
+  color: var(--white);
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  max-width: 280px;
+  margin-left: auto;
+}
+
+.btn-next:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(27,120,120,0.4);
+}
+
+.btn-next:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-skip {
+  font-size: 13px;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.btn-skip:hover { color: var(--white); }
+
+/* ── Welcome / intro screen ── */
+.intro-screen {
+  text-align: center;
+  padding: 40px 0;
+}
+
+.intro-icon {
+  width: 72px;
+  height: 72px;
+  background: rgba(77,170,170,0.1);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+  font-size: 32px;
+}
+
+.video-placeholder {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 40px;
+  margin: 28px 0;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.video-placeholder:hover { border-color: var(--teal-lt); background: rgba(77,170,170,0.05); }
+
+.video-play {
+  width: 56px;
+  height: 56px;
+  background: var(--teal);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.video-play::after {
+  content: '';
+  border-left: 20px solid white;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  margin-left: 4px;
+}
+
+.path-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.path-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.path-card:hover, .path-card.selected {
+  border-color: var(--teal-lt);
+  background: rgba(77,170,170,0.08);
+}
+
+.path-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.path-card-sub {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.path-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.badge-gold { background: rgba(201,168,76,0.15); color: var(--gold); }
+.badge-teal { background: rgba(77,170,170,0.15); color: var(--teal-lt); }
+
+/* ── Baseline scores grid ── */
+.scores-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.score-item {}
+.score-item .q-label { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Results loading ── */
+.loading-screen {
+  display: none;
+  text-align: center;
+  padding: 80px 24px;
+}
+
+.loading-screen.active { display: block; }
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--teal-lt);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 24px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Recommendation result ── */
+.result-screen {
+  display: none;
+}
+
+.result-screen.active { display: block; }
+
+.result-card {
+  background: rgba(77,170,170,0.06);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+}
+
+.result-card-title {
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--teal-lt);
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+
+.result-card p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.85);
+}
+
+/* ── Responsive ── */
+@media (max-width: 520px) {
+  .input-row { grid-template-columns: 1fr; }
+  .input-row.three { grid-template-columns: 1fr 1fr; }
+  .path-choice { grid-template-columns: 1fr; }
+  .scores-grid { grid-template-columns: 1fr; }
+  .nav-row { flex-direction: column; }
+  .btn-next { max-width: 100%; }
+}
+
+/* ── Score recap banner ── */
+.score-recap {
+  background: rgba(77,170,170,0.08);
+  border: 1px solid rgba(77,170,170,0.25);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+
+.recap-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+}
+
+.recap-label {
+  font-size: 15px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.5;
+}
+
+.recap-value {
+  font-size: 32px;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.recap-skip-prompt {
+  display: none;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.recap-skip-prompt.show { display: block; }
+
+.recap-skip-msg {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 14px;
+}
+
+.recap-skip-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-skip-yes {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.9);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-skip-yes:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.35);
+}
+
+.btn-skip-no {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(77,170,170,0.4);
+  background: rgba(77,170,170,0.1);
+  color: var(--teal-lt);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-skip-no:hover {
+  background: rgba(77,170,170,0.18);
+}
+</style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress-wrap">
+  <div class="logo">VYVE</div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 of 9</div>
+</div>
+
+<div class="container">
+
+  <!-- ══════════════════════════════════════════
+       SECTION 0 — WELCOME
+  ══════════════════════════════════════════ -->
+  <div class="section active" id="s0">
+    <div class="intro-screen">
+      <div class="intro-icon">✦</div>
+      <div class="section-tag">Welcome to VYVE</div>
+      <h1 class="section-title">Let's build your personal wellbeing plan</h1>
+      <p class="section-sub">This questionnaire helps us understand you — your goals, your lifestyle, and what support looks like for you. The more you share, the more tailored your experience will be.</p>
+
+      <div class="video-placeholder" id="videoPlaceholder">
+        <div class="video-play"></div>
+        <div style="font-size:15px; font-weight:500; color:var(--white); margin-bottom:4px;">A message from the VYVE team</div>
+        <div style="font-size:13px; color:var(--muted);">60 seconds — why this matters</div>
+      </div>
+
+      <div class="path-choice">
+        <div class="path-card selected" id="pathFull" onclick="selectPath('full')">
+          <div class="path-badge badge-gold">Recommended</div>
+          <div class="path-card-title">Full questionnaire</div>
+          <div class="path-card-sub">~5 minutes. Unlocks fully personalised recommendations, your weekly schedule, and AI coaching from day one.</div>
+        </div>
+        <div class="path-card" id="pathQuick" onclick="selectPath('quick')">
+          <div class="path-badge badge-teal">Quick start</div>
+          <div class="path-card-title">Get started now</div>
+          <div class="path-card-sub">Just the essentials. You can complete your full profile later from the dashboard.</div>
+        </div>
+      </div>
+
+      <div class="nav-row" style="justify-content:flex-end; margin-top:32px;">
+        <button class="btn-next" onclick="startQuestionnaire()">Let's go →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 1 — CONTACT & STATS
+  ══════════════════════════════════════════ -->
+  <div class="section" id="s1">
+    <div class="section-tag">Section A</div>
+    <h2 class="section-title">About you</h2>
+    <p class="section-sub">Let's start with the basics. This is how we'll personalise everything and keep in touch.</p>
+
+    <div class="q-group">
+      <div class="input-row">
+        <div>
+          <label class="q-label">First name</label>
+          <input type="text" id="firstName" placeholder="Jane" oninput="validateField(this)" required>
+          <div class="field-error" id="err-firstName">Please enter your first name</div>
+        </div>
+        <div>
+          <label class="q-label">Last name</label>
+          <input type="text" id="lastName" placeholder="Smith" oninput="validateField(this)" required>
+          <div class="field-error" id="err-lastName">Please enter your last name</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <div class="input-row">
+        <div>
+          <label class="q-label">Email address</label>
+          <input type="email" id="email" placeholder="jane@example.com" oninput="validateEmail(this)" onblur="validateEmail(this)" required>
+          <div class="field-error" id="err-email">Please enter a valid email address</div>
+        </div>
+        <div>
+          <label class="q-label">Mobile number <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+          <input type="tel" id="phone" placeholder="+44 7700 900000">
+          <div class="field-error" id="err-phone"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <div class="input-row single">
+        <div>
+          <label class="q-label">Confirm email address</label>
+          <input type="email" id="emailConfirm" placeholder="Re-enter your email address" oninput="validateEmailConfirm(this)" onpaste="return false;" autocomplete="off">
+          <div class="field-error" id="err-emailConfirm"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <div class="input-row">
+        <div>
+          <label class="q-label">Date of birth</label>
+          <input type="date" id="dob" onchange="validateDOB(this)" required>
+          <div class="field-error" id="err-dob">You must be aged 16 or over to join VYVE</div>
+        </div>
+        <div>
+          <label class="q-label">Gender</label>
+          <select id="gender">
+            <option value="">Select...</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">Where are you based?</label>
+      <span class="q-hint">City or town — helps us with local events and community</span>
+      <input type="text" id="location" placeholder="e.g. Manchester">
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(0)">← Back</button>
+      <button class="btn-next" onclick="nextSection(1)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 2 — WELLBEING BASELINE
+  ══════════════════════════════════════════ -->
+  <div class="section" id="s2">
+    <div class="section-tag">Section B</div>
+    <h2 class="section-title">How are you doing right now?</h2>
+    <p class="section-sub">These scores become your baseline. Each week we'll check in and show you how you're progressing over time.</p>
+
+    <div id="sliderHelp" style="display:none; margin-bottom:20px; padding:14px 18px; background:rgba(77,170,170,0.06); border-radius:10px; border:1px solid rgba(77,170,170,0.2);">
+      <div style="font-size:13px; color:rgba(255,255,255,0.75);">Rate yourself in the areas you selected above. These become your baseline — we'll track your progress week by week.</div>
+    </div>
+    <div class="scores-grid">
+      <div class="score-item q-group" id="score-wellbeing">
+        <label class="q-label">Overall wellbeing</label>
+        <div class="slider-value-display" id="val-wellbeing">5</div>
+        <div class="slider-wrap">
+          <div class="slider-labels"><span>1 · Struggling</span><span>10 · Thriving</span></div>
+          <input type="range" min="1" max="10" value="5" id="sl-wellbeing" oninput="updateSlider('wellbeing')">
+        </div>
+      </div>
+
+      <div class="score-item q-group" id="score-sleep">
+        <label class="q-label">Sleep quality</label>
+        <div class="slider-value-display" id="val-sleep">5</div>
+        <div class="slider-wrap">
+          <div class="slider-labels"><span>1 · Very poor</span><span>10 · Excellent</span></div>
+          <input type="range" min="1" max="10" value="5" id="sl-sleep" oninput="updateSlider('sleep')">
+        </div>
+      </div>
+
+      <div class="score-item q-group" id="score-energy">
+        <label class="q-label">Energy levels</label>
+        <div class="slider-value-display" id="val-energy">5</div>
+        <div class="slider-wrap">
+          <div class="slider-labels"><span>1 · Exhausted</span><span>10 · Full of energy</span></div>
+          <input type="range" min="1" max="10" value="5" id="sl-energy" oninput="updateSlider('energy')">
+        </div>
+      </div>
+
+      <div class="score-item q-group" id="score-stress">
+        <label class="q-label">Stress levels</label>
+        <div class="slider-value-display" id="val-stress">5</div>
+        <div class="slider-wrap">
+          <div class="slider-labels"><span>1 · Very stressed</span><span>10 · Very calm</span></div>
+          <input type="range" min="1" max="10" value="5" id="sl-stress" oninput="updateSlider('stress')">
+        </div>
+      </div>
+
+      <div class="score-item q-group" id="score-physical">
+        <label class="q-label">Physical satisfaction</label>
+        <div class="slider-value-display" id="val-physical">5</div>
+        <div class="slider-wrap">
+          <div class="slider-labels"><span>1 · Very unhappy</span><span>10 · Very happy</span></div>
+          <input type="range" min="1" max="10" value="5" id="sl-physical" oninput="updateSlider('physical')">
+        </div>
+      </div>
+
+      <div class="score-item q-group" id="score-diet">
+        <label class="q-label">Diet satisfaction</label>
+        <div class="slider-value-display" id="val-diet">5</div>
+        <div class="slider-wrap">
+          <div class="slider-labels"><span>1 · Very unhappy</span><span>10 · Very happy</span></div>
+          <input type="range" min="1" max="10" value="5" id="sl-diet" oninput="updateSlider('diet')">
+        </div>
+      </div>
+
+      <div class="score-item q-group" id="score-social">
+        <label class="q-label">Social connection</label>
+        <div class="slider-value-display" id="val-social">5</div>
+        <div class="slider-wrap">
+          <div class="slider-labels"><span>1 · Very isolated</span><span>10 · Very connected</span></div>
+          <input type="range" min="1" max="10" value="5" id="sl-social" oninput="updateSlider('social')">
+        </div>
+      </div>
+
+      <div class="score-item q-group" id="score-motivation">
+        <label class="q-label">Motivation & purpose</label>
+        <div class="slider-value-display" id="val-motivation">5</div>
+        <div class="slider-wrap">
+          <div class="slider-labels"><span>1 · No direction</span><span>10 · Fully motivated</span></div>
+          <input type="range" min="1" max="10" value="5" id="sl-motivation" oninput="updateSlider('motivation')">
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="q-group">
+      <label class="q-label">What would you like support with?</label>
+      <span class="q-hint">Select all that apply — this shapes which sections appear next</span>
+      <div class="choices" id="supportAreas">
+        <div class="choice" onclick="toggleChoice(this, 'supportAreas'); updateSliderVisibility()" data-value="Mental health & emotional wellbeing">Mental health & emotional wellbeing</div>
+        <div class="choice" onclick="toggleChoice(this, 'supportAreas'); updateSliderVisibility()" data-value="Physical health & movement">Physical health & movement</div>
+        <div class="choice" onclick="toggleChoice(this, 'supportAreas'); updateSliderVisibility()" data-value="Sleep & recovery">Sleep & recovery</div>
+        <div class="choice" onclick="toggleChoice(this, 'supportAreas'); updateSliderVisibility()" data-value="Diet & nutrition">Diet & nutrition</div>
+        <div class="choice" onclick="toggleChoice(this, 'supportAreas'); updateSliderVisibility()" data-value="Social connection & community">Social connection & community</div>
+        <div class="choice" onclick="toggleChoice(this, 'supportAreas'); updateSliderVisibility()" data-value="Purpose, routine & motivation">Purpose, routine & motivation</div>
+        <div class="choice" onclick="toggleChoice(this, 'supportAreas'); updateSliderVisibility()" data-value="Just want guidance">I'm not sure — just want guidance</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">Which affects you most right now?</label>
+      <div class="choices" id="affectsMost">
+        <div class="choice" onclick="toggleChoice(this, 'affectsMost', true)" data-value="Low energy or tiredness">Low energy or tiredness</div>
+        <div class="choice" onclick="toggleChoice(this, 'affectsMost', true)" data-value="Stress or mental load">Stress or mental load</div>
+        <div class="choice" onclick="toggleChoice(this, 'affectsMost', true)" data-value="Sleep or recovery">Sleep or recovery</div>
+        <div class="choice" onclick="toggleChoice(this, 'affectsMost', true)" data-value="Motivation or routine">Motivation or routine</div>
+        <div class="choice" onclick="toggleChoice(this, 'affectsMost', true)" data-value="Social connection">Social connection</div>
+        <div class="choice" onclick="toggleChoice(this, 'affectsMost', true)" data-value="Physical health">Mainly physical health</div>
+        <div class="choice" onclick="toggleChoice(this, 'affectsMost', true)" data-value="Not sure">I'm not sure</div>
+      </div>
+    </div>
+
+
+
+    <div class="q-group">
+      <label class="q-label">Are there any specific areas you'd like support with? <span style="color:var(--muted); font-weight:400;">(optional)</span></label>
+      <div class="choices" id="specificSupport">
+        <div class="choice" onclick="toggleChoice(this, 'specificSupport')" data-value="Stress or anxiety">Stress or anxiety</div>
+        <div class="choice" onclick="toggleChoice(this, 'specificSupport')" data-value="Low mood">Low mood</div>
+        <div class="choice" onclick="toggleChoice(this, 'specificSupport')" data-value="Overthinking">Overthinking</div>
+        <div class="choice" onclick="toggleChoice(this, 'specificSupport')" data-value="Confidence or self-esteem">Confidence or self-esteem</div>
+        <div class="choice" onclick="toggleChoice(this, 'specificSupport')" data-value="Managing emotions">Managing emotions</div>
+        <div class="choice" onclick="toggleChoice(this, 'specificSupport')" data-value="Not sure">I'm not sure</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">What kind of support works best for you?</label>
+      <div class="choices" id="supportStyle">
+        <div class="choice" onclick="toggleChoice(this, 'supportStyle')" data-value="Gentle habits & reminders">Gentle habits & reminders</div>
+        <div class="choice" onclick="toggleChoice(this, 'supportStyle')" data-value="Reflection or journaling prompts">Reflection or journaling</div>
+        <div class="choice" onclick="toggleChoice(this, 'supportStyle')" data-value="Educational content">Educational content</div>
+        <div class="choice" onclick="toggleChoice(this, 'supportStyle')" data-value="Encouragement & accountability">Encouragement & accountability</div>
+        <div class="choice" onclick="toggleChoice(this, 'supportStyle')" data-value="Minimal check-ins">Minimal check-ins</div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(1)">← Back</button>
+      <button class="btn-next" onclick="nextSection(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 3 — PHYSICAL / TRAINING
+  ══════════════════════════════════════════ -->
+  <div class="section" id="s3">
+    <div class="section-tag">Section C · Physical Health</div>
+    <h2 class="section-title">Movement & training</h2>
+    <div class="score-recap" id="recapPhysical">
+      <div class="recap-row">
+        <div class="recap-label">You rated your physical satisfaction</div>
+        <div class="recap-value" id="recapPhysicalVal">5</div>
+        <div class="recap-label">out of 10.</div>
+      </div>
+      <div class="recap-skip-prompt" id="recapPhysicalSkip">
+        <div class="recap-skip-msg" id="recapPhysicalMsg"></div>
+        <div class="recap-skip-btns">
+          <button class="btn-skip-yes" onclick="skipSection(3)">Yes, skip this section</button>
+          <button class="btn-skip-no" onclick="hideSkipPrompt('recapPhysicalSkip')">No, I'd like to answer</button>
+        </div>
+      </div>
+    </div>
+    <p class="section-sub">Tell us about how you move — we'll use this to build your recommended weekly workout schedule.</p>
+
+    <div class="q-group">
+      <label class="q-label">Current daily activity level</label>
+      <div class="choices" id="activityLevel">
+        <div class="choice" onclick="toggleChoice(this, 'activityLevel', true)" data-value="Mostly sedentary">Mostly sedentary</div>
+        <div class="choice" onclick="toggleChoice(this, 'activityLevel', true)" data-value="Lightly active">Lightly active</div>
+        <div class="choice" onclick="toggleChoice(this, 'activityLevel', true)" data-value="Moderately active">Moderately active</div>
+        <div class="choice" onclick="toggleChoice(this, 'activityLevel', true)" data-value="Very active">Very active</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">What are your training goals?</label>
+      <span class="q-hint">Select all that apply</span>
+      <div class="choices" id="trainingGoals">
+        <div class="choice" onclick="toggleChoice(this, 'trainingGoals')" data-value="Starting gently">Starting gently</div>
+        <div class="choice" onclick="toggleChoice(this, 'trainingGoals')" data-value="Being more consistent">Being more consistent</div>
+        <div class="choice" onclick="toggleChoice(this, 'trainingGoals')" data-value="Building strength">Building strength</div>
+        <div class="choice" onclick="toggleChoice(this, 'trainingGoals')" data-value="Losing weight / toning">Losing weight / toning</div>
+        <div class="choice" onclick="toggleChoice(this, 'trainingGoals')" data-value="Improving fitness">Improving fitness</div>
+        <div class="choice" onclick="toggleChoice(this, 'trainingGoals')" data-value="Moving more day-to-day">Moving more day-to-day</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">Any barriers to exercise?</label>
+      <span class="q-hint">Select all that apply</span>
+      <div class="choices" id="barriers">
+        <div class="choice" onclick="toggleChoice(this, 'barriers')" data-value="Time">Time</div>
+        <div class="choice" onclick="toggleChoice(this, 'barriers')" data-value="Motivation">Motivation</div>
+        <div class="choice" onclick="toggleChoice(this, 'barriers')" data-value="Injury or pain">Injury or pain</div>
+        <div class="choice" onclick="toggleChoice(this, 'barriers')" data-value="Confidence">Confidence</div>
+        <div class="choice" onclick="toggleChoice(this, 'barriers')" data-value="Access to facilities">Access to facilities</div>
+        <div class="choice" onclick="toggleChoice(this, 'barriers')" data-value="Nothing in particular">Nothing in particular</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">Any injuries or physical limitations?</label>
+      <span class="q-hint">We'll adapt your plan and recommend relevant mobility content</span>
+      <div class="choices" id="injuries">
+        <div class="choice" onclick="toggleChoice(this, 'injuries')" data-value="Shoulders">Shoulders</div>
+        <div class="choice" onclick="toggleChoice(this, 'injuries')" data-value="Knees">Knees</div>
+        <div class="choice" onclick="toggleChoice(this, 'injuries')" data-value="Hips">Hips</div>
+        <div class="choice" onclick="toggleChoice(this, 'injuries')" data-value="Back / spine">Back / spine</div>
+        <div class="choice" onclick="toggleChoice(this, 'injuries')" data-value="Wrists">Wrists</div>
+        <div class="choice" onclick="toggleChoice(this, 'injuries')" data-value="Ankles">Ankles</div>
+        <div class="choice" onclick="toggleChoice(this, 'injuries')" data-value="None">None</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">Any exercises you can't do or want to avoid?</label>
+      <span class="q-hint">Optional — e.g. "no deadlifts", "can't do overhead press"</span>
+      <input type="text" id="avoidExercises" placeholder="Leave blank if none">
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">Where do you primarily train?</label>
+      <div class="choices" id="location-train">
+        <div class="choice" onclick="toggleChoice(this, 'location-train', true); toggleEquipment(this.dataset.value)" data-value="Gym">Gym</div>
+        <div class="choice" onclick="toggleChoice(this, 'location-train', true); toggleEquipment(this.dataset.value)" data-value="Home">Home</div>
+        <div class="choice" onclick="toggleChoice(this, 'location-train', true); toggleEquipment(this.dataset.value)" data-value="Mix of home and gym">Mix of both</div>
+        <div class="choice" onclick="toggleChoice(this, 'location-train', true); toggleEquipment(this.dataset.value)" data-value="Flexible">I'm flexible</div>
+        <div class="choice" onclick="toggleChoice(this, 'location-train', true); toggleEquipment(this.dataset.value)" data-value="Not sure">Not sure yet</div>
+      </div>
+    </div>
+
+    <div class="q-group" id="equipmentGroup" style="display:none;">
+      <label class="q-label">Equipment available at home?</label>
+      <span class="q-hint">Select all that apply</span>
+      <div class="choices" id="equipment">
+        <div class="choice" onclick="toggleChoice(this, 'equipment')" data-value="No equipment (bodyweight only)">No equipment</div>
+        <div class="choice" onclick="toggleChoice(this, 'equipment')" data-value="Resistance bands">Resistance bands</div>
+        <div class="choice" onclick="toggleChoice(this, 'equipment')" data-value="Dumbbells or kettlebells">Dumbbells / kettlebells</div>
+        <div class="choice" onclick="toggleChoice(this, 'equipment')" data-value="Barbell and weights">Barbell and weights</div>
+        <div class="choice" onclick="toggleChoice(this, 'equipment')" data-value="Cardio equipment">Cardio equipment</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">Gym experience level</label>
+      <div class="choices" id="gymExperience">
+        <div class="choice" onclick="toggleChoice(this, 'gymExperience', true)" data-value="Beginner">New or not very confident</div>
+        <div class="choice" onclick="toggleChoice(this, 'gymExperience', true)" data-value="Intermediate">Some experience</div>
+        <div class="choice" onclick="toggleChoice(this, 'gymExperience', true)" data-value="Advanced">Confident and experienced</div>
+        <div class="choice" onclick="toggleChoice(this, 'gymExperience', true)" data-value="Returning">It's been a long time</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">How many days a week do you want to train?</label>
+      <div class="choices" id="trainDays">
+        <div class="choice" onclick="toggleChoice(this, 'trainDays', true)" data-value="1-2">1–2 days</div>
+        <div class="choice" onclick="toggleChoice(this, 'trainDays', true)" data-value="3">3 days</div>
+        <div class="choice" onclick="toggleChoice(this, 'trainDays', true)" data-value="4">4 days</div>
+        <div class="choice" onclick="toggleChoice(this, 'trainDays', true)" data-value="5+">5+ days</div>
+        <div class="choice" onclick="toggleChoice(this, 'trainDays', true)" data-value="Not sure">Not sure yet</div>
+      </div>
+    </div>
+
+
+
+
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(2)">← Back</button>
+      <button class="btn-next" onclick="nextSection(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 4 — SLEEP (CONDITIONAL)
+  ══════════════════════════════════════════ -->
+  <div class="section" id="s4">
+    <div class="section-tag">Section D · Sleep & Recovery</div>
+    <h2 class="section-title">Sleep & recovery</h2>
+    <div class="score-recap" id="recapSleep">
+      <div class="recap-row">
+        <div class="recap-label">You rated your sleep</div>
+        <div class="recap-value" id="recapSleepVal">5</div>
+        <div class="recap-label">out of 10.</div>
+      </div>
+      <div class="recap-skip-prompt" id="recapSleepSkip">
+        <div class="recap-skip-msg" id="recapSleepMsg"></div>
+        <div class="recap-skip-btns">
+          <button class="btn-skip-yes" onclick="skipSection(4)">Yes, skip this section</button>
+          <button class="btn-skip-no" onclick="hideSkipPrompt('recapSleepSkip')">No, I'd like to answer</button>
+        </div>
+      </div>
+    </div>
+    <p class="section-sub">Sleep affects everything — energy, mood, performance, and physical recovery. A few quick questions so we can support yours.</p>
+
+
+
+    <div class="q-group">
+      <label class="q-label">What affects your sleep most?</label>
+      <span class="q-hint">Select all that apply</span>
+      <div class="choices" id="sleepIssues">
+        <div class="choice" onclick="toggleChoice(this, 'sleepIssues')" data-value="Falling asleep">Falling asleep</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepIssues')" data-value="Staying asleep">Staying asleep</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepIssues')" data-value="Waking too early">Waking too early</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepIssues')" data-value="Irregular routine">Irregular routine</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepIssues')" data-value="Screen use before bed">Screen use before bed</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepIssues')" data-value="Stress">Stress</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepIssues')" data-value="Other">Other</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">How many hours of sleep do you typically get?</label>
+      <div class="choices" id="sleepHours">
+        <div class="choice" onclick="toggleChoice(this, 'sleepHours', true)" data-value="Less than 5 hours">Less than 5 hours</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepHours', true)" data-value="5-6 hours">5–6 hours</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepHours', true)" data-value="6-7 hours">6–7 hours</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepHours', true)" data-value="7-8 hours">7–8 hours</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepHours', true)" data-value="8+ hours">8+ hours</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">What time do you typically go to bed?</label>
+      <div class="choices" id="bedtime">
+        <div class="choice" onclick="toggleChoice(this, 'bedtime', true)" data-value="Before 9pm">Before 9pm</div>
+        <div class="choice" onclick="toggleChoice(this, 'bedtime', true)" data-value="9pm-10pm">9pm – 10pm</div>
+        <div class="choice" onclick="toggleChoice(this, 'bedtime', true)" data-value="10pm-11pm">10pm – 11pm</div>
+        <div class="choice" onclick="toggleChoice(this, 'bedtime', true)" data-value="11pm-midnight">11pm – midnight</div>
+        <div class="choice" onclick="toggleChoice(this, 'bedtime', true)" data-value="After midnight">After midnight</div>
+        <div class="choice" onclick="toggleChoice(this, 'bedtime', true)" data-value="It varies a lot">It varies a lot</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">What would you like help with around sleep?</label>
+      <div class="choices" id="sleepHelp">
+        <div class="choice" onclick="toggleChoice(this, 'sleepHelp')" data-value="Sleep targets">Sleep targets</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepHelp')" data-value="Evening routines">Evening routines</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepHelp')" data-value="Morning sunlight routine">Morning sunlight routine</div>
+        <div class="choice" onclick="toggleChoice(this, 'sleepHelp')" data-value="Wind-down reminders">Wind-down reminders</div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goToPrev(4)">← Back</button>
+      <button class="btn-skip" onclick="skipSection(4)">Skip this section</button>
+      <button class="btn-next" onclick="nextSection(4)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 5 — DIET & TDEE (CONDITIONAL)
+  ══════════════════════════════════════════ -->
+  <div class="section" id="s5">
+    <div class="section-tag">Section E · Diet & Nutrition</div>
+    <h2 class="section-title">Diet & nutrition</h2>
+    <div class="score-recap" id="recapDiet">
+      <div class="recap-row">
+        <div class="recap-label">You rated your diet satisfaction</div>
+        <div class="recap-value" id="recapDietVal">5</div>
+        <div class="recap-label">out of 10.</div>
+      </div>
+      <div class="recap-skip-prompt" id="recapDietSkip">
+        <div class="recap-skip-msg" id="recapDietMsg"></div>
+        <div class="recap-skip-btns">
+          <button class="btn-skip-yes" onclick="skipSection(5)">Yes, skip this section</button>
+          <button class="btn-skip-no" onclick="hideSkipPrompt('recapDietSkip')">No, I'd like to answer</button>
+        </div>
+      </div>
+    </div>
+    <p class="section-sub">A few questions about your diet and nutrition. You can skip this section if you'd prefer not to share this information right now.</p>
+
+    <div class="q-group">
+      <label class="q-label">Would you like guidance on your diet and nutrition?</label>
+      <div class="choices" id="dietGateway">
+        <div class="choice" onclick="toggleChoice(this, 'dietGateway', true); toggleDietDetail(this.dataset.value)" data-value="Yes">Yes — I'd like help with this</div>
+        <div class="choice" onclick="toggleChoice(this, 'dietGateway', true); toggleDietDetail(this.dataset.value)" data-value="Maybe later">Maybe later</div>
+        <div class="choice" onclick="toggleChoice(this, 'dietGateway', true); toggleDietDetail(this.dataset.value)" data-value="No">No — skip this for now</div>
+      </div>
+    </div>
+
+    <div id="dietDetail" style="display:none;">
+
+    <div class="q-group">
+      <label class="q-label">How active are you on a typical day?</label>
+      <span class="q-hint">This helps us calculate your calorie target accurately</span>
+      <div class="choices" id="tdeeActivity" style="flex-direction:column; gap:10px;">
+        <div class="choice" onclick="toggleChoice(this, 'tdeeActivity', true); calcTDEE()" data-value="Mostly sedentary" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:4px;">Mostly sedentary</div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.6); line-height:1.4;">Desk job, driving, little daily movement. You move to get from A to B but not much else.</div>
+        </div>
+        <div class="choice" onclick="toggleChoice(this, 'tdeeActivity', true); calcTDEE()" data-value="Lightly active" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:4px;">Lightly active</div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.6); line-height:1.4;">Light daily walking, on your feet for part of the day, or 1–2 casual workouts per week.</div>
+        </div>
+        <div class="choice" onclick="toggleChoice(this, 'tdeeActivity', true); calcTDEE()" data-value="Moderately active" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:4px;">Moderately active</div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.6); line-height:1.4;">Regular exercise 3–4 times a week, or a job that keeps you on your feet most of the day (e.g. retail, teaching).</div>
+        </div>
+        <div class="choice" onclick="toggleChoice(this, 'tdeeActivity', true); calcTDEE()" data-value="Very active" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:4px;">Very active</div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.6); line-height:1.4;">Hard training 5–6 days a week, or a physically demanding job (e.g. construction, nursing, personal training).</div>
+        </div>
+        <div class="choice" onclick="toggleChoice(this, 'tdeeActivity', true); calcTDEE()" data-value="Extremely active" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:4px;">Extremely active</div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.6); line-height:1.4;">Training twice a day, elite athlete, or very heavy physical labour every day.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">What are you aiming for with your nutrition?</label>
+      <div class="choices" id="nutritionGoal">
+        <div class="choice" onclick="toggleChoice(this, 'nutritionGoal', true); calcTDEE()" data-value="Losing body fat">Losing body fat</div>
+        <div class="choice" onclick="toggleChoice(this, 'nutritionGoal', true); calcTDEE()" data-value="Gaining muscle or strength">Gaining muscle or strength</div>
+        <div class="choice" onclick="toggleChoice(this, 'nutritionGoal', true); calcTDEE()" data-value="Staying the same and feeling healthier">Staying the same, feeling healthier</div>
+        <div class="choice" onclick="toggleChoice(this, 'nutritionGoal', true); calcTDEE()" data-value="Happy as I am">I'm happy as I am</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Height -->
+    <div class="q-group">
+      <label class="q-label">Height</label>
+      <div class="unit-toggle">
+        <button class="unit-btn active" onclick="setHeightUnit('cm')">cm</button>
+        <button class="unit-btn" onclick="setHeightUnit('ft')">ft / in</button>
+      </div>
+      <div id="heightCm">
+        <input type="number" id="heightCmVal" placeholder="e.g. 175" min="130" max="220" oninput="validateHeight(); calcTDEE()">
+        <div class="field-error" id="err-height">Please enter a height between 130cm and 220cm</div>
+      </div>
+      <div id="heightFt" style="display:none;">
+        <div class="input-row">
+          <div>
+            <input type="number" id="heightFtVal" placeholder="Feet" min="4" max="7" oninput="validateHeight(); calcTDEE()">
+          </div>
+          <div>
+            <input type="number" id="heightInVal" placeholder="Inches" min="0" max="11" oninput="validateHeight(); calcTDEE()">
+          </div>
+        </div>
+        <div class="field-error" id="err-heightFt">Please enter a valid height (4'3" to 7'3")</div>
+      </div>
+    </div>
+
+    <!-- Weight -->
+    <div class="q-group">
+      <label class="q-label">Current weight</label>
+      <div class="unit-toggle">
+        <button class="unit-btn active" onclick="setWeightUnit('kg')">kg</button>
+        <button class="unit-btn" onclick="setWeightUnit('st')">st / lb</button>
+        <button class="unit-btn" onclick="setWeightUnit('lb')">lbs</button>
+      </div>
+      <div id="weightKg">
+        <input type="number" id="weightKgVal" placeholder="e.g. 75" min="30" max="250" oninput="validateWeight(); calcTDEE()">
+        <div class="field-error" id="err-weight">Please enter a weight between 30kg and 250kg</div>
+      </div>
+      <div id="weightSt" style="display:none;">
+        <div class="input-row">
+          <div>
+            <input type="number" id="weightStVal" placeholder="Stones" min="4" max="39" oninput="validateWeight(); calcTDEE()">
+          </div>
+          <div>
+            <input type="number" id="weightLbStVal" placeholder="lbs" min="0" max="13" oninput="validateWeight(); calcTDEE()">
+          </div>
+        </div>
+        <div class="field-error" id="err-weightSt">Please enter a valid weight</div>
+      </div>
+      <div id="weightLb" style="display:none;">
+        <input type="number" id="weightLbVal" placeholder="e.g. 165" min="66" max="550" oninput="validateWeight(); calcTDEE()">
+        <div class="field-error" id="err-weightLb">Please enter a weight between 66lbs and 550lbs</div>
+      </div>
+    </div>
+
+    <!-- TDEE result -->
+    <div class="tdee-result" id="tdeeResult">
+
+      <!-- Maintenance baseline explanation -->
+      <div style="margin-bottom:20px; padding:14px 18px; background:rgba(255,255,255,0.04); border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
+        <div style="font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:6px;">Your maintenance calories</div>
+        <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:6px;">
+          <span style="font-size:28px; font-family:'Playfair Display',serif; color:rgba(255,255,255,0.75);" id="maintenanceCalories">—</span>
+          <span style="font-size:14px; color:rgba(255,255,255,0.5);">kcal / day</span>
+        </div>
+        <div style="font-size:13px; color:rgba(255,255,255,0.55); line-height:1.5;">This is what your body burns on a typical day at your current activity level. Eating at this amount would keep your weight the same.</div>
+      </div>
+
+      <!-- Target calories -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--teal-lt); margin-bottom:6px;">Your calorie target</div>
+        <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:6px;">
+          <span class="tdee-number" id="tdeeNumber">—</span>
+          <span class="tdee-unit">kcal / day</span>
+        </div>
+        <div class="tdee-label" id="tdeeExplainer"></div>
+      </div>
+
+      <div id="tdeeAdjustWrap">
+        <div class="tdee-adjust-label">Want to push a little harder? <span style="font-weight:400; font-size:13px; color:rgba(255,255,255,0.5);">(optional)</span></div>
+        <div style="font-size:13px; color:rgba(255,255,255,0.65); margin-bottom:14px; line-height:1.5;">Your target already has a 10% deficit built in. You can increase this by up to a further 10%, giving a 20% total deficit maximum. We do not recommend going beyond 20% — it causes fatigue, muscle loss, and is very hard to sustain.</div>
+        <input type="range" min="0" max="10" value="0" id="tdeeAdjust" oninput="updateTDEEAdjust()">
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:rgba(255,255,255,0.55); margin-top:6px;">
+          <span>10% (recommended)</span>
+          <span id="adjustPct">10% total deficit</span>
+          <span>20% (maximum)</span>
+        </div>
+        <div class="tdee-warning ok" id="tdeeWarning" style="margin-top:12px;">✓ 10% deficit — recommended starting point. Sustainable and effective.</div>
+
+        <div style="margin-top:16px; padding:16px 18px; background:rgba(77,170,170,0.08); border-radius:10px; border:1px solid var(--border);">
+          <div style="font-size:11px; color:rgba(255,255,255,0.5); margin-bottom:6px; text-transform:uppercase; letter-spacing:2px;">Your final daily target</div>
+          <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:4px;">
+            <div style="font-size:32px; font-family:'Playfair Display',serif; color:var(--white);" id="finalCalories">—</div>
+            <div style="font-size:14px; color:rgba(255,255,255,0.6);">kcal / day</div>
+          </div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.5);">This is the number written to your plan. You can always adjust this later.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="q-group">
+      <label class="q-label">How much nutrition guidance would you like?</label>
+      <div class="choices" id="nutritionGuidance">
+        <div class="choice" onclick="toggleChoice(this, 'nutritionGuidance', true)" data-value="Very light habits">Very light habits</div>
+        <div class="choice" onclick="toggleChoice(this, 'nutritionGuidance', true)" data-value="General education">General education</div>
+        <div class="choice" onclick="toggleChoice(this, 'nutritionGuidance', true)" data-value="Structured goals">Structured goals</div>
+        <div class="choice" onclick="toggleChoice(this, 'nutritionGuidance', true)" data-value="No tracking">No tracking — keep it simple</div>
+      </div>
+    </div>
+
+    </div><!-- end dietDetail -->
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goToPrev(5)">← Back</button>
+      <button class="btn-skip" onclick="skipSection(5)">Skip this section</button>
+      <button class="btn-next" onclick="nextSection(5)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 6 — SOCIAL (CONDITIONAL)
+  ══════════════════════════════════════════ -->
+  <div class="section" id="s6">
+    <div class="section-tag">Section F · Social Connection</div>
+    <h2 class="section-title">Connection & community</h2>
+    <div class="score-recap" id="recapSocial">
+      <div class="recap-row">
+        <div class="recap-label">You rated your social connection</div>
+        <div class="recap-value" id="recapSocialVal">5</div>
+        <div class="recap-label">out of 10.</div>
+      </div>
+      <div class="recap-skip-prompt" id="recapSocialSkip">
+        <div class="recap-skip-msg" id="recapSocialMsg"></div>
+        <div class="recap-skip-btns">
+          <button class="btn-skip-yes" onclick="skipSection(6)">Yes, skip this section</button>
+          <button class="btn-skip-no" onclick="hideSkipPrompt('recapSocialSkip')">No, I'd like to answer</button>
+        </div>
+      </div>
+    </div>
+    <p class="section-sub">Feeling connected to others has a huge impact on wellbeing. These questions help us understand how to support yours.</p>
+
+
+
+    <div class="q-group">
+      <label class="q-label">What would you like help with?</label>
+      <div class="choices" id="socialHelp">
+        <div class="choice" onclick="toggleChoice(this, 'socialHelp')" data-value="Spending more time with friends">Spending more time with friends</div>
+        <div class="choice" onclick="toggleChoice(this, 'socialHelp')" data-value="Meeting new people">Meeting new people</div>
+        <div class="choice" onclick="toggleChoice(this, 'socialHelp')" data-value="Social confidence">Social confidence</div>
+        <div class="choice" onclick="toggleChoice(this, 'socialHelp')" data-value="Giving back or volunteering">Giving back or volunteering</div>
+        <div class="choice" onclick="toggleChoice(this, 'socialHelp')" data-value="Community challenges">Community challenges</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">What makes socialising feel difficult for you?</label>
+      <span class="q-hint">Select all that apply</span>
+      <div class="choices" id="socialBarriers">
+        <div class="choice" onclick="toggleChoice(this, 'socialBarriers')" data-value="Anxiety or nerves">Anxiety or nerves</div>
+        <div class="choice" onclick="toggleChoice(this, 'socialBarriers')" data-value="Finding the time">Finding the time</div>
+        <div class="choice" onclick="toggleChoice(this, 'socialBarriers')" data-value="Not knowing people">Not knowing people in my area</div>
+        <div class="choice" onclick="toggleChoice(this, 'socialBarriers')" data-value="Low confidence">Low confidence</div>
+        <div class="choice" onclick="toggleChoice(this, 'socialBarriers')" data-value="Nothing in particular">Nothing in particular</div>
+        <div class="choice" onclick="toggleChoice(this, 'socialBarriers')" data-value="Prefer not to say">Prefer not to say</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">How gently would you like us to approach this?</label>
+      <div class="choices" id="socialApproach">
+        <div class="choice" onclick="toggleChoice(this, 'socialApproach', true)" data-value="Very gentle">Very gentle</div>
+        <div class="choice" onclick="toggleChoice(this, 'socialApproach', true)" data-value="Encouraging">Encouraging</div>
+        <div class="choice" onclick="toggleChoice(this, 'socialApproach', true)" data-value="Motivating">Motivating</div>
+        <div class="choice" onclick="toggleChoice(this, 'socialApproach', true)" data-value="Hands-off">Hands-off — I'll engage when I want</div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goToPrev(6)">← Back</button>
+      <button class="btn-skip" onclick="skipSection(6)">Skip this section</button>
+      <button class="btn-next" onclick="nextSection(6)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 7 — LIFESTYLE (EVERYONE, SKIPPABLE)
+  ══════════════════════════════════════════ -->
+  <div class="section" id="s7">
+    <div class="section-tag">Section G · Lifestyle</div>
+    <h2 class="section-title">What's life like right now?</h2>
+    <p class="section-sub">Life can get in the way of the best intentions — and that's completely normal. The more context you give us, the more realistic and useful your plan will be. You can skip this section if you'd prefer not to share.</p>
+
+    <div class="q-group">
+      <label class="q-label">Is there anything going on right now that we should factor into your plan?</label>
+      <span class="q-hint">Select all that apply — this helps us tailor your recommendations to your actual life</span>
+      <div class="choices" id="lifeContext" style="flex-direction:column; gap:10px;">
+        <div class="choice" onclick="toggleChoice(this, 'lifeContext')" data-value="New parent / young baby" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:3px;">I'm a new parent or have a young baby</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6);">Sleep deprivation and unpredictable schedules are real — we'll factor this in.</div>
+        </div>
+        <div class="choice" onclick="toggleChoice(this, 'lifeContext')" data-value="Bereavement" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:3px;">I'm going through a bereavement</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6);">We'll keep things gentle and supportive rather than pushing hard.</div>
+        </div>
+        <div class="choice" onclick="toggleChoice(this, 'lifeContext')" data-value="Major life change" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:3px;">I'm going through a significant life change</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6);">Divorce, job loss, moving, separation — big changes take energy too.</div>
+        </div>
+        <div class="choice" onclick="toggleChoice(this, 'lifeContext')" data-value="Recovering from illness or injury" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:3px;">I'm recovering from illness or injury</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6);">We'll prioritise recovery-friendly activity and build back gradually.</div>
+        </div>
+        <div class="choice" onclick="toggleChoice(this, 'lifeContext')" data-value="Caring for a family member" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:3px;">I'm caring for a family member</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6);">Caring is demanding — your own wellbeing matters too and we'll keep that in mind.</div>
+        </div>
+        <div class="choice" onclick="toggleChoice(this, 'lifeContext')" data-value="Work is particularly demanding" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:3px;">Work is particularly demanding right now</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6);">Long hours, high pressure or a big project — we'll make your plan fit around it.</div>
+        </div>
+        <div class="choice" onclick="toggleChoice(this, 'lifeContext')" data-value="Struggling with mental health" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:3px;">I'm struggling with my mental health</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6);">We'll focus on gentle progress, consistency over intensity, and emotional support first.</div>
+        </div>
+        <div class="choice" onclick="toggleChoice(this, 'lifeContext')" data-value="Everything is pretty stable" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600; margin-bottom:3px;">Everything is pretty stable right now</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6);">Great — we'll build a plan that matches your ambitions.</div>
+        </div>
+        <div class="choice" onclick="toggleChoice(this, 'lifeContext')" data-value="Prefer not to say" style="flex-direction:column; align-items:flex-start; padding:14px 18px;">
+          <div style="font-weight:600;">I'd rather not say</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">How often do you drink alcohol?</label>
+      <div class="choices" id="alcohol">
+        <div class="choice" onclick="toggleChoice(this, 'alcohol', true)" data-value="I don't drink">I don't drink alcohol</div>
+        <div class="choice" onclick="toggleChoice(this, 'alcohol', true)" data-value="Occasionally">Occasionally</div>
+        <div class="choice" onclick="toggleChoice(this, 'alcohol', true)" data-value="Weekly">Weekly</div>
+        <div class="choice" onclick="toggleChoice(this, 'alcohol', true)" data-value="Most days">Most days</div>
+        <div class="choice" onclick="toggleChoice(this, 'alcohol', true)" data-value="Prefer not to say">I'd rather not say</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">Is there anything else about your current situation you'd like us to know? <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+      <span class="q-hint">This goes directly to your personalised recommendations — the more you share, the better we can support you</span>
+      <textarea id="lifeContext_extra" rows="3" placeholder="e.g. I work night shifts, I'm going through IVF, I have a physical disability..." style="resize:vertical;"></textarea>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goToPrev(7)">← Back</button>
+      <button class="btn-skip" onclick="skipSection(7)">Skip this section</button>
+      <button class="btn-next" onclick="nextSection(7)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 8 — PURPOSE & MOTIVATION (CONDITIONAL)
+  ══════════════════════════════════════════ -->
+  <div class="section" id="s8">
+    <div class="section-tag">Section H · Purpose & Motivation</div>
+    <h2 class="section-title">Routine & motivation</h2>
+    <div class="score-recap" id="recapMotivation">
+      <div class="recap-row">
+        <div class="recap-label">You rated your motivation & purpose</div>
+        <div class="recap-value" id="recapMotivationVal">5</div>
+        <div class="recap-label">out of 10.</div>
+      </div>
+      <div class="recap-skip-prompt" id="recapMotivationSkip">
+        <div class="recap-skip-msg" id="recapMotivationMsg"></div>
+        <div class="recap-skip-btns">
+          <button class="btn-skip-yes" onclick="skipSection(8)">Yes, skip this section</button>
+          <button class="btn-skip-no" onclick="hideSkipPrompt('recapMotivationSkip')">No, I'd like to answer</button>
+        </div>
+      </div>
+    </div>
+    <p class="section-sub">Almost there. These questions look at structure, routine, and what helps you stay motivated. Small changes count.</p>
+
+
+
+    <div class="q-group">
+      <label class="q-label">What would help you most right now?</label>
+      <div class="choices" id="motivationHelp">
+        <div class="choice" onclick="toggleChoice(this, 'motivationHelp')" data-value="Daily structure">Daily structure</div>
+        <div class="choice" onclick="toggleChoice(this, 'motivationHelp')" data-value="Habit building">Habit building</div>
+        <div class="choice" onclick="toggleChoice(this, 'motivationHelp')" data-value="Goal clarity">Goal clarity</div>
+        <div class="choice" onclick="toggleChoice(this, 'motivationHelp')" data-value="Accountability">Accountability</div>
+        <div class="choice" onclick="toggleChoice(this, 'motivationHelp')" data-value="Encouragement">Encouragement</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">What has stopped you making changes before?</label>
+      <span class="q-hint">Select all that apply</span>
+      <div class="choices" id="pastBarriers">
+        <div class="choice" onclick="toggleChoice(this, 'pastBarriers')" data-value="Time">Time</div>
+        <div class="choice" onclick="toggleChoice(this, 'pastBarriers')" data-value="Motivation">Motivation dipping after a few weeks</div>
+        <div class="choice" onclick="toggleChoice(this, 'pastBarriers')" data-value="Not knowing where to start">Not knowing where to start</div>
+        <div class="choice" onclick="toggleChoice(this, 'pastBarriers')" data-value="Life getting in the way">Life getting in the way</div>
+        <div class="choice" onclick="toggleChoice(this, 'pastBarriers')" data-value="Nothing — this is my first time">Nothing — this is my first time trying</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">What does success look like for you in 3 months? <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+      <input type="text" id="successVision" placeholder="e.g. Feel more energised, lose a stone, build a consistent routine">
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goToPrev(8)">← Back</button>
+      <button class="btn-skip" onclick="skipSection(8)">Skip this section</button>
+      <button class="btn-next" onclick="nextSection(8)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 9 — HOW IT WORKS (EVERYONE)
+  ══════════════════════════════════════════ -->
+  <div class="section" id="s9">
+    <div class="section-tag">Section I · Your Preferences</div>
+    <h2 class="section-title">How you'd like VYVE to work for you</h2>
+    <p class="section-sub">The next few questions help us shape how the platform supports you day to day. There's no right or wrong answer.</p>
+
+    <div class="q-group">
+      <label class="q-label">How do you prefer to work on goals?</label>
+      <div class="choices" id="goalStyle">
+        <div class="choice" onclick="toggleChoice(this, 'goalStyle', true)" data-value="Small daily actions">Small daily actions</div>
+        <div class="choice" onclick="toggleChoice(this, 'goalStyle', true)" data-value="Weekly goals">Weekly goals</div>
+        <div class="choice" onclick="toggleChoice(this, 'goalStyle', true)" data-value="Challenges">Challenges</div>
+        <div class="choice" onclick="toggleChoice(this, 'goalStyle', true)" data-value="Not sure yet">I don't know yet</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">How often would you like check-ins and reminders?</label>
+      <div class="choices" id="reminderFreq">
+        <div class="choice" onclick="toggleChoice(this, 'reminderFreq', true)" data-value="Daily">Daily</div>
+        <div class="choice" onclick="toggleChoice(this, 'reminderFreq', true)" data-value="A few times a week">A few times a week</div>
+        <div class="choice" onclick="toggleChoice(this, 'reminderFreq', true)" data-value="Weekly">Weekly</div>
+        <div class="choice" onclick="toggleChoice(this, 'reminderFreq', true)" data-value="Rarely">Rarely</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">What tone do you prefer from VYVE?</label>
+      <div class="choices" id="tonePreference">
+        <div class="choice" onclick="toggleChoice(this, 'tonePreference', true)" data-value="Friendly & encouraging">Friendly & encouraging</div>
+        <div class="choice" onclick="toggleChoice(this, 'tonePreference', true)" data-value="Calm & neutral">Calm & neutral</div>
+        <div class="choice" onclick="toggleChoice(this, 'tonePreference', true)" data-value="Direct & motivating">Direct & motivating</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">If things feel overwhelming, what would you prefer?</label>
+      <div class="choices" id="overwhelmedPref">
+        <div class="choice" onclick="toggleChoice(this, 'overwhelmedPref')" data-value="Encouragement">Send me encouragement</div>
+        <div class="choice" onclick="toggleChoice(this, 'overwhelmedPref')" data-value="Fewer notifications">Fewer notifications</div>
+        <div class="choice" onclick="toggleChoice(this, 'overwhelmedPref')" data-value="Signpost to support">Signpost me to support</div>
+        <div class="choice" onclick="toggleChoice(this, 'overwhelmedPref')" data-value="I'll manage myself">I'll manage it myself</div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goToPrev(9)">← Back</button>
+      <button class="btn-next" onclick="nextSection(9)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 10 — TECH & FINAL (EVERYONE)
+  ══════════════════════════════════════════ -->
+  <div class="section" id="s10">
+    <div class="section-tag">Section J · Final Steps</div>
+    <h2 class="section-title">Almost done, <span id="nameDisplay">there</span></h2>
+    <p class="section-sub">Just a couple more things and we'll start building your plan.</p>
+
+    <div class="q-group">
+      <label class="q-label">Which smartphone do you use?</label>
+      <span class="q-hint">Apple users can connect to Apple Health via the app</span>
+      <div class="choices" id="smartphone">
+        <div class="choice" onclick="toggleChoice(this, 'smartphone', true)" data-value="Apple">Apple (iPhone)</div>
+        <div class="choice" onclick="toggleChoice(this, 'smartphone', true)" data-value="Android">Android</div>
+        <div class="choice" onclick="toggleChoice(this, 'smartphone', true)" data-value="Other">Other</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">Do you have a smartwatch or fitness tracker?</label>
+      <span class="q-hint">You can sync health data for more accurate tracking</span>
+      <div class="choices" id="smartwatch">
+        <div class="choice" onclick="toggleChoice(this, 'smartwatch', true)" data-value="Yes">Yes</div>
+        <div class="choice" onclick="toggleChoice(this, 'smartwatch', true)" data-value="No">No</div>
+      </div>
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">What's your specific goal for the next 6–8 weeks? <span style="color:var(--muted); font-weight:400;">(optional)</span></label>
+      <input type="text" id="specificGoal" placeholder="e.g. Run a 5K, lose 5kg, sleep better">
+    </div>
+
+    <div class="q-group">
+      <label class="q-label">Anything else we should know? <span style="color:var(--muted); font-weight:400;">(optional)</span></label>
+      <span class="q-hint">Is there anything that could help us support you better?</span>
+      <textarea id="anythingElse" rows="3" placeholder="Tell us anything you'd like us to know..." style="resize:vertical;"></textarea>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goToPrev(10)">← Back</button>
+      <button class="btn-next" id="submitBtn" onclick="submitQuestionnaire()">Build my plan →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       LOADING SCREEN
+  ══════════════════════════════════════════ -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="spinner"></div>
+    <div class="section-title" style="margin-bottom:12px;">Building your plan...</div>
+    <p class="section-sub" style="margin:0 auto; text-align:center;">We're reviewing your answers and creating personalised recommendations. This takes just a moment.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       RESULTS SCREEN
+  ══════════════════════════════════════════ -->
+  <div class="result-screen" id="resultScreen">
+    <div class="section-tag">Your personalised plan</div>
+    <h2 class="section-title">Here's what we've put together for you, <span id="resultName"></span></h2>
+    <p class="section-sub" style="margin-bottom:32px;">Based on your answers, here are your personalised recommendations. You'll also receive these by email.</p>
+    <div id="resultContent"></div>
+    <div style="margin-top:32px; padding:24px; background:rgba(201,168,76,0.08); border:1px solid rgba(201,168,76,0.2); border-radius:14px;">
+      <div style="font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:8px; font-size:11px;">What happens next</div>
+      <p style="font-size:14px; line-height:1.7; color:rgba(255,255,255,0.8);">Your Kahunas app is being set up now. You'll receive a welcome email within the next few minutes with everything you need to get started. Your recommended weekly schedule and all 5 plans will be ready and waiting for you.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+const state = {
+  path: 'full',
+  currentSection: 0,
+  sectionHistory: [0],
+  supportAreas: [],
+  tdeeBase: 0,
+  tdeeFinal: 0,
+  heightUnit: 'cm',
+  weightUnit: 'kg',
+};
+
+// All sections always show — no conditional gating
+// Support areas question informs AI but doesn't hide sections
+const conditionalSections = {
+  3: true,
+  4: true,
+  5: true,
+  6: true,
+  7: true,
+  8: true,
+  9: true,
+  10: true,
+};
+
+// Total sections for progress
+const TOTAL_SECTIONS = 10;
+
+// ══════════════════════════════════════════
+// PATH SELECTION
+// ══════════════════════════════════════════
+function selectPath(p) {
+  state.path = p;
+  document.getElementById('pathFull').classList.toggle('selected', p === 'full');
+  document.getElementById('pathQuick').classList.toggle('selected', p === 'quick');
+}
+
+function startQuestionnaire() {
+  goTo(1);
+}
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function _goTo_original(section) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('s' + section);
+  if (el) {
+    el.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  state.currentSection = section;
+  updateProgress(section);
+  // Update name display
+  const fn = document.getElementById('firstName');
+  if (fn && fn.value) {
+    const nd = document.getElementById('nameDisplay');
+    if (nd) nd.textContent = fn.value;
+  }
+}
+
+function nextSection(from) {
+  if (!validateSection(from)) return;
+  // Capture support areas for branching
+  if (from === 2) {
+    state.supportAreas = getChoices('supportAreas');
+  }
+  // Section 1 always goes to Section 2
+  if (from === 1) {
+    state.sectionHistory.push(from);
+    goTo(2);
+    return;
+  }
+  // Quick path: after section 2, skip to section 10
+  if (state.path === 'quick' && from === 2) {
+    state.sectionHistory.push(from);
+    goTo(10);
+    return;
+  }
+  const next = getNextSection(from);
+  state.sectionHistory.push(from);
+  goTo(next);
+}
+
+function goToPrev(current) {
+  if (state.sectionHistory.length > 0) {
+    const prev = state.sectionHistory.pop();
+    goTo(prev);
+  } else {
+    goTo(Math.max(0, current - 1));
+  }
+}
+
+function skipSection(section) {
+  state.sectionHistory.push(section);
+  const next = getNextSection(section);
+  goTo(next);
+}
+
+function getNextSection(from) {
+  if (from >= 10) return 10;
+  const justGuidance = state.supportAreas.includes('Just want guidance');
+  for (let s = from + 1; s <= 10; s++) {
+    const condition = conditionalSections[s];
+    if (condition === true) return s;
+    if (typeof condition === 'string') {
+      if (justGuidance || state.supportAreas.includes(condition)) return s;
+    }
+  }
+  return 10;
+}
+
+// ══════════════════════════════════════════
+// PROGRESS
+// ══════════════════════════════════════════
+function updateProgress(section) {
+  const pct = Math.round((section / TOTAL_SECTIONS) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = section === 0 ? '' : section + ' of ' + TOTAL_SECTIONS;
+}
+
+// ══════════════════════════════════════════
+// SLIDERS
+// ══════════════════════════════════════════
+function updateSlider(key) {
+  const val = document.getElementById('sl-' + key).value;
+  document.getElementById('val-' + key).textContent = val;
+}
+
+// ══════════════════════════════════════════
+// CHOICES
+// ══════════════════════════════════════════
+function toggleChoice(el, group, single) {
+  if (single) {
+    document.querySelectorAll('#' + group + ' .choice').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  } else {
+    el.classList.toggle('selected');
+  }
+}
+
+function getChoices(group) {
+  return Array.from(document.querySelectorAll('#' + group + ' .choice.selected')).map(c => c.dataset.value);
+}
+
+function getSingleChoice(group) {
+  const el = document.querySelector('#' + group + ' .choice.selected');
+  return el ? el.dataset.value : '';
+}
+
+// ══════════════════════════════════════════
+// UNIT TOGGLES
+// ══════════════════════════════════════════
+function setHeightUnit(unit) {
+  state.heightUnit = unit;
+  document.getElementById('heightCm').style.display = unit === 'cm' ? '' : 'none';
+  document.getElementById('heightFt').style.display = unit === 'ft' ? '' : 'none';
+  document.querySelectorAll('.unit-toggle')[0].querySelectorAll('.unit-btn').forEach((b, i) => {
+    b.classList.toggle('active', (i === 0 && unit === 'cm') || (i === 1 && unit === 'ft'));
+  });
+  calcTDEE();
+}
+
+function setWeightUnit(unit) {
+  state.weightUnit = unit;
+  document.getElementById('weightKg').style.display = unit === 'kg' ? '' : 'none';
+  document.getElementById('weightSt').style.display = unit === 'st' ? '' : 'none';
+  document.getElementById('weightLb').style.display = unit === 'lb' ? '' : 'none';
+  document.querySelectorAll('.unit-toggle')[1].querySelectorAll('.unit-btn').forEach((b, i) => {
+    b.classList.toggle('active',
+      (i === 0 && unit === 'kg') ||
+      (i === 1 && unit === 'st') ||
+      (i === 2 && unit === 'lb')
+    );
+  });
+  calcTDEE();
+}
+
+// ══════════════════════════════════════════
+// TDEE CALCULATION
+// ══════════════════════════════════════════
+function getHeightCm() {
+  if (state.heightUnit === 'cm') {
+    return parseFloat(document.getElementById('heightCmVal').value) || 0;
+  } else {
+    const ft = parseFloat(document.getElementById('heightFtVal').value) || 0;
+    const inch = parseFloat(document.getElementById('heightInVal').value) || 0;
+    return (ft * 12 + inch) * 2.54;
+  }
+}
+
+function getWeightKg() {
+  if (state.weightUnit === 'kg') {
+    return parseFloat(document.getElementById('weightKgVal').value) || 0;
+  } else if (state.weightUnit === 'st') {
+    const st = parseFloat(document.getElementById('weightStVal').value) || 0;
+    const lb = parseFloat(document.getElementById('weightLbStVal').value) || 0;
+    return (st * 14 + lb) * 0.453592;
+  } else {
+    return (parseFloat(document.getElementById('weightLbVal').value) || 0) * 0.453592;
+  }
+}
+
+function getAge() {
+  const dob = document.getElementById('dob').value;
+  if (!dob) return 0;
+  const birthDate = new Date(dob);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+  return age;
+}
+
+function calcTDEE() {
+  const h = getHeightCm();
+  const w = getWeightKg();
+  const age = getAge();
+  const gender = document.getElementById('gender').value;
+  const goal = getSingleChoice('nutritionGoal');
+
+  if (!h || !w || !age || !gender || gender === 'Prefer not to say') {
+    document.getElementById('tdeeResult').classList.remove('show');
+    return;
+  }
+
+  // Mifflin-St Jeor
+  let bmr;
+  if (gender === 'Male') {
+    bmr = 10 * w + 6.25 * h - 5 * age + 5;
+  } else {
+    bmr = 10 * w + 6.25 * h - 5 * age - 161;
+  }
+
+  // Activity multiplier from section 3
+  const actMap = {
+    'Mostly sedentary': 1.2,
+    'Lightly active': 1.375,
+    'Moderately active': 1.55,
+    'Very active': 1.725,
+  };
+  const act = getSingleChoice('tdeeActivity') || getSingleChoice('activityLevel');
+  const mult = actMap[act] || 1.375;
+  let tdee = Math.round(bmr * mult);
+
+  // Goal adjustment
+  let adjusted = tdee;
+  let explainer = '';
+  if (goal === 'Losing body fat') {
+    adjusted = Math.round(tdee * 0.9); // 10% deficit — default
+    explainer = 'We recommend starting here. A 10% deficit is sustainable, preserves muscle, and easy to stick to. You can always push harder later once the habit is built.';
+    document.getElementById('tdeeAdjustWrap').style.display = '';
+  } else if (goal === 'Gaining muscle or strength') {
+    adjusted = Math.round(tdee * 1.1);
+    explainer = 'This includes a 10% calorie surplus above your maintenance — the recommended amount to support muscle growth without excess fat gain.';
+    document.getElementById('tdeeAdjustWrap').style.display = 'none';
+  } else if (goal === 'Staying the same and feeling healthier') {
+    adjusted = tdee;
+    explainer = 'This matches your maintenance level — enough to fuel your day without gaining or losing weight.';
+    document.getElementById('tdeeAdjustWrap').style.display = 'none';
+  } else {
+    adjusted = tdee;
+    explainer = 'This is your estimated maintenance level.';
+    document.getElementById('tdeeAdjustWrap').style.display = 'none';
+  }
+
+  state.tdeeMaintenance = tdee;
+  state.tdeeBase = adjusted;
+  state.tdeeFinal = adjusted;
+
+  // Show maintenance number
+  const maintEl = document.getElementById('maintenanceCalories');
+  if (maintEl) maintEl.textContent = Math.round(tdee).toLocaleString();
+
+  document.getElementById('tdeeNumber').textContent = adjusted.toLocaleString();
+  document.getElementById('tdeeExplainer').textContent = explainer;
+  document.getElementById('finalCalories').textContent = adjusted.toLocaleString(); // 10% deficit already applied
+
+  const sliderEl = document.getElementById('tdeeAdjust');
+  if (sliderEl) sliderEl.value = 0;
+  const adjPct = document.getElementById('adjustPct');
+  if (adjPct) adjPct.textContent = '10% total deficit';
+  const finalEl = document.getElementById('finalCalories');
+  if (finalEl) finalEl.textContent = adjusted.toLocaleString();
+  document.getElementById('tdeeResult').classList.add('show');
+  updateTDEEWarning(10);
+}
+
+function updateTDEEAdjust() {
+  const pct = parseInt(document.getElementById('tdeeAdjust').value);
+  const final = Math.round(state.tdeeBase * (1 - pct / 100));
+  state.tdeeFinal = final;
+  document.getElementById('adjustPct').textContent = pct + '% reduction';
+  document.getElementById('finalCalories').textContent = final.toLocaleString();
+  updateTDEEWarning(pct);
+}
+
+function updateTDEEWarning(pct) {
+  const el = document.getElementById('tdeeWarning');
+  el.className = 'tdee-warning';
+  if (pct === 0) {
+    el.classList.add('ok');
+    el.textContent = '✓ This is your recommended target — a sustainable approach to your goal';
+  } else if (pct <= 10) {
+    el.classList.add('ok');
+    el.textContent = '✓ This is a sustainable adjustment';
+  } else if (pct <= 15) {
+    el.classList.add('amber');
+    el.textContent = '⚠ This is an aggressive deficit — make sure you\'re getting enough protein';
+  } else {
+    el.classList.add('red');
+    el.textContent = '⚠ This is at the limit of what we recommend — only go here if advised by a professional';
+  }
+}
+
+// ══════════════════════════════════════════
+// VALIDATION
+// ══════════════════════════════════════════
+function validateField(input) {
+  const hasVal = input.value.trim().length > 0;
+  input.classList.toggle('error', !hasVal);
+  return hasVal;
+}
+
+// Common domain name typos
+const DOMAIN_TYPOS = {
+  // Gmail
+  'gmial.com':     'gmail.com',
+  'gmai.com':      'gmail.com',
+  'gmail.co':      'gmail.com',
+  'gmail.con':     'gmail.com',
+  'gamil.com':     'gmail.com',
+  'gmaill.com':    'gmail.com',
+  'gnail.com':     'gmail.com',
+  // Hotmail
+  'hotmial.com':   'hotmail.com',
+  'hotmal.com':    'hotmail.com',
+  'hotmai.com':    'hotmail.com',
+  'htomail.com':   'hotmail.com',
+  'homail.com':    'hotmail.com',
+  'hotmial.co.uk': 'hotmail.co.uk',
+  'hotmal.co.uk':  'hotmail.co.uk',
+  'hotmai.co.uk':  'hotmail.co.uk',
+  // Outlook
+  'outlok.com':    'outlook.com',
+  'outook.com':    'outlook.com',
+  'outlokk.com':   'outlook.com',
+  'outlok.co.uk':  'outlook.co.uk',
+  // Yahoo
+  'yahooo.com':    'yahoo.com',
+  'yaho.com':      'yahoo.com',
+  'yhoo.com':      'yahoo.com',
+  'yahooo.co.uk':  'yahoo.co.uk',
+  'yaho.co.uk':    'yahoo.co.uk',
+  // iCloud
+  'iclod.com':     'icloud.com',
+  'icoud.com':     'icloud.com',
+  'iclould.com':   'icloud.com',
+  // BT / Sky / Virgin (common UK providers)
+  'bt.con':        'bt.com',
+  'binternet.com': 'btinternet.com',
+  'btinernet.com': 'btinternet.com',
+  'sky.con':       'sky.com',
+};
+
+// Common TLD typos
+const TLD_TYPOS = {
+  // .com typos
+  '.cmo':    '.com',
+  '.ocm':    '.com',
+  '.con':    '.com',
+  '.coom':   '.com',
+  '.comm':   '.com',
+  '.xom':    '.com',
+  '.vom':    '.com',
+  // .co.uk typos
+  '.co.ik':  '.co.uk',
+  '.co.uuk': '.co.uk',
+  '.couk':   '.co.uk',
+  '.co.uk.com': '.co.uk',
+  '.cco.uk': '.co.uk',
+  '.co.ku':  '.co.uk',
+  '.co.u':   '.co.uk',
+  // .org typos
+  '.og':     '.org',
+  '.orgg':   '.org',
+  // .net typos
+  '.ney':    '.net',
+  '.nett':   '.net',
+  // .co typos (legitimate TLD — skip, too many false positives)
+};
+
+function getEmailSuggestion(email, domain) {
+  if (!domain) return null;
+  const local = email.split('@')[0];
+
+  // Check domain name typos first
+  if (DOMAIN_TYPOS[domain]) {
+    return local + '@' + DOMAIN_TYPOS[domain];
+  }
+
+  // Check TLD typos — try each known TLD pattern
+  for (const [badTld, goodTld] of Object.entries(TLD_TYPOS)) {
+    if (domain.endsWith(badTld)) {
+      const fixedDomain = domain.slice(0, domain.length - badTld.length) + goodTld;
+      return local + '@' + fixedDomain;
+    }
+  }
+
+  return null;
+}
+
+function validateEmail(input) {
+  const val = input.value.trim();
+  const err = document.getElementById('err-email');
+
+  // Empty check
+  if (!val) {
+    input.classList.remove('error');
+    if (err) { err.textContent = ''; err.classList.remove('show'); }
+    return false;
+  }
+
+  // Format check
+  const formatValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  if (!formatValid) {
+    input.classList.add('error');
+    if (err) { err.textContent = 'Please enter a valid email address'; err.classList.add('show'); }
+    return false;
+  }
+
+  // Typo check
+  const domain = val.split('@')[1]?.toLowerCase();
+  if (domain && DOMAIN_TYPOS[domain]) {
+    const suggestion = val.split('@')[0] + '@' + DOMAIN_TYPOS[domain];
+    input.classList.add('error');
+    if (err) {
+      err.innerHTML = 'Did you mean <strong style="color:var(--white);cursor:pointer;" onclick="document.getElementById(\'email\').value=\'' + suggestion + '\';validateEmail(document.getElementById(\'email\'));">' + suggestion + '</strong>?';
+      err.classList.add('show');
+    }
+    return false;
+  }
+
+  // All good
+  input.classList.remove('error');
+  if (err) { err.textContent = ''; err.classList.remove('show'); }
+  return true;
+}
+
+function validateDOB(input) {
+  const dob = new Date(input.value);
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+  const valid = age >= 16 && age <= 80 && input.value !== '';
+  input.classList.toggle('error', !valid);
+  const err = document.getElementById('err-dob');
+  if (err) err.classList.toggle('show', !valid && input.value !== '');
+  return valid;
+}
+
+function validateHeight() {
+  if (state.heightUnit === 'cm') {
+    const v = parseFloat(document.getElementById('heightCmVal').value);
+    const valid = v >= 130 && v <= 220;
+    document.getElementById('heightCmVal').classList.toggle('error', !valid && document.getElementById('heightCmVal').value !== '');
+    document.getElementById('err-height').classList.toggle('show', !valid && document.getElementById('heightCmVal').value !== '');
+    return valid || document.getElementById('heightCmVal').value === '';
+  } else {
+    const ft = parseFloat(document.getElementById('heightFtVal').value) || 0;
+    const inch = parseFloat(document.getElementById('heightInVal').value) || 0;
+    const totalIn = ft * 12 + inch;
+    const valid = totalIn >= 51 && totalIn <= 87;
+    document.getElementById('err-heightFt').classList.toggle('show', !valid && ft > 0);
+    return valid || ft === 0;
+  }
+}
+
+function validateWeight() {
+  if (state.weightUnit === 'kg') {
+    const v = parseFloat(document.getElementById('weightKgVal').value);
+    const valid = v >= 30 && v <= 250;
+    document.getElementById('weightKgVal').classList.toggle('error', !valid && document.getElementById('weightKgVal').value !== '');
+    document.getElementById('err-weight').classList.toggle('show', !valid && document.getElementById('weightKgVal').value !== '');
+    return valid;
+  }
+  return true;
+}
+
+function validateSection(section) {
+  if (section === 1) {
+    const fn = validateField(document.getElementById('firstName'));
+    const ln = validateField(document.getElementById('lastName'));
+    const dob = validateDOB(document.getElementById('dob'));
+
+    // Email — required
+    const emailEl = document.getElementById('email');
+    const emailErr = document.getElementById('err-email');
+    let em = false;
+    if (!emailEl.value.trim()) {
+      emailEl.classList.add('error');
+      if (emailErr) { emailErr.textContent = 'Please enter your email address'; emailErr.classList.add('show'); }
+      em = false;
+    } else {
+      em = validateEmail(emailEl);
+    }
+
+    // Confirm email — required, must match
+    const confirmEl = document.getElementById('emailConfirm');
+    const confirmErr = document.getElementById('err-emailConfirm');
+    let ec = false;
+    if (!confirmEl.value.trim()) {
+      confirmEl.classList.add('error');
+      if (confirmErr) { confirmErr.textContent = 'Please confirm your email address'; confirmErr.classList.add('show'); }
+      ec = false;
+    } else {
+      ec = validateEmailConfirm(confirmEl);
+    }
+
+    if (!fn) document.getElementById('err-firstName').classList.add('show');
+    if (!ln) document.getElementById('err-lastName').classList.add('show');
+
+    // Phone optional — no blocking
+    return fn && ln && em && ec && dob;
+  }
+  return true;
+}
+
+// ══════════════════════════════════════════
+// SUBMIT
+// ══════════════════════════════════════════
+async function submitQuestionnaire() {
+  if (!validateSection(10)) return;
+
+  // Collect all data
+  const data = {
+    // PAD required fields
+    firstName: document.getElementById('firstName').value.trim(),
+    lastName: document.getElementById('lastName').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    email: document.getElementById('email').value.trim().toLowerCase(),
+    dob: document.getElementById('dob').value,
+    gender: document.getElementById('gender').value,
+    heightCm: getHeightCm(),
+    weightKg: getWeightKg(),
+    age: getAge(),
+    activityLevel: getSingleChoice('activityLevel'),
+    goal: getSingleChoice('nutritionGoal') || getChoices('trainingGoals').join(', '),
+    weightUnit: state.weightUnit === 'kg' ? 'kgs' : 'lbs',
+    membershipType: 'Individual',
+    status: 'complete',
+    recommendedCalories: state.tdeeFinal || null,
+    // Wellbeing baselines
+    scores: {
+      wellbeing: document.getElementById('sl-wellbeing').value,
+      sleep: document.getElementById('sl-sleep').value,
+      energy: document.getElementById('sl-energy').value,
+      stress: document.getElementById('sl-stress').value,
+      physical: document.getElementById('sl-physical').value,
+      diet: document.getElementById('sl-diet').value,
+      social: document.getElementById('sl-social').value,
+      motivation: document.getElementById('sl-motivation').value,
+    },
+    // Wellbeing
+    supportAreas: getChoices('supportAreas'),
+    affectsMost: getSingleChoice('affectsMost'),
+    emotionalState: getSingleChoice('emotionalState'),
+    specificSupport: getChoices('specificSupport'),
+    supportStyle: getChoices('supportStyle'),
+    // Physical
+    trainingGoals: getChoices('trainingGoals'),
+    barriers: getChoices('barriers'),
+    injuries: getChoices('injuries'),
+    avoidExercises: document.getElementById('avoidExercises').value,
+    trainingLocation: getSingleChoice('location-train'),
+    equipment: getChoices('equipment'),
+    gymExperience: getSingleChoice('gymExperience'),
+    trainDays: getSingleChoice('trainDays'),
+    sessionLength: getSingleChoice('sessionLength'),
+    planStyle: getSingleChoice('planStyle'),
+    // Sleep
+    sleepRating: getSingleChoice('sleepRating'),
+    sleepIssues: getChoices('sleepIssues'),
+    sleepHelp: getChoices('sleepHelp'),
+    // Social
+    connectionLevel: getSingleChoice('connectionLevel'),
+    socialHelp: getChoices('socialHelp'),
+    socialApproach: getSingleChoice('socialApproach'),
+    // Lifestyle
+    lifeContext: getChoices('lifeContext'),
+    lifeContextExtra: document.getElementById('lifeContext_extra') ? document.getElementById('lifeContext_extra').value : '',
+    alcohol: getSingleChoice('alcohol'),
+    // Purpose
+    routineState: getSingleChoice('routineState'),
+    motivationHelp: getChoices('motivationHelp'),
+    // Preferences
+    goalStyle: getSingleChoice('goalStyle'),
+    reminderFreq: getSingleChoice('reminderFreq'),
+    tonePreference: getSingleChoice('tonePreference'),
+    overwhelmedPref: getChoices('overwhelmedPref'),
+    // Tech
+    smartphone: getSingleChoice('smartphone'),
+    smartwatch: getSingleChoice('smartwatch'),
+    specificGoal: document.getElementById('specificGoal').value,
+    anythingElse: document.getElementById('anythingElse').value,
+    location: document.getElementById('location').value,
+  };
+
+  // Show loading
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('loadingScreen').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Build AI prompt
+  const prompt = buildPrompt(data);
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const result = await response.json();
+    const text = result.content?.[0]?.text || '';
+    showResults(data, text);
+
+    // TODO: POST data to Google Sheet via Apps Script endpoint
+    // TODO: Send Make webhook for Brevo follow-up email
+
+  } catch (err) {
+    console.error('API error:', err);
+    showResults(data, getFallbackRecommendation(data));
+  }
+}
+
+function buildPrompt(data) {
+  return `You are VYVE Health's AI coach. A new member has just completed their onboarding questionnaire. Write a warm, personalised welcome message and recommendations based on their answers. Use their first name (${data.firstName}). Be encouraging, specific, and match the tone preference: ${data.tonePreference || 'friendly and encouraging'}.
+
+Structure your response in 4 short sections with these exact headings:
+1. YOUR WEEKLY WORKOUT SCHEDULE
+2. YOUR WELLBEING FOCUS THIS WEEK
+3. YOUR FIRST WEEK ACTIONS
+4. A PERSONAL NOTE
+
+Keep each section to 2-4 sentences. Be specific using their actual answers below.
+
+IMPORTANT: If their life context includes challenging circumstances (new parent, bereavement, illness, caring responsibilities, mental health struggles) — acknowledge this warmly and adjust your recommendations accordingly. For example, if someone with a newborn says they want to train 5 days a week, gently suggest starting with 3 and building up. Always be compassionate, never preachy.
+
+MEMBER PROFILE:
+- Name: ${data.firstName} ${data.lastName}
+- Age: ${data.age}, Gender: ${data.gender}
+- Training location: ${data.trainingLocation}
+- Experience: ${data.gymExperience}
+- Training days/week: ${data.trainDays}
+- Session length: ${data.sessionLength}
+- Training goals: ${data.trainingGoals?.join(', ')}
+- Injuries to avoid: ${data.injuries?.join(', ')}
+- Exercises to avoid: ${data.avoidExercises || 'None'}
+- Equipment: ${data.equipment?.join(', ') || 'Standard gym'}
+- Wellbeing scores (1-10): Wellbeing ${data.scores.wellbeing}, Sleep ${data.scores.sleep}, Energy ${data.scores.energy}, Stress ${data.scores.stress}
+- Main concern: ${data.affectsMost}
+- Emotional state: ${data.emotionalState}
+- Support areas: ${data.supportAreas?.join(', ')}
+- Daily calories target: ${data.recommendedCalories ? data.recommendedCalories + ' kcal' : 'Not set'}
+- Specific 6-8 week goal: ${data.specificGoal || 'Not specified'}
+- Current life context: ${data.lifeContext?.join(', ') || 'Not specified'}
+- Additional context: ${data.lifeContextExtra || 'None'}
+- Tone preference: ${data.tonePreference}`;
+}
+
+function getFallbackRecommendation(data) {
+  return `YOUR WEEKLY WORKOUT SCHEDULE\nBased on your ${data.trainDays} days per week at the ${data.trainingLocation}, we've selected the best plan from your library to match your ${data.gymExperience} experience level.\n\nYOUR WELLBEING FOCUS THIS WEEK\nWith your ${data.affectsMost} being the main area to address, we recommend starting with our ${data.scores.sleep < 5 ? 'Bedtime Affirmations and NSDR sessions' : 'Morning Intention and Breathwork sessions'}.\n\nYOUR FIRST WEEK ACTIONS\nLog your first workout, complete your weekly check-in on Friday, and watch at least one Movement & Wellbeing session. Small consistent steps add up fast.\n\nA PERSONAL NOTE\nWelcome to VYVE, ${data.firstName}. You've taken the first step — that's the hardest part done. We're here every step of the way.`;
+}
+
+function showResults(data, text) {
+  document.getElementById('loadingScreen').classList.remove('active');
+  const rs = document.getElementById('resultScreen');
+  rs.classList.add('active');
+
+  document.getElementById('resultName').textContent = data.firstName;
+
+  const sections = text.split(/\n(?=\d\.|[A-Z\s]+\n)/);
+  let html = '';
+
+  // Parse sections
+  const parts = text.split(/\n(?=[A-Z\s]{5,}\n)/);
+  const sectionTitles = ['YOUR WEEKLY WORKOUT SCHEDULE','YOUR WELLBEING FOCUS THIS WEEK','YOUR FIRST WEEK ACTIONS','A PERSONAL NOTE'];
+
+  let remaining = text;
+  sectionTitles.forEach(title => {
+    const idx = remaining.indexOf(title);
+    if (idx !== -1) {
+      const start = idx + title.length;
+      const nextIdx = sectionTitles.reduce((min, t) => {
+        const i = remaining.indexOf(t, idx + 1);
+        return i !== -1 && i < min ? i : min;
+      }, Infinity);
+      const content = remaining.substring(start, nextIdx === Infinity ? undefined : nextIdx).trim();
+      html += `<div class="result-card">
+        <div class="result-card-title">${title}</div>
+        <p>${content.replace(/\n/g, '<br>')}</p>
+      </div>`;
+    }
+  });
+
+  if (!html) {
+    html = `<div class="result-card"><div class="result-card-title">YOUR PLAN</div><p>${text.replace(/\n/g, '<br>')}</p></div>`;
+  }
+
+  document.getElementById('resultContent').innerHTML = html;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Update recap values when navigating to sections
+const originalGoTo = goTo;
+function goTo(section) {
+  // Update recap displays and show skip prompt if score is 8-10
+  const recapConfig = {
+    3: { valId: 'recapPhysicalVal',   sliderId: 'sl-physical',   skipId: 'recapPhysicalSkip',   msgId: 'recapPhysicalMsg',   area: 'physical fitness' },
+    4: { valId: 'recapSleepVal',      sliderId: 'sl-sleep',      skipId: 'recapSleepSkip',      msgId: 'recapSleepMsg',      area: 'sleep' },
+    5: { valId: 'recapDietVal',       sliderId: 'sl-diet',       skipId: 'recapDietSkip',       msgId: 'recapDietMsg',       area: 'diet' },
+    6: { valId: 'recapSocialVal',     sliderId: 'sl-social',     skipId: 'recapSocialSkip',     msgId: 'recapSocialMsg',     area: 'social connection' },
+    8: { valId: 'recapMotivationVal', sliderId: 'sl-motivation', skipId: 'recapMotivationSkip', msgId: 'recapMotivationMsg', area: 'motivation & purpose' },
+  };
+
+  if (recapConfig[section]) {
+    const cfg = recapConfig[section];
+    const slider = document.getElementById(cfg.sliderId);
+    const valEl = document.getElementById(cfg.valId);
+    const skipEl = document.getElementById(cfg.skipId);
+    const msgEl = document.getElementById(cfg.msgId);
+    if (slider && valEl) {
+      const score = parseInt(slider.value);
+      valEl.textContent = score;
+      // Show skip prompt if score is high
+      if (skipEl && msgEl) {
+        if (score >= 8) {
+          const msgs = {
+            8: `Your ${cfg.area} looks great at ${score}/10 — would you like to skip this section?`,
+            9: `Your ${cfg.area} is excellent at ${score}/10 — would you like to skip this section?`,
+            10: `Your ${cfg.area} is perfect at ${score}/10 — would you like to skip this section?`,
+          };
+          msgEl.textContent = msgs[score] || msgs[8];
+          skipEl.classList.add('show');
+        } else {
+          skipEl.classList.remove('show');
+        }
+      }
+    }
+  }
+  // Call original function logic inline
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('s' + section);
+  if (el) {
+    el.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  state.currentSection = section;
+  updateProgress(section);
+  const fn = document.getElementById('firstName');
+  if (fn && fn.value) {
+    const nd = document.getElementById('nameDisplay');
+    if (nd) nd.textContent = fn.value;
+  }
+}
+
+
+function updateSliderVisibility() {
+  // All sliders always shown — support areas inform AI only
+}
+
+
+function hideSkipPrompt(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('show');
+}
+
+
+function toggleEquipment(locationValue) {
+  const showEquipment = ['Home', 'Mix of home and gym', 'Flexible', 'Not sure'].includes(locationValue);
+  const eq = document.getElementById('equipmentGroup');
+  if (eq) eq.style.display = showEquipment ? '' : 'none';
+}
+
+function toggleDietDetail(gatewayValue) {
+  const detail = document.getElementById('dietDetail');
+  if (detail) detail.style.display = gatewayValue === 'Yes' ? '' : 'none';
+}
+
+
+function validateEmailConfirm(input) {
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  const confirm = input.value.trim().toLowerCase();
+  const err = document.getElementById('err-emailConfirm');
+  if (!confirm) {
+    input.classList.remove('error');
+    if (err) err.classList.remove('show');
+    return false;
+  }
+  const matches = email === confirm;
+  input.classList.toggle('error', !matches);
+  if (err) {
+    err.textContent = matches ? "" : "These email addresses don't match";
+    err.classList.toggle('show', !matches);
+  }
+  return matches;
+}
+
+</script>
+</body>
+</html>
