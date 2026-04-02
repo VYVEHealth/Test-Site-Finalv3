@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The VYVE Podcast | Formerly The Everyman Podcast</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+           --teal: #1b7878;
+           --deep-teal: #0d2b2b;
+           --warm-cream: #f4fafa;
+           --charcoal: #1e293b;
+           --light-teal: #e0f2f2;
+           --mid-teal: #4daaaa;
+           --soft-grey: #f4fafa;
+           --text-grey: #64748b;
+           --border-light: #d1e8e8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--warm-cream);
+            color: var(--charcoal);
+            line-height: 1.6;
+        }
+
+        /* ===== HEADER / HERO ===== */
+        .hero {
+            background: var(--deep-teal);
+            color: white;
+            padding: 80px 24px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(13,43,43,0.7) 0%, rgba(27,120,120,0.5) 50%, rgba(77,170,170,0.6) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero > *:not(.hero-bg-img) {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 100px;
+            padding: 8px 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 span {
+            color: rgba(255,255,255,0.7);
+            font-weight: 400;
+            font-size: 0.6em;
+            display: block;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.02em;
+            margin-top: 4px;
+        }
+
+        .hero-tagline {
+            font-size: 1.15rem;
+            font-weight: 300;
+            opacity: 0.9;
+            max-width: 640px;
+            margin: 16px auto 32px;
+            line-height: 1.7;
+        }
+
+        .platform-links-hero {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .platform-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .platform-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .platform-btn svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        /* ===== GUEST INTEREST ===== */
+        .guest-interest {
+            background: var(--light-teal);
+            border-bottom: 1px solid var(--border-light);
+            padding: 40px 24px;
+        }
+
+        .guest-interest-inner {
+            max-width: 680px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .guest-interest-inner h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--deep-teal);
+            margin-bottom: 8px;
+        }
+
+        .guest-interest-inner p {
+            font-size: 0.95rem;
+            color: var(--text-grey);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .guest-form {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .guest-form input {
+            padding: 12px 18px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            background: white;
+            color: var(--charcoal);
+            outline: none;
+            transition: border-color 0.3s ease;
+            width: 220px;
+        }
+
+        .guest-form input:focus {
+            border-color: var(--teal);
+        }
+
+        .guest-form button {
+            padding: 12px 28px;
+            background: var(--teal);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .guest-form button:hover {
+            background: var(--deep-teal);
+            transform: translateY(-1px);
+        }
+
+        .guest-form-note {
+            font-size: 0.75rem;
+            color: var(--text-grey);
+            margin-top: 12px;
+            opacity: 0.7;
+        }
+
+        /* ===== ORIGIN STORY ===== */
+        .origin-section {
+            background: white;
+            border-bottom: 1px solid var(--border-light);
+            padding: 56px 24px 48px;
+        }
+
+        .origin-inner {
+            max-width: 760px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .origin-label {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--teal);
+            margin-bottom: 16px;
+        }
+
+        .origin-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 700;
+            color: var(--deep-teal);
+            line-height: 1.3;
+            margin-bottom: 20px;
+        }
+
+        .origin-text {
+            font-size: 1.02rem;
+            line-height: 1.85;
+            color: var(--text-grey);
+            margin-bottom: 0;
+        }
+
+        .origin-text + .origin-text {
+            margin-top: 16px;
+        }
+
+        /* ===== HORIZONTAL TIMELINE (alternating) ===== */
+        .timeline-section {
+            background: var(--soft-grey);
+            padding: 60px 24px 64px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .timeline-heading {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--deep-teal);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .timeline-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--mid-teal) var(--border-light);
+            padding-bottom: 8px;
+        }
+
+        .timeline-wrap::-webkit-scrollbar { height: 5px; }
+        .timeline-wrap::-webkit-scrollbar-track { background: var(--border-light); border-radius: 3px; }
+        .timeline-wrap::-webkit-scrollbar-thumb { background: var(--mid-teal); border-radius: 3px; }
+
+        .timeline {
+            display: flex;
+            position: relative;
+            min-width: 960px;
+            padding: 0 32px;
+            height: 340px;
+            align-items: center;
+        }
+
+        /* The horizontal line - centred vertically */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 32px;
+            right: 32px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 2px;
+            background: linear-gradient(to right, var(--deep-teal), var(--teal), var(--mid-teal));
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* The dot - sits on the centre line */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: white;
+            border: 2.5px solid var(--teal);
+            z-index: 2;
+        }
+
+        .timeline-item.milestone::before {
+            width: 18px;
+            height: 18px;
+            background: var(--deep-teal);
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--deep-teal), 0 2px 10px rgba(13, 43, 43, 0.2);
+        }
+
+        /* Connector line from dot to text */
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            background: var(--border-light);
+            z-index: 1;
+        }
+
+        /* ABOVE items: text above the line, connector goes up */
+        .timeline-item.above .timeline-content {
+            position: absolute;
+            bottom: calc(50% + 28px);
+            left: 0;
+            right: 0;
+            padding: 0 6px;
+        }
+
+        .timeline-item.above::after {
+            bottom: 50%;
+            height: 22px;
+        }
+
+        /* BELOW items: text below the line, connector goes down */
+        .timeline-item.below .timeline-content {
+            position: absolute;
+            top: calc(50% + 28px);
+            left: 0;
+            right: 0;
+            padding: 0 6px;
+        }
+
+        .timeline-item.below::after {
+            top: 50%;
+            height: 22px;
+        }
+
+        .timeline-date {
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--mid-teal);
+            margin-bottom: 4px;
+        }
+
+        .timeline-title {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--charcoal);
+            line-height: 1.35;
+            margin-bottom: 3px;
+        }
+
+        .milestone .timeline-title {
+            color: var(--deep-teal);
+        }
+
+        .timeline-guest {
+            font-size: 0.7rem;
+            color: var(--text-grey);
+            line-height: 1.4;
+        }
+
+        /* ===== EPISODES SECTION ===== */
+        .episodes-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--charcoal);
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--text-grey);
+            font-size: 1rem;
+        }
+
+        /* Season divider */
+        .season-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 48px 0 32px;
+        }
+
+        .season-divider::before,
+        .season-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-light);
+        }
+
+        .season-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--teal);
+            font-weight: 600;
+            white-space: nowrap;
+            padding: 6px 20px;
+            background: var(--light-teal);
+            border-radius: 100px;
+        }
+
+        /* Episode Card */
+        .episode-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .episode-card:hover {
+            box-shadow: 0 8px 32px rgba(27, 120, 120, 0.08);
+            border-color: rgba(27, 120, 120, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .episode-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--light-teal), var(--soft-grey));
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .episode-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .episode-image .vyve-logo {
+            width: 60%;
+            height: auto;
+        }
+
+        .episode-image img.rotate-90 {
+            transform: rotate(90deg);
+            object-fit: cover;
+        }
+
+        .episode-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .episode-number {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--teal);
+            margin-bottom: 4px;
+        }
+
+        .episode-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .episode-summary {
+            font-size: 0.9rem;
+            color: var(--text-grey);
+            line-height: 1.65;
+            margin-bottom: 16px;
+        }
+
+        .episode-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ep-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--teal);
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 100px;
+            border: 1px solid rgba(27, 120, 120, 0.2);
+            background: var(--light-teal);
+            transition: all 0.2s ease;
+        }
+
+        .ep-link:hover {
+            background: var(--teal);
+            color: white;
+            border-color: var(--teal);
+        }
+
+        .ep-link svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--charcoal);
+            color: white;
+            text-align: center;
+            padding: 48px 24px;
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .footer-tagline {
+            font-size: 0.85rem;
+            opacity: 0.6;
+            margin-bottom: 24px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-copy {
+            font-size: 0.75rem;
+            opacity: 0.4;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .hero {
+                padding: 60px 20px 48px;
+            }
+
+            .episode-card {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .episode-image {
+                width: 60px;
+                height: 60px;
+            }
+
+            .origin-title {
+                font-size: 1.4rem;
+            }
+
+            .platform-links-hero {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO -->
+    <header class="hero">
+        <img class="hero-bg-img" src="https://drive.google.com/thumbnail?id=1Av0X-8_h3EETuhEiCFFSOap-PGUbTxcq&sz=w1600" alt=""  loading="eager">
+        <h1>
+            VYVE Podcast
+            <span>Formerly The Everyman Podcast</span>
+        </h1>
+        <p class="hero-tagline">
+            A space where we openly discuss the challenges we face every day. From physical to mental health,
+            we explore the struggles and triumphs that make up the modern person's experience - inspiring
+            positive change, one conversation at a time.
+        </p>
+        <div class="platform-links-hero">
+            <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="platform-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                Spotify
+            </a>
+            <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="platform-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34zm6.525 2.568c2.336 0 4.448.902 6.056 2.587 1.199 1.272 1.86 2.7 2.037 4.143h-.004c.076.627-.325 1.214-.95 1.29-.627.076-1.215-.324-1.29-.95-.128-1.063-.622-2.099-1.47-2.998C14.87 5.17 13.28 4.468 11.6 4.568c-2.724.165-4.96 2.507-5.008 5.25-.032 1.812.68 3.386 1.89 4.52.41.385.45 1.03.065 1.44-.234.254-.56.382-.885.382-.2 0-.4-.06-.575-.183C5.534 14.538 4.57 12.51 4.592 10.2c.033-1.788.67-3.46 1.838-4.83C8.076 3.468 10.088 2.568 11.865 2.568zM12 7.072c1.322 0 2.535.503 3.41 1.409.87.9 1.32 2.09 1.266 3.344-.04.87-.31 1.7-.786 2.423-.37.562-1.126.718-1.688.35-.562-.37-.718-1.126-.35-1.688.226-.344.352-.73.37-1.15.025-.584-.188-1.145-.6-1.573-.41-.424-.963-.658-1.562-.658-.598 0-1.16.234-1.58.658-.418.424-.636.985-.613 1.573.015.35.115.688.29 1l.032.053c.35.573.17 1.322-.402 1.672-.573.35-1.322.17-1.672-.402l-.032-.053c-.374-.604-.594-1.292-.63-2.035-.054-1.254.396-2.444 1.266-3.344.876-.906 2.088-1.41 3.41-1.41l-.129.042zm.103 5.332c.69 0 1.25.56 1.25 1.25v.077c0 .24.01.48-.012.716-.076.865-.302 1.726-.806 2.467-.396.583-1.194.734-1.776.338-.582-.396-.734-1.194-.338-1.776.202-.298.332-.65.376-1.056.017-.192.012-.384.012-.576v-.19c0-.69.56-1.25 1.25-1.25h.044z"/></svg>
+                Apple Podcasts
+            </a>
+            <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="platform-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 3.6c4.636 0 8.4 3.764 8.4 8.4 0 4.636-3.764 8.4-8.4 8.4-4.636 0-8.4-3.764-8.4-8.4 0-4.636 3.764-8.4 8.4-8.4zm-3.6 4.8v7.2l6-3.6-6-3.6z"/></svg>
+                Amazon Music
+            </a>
+        </div>
+    </header>
+
+    <!-- GUEST INTEREST -->
+    <section class="guest-interest">
+        <div class="guest-interest-inner">
+            <h3>I'd Like to Be a Guest</h3>
+            <p>Got a story worth sharing? We're always looking for honest voices who can help others through their own experiences. Whether it's mental health, addiction, physical wellbeing, or just life - we want to hear from you.</p>
+            <form class="guest-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Thanks! We\'ll be in touch'; this.querySelector('button').disabled=true; this.querySelector('button').style.background='var(--mid-teal)';">
+                <input type="text" name="name" placeholder="Your name" required>
+                <input type="email" name="email" placeholder="Your email" required>
+                <input type="text" name="topic" placeholder="What would you talk about?">
+                <button type="submit">Express Interest</button>
+            </form>
+            <p class="guest-form-note">We'll reach out if we think there's a great fit. No pressure, no commitments.</p>
+        </div>
+    </section>
+
+    <!-- OUR WHY -->
+    <section class="origin-section">
+        <div class="origin-inner">
+            <span class="origin-label">Our Why</span>
+            <h2 class="origin-title">From feeling like jumping in front of a train was the answer - to building something that helps others never reach that point.</h2>
+            <p class="origin-text">
+                There was a time when VYVE founder Lewis Vines believed the only way out was to end it all. Addiction had taken hold, and standing on a platform watching trains pass felt like the closest thing to a plan. What changed everything was the hardest thing he ever did - having honest conversations. First with himself, then with the people who mattered most. Those conversations saved his life.
+            </p>
+            <p class="origin-text">
+                Lewis wanted to help others learn the same lessons he was learning - not by preaching, but by sitting down with incredible guests who had lived through it too. The Everyman Podcast was the first seed of that idea. Every episode became proof that talking openly about the things we usually hide - addiction, mental health, grief, identity - can genuinely change lives. That seed has now grown into VYVE: a proactive wellbeing platform with a much wider ambition - to build health before it breaks.
+            </p>
+        </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="timeline-section">
+        <h3 class="timeline-heading">The Journey So Far</h3>
+        <div class="timeline-wrap">
+            <div class="timeline">
+
+                <div class="timeline-item milestone above">
+                    <div class="timeline-content">
+                        <div class="timeline-date">Feb 2023</div>
+                        <div class="timeline-title">The Everyman Podcast launches</div>
+                        <div class="timeline-guest">A men's health podcast with one rule - no topic is off limits</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item below">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2023</div>
+                        <div class="timeline-title">Tim Harkness</div>
+                        <div class="timeline-guest">Elite mindset meets the everyday</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item above">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2023</div>
+                        <div class="timeline-title">Nathan Jones</div>
+                        <div class="timeline-guest">Raw honesty about addiction</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item below">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2023</div>
+                        <div class="timeline-title">Sophie Craig</div>
+                        <div class="timeline-guest">Social media fame &amp; being happy</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item above">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2023</div>
+                        <div class="timeline-title">Ray Winstone</div>
+                        <div class="timeline-guest">Prostate cancer awareness</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item milestone below">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2023</div>
+                        <div class="timeline-title">Lewis shares his story</div>
+                        <div class="timeline-guest">Overcoming addiction &amp; finding happy</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item above">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2024</div>
+                        <div class="timeline-title">Luke Ambler</div>
+                        <div class="timeline-guest">Giving men hope - Andy's Man Club</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item below">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2024</div>
+                        <div class="timeline-title">Matt Jarvis</div>
+                        <div class="timeline-guest">Life after pro football</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item above">
+                    <div class="timeline-content">
+                        <div class="timeline-date">Late 2025</div>
+                        <div class="timeline-title">Dr Tony Lloyd</div>
+                        <div class="timeline-guest">Neurodiversity &amp; mental health</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item below">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2026</div>
+                        <div class="timeline-title">David Gleghorn</div>
+                        <div class="timeline-guest">Becoming the ultra you</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item milestone above">
+                    <div class="timeline-content">
+                        <div class="timeline-date">Early 2026</div>
+                        <div class="timeline-title">From Everyman to VYVE Podcast</div>
+                        <div class="timeline-guest">A much wider ambition to build health before it breaks</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- EPISODES -->
+    <section class="episodes-section">
+        <div class="section-header">
+            <h2>All Episodes</h2>
+            <p>Real conversations about physical, mental &amp; social wellbeing</p>
+        </div>
+
+        <!-- ===== LATEST SEASON ===== -->
+        <div class="season-divider">
+            <span class="season-label">Latest Episodes</span>
+        </div>
+
+        <!-- Episode: Becoming the Ultra You -->
+        <div class="episode-card">
+            <div class="episode-image">
+                <img src="https://drive.google.com/thumbnail?id=1RgLIDyR4gMzRqhpQIfE5cPK5Bo4bdk-5&sz=w200" alt="David Gleghorn">
+            </div>
+            <div class="episode-content">
+                <div class="episode-title">Becoming the Ultra You with David Gleghorn</div>
+                <p class="episode-summary">Lewis sits down with David Gleghorn, author of 'Becoming the Ultra You', to explore personal development, overcoming fear, and the techniques David uses to help elite athletes and everyday people unlock their potential through mental rehearsal and consistency.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                        Spotify
+                    </a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg>
+                        Apple
+                    </a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg>
+                        Amazon
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Episode: Your Vibe Attracts your Tribe -->
+        <div class="episode-card">
+            <div class="episode-image">
+                <img src="https://drive.google.com/thumbnail?id=1ChDn0CmUADtCUecWmLHt96as7vgmwrFh&sz=w200" alt="Paul Callendar">
+            </div>
+            <div class="episode-content">
+                <div class="episode-title">Your Vibe Attracts Your Tribe with Paul Callendar</div>
+                <p class="episode-summary">Lewis and Calum speak with fitness expert Paul Callender about his journey from military service to bodybuilding, the importance of surrounding yourself with supportive people, and how embracing hardship, gratitude, and goal-setting fuels personal growth.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Episode: Why you Overeat -->
+        <div class="episode-card">
+            <div class="episode-image">
+                <img src="https://drive.google.com/thumbnail?id=1lIoXz_oiPWX0huXgqQB2fqs5sSx6FsVY&sz=w200" alt="Sam Gibson">
+            </div>
+            <div class="episode-content">
+                <div class="episode-title">Why You Overeat and How to Stop for Good with Sam Gibson</div>
+                <p class="episode-summary">An honest deep-dive into emotional eating with Sam Gibson, author of 'Why You Overeat and How to Stop for Good'. Sam shares his journey from PT to emotional eating coach, exploring mindset over diet, the cycle of guilt and shame, and his 'So What Method' for finding deeper motivation.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Episode: How to stay ahead -->
+        <div class="episode-card">
+            <div class="episode-image">
+                <img src="https://drive.google.com/thumbnail?id=1VBLYyQTSmH78tfeopDwyH1Fi_s7yuWZg&sz=w200" alt="Kim Lindsay">
+            </div>
+            <div class="episode-content">
+                <div class="episode-title">How to Stay Ahead in an Ever-Changing World with Kim Lindsay</div>
+                <p class="episode-summary">Kim Lindsay joins the show to discuss embracing failure as a pathway to growth, the importance of adaptability, and why being comfortable can actually hold you back. A powerful conversation about pushing limits and finding new opportunities through setbacks.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Episode: Transforming Lives Through Sport -->
+        <div class="episode-card">
+            <div class="episode-image">
+                <img src="https://drive.google.com/thumbnail?id=127QolM1sfCRxb6MAzEe-F2nffWq1m_6u&sz=w200" alt="David Nesl">
+            </div>
+            <div class="episode-content">
+                <div class="episode-title">Transforming Lives Through Sport: David Nesl's Journey</div>
+                <p class="episode-summary">David Nesl shares his inspiring journey from addiction to recovery, highlighting how sport fosters social inclusion and mental health. He discusses founding football leagues for individuals facing social exclusion and his vision to expand community-driven recovery programmes.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Episode: Neurodiversity -->
+        <div class="episode-card">
+            <div class="episode-image">
+                <img src="https://drive.google.com/thumbnail?id=18NRqpdrbt8VMatH3zvPS2YTnIICE3exX&sz=w200" alt="Dr Tony Lloyd">
+            </div>
+            <div class="episode-content">
+                <div class="episode-title">Understanding Neurodiversity: A New Perspective on Mental Health with Dr Tony Lloyd</div>
+                <p class="episode-summary">Dr Tony Lloyd redefines how we think about intelligence, neurodiversity, and mental health. From the impact of technology on our attention spans to the power of self-compassion and human connection, this conversation challenges conventional thinking about what it means to thrive.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Episode: Clear for Men -->
+        <div class="episode-card">
+            <div class="episode-image">
+                <img class="rotate-90" src="https://drive.google.com/thumbnail?id=1Q5uhQauKuRODs9ytvKH5WU1LJpz6jiTs&sz=w200" alt="Louis Watkins">
+            </div>
+            <div class="episode-content">
+                <div class="episode-title">Taking the Time for You with Louis Watkins (Clear for Men)</div>
+                <p class="episode-summary">Louis Watkins, CEO and founder of Clear for Men, opens up about building a skincare brand with purpose. They explore authenticity in business, vulnerability as a strength, the loneliness of entrepreneurship, and why self-care routines matter for mental wellbeing.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SEASON: THE EVERYMAN ARCHIVE ===== -->
+        <div class="season-divider">
+            <span class="season-label">The Everyman Archive</span>
+        </div>
+
+        
+<!-- Ep 55 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1qtr-Fzkgd_8Mt7bO54rHDY4GlbnXHDW_&sz=w200" alt="Sophie Ellen"></div>
+            <div class="episode-content">
+                <div class="episode-title">Modern Dating with Sophie Ellen</div>
+                <p class="episode-summary">In a world where dating apps make meeting people 'easier', how good is it really? The team explore transactional relationships, the lack of deep emotional connection, and what dating in 2025 truly means for men and women navigating the modern landscape.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 54 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1Kyv-O3cX7DSnffP8fU0GQoGDJQbv3EXe&sz=w200" alt="Luke Ambler"></div>
+            <div class="episode-content">
+                <div class="episode-title">Giving Men Hope with Andy's Man Club Founder Luke Ambler</div>
+                <p class="episode-summary">In the UK, suicide is the leading cause of death for men under 45. Luke Ambler, founder of Andy's Man Club, joins to share his story, the incredible work of his organisation, and why giving men a space to talk openly is saving lives across the country.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 53 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">OnlyFans Culture with Dionne Slater</div>
+                <p class="episode-summary">An open and honest conversation exploring the rise of OnlyFans culture, its impact on relationships, self-image, and how the normalisation of commodified intimacy is reshaping expectations for both men and women in modern society.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 52 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1RPxVbapaPclKjkeClymnwFlC1H6iYTLZ&sz=w200" alt="Matt Jarvis"></div>
+            <div class="episode-content">
+                <div class="episode-title">Matthew Jarvis - Former England &amp; Premier League Footballer</div>
+                <p class="episode-summary">Former Premier League and England winger Matthew Jarvis opens up about life at the highest level of professional football, the mental health challenges that come with elite sport, and what happens when the spotlight fades and you need to find a new identity.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 51 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Male Friendships Today &amp; Introducing Joe</div>
+                <p class="episode-summary">The hosts catch up to discuss the dynamics of male friendships in modern society, sharing positive and funny stories alongside the real risks of how men communicate. Plus, a warm welcome to new co-host Joe as the podcast evolves for 2025.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 50 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">We Are Back with New Hosts for 2025!</div>
+                <p class="episode-summary">A milestone episode marking the return of The Everyman Podcast with fresh energy and new co-hosts. The team introduce themselves, share their vision for 2025, and set the tone for deeper conversations about men's and women's health going forward.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Update -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Quick Update from the Everyman Pod</div>
+                <p class="episode-summary">A short update from the hosts sharing exciting news about the podcast's future direction, upcoming guests, and what listeners can look forward to in the new season.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 49 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Your Physical Best with Calum Denham</div>
+                <p class="episode-summary">Calum Denham joins to talk about optimising physical performance, building sustainable fitness habits, and why understanding your body is the foundation for achieving your personal best at any age.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 48 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1M0K2uoLkcJJo-C6mE5Tky0dYsMILGj_x&sz=w200" alt="Richie Paxton"></div>
+            <div class="episode-content">
+                <div class="episode-title">The World Is Addicted to Addiction with Richie Paxton</div>
+                <p class="episode-summary">Richie Paxton joins for a raw and powerful conversation about addiction in all its forms - from substances to social media, gambling to food. Together they explore why modern society breeds addictive behaviours and what it takes to break free and find genuine fulfilment.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 47 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1ebFWWbU0mgxoNuhw8J3PAIUlGi1kp3U_&sz=w200" alt="Ross Gladwin"></div>
+            <div class="episode-content">
+                <div class="episode-title">Fighting Spirit &amp; Physical Health with Ross Gladwin</div>
+                <p class="episode-summary">Ross Gladwin shares his powerful journey through combat sports and how physical discipline transformed his mental resilience. A conversation about grit, determination, and the connection between body and mind.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 46 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">The Importance of Male Community with Stu Burman</div>
+                <p class="episode-summary">Stu Burman discusses why male community spaces matter more than ever, how isolation impacts men's wellbeing, and the practical steps men can take to build meaningful connections and support networks.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 45 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">The World of Aesthetics with Sophie Jane Dalby</div>
+                <p class="episode-summary">Sophie Jane Dalby opens up about the aesthetics industry, body image pressures on both men and women, and the line between self-improvement and harmful beauty standards in today's social media-driven world.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 44 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1VwyYAsMwhDuu2_oeyPpVJx8x3IYPLB6k&sz=w200" alt="Shaun Baker"></div>
+            <div class="episode-content">
+                <div class="episode-title">Shaun Baker - Get to Know Your Host!</div>
+                <p class="episode-summary">Get to know co-host Shaun Baker as he shares his personal story, what drives him, his experiences with mental health, and why he's passionate about creating honest conversations on The Everyman Podcast.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 43 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">The Everyman Returns</div>
+                <p class="episode-summary">The Everyman Podcast is back! After a break, the hosts reunite to share what they've been up to, reflect on life changes, and set the stage for a fresh run of open and meaningful conversations.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 42 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Mental Wealth &amp; Mindfulness with Dr Tamara Russell</div>
+                <p class="episode-summary">Dr Tamara Russell, a clinical psychologist and mindfulness expert, explains the concept of mental wealth, practical mindfulness techniques, and how small daily practices can radically improve your mental health.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 41 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">The Happiness Episode with Ang Todd</div>
+                <p class="episode-summary">Ang Todd joins for an uplifting conversation about what happiness really means, how to cultivate joy in everyday life, and why chasing perfection often gets in the way of genuine contentment.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 40 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1fCuwUPYCoo5jbuB7Bm6Ui45_RyYHgsNk&sz=w200" alt="Nathan Jones"></div>
+            <div class="episode-content">
+                <div class="episode-title">Addiction with Nathan Jones Part 2</div>
+                <p class="episode-summary">Nathan Jones returns for a powerful follow-up exploring his continued recovery journey, the realities of long-term sobriety, relapse prevention, and the support systems that keep him moving forward.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 39 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Lewis Vines - Overcoming Addiction &amp; Finding Happy</div>
+                <p class="episode-summary">In this deeply personal episode, host Lewis Vines shares his own story for the first time - opening up about his battles with mental health, the journey through addiction, and how he found a path to happiness. An honest, vulnerable conversation that proves nobody is alone in their struggle.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 38 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">The Boys Catch Up</div>
+                <p class="episode-summary">The hosts get together for an honest catch-up episode, sharing personal updates, reflecting on recent experiences, and having the kind of open conversation that men rarely get to have.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 37 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1Gv4J7GKchXjkOXeFOLQOKMVkOdCZkK16&sz=w200" alt="Caitlin Speirs"></div>
+            <div class="episode-content">
+                <div class="episode-title">IVF &amp; Female Fertility with Caitlin Speirs</div>
+                <p class="episode-summary">Caitlin Speirs shares the emotional and physical realities of IVF, breaking down the stigma around fertility struggles and offering insight into how couples can navigate the journey together with compassion.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 36 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">The Everyman Catchup</div>
+                <p class="episode-summary">Another candid catch-up with the hosts as they discuss life, work, relationships, and the lessons they've learned since the last recording. Real talk from real men navigating real challenges.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 35 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1d3QX7RLssmY-OZvEwefom4xvptBYHYvb&sz=w200" alt="Sophie Craig"></div>
+            <div class="episode-content">
+                <div class="episode-title">Social Media Fame &amp; Being Happy with Sophie Craig</div>
+                <p class="episode-summary">Sophie Craig discusses the reality behind social media fame, the pressure to maintain an online persona, and how she found genuine happiness by stepping back from the highlight reel.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 34 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1qtr-Fzkgd_8Mt7bO54rHDY4GlbnXHDW_&sz=w200" alt="Sophie Ellen"></div>
+            <div class="episode-content">
+                <div class="episode-title">Dating in Today's World &amp; How to Be Happy Single with Sophie Ellen</div>
+                <p class="episode-summary">Sophie Ellen joins for the first time to tackle the complexities of modern dating, the pressure to be in a relationship, and why learning to be happy on your own is the foundation for any healthy partnership. A refreshingly honest take on love and self-worth.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 33 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Social Media Influence and the Impact on You with Imogen Eden-Brown</div>
+                <p class="episode-summary">Imogen Eden-Brown explores the powerful grip social media has on our self-esteem, mental health, and daily habits, offering practical advice on building a healthier relationship with our screens.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 32 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Last One of 2023!</div>
+                <p class="episode-summary">The hosts wrap up 2023 with a reflective episode looking back at the year's highlights, personal growth moments, and lessons learned. A celebratory send-off before the holiday break.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 31 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Everyman Catch Up - How to Be Fully Content</div>
+                <p class="episode-summary">A thoughtful discussion between the hosts about what it truly means to be content, how comparing yourself to others holds you back, and practical ways to find peace with where you are right now.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 30 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1PbkKMBxc_0nITGHc04pRMB6gBw-TDaM_&sz=w200" alt="Nick Hancock"></div>
+            <div class="episode-content">
+                <div class="episode-title">Nick Hancock - Elite Runner &amp; Coach</div>
+                <p class="episode-summary">Elite runner and coach Nick Hancock shares his philosophy on endurance, discipline, and the mental game behind long-distance running. A conversation about pushing through barriers, the connection between physical fitness and mental clarity, and finding purpose through movement.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 29 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1zijeKKeTRJ54AnV-LbkQE04A4_WhtuXF&sz=w200" alt="Neil Clark"></div>
+            <div class="episode-content">
+                <div class="episode-title">Neil Clark - Elite Sport &amp; Mental Health</div>
+                <p class="episode-summary">Neil Clark opens up about the mental health challenges that come with elite sport, the pressure to perform, and how athletes can protect their wellbeing while pursuing excellence on the field.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 28 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1HI82IIOokDF3nE3L6YLC9actfRUxjBan&sz=w200" alt="Eddie Cobb"></div>
+            <div class="episode-content">
+                <div class="episode-title">Eddie Cobb - Addiction &amp; Making a Better Life</div>
+                <p class="episode-summary">Eddie Cobb shares her deeply moving story of battling addiction and rebuilding her life from the ground up. A candid conversation about hitting rock bottom, the courage to change, and the daily work required to build a life worth living.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 27 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">In Person Live</div>
+                <p class="episode-summary">A special live episode recorded in person, bringing a different energy as the hosts and audience come together for an intimate evening of honest conversation, laughs, and real stories.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 26 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">From Pro Footballer to Mental Health Professional with Sam Winnall</div>
+                <p class="episode-summary">Former professional footballer Sam Winnall shares his remarkable transition from the pitch to mental health advocacy, discussing the hidden struggles of elite sport and his new purpose helping others.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 25 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1c3Eje_oamprwA9noiZfV3a-dJdFFUprA&sz=w200" alt="Gary Pettit and Ray Winstone"></div>
+            <div class="episode-content">
+                <div class="episode-title">Prostate Cancer with Gary Pettit and Ray Winstone</div>
+                <p class="episode-summary">A vital conversation about prostate cancer awareness with Gary Pettit and actor Ray Winstone. They discuss the importance of early detection, breaking the stigma around men's health checks, and why having open conversations about cancer can save lives.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 23 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1-tI5_ukmuMbasLHTFzdcHgi5332Nuy6o&sz=w200" alt="Reece Calvert"></div>
+            <div class="episode-content">
+                <div class="episode-title">Battling Alcohol and Gambling Addiction with Reece Calvert</div>
+                <p class="episode-summary">Reece Calvert bravely shares his battle with alcohol and gambling addiction, the devastating impact on his life and relationships, and the turning point that set him on the path to recovery.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 22 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Live Catch Up with The Everymen</div>
+                <p class="episode-summary">A live catch-up special where the hosts check in with each other, reflect on their own journeys, and discuss what's been on their minds. An unfiltered, off-the-cuff conversation that captures the essence of what The Everyman is all about - real talk between mates.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 21 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1_kPvpuWRNO9Oykf8yFfzn_x-f3m8zFLE&sz=w200" alt="Rhyse Gonsalves"></div>
+            <div class="episode-content">
+                <div class="episode-title">Performance and Nutrition with Rhyse Gonsalves</div>
+                <p class="episode-summary">Nutrition expert Rhyse Gonsalves breaks down the relationship between what we eat and how we perform - physically and mentally. Practical advice on fuelling your body properly, cutting through diet culture noise, and building sustainable nutrition habits for everyday men.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 20 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1FrozpRuRr9AofC25jVTShs2pW15JjHr1&sz=w200" alt="3 Dads Walking"></div>
+            <div class="episode-content">
+                <div class="episode-title">The 3 Most Inspirational Dads from 3 Dads Walking</div>
+                <p class="episode-summary">The incredible fathers behind 3 Dads Walking share their story of turning unimaginable loss into a nationwide campaign for suicide prevention, walking thousands of miles to raise awareness and save lives.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 18 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1ThhkE0ziirvYIyviBl-AUVUN43hXIwdV&sz=w200" alt="Ryan Parke"></div>
+            <div class="episode-content">
+                <div class="episode-title">The Science of Mental Health with Ryan Parke</div>
+                <p class="episode-summary">Ryan Parke breaks down the science behind mental health, explaining how our brains work, why we struggle, and evidence-based strategies for building genuine psychological resilience and wellbeing.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 17 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">The Everymen Catch Up - Long Time Coming</div>
+                <p class="episode-summary">After a long break between episodes, the hosts reconnect for a heartfelt catch-up, sharing what's changed in their lives and why taking time away sometimes gives you the clarity you need.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 15 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Battling My Addiction with Patrick Ball</div>
+                <p class="episode-summary">Patrick Ball shares his raw and honest journey through addiction, the darkest moments, and the strength he found to fight back. A powerful reminder that recovery is possible for anyone.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 14 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1vI5wZNCAv0nk9mwoWTDZ20dhhFImT4us&sz=w200" alt="Conor Warren"></div>
+            <div class="episode-content">
+                <div class="episode-title">Founding a Teen Mental Health Charity with Conor Warren</div>
+                <p class="episode-summary">Conor Warren tells the inspiring story of founding a mental health charity for teenagers, the gaps he saw in young people's support, and how grassroots action can make a massive difference.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 13 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1uoL24kqv2mnaAh9vrBakVxEbqOxT7WCE&sz=w200" alt="Chris Maples"></div>
+            <div class="episode-content">
+                <div class="episode-title">Overcoming Adversity with Chris Maples</div>
+                <p class="episode-summary">Chris Maples shares his powerful story of overcoming significant adversity, the resilience required to rebuild your life, and how facing your darkest moments can become your greatest source of strength.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 12 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1BRA9mpiMtYn-pTkWxDBPYAPq8D9zq-Mu&sz=w200" alt="Oly Newton"></div>
+            <div class="episode-content">
+                <div class="episode-title">Living with OCD with Oly Newton</div>
+                <p class="episode-summary">Oly Newton opens up about living with OCD, dispelling common myths about the condition, explaining the daily reality, and sharing the strategies that help him manage his mental health.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 11 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1FzWkAhYYYLhdU9FTsJYRaYXnZGTypUjZ&sz=w200" alt="David Wetherill"></div>
+            <div class="episode-content">
+                <div class="episode-title">Elite Performance with David Wetherill</div>
+                <p class="episode-summary">Paralympic table tennis champion David Wetherill discusses elite performance, overcoming physical challenges, mental toughness, and what it takes to compete at the highest level against all odds.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 10 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Remote Working with Sarah Townsend</div>
+                <p class="episode-summary">Sarah Townsend explores the realities of remote working, from maintaining work-life balance to combating isolation, and shares practical tips for staying productive and mentally healthy when working from home.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 9 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1qHn--4TRo_LuCjlccJF048DcTcX-7axc&sz=w200" alt="Emily Setty"></div>
+            <div class="episode-content">
+                <div class="episode-title">Sexual Consent with Emily Setty</div>
+                <p class="episode-summary">Academic and researcher Emily Setty joins the podcast for an important conversation about sexual consent, healthy relationships, and how we can have better, more honest conversations around boundaries, respect, and communication in intimate relationships.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 8 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1fCuwUPYCoo5jbuB7Bm6Ui45_RyYHgsNk&sz=w200" alt="Nathan Jones"></div>
+            <div class="episode-content">
+                <div class="episode-title">Addiction with Nathan Jones</div>
+                <p class="episode-summary">Nathan Jones opens up about his battle with addiction, the triggers, the spiral, and the moment he decided to seek help. A raw and honest conversation about one of the most common struggles men face.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 7 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">The Grief Preacher</div>
+                <p class="episode-summary">A deeply moving episode exploring grief, loss, and the long road to healing. The conversation tackles how men process grief differently, the pressure to 'be strong', and why allowing yourself to feel is not weakness - it's the bravest thing you can do.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 6 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1xzsNnoEnbVNiCVK2c4dCfSVlCrladiPE&sz=w200" alt="Andrew Hankin"></div>
+            <div class="episode-content">
+                <div class="episode-title">Men Overcoming Suicide with Andrew Hankin</div>
+                <p class="episode-summary">Andrew Hankin shares his deeply personal experience with suicidal thoughts, what brought him back from the edge, and why he now dedicates his life to helping other men find hope in their darkest moments.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 5 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=1rWggnELFpvFdDy5urL7pLfMOAHOkhE6X&sz=w200" alt="James Lindsay"></div>
+            <div class="episode-content">
+                <div class="episode-title">James Lindsay - Author of Befriending My Brain</div>
+                <p class="episode-summary">Author James Lindsay discusses his book Befriending My Brain, exploring mental health through a uniquely honest lens, why understanding your own mind is the first step to healing, and how writing became his therapy.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 4 -->
+        <div class="episode-card">
+            <div class="episode-image"><img src="https://drive.google.com/thumbnail?id=14qFvq_ivkJEvBoW_MwB0TKxOn2L5O9c7&sz=w200" alt="Tim Harkness"></div>
+            <div class="episode-content">
+                <div class="episode-title">Tim Harkness - The Everyman vs Elite</div>
+                <p class="episode-summary">Sports psychologist Tim Harkness joins to explore the gap between elite and everyday performance, how anyone can apply elite mindset principles to their daily life, and why the mental game matters most.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ep 3 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Men Struggling with Alcohol</div>
+                <p class="episode-summary">An open discussion about men's relationship with alcohol, the culture of drinking in the UK, when social drinking crosses a line, and how to recognise the signs that you or someone you care about needs help.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 2 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Men &amp; Work Life Balance</div>
+                <p class="episode-summary">The boys discuss work-life balance and the challenges of juggling everyday responsibilities. From career pressure to family commitments, they explore what balance really looks like for modern men and share practical strategies for protecting your time and energy.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+<!-- Ep 1 -->
+        <div class="episode-card">
+            <div class="episode-image"><svg class="vyve-logo" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg"><text x="100" y="55" text-anchor="middle" font-family="'Inter', sans-serif" font-weight="800" font-size="48" fill="#1b7878" letter-spacing="4">VYVE</text></svg></div>
+            <div class="episode-content">
+                <div class="episode-title">Intro &amp; Men Battling Their Weight</div>
+                <p class="episode-summary">Where it all began. The hosts introduce themselves and The Everyman Podcast, then dive straight into the topic of men and weight - the shame, the silence, and the struggle that so many face but few talk about openly. The start of something special.</p>
+                <div class="episode-links">
+                    <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg> Spotify</a>
+                    <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.34 0A5.328 5.328 0 000 5.34v13.32A5.328 5.328 0 005.34 24h13.32A5.328 5.328 0 0024 18.66V5.34A5.328 5.328 0 0018.66 0H5.34z"/></svg> Apple</a>
+                    <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank" class="ep-link"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-3.6 8.4l6 3.6-6 3.6V8.4z"/></svg> Amazon</a>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- CTA -->
+        <div style="text-align: center; margin-top: 48px; padding: 40px 24px; background: var(--light-teal); border-radius: 20px;">
+            <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--deep-teal); margin-bottom: 8px;">Subscribe &amp; Never Miss an Episode</h3>
+            <p style="color: var(--text-grey); margin-bottom: 24px; max-width: 480px; margin-left: auto; margin-right: auto;">
+                All 60 episodes are listed above. Subscribe on your favourite podcast platform to never miss a new conversation.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: var(--teal); color: white; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s;">Listen on Spotify</a>
+                <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: var(--teal); color: white; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.2s;">Listen on Apple</a>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo">VYVE</div>
+        <div class="footer-tagline">Small steps. Real progress.</div>
+        <div class="footer-links">
+            <a href="https://open.spotify.com/show/1IytZMMcWBVlyTzfTxBfnq" target="_blank">Spotify</a>
+            <a href="https://podcasts.apple.com/us/podcast/the-everyman/id1673004879" target="_blank">Apple Podcasts</a>
+            <a href="https://music.amazon.co.uk/podcasts/the-everyman" target="_blank">Amazon Music</a>
+            <a href="https://shows.acast.com/the-everyman" target="_blank">Acast</a>
+        </div>
+        <div class="footer-copy">&copy; 2025 VYVE. All rights reserved. Build health before it breaks.</div>
+    </footer>
+
+</body>
+</html>
