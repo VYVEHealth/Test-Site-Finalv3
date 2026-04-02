@@ -245,37 +245,37 @@ nav {
 /* Content sits above the image */
 .hero-content-wrap {
   position: relative; z-index: 1;
-  max-width: 1400px; margin: 0 auto; padding: 5rem 2rem 5.5rem;
+  max-width: 1400px; margin: 0 auto; padding: 6rem 2rem 6.5rem;
   width: 100%;
 }
-/* Content only spans left half — image bleeds behind on right */
+/* Content only spans left ~60% — image bleeds behind on right */
 .hero-content {
-  max-width: 600px;
+  max-width: 680px;
 }
 
 .hero-eyebrow {
   display: inline-block;
-  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--teal-lt); margin-bottom: 1.5rem;
-  padding: 0.4rem 1rem; background: rgba(77,170,170,0.15);
+  font-size: 0.82rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--teal-lt); margin-bottom: 1.75rem;
+  padding: 0.5rem 1.2rem; background: rgba(77,170,170,0.15);
   border: 1px solid rgba(77,170,170,0.25); border-radius: 4px;
 }
-.hero h1 { color: var(--white); margin-bottom: 1.5rem; }
+.hero h1 { color: var(--white); margin-bottom: 1.75rem; font-size: clamp(3.5rem, 6.5vw, 5.5rem); }
 .hero h1 span { color: var(--teal-lt); }
 .hero-body {
-  font-size: 1.1rem; color: var(--teal-md); line-height: 1.8;
-  max-width: 500px; margin-bottom: 2.5rem;
+  font-size: 1.25rem; color: var(--teal-md); line-height: 1.8;
+  max-width: 560px; margin-bottom: 3rem;
 }
 
 /* Hero audience cards */
 .hero-paths {
-  display: flex; gap: 1rem; flex-wrap: wrap; max-width: 560px;
+  display: flex; gap: 1.25rem; flex-wrap: wrap; max-width: 640px;
 }
 .hero-path-card {
-  flex: 1; min-width: 200px; padding: 1.25rem 1.5rem;
-  border-radius: 10px; border: 1px solid rgba(255,255,255,0.14);
+  flex: 1; min-width: 240px; padding: 1.75rem 2rem;
+  border-radius: 12px; border: 1px solid rgba(255,255,255,0.14);
   background: rgba(13,43,43,0.55); backdrop-filter: blur(8px);
-  transition: all 0.25s; display: flex; flex-direction: column; gap: 6px;
+  transition: all 0.25s; display: flex; flex-direction: column; gap: 8px;
   text-decoration: none;
 }
 .hero-path-card:hover {
@@ -283,22 +283,22 @@ nav {
   transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25);
 }
 .hero-path-label {
-  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--teal-lt);
 }
 .hero-path-title {
-  font-family: var(--font-head); font-size: 1rem; font-weight: 700;
+  font-family: var(--font-head); font-size: 1.2rem; font-weight: 700;
   color: var(--white); line-height: 1.3;
 }
 .hero-path-desc {
-  font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.5;
+  font-size: 0.92rem; color: rgba(255,255,255,0.6); line-height: 1.6;
 }
 .hero-path-cta {
-  display: flex; align-items: center; gap: 4px; margin-top: 4px;
-  font-size: 0.8rem; font-weight: 600; color: var(--teal-lt);
+  display: flex; align-items: center; gap: 6px; margin-top: 8px;
+  font-size: 0.9rem; font-weight: 600; color: var(--teal-lt);
 }
 .hero-path-cta svg {
-  width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.5;
+  width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.5;
 }
 
 /* ════════════ TRUST BAR ════════════ */
@@ -811,9 +811,9 @@ footer {
         <a href="individual.html" class="hero-path-card">
           <span class="hero-path-label">For Individuals</span>
           <span class="hero-path-title">Take control of your health</span>
-          <span class="hero-path-desc">Personalised programmes, live sessions and a community that keeps you going.</span>
+          <span class="hero-path-desc">Personalised programmes, expert live sessions and a community that keeps you going.</span>
           <span class="hero-path-cta">
-            Get started — £20/mo
+            Find out more
             <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </span>
         </a>
