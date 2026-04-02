@@ -599,7 +599,9 @@ footer {
         <div class="guest-inner">
             <h3>I'd Like to Be a Guest</h3>
             <p>Got a story worth sharing? We're always looking for honest voices who can help others through their own experiences. Whether it's mental health, addiction, physical wellbeing, or just life — we want to hear from you.</p>
-            <form class="guest-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Thanks! We\'ll be in touch'; this.querySelector('button').disabled=true; this.querySelector('button').style.background='var(--teal-lt)';">
+            <form class="guest-form" action="https://formspree.io/f/team@vyvehealth.co.uk" method="POST" onsubmit="setTimeout(() => { this.querySelector('button').textContent='Thanks! We\'ll be in touch'; this.querySelector('button').disabled=true; this.querySelector('button').style.background='var(--teal-lt)'; }, 100);">
+                <input type="hidden" name="_subject" value="New VYVE Podcast Guest Interest">
+                <input type="hidden" name="_replyto" value="">
                 <input type="text" name="name" placeholder="Your name" required>
                 <input type="email" name="email" placeholder="Your email" required>
                 <input type="text" name="topic" placeholder="What would you talk about?">
