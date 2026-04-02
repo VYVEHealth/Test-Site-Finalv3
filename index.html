@@ -56,7 +56,7 @@ nav {
 .nav-inner {
   max-width: 1400px; margin: 0 auto; padding: 0 2rem;
   display: flex; align-items: center; justify-content: space-between;
-  height: 70px;
+  height: 80px;
 }
 
 /* Logo */
@@ -64,56 +64,58 @@ nav {
   display: flex; align-items: center; gap: 0; text-decoration: none; flex-shrink: 0;
 }
 .nav-logo-img {
-  height: 42px; width: auto; display: block; border-radius: 8px;
+  height: 64px; width: auto; display: block; border-radius: 10px;
   mix-blend-mode: lighten;
 }
 
 /* Three audience nav buttons */
 .nav-paths {
-  display: flex; align-items: center; gap: 0.5rem;
+  display: flex; align-items: center; gap: 0.6rem;
 }
 .nav-path {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 0.55rem 1.1rem; border-radius: 6px;
-  font-size: 0.87rem; font-weight: 600; transition: all 0.2s;
-  white-space: nowrap; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0.7rem 1.4rem; border-radius: 8px;
+  font-size: 0.95rem; font-weight: 600; transition: all 0.2s;
+  white-space: nowrap; text-decoration: none; letter-spacing: 0.01em;
 }
 .nav-path-individual {
   color: rgba(255,255,255,0.85);
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.15);
 }
 .nav-path-individual:hover {
   color: var(--white);
   background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.25);
+  border-color: rgba(255,255,255,0.3);
 }
 .nav-path-employer {
   color: rgba(255,255,255,0.85);
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.15);
 }
 .nav-path-employer:hover {
   color: var(--white);
   background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.25);
+  border-color: rgba(255,255,255,0.3);
 }
 .nav-path-member {
-  background: var(--teal);
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-lt) 100%);
   color: var(--white) !important;
-  border: 1px solid var(--teal);
+  border: 1px solid transparent;
+  box-shadow: 0 4px 14px rgba(27,120,120,0.4);
+  padding: 0.7rem 1.6rem;
 }
 .nav-path-member:hover {
-  background: var(--teal-lt);
-  border-color: var(--teal-lt);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(27,120,120,0.55);
+  filter: brightness(1.1);
 }
 .nav-path svg {
-  width: 14px; height: 14px;
+  width: 16px; height: 16px;
   stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0;
 }
 
 /* Divider between paths and member */
 .nav-divider {
-  width: 1px; height: 22px;
+  width: 1px; height: 26px;
   background: rgba(255,255,255,0.15); margin: 0 0.4rem;
 }
 
@@ -154,7 +156,7 @@ nav {
 .hero {
   min-height: 92vh; display: flex; align-items: center;
   position: relative; overflow: hidden;
-  padding-top: 70px;
+  padding-top: 80px;
 }
 
 /* Full-bleed background image */
