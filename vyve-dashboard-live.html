@@ -254,10 +254,10 @@
 
 <footer>
   <span>© 2026 VYVE Health CIC · All data is aggregate only · GDPR compliant · ICO: 00013608608 · Auto-refreshes every 5 minutes</span>
-  <span><a href="mailto:team@vyvehealth.co.uk">team@vyvehealth.co.uk</a></span>
+  <span><a href="/cdn-cgi/l/email-protection#671302060a27111e11020f02060b130f49040849120c"><span class="__cf_email__" data-cfemail="e29687838fa2949b94878a87838e968acc818dcc9789">[email&#160;protected]</span></a></span>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── Supabase Edge Function — replaces Apps Script ──────
 const EDGE_URL = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/employer-dashboard';
 
@@ -311,7 +311,6 @@ function buildCoTabs() {
   const wrap = document.getElementById('ctabs');
   wrap.innerHTML = `<button class="ct on" data-co="ALL" onclick="switchCo('ALL',this)">All Companies</button>`;
   (DATA.companies || []).forEach(co => {
-    if (co === 'Individual') return;
     const b = document.createElement('button');
     b.className = 'ct'; b.dataset.co = co; b.textContent = co;
     b.onclick = function() { switchCo(co, this); };
@@ -442,14 +441,4 @@ function renderMilestones(total) {
     return `<div class="mr">
       <div class="mr-l">
         <div class="mi ${ic}">${m.icon}</div>
-        <div><div class="mc3">${m.a.toLocaleString()} activities — ${m.mo} donated months</div><div class="md2">${m.lbl}</div></div>
-      </div>
-      <span class="mb ${bc}">${bt}</span>
-    </div>`;
-  }).join('');
-}
-
-function set(id, v) { const e = document.getElementById(id); if (e) e.textContent = v; }
-</script>
-</body>
-</html>
+        <div><div class="mc3">${m.a.toLocaleString()} activities — ${m.mo} donated mont
