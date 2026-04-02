@@ -72,17 +72,27 @@ nav {
 .nav-paths {
   display: flex; align-items: center; gap: 0.6rem;
 }
+
+/* Dropdown wrapper */
+.nav-dropdown {
+  position: relative;
+}
+.nav-dropdown:hover .nav-dropdown-menu {
+  opacity: 1; visibility: visible; transform: translateY(0);
+}
+
 .nav-path {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 0.7rem 1.4rem; border-radius: 8px;
   font-size: 0.95rem; font-weight: 600; transition: all 0.2s;
   white-space: nowrap; text-decoration: none; letter-spacing: 0.01em;
+  cursor: pointer;
 }
 .nav-path-individual {
   color: rgba(255,255,255,0.85);
   border: 1px solid rgba(255,255,255,0.15);
 }
-.nav-path-individual:hover {
+.nav-path-individual:hover, .nav-dropdown:hover .nav-path-individual {
   color: var(--white);
   background: rgba(255,255,255,0.08);
   border-color: rgba(255,255,255,0.3);
@@ -91,7 +101,7 @@ nav {
   color: rgba(255,255,255,0.85);
   border: 1px solid rgba(255,255,255,0.15);
 }
-.nav-path-employer:hover {
+.nav-path-employer:hover, .nav-dropdown:hover .nav-path-employer {
   color: var(--white);
   background: rgba(255,255,255,0.08);
   border-color: rgba(255,255,255,0.3);
@@ -111,6 +121,55 @@ nav {
 .nav-path svg {
   width: 16px; height: 16px;
   stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0;
+}
+/* Chevron on dropdown triggers */
+.nav-path .chevron {
+  width: 13px; height: 13px; stroke-width: 2.5;
+  transition: transform 0.2s;
+}
+.nav-dropdown:hover .chevron { transform: rotate(180deg); }
+
+/* Dropdown menu */
+.nav-dropdown-menu {
+  position: absolute; top: calc(100% + 10px); left: 0;
+  min-width: 220px;
+  background: #0a2424;
+  border: 1px solid rgba(77,170,170,0.2);
+  border-radius: 10px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+  padding: 6px;
+  opacity: 0; visibility: hidden;
+  transform: translateY(-6px);
+  transition: all 0.2s ease;
+  z-index: 100;
+}
+.nav-dropdown-menu a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0.65rem 1rem; border-radius: 6px;
+  font-size: 0.88rem; font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  transition: all 0.15s; text-decoration: none;
+}
+.nav-dropdown-menu a:hover {
+  background: rgba(77,170,170,0.12);
+  color: var(--white);
+}
+.nav-dropdown-menu a svg {
+  width: 15px; height: 15px; stroke: var(--teal-lt);
+  fill: none; stroke-width: 2; flex-shrink: 0;
+}
+.nav-dropdown-divider {
+  height: 1px; background: rgba(255,255,255,0.07);
+  margin: 4px 6px;
+}
+/* Highlighted CTA item in dropdown */
+.nav-dropdown-menu a.dropdown-cta {
+  background: rgba(27,120,120,0.2);
+  color: var(--teal-lt); font-weight: 600;
+  margin-top: 2px;
+}
+.nav-dropdown-menu a.dropdown-cta:hover {
+  background: rgba(27,120,120,0.35); color: var(--white);
 }
 
 /* Divider between paths and member */
@@ -608,21 +667,93 @@ footer {
       <img src="logo.png" alt="VYVE Health" class="nav-logo-img">
     </a>
 
-    <!-- Three audience paths -->
+    <!-- Three audience paths with dropdowns -->
     <div class="nav-paths">
-      <a href="individual.html" class="nav-path nav-path-individual">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-        For Individuals
-      </a>
-      <a href="employers.html" class="nav-path nav-path-employer">
-        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-        For Employers
-      </a>
+
+      <!-- Individuals dropdown -->
+      <div class="nav-dropdown">
+        <span class="nav-path nav-path-individual">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          For Individuals
+          <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+        <div class="nav-dropdown-menu">
+          <a href="individual.html">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            Home
+          </a>
+          <a href="individual-platform.html">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Our Service
+          </a>
+          <a href="give-back.html">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Give Back
+          </a>
+          <a href="about-individual.html">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            About
+          </a>
+          <a href="contact-individual.html">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Contact
+          </a>
+          <div class="nav-dropdown-divider"></div>
+          <a href="https://buy.stripe.com/00wfZicla1Em0NnaIB93y00" target="_blank" class="dropdown-cta">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Get Started — £20/month
+          </a>
+        </div>
+      </div>
+
+      <!-- Employers dropdown -->
+      <div class="nav-dropdown">
+        <span class="nav-path nav-path-employer">
+          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          For Employers
+          <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+        <div class="nav-dropdown-menu">
+          <a href="employers.html">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            Home
+          </a>
+          <a href="platform.html">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Our Service
+          </a>
+          <a href="give-back-employers.html">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            Give Back
+          </a>
+          <a href="roi-calculator.html">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            ROI Calculator
+          </a>
+          <a href="about.html">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            About
+          </a>
+          <a href="contact.html">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Contact
+          </a>
+          <div class="nav-dropdown-divider"></div>
+          <a href="contact.html" class="dropdown-cta">
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Book a Free Demo
+          </a>
+        </div>
+      </div>
+
       <div class="nav-divider"></div>
+
+      <!-- Member Area -->
       <a href="https://online.vyvehealth.co.uk" target="_blank" class="nav-path nav-path-member">
         <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
         Member Area
       </a>
+
     </div>
 
     <button class="mobile-toggle" aria-label="Menu" onclick="openMobileMenu()">
@@ -634,8 +765,25 @@ footer {
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
   <button class="mobile-close" onclick="closeMobileMenu()">&#x2715;</button>
-  <a href="individual.html" class="mobile-path" onclick="closeMobileMenu()">For Individuals</a>
-  <a href="employers.html" class="mobile-path" onclick="closeMobileMenu()">For Employers</a>
+
+  <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--teal-lt);margin-bottom:4px;">For Individuals</div>
+  <a href="individual.html" class="mobile-path" onclick="closeMobileMenu()">Home</a>
+  <a href="individual-platform.html" class="mobile-path" onclick="closeMobileMenu()">Our Service</a>
+  <a href="give-back.html" class="mobile-path" onclick="closeMobileMenu()">Give Back</a>
+  <a href="contact-individual.html" class="mobile-path" onclick="closeMobileMenu()">Contact</a>
+  <a href="https://buy.stripe.com/00wfZicla1Em0NnaIB93y00" target="_blank" class="mobile-path" onclick="closeMobileMenu()" style="color:var(--teal-lt);">Get Started — £20/mo</a>
+
+  <div style="width:100%;height:1px;background:rgba(255,255,255,0.08);margin:8px 0;"></div>
+
+  <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--teal-lt);margin-bottom:4px;">For Employers</div>
+  <a href="employers.html" class="mobile-path" onclick="closeMobileMenu()">Home</a>
+  <a href="platform.html" class="mobile-path" onclick="closeMobileMenu()">Our Service</a>
+  <a href="roi-calculator.html" class="mobile-path" onclick="closeMobileMenu()">ROI Calculator</a>
+  <a href="contact.html" class="mobile-path" onclick="closeMobileMenu()">Contact</a>
+  <a href="contact.html" class="mobile-path" onclick="closeMobileMenu()" style="color:var(--teal-lt);">Book a Demo</a>
+
+  <div style="width:100%;height:1px;background:rgba(255,255,255,0.08);margin:8px 0;"></div>
+
   <a href="https://online.vyvehealth.co.uk" target="_blank" class="mobile-path mobile-path-member" onclick="closeMobileMenu()">Member Area →</a>
 </div>
 
@@ -1105,7 +1253,7 @@ footer {
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="mailto:team@vyvehealth.co.uk">team@vyvehealth.co.uk</a></li>
+          <li><a href="/cdn-cgi/l/email-protection#522637333f12242b24373a37333e263a7c313d7c2739"><span class="__cf_email__" data-cfemail="d3a7b6b2be93a5aaa5b6bbb6b2bfa7bbfdb0bcfda6b8">[email&#160;protected]</span></a></li>
           <li><a href="https://online.vyvehealth.co.uk" target="_blank">Member Area</a></li>
           <li><a href="privacy-policy.html">Privacy Policy</a></li>
           <li><a href="terms.html">Terms of Service</a></li>
@@ -1130,7 +1278,7 @@ footer {
 </footer>
 
 <!-- ════════════ SCRIPTS ════════════ -->
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 function toggleAudience(panel) {
   document.querySelectorAll('.audience-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
@@ -1157,12 +1305,3 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
   // Nav shadow on scroll
-  var nav = document.getElementById('main-nav');
-  window.addEventListener('scroll', function() {
-    nav.style.boxShadow = window.scrollY > 50
-      ? '0 2px 20px rgba(0,0,0,0.3)' : 'none';
-  }, { passive: true });
-});
-</script>
-</body>
-</html>
