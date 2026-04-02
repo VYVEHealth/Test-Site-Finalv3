@@ -258,17 +258,16 @@
 </footer>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbxLN5K45NhbY-8KPdliI4p1SK2FaLCXQVcJZ3HYTESK6MGRqxhTrSP3RJVCyGfOnWXQ2A/exec';
+// ── Supabase Edge Function — replaces Apps Script ──────
+const EDGE_URL = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/employer-dashboard';
 
 let activeCo = 'ALL';
 let DATA = null;
 
-// ── BOOT ──────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => setTimeout(loadAll, 500));
 
-// ── FETCH ─────────────────────────────────────────────────
 async function fetchDashboard(company) {
-  const url = `${API_URL}?action=dashboard_full&company=${encodeURIComponent(company)}`;
+  const url = `${EDGE_URL}?company=${encodeURIComponent(company)}`;
   const r = await fetch(url);
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
   const json = await r.json();
@@ -276,7 +275,6 @@ async function fetchDashboard(company) {
   return json;
 }
 
-// ── LOAD ALL ──────────────────────────────────────────────
 async function loadAll() {
   msg('Connecting to live data…');
   try {
@@ -309,12 +307,11 @@ async function refresh() {
 
 function msg(t) { document.getElementById('l-msg').textContent = t; }
 
-// ── COMPANY TABS ──────────────────────────────────────────
 function buildCoTabs() {
   const wrap = document.getElementById('ctabs');
   wrap.innerHTML = `<button class="ct on" data-co="ALL" onclick="switchCo('ALL',this)">All Companies</button>`;
   (DATA.companies || []).forEach(co => {
-    if (co === 'Individual') return; // hide individuals from employer dashboard
+    if (co === 'Individual') return;
     const b = document.createElement('button');
     b.className = 'ct'; b.dataset.co = co; b.textContent = co;
     b.onclick = function() { switchCo(co, this); };
@@ -337,7 +334,6 @@ async function switchCo(co, btn) {
   document.getElementById('loader').classList.add('gone');
 }
 
-// ── RENDER ────────────────────────────────────────────────
 function render(d) {
   const m = d.members || {};
   const a = d.activities || {};
@@ -345,7 +341,6 @@ function render(d) {
   const s = d.sessions || {};
   const trend = d.trend || [];
 
-  // KPIs
   set('k-members',  m.total || 0);
   set('k-engage',   (m.engagementRate || 0) + '%');
   set('k-total',    a.total || 0);
@@ -357,7 +352,6 @@ function render(d) {
   set('k-lm',       (s.totalLiveMins || 0) + ' mins');
   set('k-rm',       (s.totalReplayMins || 0) + ' mins');
 
-  // Activity bars
   const actD = [
     {label:'Daily Habits',     n: a.habits   || 0, cls:'b-teal'},
     {label:'Weekly Check-ins', n: a.checkins || 0, cls:'b-green'},
@@ -382,10 +376,8 @@ function render(d) {
       <span class="bp">${Math.round((x.n/grandT)*100)}%</span>
     </div>`).join('');
 
-  // Monthly trend
   renderTrend(trend);
 
-  // Session table — by category
   const cats = s.byCategory || [];
   document.getElementById('sess-body').innerHTML = cats.length === 0
     ? '<tr><td colspan="5" class="empty">No session data yet — will populate as members view sessions</td></tr>'
@@ -397,7 +389,6 @@ function render(d) {
         <td class="mc2">${cat.replayMins}</td>
       </tr>`).join('');
 
-  // Member status
   set('s-active', m.active   || 0);
   set('s-amber',  m.quiet    || 0);
   set('s-red',    m.inactive || 0);
@@ -407,12 +398,10 @@ function render(d) {
   set('e-workouts', a.workouts || 0);
   set('e-cardio',   a.cardio   || 0);
 
-  // Peak month from trend
   const peak = trend.length ? trend.reduce((a,b) => a.count > b.count ? a : b) : null;
   set('e-peak', peak ? peak.label : '—');
   set('trend-tag', peak ? 'Peak: ' + peak.label : '—');
 
-  // Charity
   set('ch-num', c.monthsDonated || 0);
   set('prog-lbl', `${c.remainder || 0} / 30 activities`);
   document.getElementById('prog-f').style.width = (c.progressPct || 0) + '%';
@@ -421,7 +410,6 @@ function render(d) {
   renderMilestones(a.total || 0);
 }
 
-// ── TREND ─────────────────────────────────────────────────
 function renderTrend(trend) {
   if (!trend.length) {
     document.getElementById('trend-chart').innerHTML = '<div class="empty">No activity data yet</div>';
@@ -437,7 +425,6 @@ function renderTrend(trend) {
     </div>`).join('');
 }
 
-// ── MILESTONES ────────────────────────────────────────────
 function renderMilestones(total) {
   const MS = [
     {a:30,   mo:1,   lbl:'First Impact',      icon:'🌱'},
@@ -462,7 +449,6 @@ function renderMilestones(total) {
   }).join('');
 }
 
-// ── UTILS ─────────────────────────────────────────────────
 function set(id, v) { const e = document.getElementById(id); if (e) e.textContent = v; }
 </script>
 </body>
