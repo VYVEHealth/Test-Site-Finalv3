@@ -756,12 +756,12 @@
 
   <!-- TABS -->
   <div class="nav-tabs fade-up" style="animation-delay:0.15s">
-    <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
-    <button class="tab-btn" onclick="switchTab('scorecard')">Scorecard</button>
-    <button class="tab-btn" onclick="switchTab('roadmap')">Roadmap</button>
-    <button class="tab-btn" onclick="switchTab('actions')">Top Actions</button>
-    <button class="tab-btn" onclick="switchTab('competitive')">Competitive Edge</button>
-    <button class="tab-btn" onclick="switchTab('changes')" style="color:var(--teal);border-bottom:2px solid transparent;">⬆ What Changed</button>
+    <button class="tab-btn active" onclick="switchTab('overview', this)" data-tab="overview">Overview</button>
+    <button class="tab-btn" onclick="switchTab('scorecard', this)" data-tab="scorecard">Scorecard</button>
+    <button class="tab-btn" onclick="switchTab('roadmap', this)" data-tab="roadmap">Roadmap</button>
+    <button class="tab-btn" onclick="switchTab('actions', this)" data-tab="actions">Top Actions</button>
+    <button class="tab-btn" onclick="switchTab('competitive', this)" data-tab="competitive">Competitive Edge</button>
+    <button class="tab-btn" onclick="switchTab('changes', this)" data-tab="changes" style="color:var(--teal);border-bottom:2px solid transparent;">⬆ What Changed</button>
   </div>
 
   <!-- TAB: OVERVIEW -->
@@ -1966,7 +1966,7 @@ function renderChanges() {
   });
 }
 
-renderChanges();
+document.addEventListener("DOMContentLoaded", function() { renderChanges(); });
 
 // ── SCORE TOGGLE ─────────────────────────────────────────────────────────────
 const previousScores = [42, 60, 22, 40, 50, 78, 38, 74, 48, 28, 18, 37, 25, 20, 20];
@@ -2007,27 +2007,23 @@ function toggleScores() {
     radarChartRef.update();
   }
 
-  // Update scorecard
-  const items = document.querySelectorAll('.score-item');
-  items.forEach((item, i) => {
-    if (i >= scores.length) return;
-    const s = scores[i];
-    const c = scoreColor(s);
-    const numEl = item.querySelector('.score-num');
-    const fillEl = item.querySelector('.bar-fill');
-    const gapEl = item.querySelector('.gap-text');
-    if (numEl) { numEl.textContent = s; numEl.style.color = c; }
-    if (fillEl) { fillEl.style.width = s + '%'; fillEl.style.background = c; }
-    if (gapEl) gapEl.textContent = (95 - s) + ' pts to 95';
-  });
+  // Update areas array scores and re-render scorecard
+  areas.forEach((a, i) => { if (i < scores.length) a.score = scores[i]; });
+  openIdx = -1;
+  renderScorecard();
 }
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
-function switchTab(id) {
+function switchTab(id, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  event.target.classList.add('active');
+  const panel = document.getElementById('tab-' + id);
+  if (panel) panel.classList.add('active');
+  const activeBtn = btn || document.querySelector('.tab-btn[data-tab="'+id+'"]');
+  if (activeBtn) activeBtn.classList.add('active');
+  if (id === 'changes' && document.getElementById('changesGrid') && document.getElementById('changesGrid').children.length === 0) {
+    renderChanges();
+  }
 }
 </script>
 </body>
