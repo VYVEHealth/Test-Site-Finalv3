@@ -1553,32 +1553,24 @@ mustBuild.forEach(a => {
 });
 
 // ── CHARTS ────────────────────────────────────────────────────────────────────
-const labels = areas.map(a => a.name.replace(' & ', ' & ').substring(0, 22));
-const scores = areas.map(a => a.score);
-const colors = scores.map(scoreColor);
+const aprilData = [62,70,25,62,52,78,47,78,50,37,20,62,30,24,24];
+const marchData  = [42,60,22,40,50,78,38,74,48,28,18,37,25,20,20];
+const shortLabels = areas.map((a,i) => (i+1)+'. '+a.name.substring(0,18));
+const radarLabels = areas.map(a => a.name.substring(0,14));
 
-// Bar chart
+// Bar chart — shows current (april) scores only, updates on toggle
 barChartRef = new Chart(document.getElementById('barChart'), {
   type: 'bar',
   data: {
-    labels: areas.map((a, i) => `${i+1}. ${a.name.substring(0, 18)}`),
+    labels: shortLabels,
     datasets: [{
       label: 'Score',
-      data: scores,
-      backgroundColor: colors.map(c => c + '33'),
-      borderColor: colors,
+      data: aprilData.slice(),
+      backgroundColor: aprilData.map(s => scoreColor(s) + '33'),
+      borderColor: aprilData.map(scoreColor),
       borderWidth: 1.5,
       borderRadius: 4,
       borderSkipped: false
-    }, {
-      label: 'Target (95)',
-      data: areas.map(() => 95),
-      type: 'line',
-      borderColor: 'rgba(201,168,76,0.4)',
-      borderWidth: 1,
-      borderDash: [4, 4],
-      pointRadius: 0,
-      fill: false
     }]
   },
   options: {
@@ -1593,9 +1585,7 @@ barChartRef = new Chart(document.getElementById('barChart'), {
         borderWidth: 1,
         titleColor: '#e8f0ef',
         bodyColor: '#7a9e99',
-        callbacks: {
-          label: ctx => ` ${ctx.raw}/100 — gap: ${95 - ctx.raw} pts`
-        }
+        callbacks: { label: ctx => ' ' + ctx.raw + '/100 — gap: ' + (95-ctx.raw) + ' pts' }
       }
     },
     scales: {
@@ -1605,30 +1595,31 @@ barChartRef = new Chart(document.getElementById('barChart'), {
   }
 });
 
-// Radar chart
-const radarLabels = areas.map(a => a.name.substring(0, 16));
+// Radar chart — shows BOTH March (amber) and April (teal) always
 radarChartRef = new Chart(document.getElementById('radarChart'), {
   type: 'radar',
   data: {
     labels: radarLabels,
     datasets: [
       {
-        label: 'VYVE now',
-        data: scores,
-        backgroundColor: 'rgba(61,184,159,0.12)',
+        label: 'April 2026 (now)',
+        data: aprilData.slice(),
+        backgroundColor: 'rgba(61,184,159,0.15)',
         borderColor: '#3db89f',
         borderWidth: 2,
         pointBackgroundColor: '#3db89f',
-        pointRadius: 3
+        pointRadius: 3,
+        pointHoverRadius: 5
       },
       {
-        label: 'Target (95)',
-        data: areas.map(() => 95),
-        backgroundColor: 'rgba(201,168,76,0.05)',
-        borderColor: 'rgba(201,168,76,0.35)',
-        borderWidth: 1,
-        borderDash: [4, 4],
-        pointRadius: 0
+        label: 'March 2026',
+        data: marchData.slice(),
+        backgroundColor: 'rgba(201,168,76,0.08)',
+        borderColor: 'rgba(201,168,76,0.7)',
+        borderWidth: 1.5,
+        pointBackgroundColor: 'rgba(201,168,76,0.7)',
+        pointRadius: 2,
+        pointHoverRadius: 4
       }
     ]
   },
@@ -1660,6 +1651,7 @@ radarChartRef = new Chart(document.getElementById('radarChart'), {
     }
   }
 });
+
 
 // ── CHANGES DATA ─────────────────────────────────────────────────────────────
 const scoreChanges = [
@@ -1977,15 +1969,19 @@ let radarChartRef = null;
 
 function toggleScores() {
   showingCurrent = !showingCurrent;
-  const scores = showingCurrent ? aprilScores : marchScores;
+  const scores = showingCurrent ? aprilData : marchData;
+  const label = showingCurrent ? 'April 2026' : 'March 2026';
+
+  // Move thumb
   const thumb = document.getElementById('toggleThumb');
   const lbl = document.getElementById('toggleLabel');
   if (thumb) thumb.style.right = showingCurrent ? '3px' : 'calc(100% - 25px)';
-  if (lbl) lbl.textContent = showingCurrent ? '(showing current)' : '(showing previous)';
+  if (lbl) lbl.textContent = '(showing ' + label + ')';
 
   // Update header + metrics
   const ov = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
-  document.querySelector('.header-score').textContent = ov + ' / 100';
+  const hdr = document.querySelector('.header-score');
+  if (hdr) hdr.textContent = ov + ' / 100';
   const mo = document.getElementById('metric-overall');
   const mg = document.getElementById('metric-gap');
   const mc = document.getElementById('metric-critical');
@@ -1993,27 +1989,18 @@ function toggleScores() {
   if (mg) mg.textContent = 95 - ov;
   if (mc) mc.textContent = scores.filter(s=>s<45).length;
 
-  // Update areas array with new scores
+  // Update areas array and re-render scorecard
   areas.forEach((a,i) => { a.score = scores[i]; });
-
-  // Re-render scorecard
   openIdx = -1;
   renderScorecard();
 
-  // Update charts if they exist
+  // Update bar chart
   if (barChartRef) {
     barChartRef.data.datasets[0].data = scores.slice();
-    barChartRef.data.datasets[0].backgroundColor = scores.map(s=>scoreColor(s)+'33');
+    barChartRef.data.datasets[0].backgroundColor = scores.map(s => scoreColor(s)+'33');
     barChartRef.data.datasets[0].borderColor = scores.map(scoreColor);
     barChartRef.update('none');
   }
-  if (radarChartRef) {
-    radarChartRef.data.datasets[0].data = scores.slice();
-    radarChartRef.update('none');
-  }
-
-  // Switch to scorecard tab so user sees the change
-  switchTab('scorecard', document.querySelector('.tab-btn[data-tab="scorecard"]'));
 }
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
