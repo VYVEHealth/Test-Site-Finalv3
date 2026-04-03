@@ -1555,6 +1555,9 @@ mustBuild.forEach(a => {
 // ── CHARTS ────────────────────────────────────────────────────────────────────
 const aprilData = [62,70,25,62,52,78,47,78,50,37,20,62,30,24,24];
 const marchData  = [42,60,22,40,50,78,38,74,48,28,18,37,25,20,20];
+let barChartRef = null;
+let radarChartRef = null;
+let showingCurrent = true;
 const shortLabels = areas.map((a,i) => (i+1)+'. '+a.name.substring(0,18));
 const radarLabels = areas.map(a => a.name.substring(0,14));
 
@@ -1958,14 +1961,10 @@ function renderChanges() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", function() { renderChanges(); });
+// Render changes tab content immediately (DOM already built at this point)
+renderChanges();
 
 // ── SCORE TOGGLE ─────────────────────────────────────────────────────────────
-const aprilScores  = [62,70,25,62,52,78,47,78,50,37,20,62,30,24,24];
-const marchScores  = [42,60,22,40,50,78,38,74,48,28,18,37,25,20,20];
-let showingCurrent = true;
-let barChartRef = null;
-let radarChartRef = null;
 
 function toggleScores() {
   showingCurrent = !showingCurrent;
