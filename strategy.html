@@ -705,9 +705,9 @@
 <header>
   <div class="logo">VYVE <span>Business Intelligence</span></div>
   <div class="header-meta">
-    <span>March 2026 · Confidential · Updated post-GDPR</span>
+    <span>April 2026 · Confidential · Updated post-Supabase migration</span>
     <span id="user-email" style="color:var(--text-dim);font-size:12px"></span>
-    <span class="header-score">40 / 100</span>
+    <span class="header-score">46 / 100</span>
   </div>
 </header>
 
@@ -724,17 +724,17 @@
   <div class="metric-strip fade-up" style="animation-delay:0.1s">
     <div class="metric-card" style="--accent-color: var(--red)">
       <div class="metric-label">Overall Score</div>
-      <div class="metric-value c-red">40</div>
+      <div class="metric-value c-red">46</div>
       <div class="metric-sub">out of 100</div>
     </div>
     <div class="metric-card" style="--accent-color: var(--amber)">
       <div class="metric-label">Gap to 95+</div>
-      <div class="metric-value c-amber">55</div>
+      <div class="metric-value c-amber">49</div>
       <div class="metric-sub">points needed</div>
     </div>
     <div class="metric-card" style="--accent-color: var(--red)">
       <div class="metric-label">Critical Areas</div>
-      <div class="metric-value c-red">10</div>
+      <div class="metric-value c-red">7</div>
       <div class="metric-sub">of 15 areas</div>
     </div>
     <div class="metric-card" style="--accent-color: var(--teal)">
@@ -751,6 +751,7 @@
     <button class="tab-btn" onclick="switchTab('roadmap')">Roadmap</button>
     <button class="tab-btn" onclick="switchTab('actions')">Top Actions</button>
     <button class="tab-btn" onclick="switchTab('competitive')">Competitive Edge</button>
+    <button class="tab-btn" onclick="switchTab('changes')" style="color:var(--teal);border-bottom:2px solid transparent;">⬆ What Changed</button>
   </div>
 
   <!-- TAB: OVERVIEW -->
@@ -837,6 +838,13 @@
     <div class="adv-grid" id="buildGrid"></div>
   </div>
 
+  <!-- TAB: WHAT CHANGED -->
+  <div class="tab-panel" id="tab-changes">
+    <div class="section-title">Score Updates — April 2026</div>
+    <div class="section-sub">What moved, what didn't, and why — for Dean &amp; Lewis</div>
+    <div id="changesGrid" class="fade-up"></div>
+  </div>
+
 </div>
 
 <footer>
@@ -849,14 +857,14 @@
 
 const areas = [
   {
-    name: 'Product & Platform Technology', score: 42, priority: 'HIGH',
+    name: 'Product & Platform Technology', score: 58, priority: 'HIGH',
     have: ['Member portal live — Auth0, engagement score, wellbeing check-in, running plan, 18 session pages, employer dashboard', 'Google Sheets as core data store (3 sheets: Activity, Wellbeing, Plan Cache)', 'Kahunas white-label — no API, PAD on physical machine (~130 sec/member, ~650/day ceiling)', '4 Apps Script endpoints. Anthropic key server-side only — never in HTML', 'Two logins (Kahunas + Auth0) — staggered onboarding as workaround', 'No mobile app, no wearables, no enterprise SSO/SCIM'],
     gaps: ['PAD physical machine — no failover. If offline, onboarding stops completely', 'Google Sheets 10M cell cap = ceiling at ~50,000 members', 'Two-login friction that every competitor avoids with SSO', 'Web portal is a structural disadvantage vs native mobile apps', 'No enterprise SSO/SAML — non-starter for NHS and FTSE 100 procurement'],
     road: ['CRITICAL (Month 1-3): Begin Supabase migration — Activity Tracking sheet first', 'CRITICAL (Month 2-4): Document PAD failover protocol now. Evaluate Trainerize post-revenue', 'HIGH (Month 3-6): Web push via service worker — interim mobile solution', 'HIGH (Month 4-8): Enterprise SSO/SAML layer', 'MEDIUM (Month 6-12): Native mobile app — React Native wrapping existing portal'],
     bench: 'Wellhub: native iOS/Android, 50,000+ partners, enterprise SSO, 30-day implementation. Unmind: SOC 2, 99.9% SLA, clinically validated. Spring Health: 10M+ members, VERA-MH AI matching.'
   },
   {
-    name: 'AI & Personalisation', score: 58, priority: 'MEDIUM',
+    name: 'AI & Personalisation', score: 65, priority: 'MEDIUM',
     have: ['Claude API for running plans — intelligent caching of 5,376 combinations', 'Wellbeing check-in AI with full 8-week history context before generation', 'Active/quiet flow logic adapts check-in depth by engagement level', 'Band-specific follow-up questions (1-3, 4-6, 7-10 scale)', '10-min keepWarm trigger prevents cold-start latency', '12 custom AI skills for internal operations'],
     gaps: ['AI limited to 2 member-facing features — not a personalised experience', 'No predictive model — no burnout detection or churn flagging', 'No proactive nudging — AI only activates when members ask', '12 skills are internal/operational, not member-facing differentiation', 'No longitudinal trend analysis triggering automated interventions'],
     road: ['HIGH (Month 1-3): Burnout/disengagement prediction using engagement + check-in + activity', 'HIGH (Month 2-4): Proactive nudge — "Engagement down 20%. Here\'s a 5-min session" via push', 'HIGH (Month 3-5): Sentiment analysis on check-in free-text for employer dashboard', 'MEDIUM (Month 3-6): Session recommendations based on history and time-of-day', 'LOW (Month 6-12): AI-powered manager dashboard — team trends and predicted risks'],
@@ -870,84 +878,84 @@ const areas = [
     bench: 'Spring Health: VERA-MH framework, clinical advisory board, published research. Unmind: NICE-approved, peer-reviewed, clinical author team. Champion Health: validated assessments, CPD-accredited content.'
   },
   {
-    name: 'Data Architecture & Security', score: 42, priority: 'HIGH',
+    name: 'Data Architecture & Security', score: 55, priority: 'HIGH',
     have: ['Daily 2am automated backup — 7-day rolling, email notification on success/failure', 'Friday 11pm score snapshots for historical trend analysis', 'Deduplication cache preventing duplicate session entries', 'Apps Script server-side API logic — Anthropic key never in HTML', 'Auth0 UK/EU tenant, invite-only, HTTPS enforced on GitHub Pages', 'Employer dashboard returns aggregate-only data — no PII ever leaves server', 'Session Log Writer v4 — 1 row per session type per day, minutes accumulate correctly', 'GDPR complete — ICO registered, DPA, DPIA, Retention Policy, Breach Procedure all done'],
     gaps: ['GDPR documentation incomplete — explicitly blocking Sage contract right now', 'Employer dashboard not Auth0-gated — unauthenticated access is not enterprise-grade', 'Google Sheets: no row-level security, no audit logging, no access controls', 'No encryption at rest beyond Google\'s defaults — fails enterprise security questionnaires', 'No penetration testing — any enterprise security review will require this'],
     road: ['CRITICAL (This week): Complete GDPR — DPA template, DPIA, data retention, breach notification, SAR process', 'CRITICAL (Month 1-3): Migrate to Supabase — row-level security, encryption at rest, audit logging', 'HIGH (Month 2-4): Auth0-gate employer dashboard', 'HIGH (Month 3-6): CREST-certified penetration test (£5-15K)', 'HIGH (Month 6-9): Begin SOC 2 Type I preparation'],
     bench: 'Unmind: SOC 2 Type II, ISO 27001, GDPR, annual pen testing. Personify Health: HITRUST certified. Spring Health: SOC 2, full encryption, immutable audit logging.'
   },
   {
-    name: 'User Experience & Engagement', score: 50, priority: 'MEDIUM',
+    name: 'User Experience & Engagement', score: 52, priority: 'MEDIUM',
     have: ['100-point engagement scoring — 5 components across activity, consistency, variety, wellbeing', '8-week trend chart showing engagement and wellbeing trajectory', 'Certificate system designed (5 types at 30 completions) — NOT YET BUILT', 'Charity mechanic designed (30 collective = 1 donated month) — NOT YET BUILT', 'ISO week check-in logic with disappear-after-submit behaviour', '7-day re-engagement automation live. 2 more planned but not built'],
     gaps: ['Certificate and charity mechanic designed but not built — quick wins sitting idle', 'Two logins (Kahunas + Auth0) — friction every member hits on day one', 'No push notifications — re-engagement relies on email only', 'No gamification beyond score ring — no streaks, team challenges, or leaderboards', 'EAP average usage is 12% — VYVE must dramatically exceed this to prove the model'],
     road: ['CRITICAL (Month 1): Build certificate automation — 5 types, designed and ready. Apps Script → Docs → PDF → email', 'CRITICAL (Month 1-2): Build charity mechanic — collective counter, live progress, donation trigger', 'HIGH (Month 1-2): Web push notifications via service worker', 'HIGH (Month 2-3): Team challenges and leaderboards', 'HIGH (Month 3-6): Streak system with real rewards — charity donations, vouchers'],
     bench: 'YuLife: gamified challenges, Amazon vouchers, step competitions, leaderboards. Wellhub: 50,000+ partners, frictionless single app. Headspace: streaks, personalised journeys, 1,000+ hours of content.'
   },
   {
-    name: 'Content & Thought Leadership', score: 75, priority: 'STANDARD',
+    name: 'Content & Thought Leadership', score: 78, priority: 'STANDARD',
     have: ['133-post content queue — 12 weeks across LinkedIn, Instagram, Facebook', '9 content libraries — 350KB+ of curated source material for AI generation', 'AI content intelligence learning loop — analyses performance, feeds back into generation', '12 active scheduled tasks covering intelligence, content, research, competitor scanning', 'Monthly content calendar auto-generated on 28th of each month', '4 YouTube channels live with persistent stream keys. 4 pending verification'],
     gaps: ['Marketing homepage does not exist — all content has no front door to drive traffic to', '4 YouTube channels blocked by phone verification rate limit', 'No podcast launched despite scripts written and Riverside studios live', '9 welcome videos not recorded — scripts done, just needs filming', 'Content is single-voice — no clinical or expert contributor voices for credibility'],
     road: ['CRITICAL (This week): Build marketing homepage — three audience paths with clear CTAs', 'HIGH (Month 1): Launch LinkedIn newsletter', 'HIGH (Month 1-2): Record 9 welcome videos — scripts exist, Riverside studios live', 'HIGH (Month 1-2): Enable PR pitch task — 5 personalised UK media pitches/month at zero cost', 'HIGH (Month 2-3): Resolve 4 pending YouTube channels'],
     bench: 'Unmind: daily clinical content, 20+ languages. Champion Health: CPD-accredited research-backed content. Headspace: 1,000+ hours, Netflix series, celebrity partnerships.'
   },
   {
-    name: 'Sales & Commercial Readiness', score: 38, priority: 'HIGH',
+    name: 'Sales & Commercial Readiness', score: 44, priority: 'HIGH',
     have: ['4-tier pricing: Talk (£3), Support (£5), Thrive (£7.50), Partner (£10) per user/month', 'Stripe live with payment link, two discount coupons (VYVE15, VYVE10)', 'HubSpot CRM — timezone Europe/London, currency GBP, Sage deal added (Initial Contact stage)', 'Sales collateral: package comparison, elevator pitch, HR one-pager, sales script', 'Public sector playbook, Wellbeing Scorecard built (not yet hosted on live domain)', 'Sage warm lead (Lewis internal contact, senior level) — platform demo-ready pending homepage'],
     gaps: ['Pricing inconsistency — Stripe, HubSpot, and sales decks must show identical numbers before Sage approach', 'Marketing homepage not built — cannot send Sage contact to www.vyvehealth.co.uk without it', 'Wellbeing Scorecard built but not hosted — sitting unused as a lead magnet', 'No ROI model packaged for CFO conversations', 'No annual pricing option — enterprise buyers expect 10-15% annual discount'],
     road: ['CRITICAL (This week): Fix HubSpot timezone → Europe/London and currency → GBP', 'CRITICAL (This week): Add Sage as active HubSpot deal with stage, value, and next action', 'CRITICAL (Month 1): Pricing alignment — Stripe, HubSpot, and sales decks must be identical', 'CRITICAL (Month 1): Convert Sage to paying contract — 3-month pilot for case study rights', 'HIGH (Month 1-2): Host Wellbeing Scorecard — immediate lead capture activation'],
     bench: 'Wellhub: 40,000+ clients, $319M revenue. Unmind: 200+ enterprise clients, John Lewis and AstraZeneca case studies. Champion Health: NHS framework approved.'
   },
   {
-    name: 'Automation & Operations', score: 72, priority: 'STANDARD',
+    name: 'Automation & Operations', score: 76, priority: 'STANDARD',
     have: ['Make: 4 live scenarios, 12 active scheduled tasks covering intelligence, content, analytics', 'Activity tracking, welcome email, 7-day re-engagement all live', 'Daily 2am backup, Friday snapshots, 10-min keepWarm — all reliable', 'Content: webhook-based, dedup-checked, multi-platform publishing confirmed working', 'Session tracking v4 — visit_start/session_watched, live/replay separate, minutes accumulate across visits', 'New Employer Dashboard API — standalone Apps Script, aggregate-only, company filtering'],
     gaps: ['Welcome email still polling every 15 min — known fix, not yet implemented', '2 of 3 re-engagement automations not built', 'Certificate automation not built — designed but does not exist', 'PAD machine has no documented failover protocol', "Dean's Make account on lowest plan — limited headroom"],
     road: ['HIGH (Month 1): Fix welcome email webhook — instant trigger not polling', 'HIGH (Month 1): Build 2 remaining re-engagement automations in Apps Script', 'HIGH (Month 1-2): Build certificate automation — 5 types', 'MEDIUM (Month 1): Document PAD failover protocol', "MEDIUM (Month 2): Upgrade Dean's Make plan on contract signing"],
     bench: 'Personify Health: fully automated member journeys, real-time triggers. Unmind: automated reporting, API-driven integrations.'
   },
   {
-    name: 'Brand & Market Presence', score: 42, priority: 'MEDIUM',
+    name: 'Brand & Market Presence', score: 48, priority: 'MEDIUM',
     have: ['Three-pillar model (Physical, Mental, Social) — differentiates from mental-health-only competitors', 'CIC structure — genuine social mission, not just positioning', 'Sharp positioning: proactive personalised wellbeing, not reactive EAP replacement', 'Portal brand palette: Teal #3db89f, Dark #0d1f1c, Gold #c9a84c — consistent', 'Monthly PR pitch task created — currently disabled', 'No press, no awards, no speaking engagements'],
     gaps: ['Two colour palettes (portal vs social Canva) create visible inconsistency', 'No marketing homepage = no market presence regardless of content volume', 'No press, no industry awards, no speaking engagements — zero third-party validation', 'PR pitch task costs nothing to run and has been disabled without a decision', 'Social content strong but engagement metrics unproven at scale'],
     road: ["CRITICAL (This week): Build marketing homepage — the brand's front door doesn't exist", 'HIGH (Month 1): Enable PR pitch task — 5 personalised pitches/month', 'HIGH (Month 1-2): Submit to 5 UK awards — GBE Awards, Health Tech Awards, CIPD, StartUp Awards', 'HIGH (Month 2-3): Apply to speak at CIPD Conference, MAD World Summit', 'MEDIUM (Month 3): Resolve two-palette brand inconsistency'],
     bench: 'Unmind: Forbes, BBC, multiple awards. YuLife: B Corp, Sunday Times 100 Best Companies. Champion Health: HSJ Awards, CIPD endorsements.'
   },
   {
-    name: 'Team & Scalability', score: 28, priority: 'HIGH',
+    name: 'Team & Scalability', score: 34, priority: 'HIGH',
     have: ['Two founders with clear division: Lewis (Commercial CEO), Dean (Technical CTO)', 'CIC36 filed, Articles of Association, board governance framework', 'Dean working on VYVE alongside full-time employment', 'Comprehensive governance documentation created', 'No other team members, no clinical staff, no sales team, no customer success'],
     gaps: ['Dean part-time — entire technical platform depends on one person with competing commitments', 'Key-person risk: Dean unavailable = platform stops. No deployment docs or emergency procedures', 'No clinical staff — no clinical credibility for enterprise procurement', 'Lewis carries content, GDPR, CRM, enterprise sales, and strategy simultaneously', 'No advisory board — clinical, sales, investor, and HR perspectives available for only equity'],
     road: ['CRITICAL (Month 1): Document technical architecture, deployment, emergency protocols — reduce bus factor', 'CRITICAL (Month 1): Appoint 3-5 unpaid advisors — clinical psychologist, enterprise sales veteran, health tech investor, HR director', 'HIGH (Month 1-3): Get Dean to full-time — Sage + 2-3 SME clients provides £6K/month', 'HIGH (Month 3-6): First hire: Customer Success / Account Manager', 'MEDIUM (Month 3-6): Freelance clinical psychologist (2 days/month)'],
     bench: 'Unmind: 200+ employees, full clinical team. Spring Health: 4,000 employees, $3.3B valuation. Even early-stage Spill has 30+ employees.'
   },
   {
-    name: 'Financial Model & Revenue', score: 18, priority: 'CRITICAL',
+    name: 'Financial Model & Revenue', score: 20, priority: 'CRITICAL',
     have: ['4-tier pricing: Talk (£3), Support (£5), Thrive (£7.50), Partner (£10) per user/month', 'Individual B2C pricing at £20/month', 'Assumption-driven commercial model (xlsx) and investor deck built', 'Stripe live and ready for first transaction', 'Zero revenue, zero paying customers'],
     gaps: ['Zero revenue — business model entirely unvalidated at most fundamental level', 'No annual pricing — enterprise buyers expect 10-15% annual commitment discount', 'ROI model exists in research library but not packaged as a CFO sales tool', 'HubSpot product set at £5/user — inconsistent with 4-tier model', 'Revenue target (£6K/month for Dean to go full-time) is a founder threshold, not a business milestone'],
     road: ['CRITICAL (Month 1): Convert Sage to revenue — validates pricing, product, and model simultaneously', 'CRITICAL (Month 1): Build ROI calculator — Deloitte £5.30:£1 multiplier as CFO-facing tool', 'HIGH (Month 1-2): Add annual pricing option (10-15% discount)', 'HIGH (Month 2-3): Formal proposal template with ROI modelling and quantified success metrics', 'MEDIUM (Month 3-6): Enterprise volume pricing tiers (50-500, 500-2000, 2000+ employees)'],
     bench: 'Wellhub: $319M revenue, 40,000+ clients. Unmind: Series C funded. Champion Health: profitable, NHS-contracted.'
   },
   {
-    name: 'Compliance & Regulatory', score: 55, priority: 'HIGH',
+    name: 'Compliance & Regulatory', score: 60, priority: 'HIGH',
     have: ['ICO Registration: C1897826 — registered March 2026', 'Data Processing Agreement — complete, ready to send to Sage', 'Data Protection Impact Assessment (DPIA) — complete, next review September 2026', 'Data Retention Policy — complete', 'Breach Notification Procedure — complete', 'Privacy Policy live on website — CIC entity, team@ email, ICO number, Anthropic listed', 'Deletion Log and Breach Log — live in Google Drive legal folder', 'Anthropic DPA accepted', 'CIC36 filed, Articles of Association, board governance framework', 'Client Service Agreement, Employee Participation Terms, Guest Speaker Agreement', 'vyve-regulatory-compliance-watch AI skill monitoring UK employment law and GDPR changes'],
     gaps: ['Google account is personal (not Workspace) — SCCs not automatically in place. Migrate post-Sage.', 'No Cyber Essentials — UK government minimum for public sector contracts', 'No DSPT — required for NHS contract conversations', 'No SAR/erasure processes documented at scale', 'External DPO service needed before 500 members (budget £2-5K/year)'],
     road: ['CRITICAL (This week): Complete GDPR — DPA template, DPIA, retention, breach notification, SAR process', 'HIGH (Month 1): Confirm ICO registration (£52/year)', 'HIGH (Month 2-4): Cyber Essentials certification — fast and inexpensive', 'MEDIUM (Month 4-8): DSPT compliance assessment for NHS conversations', 'HIGH (Month 3-6): Part-time DPO or external DPO service (£2-5K/year)'],
     bench: 'Unmind: SOC 2 Type II, ISO 27001, ICO registered, dedicated DPO. Champion Health: NHS DSPT compliant. Wellhub: GDPR, CCPA, SOC 2, HIPAA ready.'
   },
   {
-    name: 'Customer Success & Retention', score: 25, priority: 'CRITICAL',
+    name: 'Customer Success & Retention', score: 30, priority: 'CRITICAL',
     have: ['7-day re-engagement automation live in Make', '10-min keepWarm trigger on Wellbeing API', 'Engagement scoring system passively monitors activity patterns', 'Weekly score snapshots create historical baseline', 'No customer success function, no NPS, no churn detection, no automated employer reporting'],
     gaps: ['No customer success function — Sage goes live with no defined owner for relationship or QBRs', '2 of 3 re-engagement automations not built', 'Certificate system not built — primary retention mechanic does not exist', 'No NPS or satisfaction measurement anywhere in the platform', 'Every employer QBR requires a manual Google Sheets data pull'],
     road: ['CRITICAL (Month 1): Build certificate automation — designed and ready', 'HIGH (Month 1-2): Build 2 remaining re-engagement automations', 'HIGH (Month 1-2): Automated employer monthly PDF report — generated and emailed', 'HIGH (Month 2-3): NPS measurement — quarterly survey to members and HR contacts', 'MEDIUM (Month 3-6): Employer QBR template with automatically pulled data'],
     bench: 'Personify Health: dedicated CSMs, quarterly business reviews, NPS tracking, ROI reporting. Unmind: clinical support team, manager toolkits.'
   },
   {
-    name: 'Partnerships & Ecosystem', score: 20, priority: 'CRITICAL',
+    name: 'Partnerships & Ecosystem', score: 24, priority: 'CRITICAL',
     have: ['vyve-partnership-finder AI skill — identifies and vets strategic partners', 'Kahunas: active, confirmed scalable beyond 1,000 members (March 2026)', 'Stripe as payment infrastructure', 'Anthropic API as AI backbone', 'No formal partnerships, no named charity partners, no distribution partners'],
     gaps: ["Charity mechanic has no named charity partners — VYVE's biggest differentiator can't be marketed", 'No HR platform integrations (Workday, SAP, BambooHR) — required for enterprise procurement', 'No distribution partners — HR consultancies and benefits brokers already own this conversation', 'No gym/fitness provider partnerships — lose to Wellhub on breadth without them', 'Partnership finder skill exists but no actual outreach has been executed'],
     road: ['CRITICAL (Month 1): Onboard 2-3 named charity partners — the Give Back mechanic needs real beneficiaries', 'HIGH (Month 2-3): Outreach to 5 HR consultancies — commission-based referral at zero cost', 'HIGH (Month 3-6): Approach Howden, Mercer, AON about distribution', 'MEDIUM (Month 3-6): Basic Slack/Teams integration', 'MEDIUM (Month 6-12): HRIS integration — minimum CSV import from Workday and SAP'],
     bench: 'Wellhub: 50,000+ gym/studio partners. YuLife: named charity partnerships as core brand. Unmind: Workday, SAP SuccessFactors, Slack integrations.'
   },
   {
-    name: 'Investor & Growth Readiness', score: 20, priority: 'CRITICAL',
+    name: 'Investor & Growth Readiness', score: 24, priority: 'CRITICAL',
     have: ['Investor deck: 10-slide, content + styled versions', 'TAM & SAM presentation built', 'Assumption-driven commercial model with scenario planning', 'CIC structure — signals mission, limits some equity structures', 'vyve-investor-growth-tracker AI skill monitoring UK health tech funding', 'Zero revenue, zero traction, zero case studies'],
     gaps: ['Zero revenue = premature investor conversations. No traction, no unit economics', 'CIC structure limits equity options — VCs may require Ltd conversion', 'No traction metrics — engagement rate, retention, NPS all unknown', 'No investor pipeline or named lead investor', 'Commercial model built on assumptions unvalidated by a single paying customer'],
     road: ['PRIORITY (Month 1-3): Revenue first — Sage contract creates the traction metrics needed', 'MEDIUM (Month 3-6): Legal advice on CIC vs Ltd conversion before approaching investors', 'MEDIUM (Month 3-6): Build investor pipeline — 20 UK health tech angels and early-stage VCs', 'HIGH (Month 6-9): Seed package once £10-20K MRR achieved', 'LOW (Month 9-12): Formal fundraise — £500K-1M seed on proven unit economics'],
@@ -986,49 +994,49 @@ const TICKS_API = 'https://script.google.com/macros/s/AKfycbwsZls9aQAgAyw_LQrNu3
 let tickState = {};
 
 const deanActions = [
-  { key: 'dean_0',  name: 'Build marketing homepage', when: 'This week', why: 'Lewis picks concept, Dean builds. No front door = no Sage approach.', impact: 'Brand +8pts' },
-  { key: 'dean_1',  name: 'Build certificate automation (5 types)', when: 'Month 1', why: 'Fully designed, just needs building. Primary retention mechanic sitting idle.', impact: 'UX +10pts, CS +8pts' },
-  { key: 'dean_2',  name: 'Build charity mechanic — collective counter + progress', when: 'Month 1', why: 'Biggest differentiator. Cannot be marketed without it being built.', impact: 'UX +6pts, Partner +5pts' },
-  { key: 'dean_3',  name: 'Fix welcome email webhook (15min polling to instant)', when: 'Month 1', why: 'Known fix. Every new member waits up to 15 mins for welcome email.', impact: 'Automation +2pts' },
-  { key: 'dean_4',  name: 'Build 2 remaining re-engagement automations', when: 'Month 1', why: 'Questionnaire not done + questionnaire done/no activity. Core retention gaps.', impact: 'CS +5pts' },
-  { key: 'dean_5',  name: 'Document technical architecture + emergency protocols', when: 'Month 1', why: 'Single point of failure risk. If Dean is unavailable, platform stops.', impact: 'Team +8pts' },
-  { key: 'dean_6',  name: 'PAD failover protocol document', when: 'Month 1', why: 'If PAD machine is offline, onboarding stops completely.', impact: 'Product +3pts' },
-  { key: 'dean_7',  name: 'YouTube stream keys + playlist IDs in replay pages', when: 'Month 1', why: 'All 8 channels verified. Stream infrastructure ready but not wired up.', impact: 'Content +3pts' },
-  { key: 'dean_8',  name: 'Auth0-gate the employer dashboard', when: 'Month 2', why: 'Currently unauthenticated. Enterprise procurement will flag this.', impact: 'Data +4pts' },
-  { key: 'dean_9',  name: 'Dashboard time filters (This Month / Quarter / All Time)', when: 'Month 2', why: 'Employers need trend data, not just all-time totals.', impact: 'Sales +2pts' },
-  { key: 'dean_10', name: 'Per-employer Auth0 URL (e.g. vyvehealth.co.uk/sage)', when: 'Month 2', why: 'Proper enterprise-grade dashboard delivery for Sage trial.', impact: 'Sales +3pts' },
-  { key: 'dean_11', name: 'Web push notifications via service worker', when: 'Month 2', why: 'Re-engagement currently email-only. Push dramatically improves response rate.', impact: 'UX +5pts' },
-  { key: 'dean_12', name: 'Wellbeing score cross-device sync', when: 'Month 2', why: 'Score currently lost when switching devices.', impact: 'UX +3pts' },
-  { key: 'dean_13', name: 'PostHog — fully wire and validate across all portal pages', when: 'Month 2', why: 'Analytics not validated. Cannot make product decisions without data.', impact: 'Product +3pts' },
-  { key: 'dean_14', name: 'Brevo email integration (replace Kahunas email)', when: 'Month 2', why: 'Kahunas strips CSS from emails. Fix identified, not yet built.', impact: 'Automation +3pts' },
-  { key: 'dean_15', name: 'Running plan email delivery via Make + Brevo', when: 'Month 2', why: 'Members get plans on screen but no email copy to refer back to.', impact: 'UX +2pts' },
-  { key: 'dean_16', name: 'VYVE Knowledge Base Google Sheet (AI context)', when: 'Month 3', why: 'AI responses are generic. Expert-curated content will improve quality dramatically.', impact: 'AI +5pts' },
-  { key: 'dean_17', name: 'Automated employer monthly PDF report', when: 'Month 3', why: 'Every QBR requires manual data pull. Automation removes bottleneck.', impact: 'CS +4pts' },
-  { key: 'dean_18', name: 'Custom intake form per employer (/join/sage etc)', when: 'Month 3', why: 'Branded intake improves enterprise credibility vs generic Typeform.', impact: 'Sales +2pts' },
-  { key: 'dean_19', name: 'Supabase migration planning (Activity Tracking first)', when: 'Month 4', why: 'Google Sheets 10M cell cap = ceiling at ~50,000 members. Plan now.', impact: 'Product +5pts' },
+  { key: 'dean_0',  name: "Complete weekly check-in page", when: 'This week', why: "Enterprise contract blocker. AI recs in persona voice, pulls activity and trend context. Key demo feature.", impact: 'Sales +8pts, AI +5pts' },
+  { key: 'dean_1',  name: "Build certificate automation (5 types)", when: 'This week', why: "Fully designed, table exists in Supabase. Primary retention mechanic sitting idle. Biggest UX quick win.", impact: 'UX +8pts, CS +6pts' },
+  { key: 'dean_2',  name: "Build charity mechanic", when: 'Month 1', why: "Biggest product differentiator. charity_totals SQL function already deployed. Just needs the UI.", impact: 'UX +6pts, Partner +6pts' },
+  { key: 'dean_3',  name: "Build custom onboarding questionnaire (replace Typeform)", when: 'Month 1', why: "Full spec complete — 51 questions mapped. Stripe redirects to new page. PAD stays unchanged. AI recs on submit.", impact: 'Product +4pts, AI +3pts' },
+  { key: 'dean_4',  name: "Complete Kahunas plan mapping + build recommendation engine", when: 'Month 1', why: "Decision tree mapped. Walk through all plans, build AI system prompt. Powers questionnaire recommendations.", impact: 'AI +5pts, UX +3pts' },
+  { key: 'dean_5',  name: "Build 3 re-engagement automations (Apps Script)", when: 'Month 1', why: "7-day no login, questionnaire incomplete, registered no activity. Lewis owns email copy — unblock him first.", impact: 'CS +5pts, Automation +2pts' },
+  { key: 'dean_6',  name: "Document technical architecture and emergency protocols", when: 'Month 1', why: "Dean is single point of failure. Bus factor = 1. Enterprise procurement will ask for this.", impact: 'Team +6pts' },
+  { key: 'dean_7',  name: "PAD failover protocol document", when: 'Month 1', why: "If PAD machine is offline, onboarding stops. 30 mins to document. No excuse for this to still be open.", impact: 'Product +2pts' },
+  { key: 'dean_8',  name: "Fix Make social publisher (Scenario 4950386)", when: 'This week', why: "133 posts queued since 23 March. Reauthorise LinkedIn tokens, fix module references.", impact: 'Content +2pts' },
+  { key: 'dean_9',  name: "Auth0-gate the employer dashboard", when: 'Month 2', why: "Currently password-only. Enterprise procurement will flag unauthenticated access as a security risk.", impact: 'Data +3pts' },
+  { key: 'dean_10', name: "PostHog — wire to Auth0 identity across all portal pages", when: 'Month 2', why: "Analytics not validated. Cannot make product decisions without per-user behavioural data.", impact: 'Product +3pts' },
+  { key: 'dean_11', name: "Web push notifications via service worker", when: 'Month 2', why: "Re-engagement currently email only. Push dramatically improves day-7 retention.", impact: 'UX +5pts' },
+  { key: 'dean_12', name: "Build Today's Progress strip on member dashboard", when: 'Month 2', why: "Blocked on Lewis copy approval. Once approved — filled/empty dots, show after first activity or after 9am.", impact: 'UX +3pts' },
+  { key: 'dean_13', name: "Brevo transactional email migration (replace Outlook)", when: 'Month 2', why: "Outlook strips CSS. Brevo gives proper delivery, logo removal for demos. ~12 GBP/month.", impact: 'Automation +2pts, Sales +2pts' },
+  { key: 'dean_14', name: "Wellbeing score cross-device sync (localStorage to Supabase)", when: 'Month 2', why: "Score lost when switching devices. Already have weekly_scores table in Supabase.", impact: 'UX +2pts' },
+  { key: 'dean_15', name: "Live viewer count on session pages", when: 'Month 2', why: "Apps Script heartbeat ping every 30s. Adds social proof and urgency to live sessions.", impact: 'UX +2pts' },
+  { key: 'dean_16', name: "Persona context modifier system", when: 'Month 3', why: "Inject extra block into AI prompt based on onboarding flags — Age 50+, beginner, time-poor, new parent.", impact: 'AI +4pts' },
+  { key: 'dean_17', name: "Automated employer monthly PDF report", when: 'Month 3', why: "Every QBR currently requires manual data pull. Edge Function already has all the data.", impact: 'CS +4pts' },
+  { key: 'dean_18', name: "AI weekly goals system", when: 'Month 3', why: "Blocked on check-in page and Lewis email copy. weekly_goals table exists. Once unblocked, builds fast.", impact: 'AI +3pts, UX +2pts' },
+  { key: 'dean_19', name: "HAVEN persona go-live (after Lewis review)", when: 'Month 3', why: "Prompt built and in Supabase. Blocked on Lewis finding qualified reviewer. Biggest emotional wellbeing differentiator.", impact: 'AI +3pts, Clinical +3pts' },
 ];
 
 const lewisActions = [
-  { key: 'lewis_0',  name: 'Pick homepage concept and confirm copy', when: 'This week', why: 'Dean cannot build until Lewis decides. 4 concepts ready. This is the Sage blocker.', impact: 'Brand +8pts' },
-  { key: 'lewis_1',  name: 'Facebook Make connection refresh (expires 22 May)', when: 'This week', why: 'CRITICAL — publishing breaks completely if this lapses. Takes 5 minutes.', impact: 'Automation critical' },
-  { key: 'lewis_2',  name: 'Align pricing — Stripe, HubSpot, sales decks identical', when: 'This week', why: 'Mixed signals will kill Sage before a conversation starts.', impact: 'Sales +5pts, Revenue +3pts' },
-  { key: 'lewis_3',  name: 'vyve-analytics-feedback-loop first manual run', when: 'This week', why: 'Needs permission approval. 5 minutes. Unlocks content intelligence loop.', impact: 'Automation +1pt' },
-  { key: 'lewis_4',  name: 'Onboard 2-3 named charity partners', when: 'Month 1', why: 'Give Back mechanic is biggest differentiator. Cannot be marketed without real beneficiaries.', impact: 'Partner +15pts' },
-  { key: 'lewis_5',  name: 'Appoint Clinical Advisory Board (3 unpaid advisors)', when: 'Month 1', why: 'Occupational psychologist + GP + exercise physiologist. Unpaid with equity. Unlocks NHS conversations.', impact: 'Clinical +20pts' },
-  { key: 'lewis_6',  name: 'Approach Sage contact with demo-ready product', when: 'Month 1', why: 'Warm lead, senior contact, expressed interest. Homepage is the last blocker.', impact: 'Revenue +18pts' },
-  { key: 'lewis_7',  name: 'Host Wellbeing Scorecard on live domain', when: 'Month 1', why: 'Built and sitting unused. Immediate lead capture activation at zero cost.', impact: 'Sales +3pts' },
-  { key: 'lewis_8',  name: 'Enable PR pitch task in Make (5 pitches/month)', when: 'Month 1', why: 'Already built, costs nothing, currently disabled. Zero reason not to enable.', impact: 'Brand +4pts' },
-  { key: 'lewis_9',  name: 'Decide on 5 disabled Make tasks', when: 'Month 1', why: 'LinkedIn article, podcast brief, newsletter, PR pitch, advocacy pack. Keep or remove.', impact: 'Automation clarity' },
-  { key: 'lewis_10', name: 'DPA to Sage — confirm their legal entity name + data contact', when: 'Month 1', why: 'DPA is ready. Just needs Sage legal entity confirmed and sent.', impact: 'Compliance +3pts' },
-  { key: 'lewis_11', name: 'Add annual pricing option (10-15% discount)', when: 'Month 1', why: 'Enterprise buyers expect annual commitment option. Currently missing.', impact: 'Sales +3pts' },
-  { key: 'lewis_12', name: 'Build ROI calculator (Deloitte 5.30:1 multiplier)', when: 'Month 1', why: 'CFO conversations need a packaged ROI tool. Research exists, just needs packaging.', impact: 'Sales +4pts' },
-  { key: 'lewis_13', name: 'Submit to 5 UK awards (GBE, Health Tech, CIPD, StartUp)', when: 'Month 1', why: 'Zero third-party validation. Awards provide credibility at zero cost.', impact: 'Brand +6pts' },
-  { key: 'lewis_14', name: 'Stripe display name update (CIC to VYVE Health)', when: 'Month 1', why: 'Members see CIC on payment receipts. Small but professional detail.', impact: 'Brand +1pt' },
-  { key: 'lewis_15', name: 'Outreach to 5 HR consultancies (commission-based referral)', when: 'Month 2', why: 'Distribution partners at zero cost. HR consultancies already own this conversation.', impact: 'Partner +5pts' },
-  { key: 'lewis_16', name: 'Migrate team@ to Google Workspace (5.20/month)', when: 'Month 2', why: 'Personal Google account means SCCs not automatic. Required before large enterprise contract.', impact: 'Compliance +5pts' },
-  { key: 'lewis_17', name: 'Apply to speak at CIPD Conference, MAD World Summit', when: 'Month 2', why: 'Speaking equals credibility. Applications are free and open.', impact: 'Brand +4pts' },
-  { key: 'lewis_18', name: 'Cyber Essentials certification', when: 'Month 3', why: 'Required for public sector contracts. Fast and relatively inexpensive (~500 GBP).', impact: 'Compliance +8pts' },
-  { key: 'lewis_19', name: 'NPS measurement — quarterly survey to members and HR contacts', when: 'Month 3', why: 'No satisfaction data anywhere. Needed for investor conversations.', impact: 'CS +4pts, Investor +3pts' },
+  { key: 'lewis_0',  name: "Appoint Clinical Advisory Board — 3 unpaid advisors", when: 'This week', why: "Highest single score movement available. Occupational psychologist + GP + exercise physiologist. Unpaid with equity. Unlocks NHS and FTSE 100 conversations.", impact: 'Clinical +20pts' },
+  { key: 'lewis_1',  name: "Facebook Make connection refresh — expires 22 May 2026", when: 'TODAY', why: "CRITICAL — publishing breaks completely if this lapses. Takes 5 minutes. No reason to delay.", impact: 'Content critical' },
+  { key: 'lewis_2',  name: "Decide B2B pricing and align across Stripe, HubSpot, sales decks", when: 'This week', why: "Enterprise contract blocker. Mixed signals kill Sage before a conversation starts. Volume tiers just need defining.", impact: 'Sales +6pts, Revenue +4pts' },
+  { key: 'lewis_3',  name: "Onboard 2-3 named charity partners", when: 'Month 1', why: "Give Back is the biggest differentiator. charity_totals SQL function deployed. Cannot be marketed without real beneficiaries.", impact: 'Partner +12pts' },
+  { key: 'lewis_4',  name: "Approach Sage contact with demo-ready product", when: 'Month 1', why: "Weekly check-in is the last blocker. Once Dean completes it — prepare demo, approach contact. Warm lead, expressed interest.", impact: 'Revenue +18pts' },
+  { key: 'lewis_5',  name: "Approve re-engagement email copy (3 templates)", when: 'This week', why: "Blocking Dean's automation build. 7-day no login, questionnaire incomplete, registered no activity. Quick review needed.", impact: 'CS +4pts' },
+  { key: 'lewis_6',  name: "Approve Today's Progress strip copy and framing", when: 'This week', why: "Blocking Dean's dashboard build. Filled/empty dots, lead with wins not zeros. Simple decision.", impact: 'UX +3pts' },
+  { key: 'lewis_7',  name: "HAVEN — find qualified professional for review", when: 'Month 1', why: "Prompt built and in Supabase. One professional sign-off unlocks the biggest emotional wellbeing differentiator.", impact: 'AI +3pts, Clinical +3pts' },
+  { key: 'lewis_8',  name: "Decide on 5 disabled Make tasks (keep or remove)", when: 'This week', why: "LinkedIn article, podcast brief, newsletter, PR pitch, advocacy pack. Open for months. Make the call.", impact: 'Automation clarity' },
+  { key: 'lewis_9',  name: "Enable PR pitch task in Make (5 pitches/month)", when: 'Month 1', why: "Already built, costs nothing, currently off. Zero third-party validation is capping Brand score at 48.", impact: 'Brand +4pts' },
+  { key: 'lewis_10', name: "Submit to 5 UK awards (GBE, Health Tech, CIPD, StartUp)", when: 'Month 1', why: "Zero press, zero awards. Applications are free. One win adds significant credibility for enterprise procurement.", impact: 'Brand +6pts' },
+  { key: 'lewis_11', name: "Host Wellbeing Scorecard on live domain", when: 'Month 1', why: "Built and sitting unused as a lead magnet. Immediate lead capture at zero cost.", impact: 'Sales +3pts' },
+  { key: 'lewis_12', name: "Add annual pricing option (10-15% discount)", when: 'Month 1', why: "Enterprise buyers expect annual commitment option. Currently missing from Stripe and HubSpot.", impact: 'Sales +3pts' },
+  { key: 'lewis_13', name: "Brevo logo removal (~12 GBP/month)", when: 'This week', why: "Must be done before enterprise demo. Brevo logo in outgoing emails is unprofessional for a B2B pitch.", impact: 'Sales +2pts' },
+  { key: 'lewis_14', name: "Migrate team@ to Google Workspace (~5.20 GBP/month)", when: 'Month 2', why: "Personal Google account means SCCs not automatic. Required before large enterprise contract.", impact: 'Compliance +5pts' },
+  { key: 'lewis_15', name: "Outreach to 5 HR consultancies (commission-based referral)", when: 'Month 2', why: "Distribution partners at zero cost. HR consultancies already own the enterprise wellbeing conversation.", impact: 'Partner +5pts' },
+  { key: 'lewis_16', name: "Apply to speak at CIPD Conference and MAD World Summit", when: 'Month 2', why: "Speaking equals credibility. Applications are free. One slot is worth months of social content.", impact: 'Brand +4pts' },
+  { key: 'lewis_17', name: "Cyber Essentials certification", when: 'Month 3', why: "Required for public sector contracts. Fast and ~500 GBP. Without it NHS conversations cannot progress.", impact: 'Compliance +8pts' },
+  { key: 'lewis_18', name: "National Lottery Awards for All application", when: 'Month 3', why: "Near-term funding target. CIC structure gives strong eligibility. Application is Lewis-owned.", impact: 'Investor +4pts' },
+  { key: 'lewis_19', name: "NPS measurement — quarterly survey to members and HR contacts", when: 'Month 3', why: "Zero satisfaction data anywhere. Needed for investor conversations and enterprise renewals.", impact: 'CS +4pts, Investor +3pts' },
 ];
 
 const actions = deanActions.slice(0,5).map(a => ({...a, owner: 'Dean'}));
@@ -1335,6 +1343,313 @@ new Chart(document.getElementById('radarChart'), {
     }
   }
 });
+
+// ── CHANGES DATA ─────────────────────────────────────────────────────────────
+const scoreChanges = [
+  {
+    area: 'Product & Platform Technology',
+    old: 42, new: 58, delta: '+16',
+    color: '#52b788',
+    done: [
+      'Supabase migration COMPLETE — 21 tables, 4 Edge Functions, 2 SQL functions live',
+      'All portal pages fully migrated off Google Sheets and Apps Script',
+      'Onboarding v8 live — Typeform retired, custom questionnaire live',
+      '5 AI personas with full system prompts deployed in Supabase',
+      'Kahunas workout library — 244 rows across 39 plan days in Supabase',
+      'Member dashboard, running plan, employer dashboard all rebuilt on Supabase',
+      'Auth0 invite-only UK/EU tenant live, 27 members onboarded',
+    ],
+    remaining: [
+      'PAD failover protocol not documented — single point of failure risk',
+      'No enterprise SSO/SAML — required for NHS and FTSE 100',
+      'No native mobile app — web portal structural disadvantage',
+      'Weekly check-in page not fully live — key demo feature',
+    ]
+  },
+  {
+    area: 'AI & Personalisation',
+    old: 58, new: 65, delta: '+7',
+    color: '#52b788',
+    done: [
+      '5 AI personas (NOVA, RIVER, SPARK, SAGE, HAVEN) with full system prompts in Supabase',
+      'Persona-driven wellbeing check-in AI — tone and content adapt per persona',
+      'Weekly goals system in Supabase (weekly_goals table)',
+      'Milestone messages pre-generated in Supabase at 10/20/30 thresholds',
+      'Running plan cache — 5,376 cacheable combinations',
+      'AI interactions audit log (ai_interactions table)',
+    ],
+    remaining: [
+      'Weekly check-in AI recs not fully rendering on page yet',
+      'No burnout/disengagement prediction model',
+      'No proactive nudging — AI only activates when members ask',
+      'Persona context modifier system not yet built',
+    ]
+  },
+  {
+    area: 'Clinical Validation',
+    old: 22, new: 22, delta: '0',
+    color: '#e05555',
+    done: [
+      'No change — nothing clinically validated this period',
+    ],
+    remaining: [
+      'No clinical advisory board — still zero clinical credibility for enterprise procurement',
+      'Wellbeing check-in still uses simple 1-10 scale — not validated (PHQ-2, GAD-2, WHO-5 are free)',
+      'No peer-reviewed research, no ORCHA assessment, no university partnership',
+      'This is the single highest-leverage action available to Lewis — 3 unpaid advisors would add ~20pts',
+    ]
+  },
+  {
+    area: 'Data Architecture & Security',
+    old: 42, new: 55, delta: '+13',
+    color: '#52b788',
+    done: [
+      'Supabase — row-level security, encryption at rest, immutable audit_log table',
+      'GDPR complete — ICO registered (00013608608), DPA, DPIA, Retention Policy, Breach Procedure',
+      'Employer dashboard returns aggregate-only data via Edge Function — no PII ever exposed',
+      'All API keys server-side in Edge Functions — never in HTML or GitHub',
+      'Daily 2am backup — 7-day rolling, email notification',
+    ],
+    remaining: [
+      'No penetration testing — any enterprise security review will require this (£5-15K)',
+      'Google Workspace not migrated — SCCs not automatic on personal Google account',
+      'No SOC 2 — required for NHS and FTSE 100 procurement',
+      'Employer dashboard not Auth0-gated (password only)',
+    ]
+  },
+  {
+    area: 'User Experience & Engagement',
+    old: 50, new: 52, delta: '+2',
+    color: '#d4934a',
+    done: [
+      'Milestone messages table populated in Supabase',
+      'Weekly goals strip on member dashboard',
+      'Certificates table live in Supabase',
+      'Charity totals SQL function (get_charity_total()) deployed',
+    ],
+    remaining: [
+      'Certificate automation NOT BUILT — fully designed, just needs building',
+      'Charity mechanic NOT BUILT — biggest product differentiator, cannot be marketed',
+      'No push notifications — re-engagement email only',
+      'Two-login friction (Kahunas + Auth0) — friction on day one',
+    ]
+  },
+  {
+    area: 'Content & Thought Leadership',
+    old: 75, new: 78, delta: '+3',
+    color: '#d4934a',
+    done: [
+      'All 8 YouTube channels verified with permanent stream keys',
+      '7 Riverside studios with permanent links',
+      'Podcast page live — 60+ episodes catalogued',
+      '24 custom AI skills operational (Lewis)',
+      '133-post social media queue built',
+    ],
+    remaining: [
+      'Make social publisher paused — deliberately off, not broken. 133 posts queued ready to go.',
+      'Facebook Make connection expires 22 May 2026 — CRITICAL',
+      'No podcast launched despite studios being live',
+      'Pre-recorded session content not yet produced (target: 30 videos)',
+    ]
+  },
+  {
+    area: 'Sales & Commercial Readiness',
+    old: 38, new: 44, delta: '+6',
+    color: '#52b788',
+    done: [
+      'HubSpot fixed — timezone Europe/London, currency GBP, Sage deal added (Initial Contact)',
+      'ROI calculator built and deployed with Deloitte tiered benchmark',
+      'Presentation deck built — 10 slides',
+      'Public Sector Sales Playbook — 5 procurement routes documented',
+      'Three Pillar Assessment Guide built (Lewis)',
+      'VYVE Brand Brain — 16-section knowledge base (Lewis)',
+    ],
+    remaining: [
+      'B2B pricing NOT FORMALLY DECIDED — must align Stripe, HubSpot, sales decks before Sage approach',
+      'Weekly check-in page not demo-ready — key feature for Sage presentation',
+      'Wellbeing Scorecard built but not hosted — unused lead magnet',
+      'No annual pricing option — enterprise buyers expect this',
+    ]
+  },
+  {
+    area: 'Automation & Operations',
+    old: 72, new: 76, delta: '+4',
+    color: '#52b788',
+    done: [
+      '8+ automated recurring workflows live (Lewis)',
+      'Social analytics pipeline — 3 Make scenarios feeding Data Store',
+      'Compliance calendar live (Lewis skill)',
+      'Daily backup, Friday snapshots, keepWarm triggers all reliable',
+      'Onboarding webhook live — Auth0 user creation + welcome email',
+    ],
+    remaining: [
+      'Make social publisher broken — 133 posts stuck since 23 March',
+      'Welcome email via Outlook not Brevo — CSS stripped in some clients',
+      'Re-engagement automations (3 types) not built',
+      'Certificate automation not built',
+    ]
+  },
+  {
+    area: 'Brand & Market Presence',
+    old: 42, new: 48, delta: '+6',
+    color: '#52b788',
+    done: [
+      'Homepage live with three audience paths (Individual, Employer, Members Area)',
+      'Colour and nav aligned April 2026',
+      'Podcast page live — www.vyvehealth.co.uk/vyve-podcast.html',
+      'ROI calculator live as lead tool for employers',
+      'VYVE Brand Brain — 16-section knowledge base built (Lewis)',
+    ],
+    remaining: [
+      'No press coverage, no industry awards, no speaking engagements',
+      'PR pitch task still disabled — zero cost to enable',
+      'Two colour palettes (portal vs social Canva) — brand inconsistency',
+      'Make publisher broken — social content not being published',
+    ]
+  },
+  {
+    area: 'Team & Scalability',
+    old: 28, new: 34, delta: '+6',
+    color: '#52b788',
+    done: [
+      'Dean director appointment (AP01) filed with Companies House',
+      '24 custom AI skills operational — Lewis operating at 6+ person output',
+      'Governance documentation comprehensive',
+      'Clear technical architecture across Supabase, Auth0, Edge Functions',
+    ],
+    remaining: [
+      'Dean still part-time — entire platform on one person with competing commitments',
+      'No clinical advisory board — biggest credibility gap',
+      'No advisory board at all — clinical, investor, HR, sales perspectives missing',
+      'No emergency/deployment documentation — bus factor = 1',
+    ]
+  },
+  {
+    area: 'Financial Model & Revenue',
+    old: 18, new: 20, delta: '+2',
+    color: '#e05555',
+    done: [
+      'B2C pricing confirmed — £20/month per individual',
+      'B2B pricing confirmed — £10/user/month (volume tiers to be defined)',
+      'ROI calculator built and deployed',
+      'Commercial model with scenario planning built',
+      'Stripe payment link live with coupons',
+    ],
+    remaining: [
+      'ZERO REVENUE — business model still entirely unvalidated',
+      'B2B pricing tiers not formally defined — must align before Sage approach',
+      'No annual pricing option added yet',
+      'Score cannot move significantly until first paying contract signed',
+    ]
+  },
+  {
+    area: 'Compliance & Regulatory',
+    old: 55, new: 60, delta: '+5',
+    color: '#52b788',
+    done: [
+      'ICO Registration confirmed — 00013608608 (updated from C1897826)',
+      'GDPR complete — DPA, DPIA, Retention, Breach Procedure, Privacy Policy',
+      'Compliance calendar live — CIC36, DPIA reviews, insurance renewals tracked',
+      'Dean director appointment filed at Companies House',
+    ],
+    remaining: [
+      'Google Workspace not migrated — SCCs not automatic on personal account',
+      'No Cyber Essentials — required for public sector contracts',
+      'No external DPO — required before 500 members',
+      'No DSPT — required for NHS conversations',
+    ]
+  },
+  {
+    area: 'Customer Success & Retention',
+    old: 25, new: 30, delta: '+5',
+    color: '#d4934a',
+    done: [
+      'Milestone messages table in Supabase — pre-generated at 10/20/30 thresholds',
+      'Certificates table live',
+      'Weekly goals strip on member dashboard',
+      'Engagement scoring working — 5 components, 100-point scale',
+    ],
+    remaining: [
+      'Certificate automation NOT BUILT — primary retention mechanic still sitting idle',
+      'Charity mechanic NOT BUILT — biggest differentiator, cannot be marketed',
+      'Re-engagement automations (3 types) not built',
+      'No NPS measurement anywhere in platform',
+      'Sage goes live with no defined customer success owner',
+    ]
+  },
+  {
+    area: 'Partnerships & Ecosystem',
+    old: 20, new: 24, delta: '+4',
+    color: '#e05555',
+    done: [
+      'Kahunas confirmed scalable — 244 workout rows in Supabase, architecture validated',
+      'Anthropic API — 5 personas deployed, caching working',
+      'Charity totals SQL function deployed (ready for mechanic when built)',
+    ],
+    remaining: [
+      'NO NAMED CHARITY PARTNERS — Give Back mechanic cannot be marketed without real beneficiaries',
+      'No HR platform integrations (Workday, SAP, BambooHR)',
+      'No distribution partners — HR consultancies and brokers',
+      'Partnership finder skill exists but no outreach executed',
+    ]
+  },
+  {
+    area: 'Investor & Growth Readiness',
+    old: 20, new: 24, delta: '+4',
+    color: '#e05555',
+    done: [
+      'Presentation deck — 10 slides built',
+      'TAM & SAM presentation built',
+      'Commercial model with scenario planning',
+      'WHISPA research programme identified — £3.7M, monitor May 2026',
+      'National Lottery Awards for All identified as near-term funding target',
+    ],
+    remaining: [
+      'ZERO REVENUE — premature investor conversations without traction',
+      'No traction metrics — engagement rate, retention, NPS all unknown',
+      'CIC structure limits equity options — legal advice needed pre-raise',
+      'Score cannot move until £10-20K MRR achieved',
+    ]
+  },
+];
+
+function renderChanges() {
+  const grid = document.getElementById('changesGrid');
+  if (!grid) return;
+  
+  scoreChanges.forEach(c => {
+    const isUp = c.delta.startsWith('+') && c.delta !== '+0';
+    const isFlat = c.delta === '0' || c.delta === '+0';
+    const arrowColor = isUp ? '#52b788' : isFlat ? '#7a9e99' : '#e05555';
+    const arrow = isUp ? '▲' : isFlat ? '—' : '▼';
+    
+    const div = document.createElement('div');
+    div.style.cssText = 'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:16px;';
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+        <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--text);">${c.area}</div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text-dim);">was <span style="color:var(--text-muted)">${c.old}</span></div>
+          <div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:${arrowColor};">${arrow} ${c.new}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:${arrowColor};background:${arrowColor}22;padding:3px 10px;border-radius:4px;">${c.delta} pts</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div>
+          <div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);">What moved the score</div>
+          <ul style="list-style:none;margin:0;padding:0;">${c.done.map(d => `<li style="font-size:12px;color:var(--text-muted);padding:5px 0 5px 14px;border-bottom:1px solid rgba(255,255,255,0.04);line-height:1.5;position:relative;"><span style="position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;background:var(--teal);opacity:0.6;display:block;"></span>${d}</li>`).join('')}</ul>
+        </div>
+        <div>
+          <div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--red);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);">Still capping the score</div>
+          <ul style="list-style:none;margin:0;padding:0;">${c.remaining.map(r => `<li style="font-size:12px;color:var(--text-muted);padding:5px 0 5px 14px;border-bottom:1px solid rgba(255,255,255,0.04);line-height:1.5;position:relative;"><span style="position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;background:var(--red);opacity:0.6;display:block;"></span>${r}</li>`).join('')}</ul>
+        </div>
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+renderChanges();
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
 function switchTab(id) {
