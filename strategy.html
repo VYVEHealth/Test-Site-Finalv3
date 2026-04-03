@@ -1969,48 +1969,51 @@ function renderChanges() {
 document.addEventListener("DOMContentLoaded", function() { renderChanges(); });
 
 // ── SCORE TOGGLE ─────────────────────────────────────────────────────────────
-const previousScores = [42, 60, 22, 40, 50, 78, 38, 74, 48, 28, 18, 37, 25, 20, 20];
-const currentScores  = areas.map(a => a.score);
+const aprilScores  = [62,70,25,62,52,78,47,78,50,37,20,62,30,24,24];
+const marchScores  = [42,60,22,40,50,78,38,74,48,28,18,37,25,20,20];
 let showingCurrent = true;
 let barChartRef = null;
 let radarChartRef = null;
 
 function toggleScores() {
   showingCurrent = !showingCurrent;
-  const scores = showingCurrent ? currentScores : previousScores;
-  const label = showingCurrent ? 'April 2026' : 'March 2026';
+  const scores = showingCurrent ? aprilScores : marchScores;
   const thumb = document.getElementById('toggleThumb');
-  const toggleLabel = document.getElementById('toggleLabel');
+  const lbl = document.getElementById('toggleLabel');
+  if (thumb) thumb.style.right = showingCurrent ? '3px' : 'calc(100% - 25px)';
+  if (lbl) lbl.textContent = showingCurrent ? '(showing current)' : '(showing previous)';
 
-  // Move thumb
-  thumb.style.right = showingCurrent ? '3px' : 'calc(100% - 25px)';
-  toggleLabel.textContent = showingCurrent ? '(showing current)' : '(showing previous)';
+  // Update header + metrics
+  const ov = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+  document.querySelector('.header-score').textContent = ov + ' / 100';
+  const mo = document.getElementById('metric-overall');
+  const mg = document.getElementById('metric-gap');
+  const mc = document.getElementById('metric-critical');
+  if (mo) mo.textContent = ov;
+  if (mg) mg.textContent = 95 - ov;
+  if (mc) mc.textContent = scores.filter(s=>s<45).length;
 
-  // Update metric strip
-  const newOverall = Math.round(scores.reduce((a,b) => a+b,0)/scores.length);
-  const newGap = 95 - newOverall;
-  const newCritical = scores.filter(s => s < 45).length;
-  document.getElementById('metric-overall').textContent = newOverall;
-  document.getElementById('metric-gap').textContent = newGap;
-  document.getElementById('metric-critical').textContent = newCritical;
-  document.querySelector('.header-score').textContent = newOverall + ' / 100';
+  // Update areas array with new scores
+  areas.forEach((a,i) => { a.score = scores[i]; });
 
-  // Update charts
-  if (barChartRef) {
-    barChartRef.data.datasets[0].data = scores;
-    barChartRef.data.datasets[0].backgroundColor = scores.map(s => scoreColor(s) + '33');
-    barChartRef.data.datasets[0].borderColor = scores.map(scoreColor);
-    barChartRef.update();
-  }
-  if (radarChartRef) {
-    radarChartRef.data.datasets[0].data = scores;
-    radarChartRef.update();
-  }
-
-  // Update areas array scores and re-render scorecard
-  areas.forEach((a, i) => { if (i < scores.length) a.score = scores[i]; });
+  // Re-render scorecard
   openIdx = -1;
   renderScorecard();
+
+  // Update charts if they exist
+  if (barChartRef) {
+    barChartRef.data.datasets[0].data = scores.slice();
+    barChartRef.data.datasets[0].backgroundColor = scores.map(s=>scoreColor(s)+'33');
+    barChartRef.data.datasets[0].borderColor = scores.map(scoreColor);
+    barChartRef.update('none');
+  }
+  if (radarChartRef) {
+    radarChartRef.data.datasets[0].data = scores.slice();
+    radarChartRef.update('none');
+  }
+
+  // Switch to scorecard tab so user sees the change
+  switchTab('scorecard', document.querySelector('.tab-btn[data-tab="scorecard"]'));
 }
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
