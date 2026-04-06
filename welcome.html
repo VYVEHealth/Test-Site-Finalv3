@@ -1674,12 +1674,22 @@ function showResults(data, result) {
   document.getElementById('resultName').textContent = data.firstName;
   const persona=result.persona||'RIVER';
   const personaReason=result.persona_reason||'';
+  const overview=result.programme_overview||null;
   const rec1=result.rec_1||''; const rec2=result.rec_2||''; const rec3=result.rec_3||'';
   const personaNames={NOVA:'NOVA — Your High-Performance Coach',RIVER:'RIVER — Your Mindful Wellness Guide',SPARK:'SPARK — Your Motivational Coach',SAGE:'SAGE — Your Knowledge-First Mentor',HAVEN:'HAVEN — Your Wellbeing Companion'};
   const stripMd=s=>s?s.replace(/\*\*(.*?)\*\*/g,'$1'):'';
+  const overviewCard = overview ? `
+    <div class="result-card">
+      <div class="result-card-title">Your Custom 8-Week Programme</div>
+      <p style="font-weight:600;font-size:16px;margin-bottom:8px;color:var(--text);">${overview.programme_name}</p>
+      <div style="display:inline-block;background:var(--accent-pale);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:600;color:var(--accent);margin-bottom:12px;">${overview.sessions_per_week} sessions/week · ${overview.split_type}</div>
+      <p>${stripMd(overview.rationale)}</p>
+      <p style="margin-top:12px;font-size:13px;color:var(--text-3);">Your full 8-week plan is being built right now and will be ready in the workouts section within a few minutes.</p>
+    </div>` : '';
   document.getElementById('resultContent').innerHTML=`
     <div class="result-card"><div class="result-card-title">Your VYVE Coach</div><p style="font-weight:600;font-size:16px;margin-bottom:10px;color:var(--text);">${personaNames[persona]||persona}</p><p>${stripMd(personaReason)}</p></div>
-    <div class="result-card"><div class="result-card-title">Your First Week Recommendations</div>${rec1?`<p>• ${stripMd(rec1)}</p>`:''}${rec2?`<p style="margin-top:10px;">• ${stripMd(rec2)}</p>`:''}${rec3?`<p style="margin-top:10px;">• ${stripMd(rec3)}</p>`:''}</div>`;
+    ${overviewCard}
+    <div class="result-card"><div class="result-card-title">Your First Week</div>${rec1?`<p>• ${stripMd(rec1)}</p>`:''}${rec2?`<p style="margin-top:10px;">• ${stripMd(rec2)}</p>`:''}${rec3?`<p style="margin-top:10px;">• ${stripMd(rec3)}</p>`:''}</div>`;
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
