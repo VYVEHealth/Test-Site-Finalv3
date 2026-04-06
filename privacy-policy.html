@@ -1,273 +1,192 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Privacy Policy — VYVE Health</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --teal: #1B7878; --teal-lt: #4DAAAA; --teal-xl: #E0F2F2; --teal-md: #B2DEDE; --dark: #0D2B2B; --charcoal: #1E293B; --grey: #64748B; --white: #FFFFFF; --off-white: #F4FAFA; --font-head: "Playfair Display", Georgia, serif; --font-body: "Inter", system-ui, sans-serif; --transition: 0.3s ease; }
-    html { scroll-behavior: smooth; }
-    body { font-family: var(--font-body); color: var(--charcoal); background: var(--white); overflow-x: hidden; line-height: 1.6; }
-    a { text-decoration: none; color: var(--teal); }
-    a:hover { color: var(--teal-lt); }
-    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
-    #navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 18px 0; background: var(--dark); box-shadow: 0 2px 20px rgba(0,0,0,0.3); }
-    .nav-inner { display: flex; align-items: center; justify-content: space-between; max-width: 1140px; margin: 0 auto; padding: 0 24px; }
-    .nav-logo { display: flex; align-items: center; gap: 10px; }
-    .nav-logo-badge { width: 36px; height: 36px; background: var(--teal); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; color: var(--white); border-radius: 4px; }
-    .nav-logo-text { font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; color: var(--white); letter-spacing: 0.1em; }
-    .nav-back { font-size: 0.88rem; color: rgba(255,255,255,0.7); transition: color var(--transition); }
-    .nav-back:hover { color: var(--teal-lt); }
-    .page-hero { background: var(--dark); padding: 120px 0 60px; }
-    .page-hero .section-tag { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal-lt); margin-bottom: 12px; }
-    .page-hero h1 { font-family: var(--font-head); font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; color: var(--white); line-height: 1.15; margin-bottom: 16px; }
-    .page-hero .meta { color: var(--teal-md); font-size: 0.9rem; }
-    .legal-body { padding: 60px 0 100px; }
-    .legal-intro { background: var(--off-white); border-left: 4px solid var(--teal); padding: 24px 28px; border-radius: 0 8px 8px 0; margin-bottom: 48px; font-size: 0.95rem; color: var(--charcoal); line-height: 1.75; }
-    .legal-intro strong { color: var(--dark); }
-    .legal-section { margin-bottom: 48px; }
-    .legal-section h2 { font-family: var(--font-head); font-size: 1.5rem; color: var(--dark); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--teal-xl); }
-    .legal-section h3 { font-size: 1rem; font-weight: 600; color: var(--dark); margin: 20px 0 8px; }
-    .legal-section p { color: var(--grey); font-size: 0.95rem; line-height: 1.8; margin-bottom: 12px; }
-    .legal-section ul { list-style: none; padding: 0; margin: 12px 0 16px; display: flex; flex-direction: column; gap: 8px; }
-    .legal-section ul li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.92rem; color: var(--grey); line-height: 1.6; }
-    .legal-section ul li::before { content: ""; width: 7px; height: 7px; background: var(--teal); border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
-    .toc { background: var(--off-white); border-radius: 12px; padding: 28px 32px; margin-bottom: 48px; }
-    .toc h4 { font-family: var(--font-head); font-size: 1rem; color: var(--dark); margin-bottom: 16px; }
-    .toc ol { padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
-    .toc ol li a { font-size: 0.88rem; color: var(--teal); transition: color var(--transition); }
-    .toc ol li a:hover { color: var(--dark); }
-    .contact-box { background: var(--dark); border-radius: 12px; padding: 32px; margin-top: 48px; }
-    .contact-box h3 { font-family: var(--font-head); font-size: 1.3rem; color: var(--white); margin-bottom: 12px; }
-    .contact-box p { color: var(--teal-md); font-size: 0.92rem; line-height: 1.7; margin-bottom: 6px; }
-    .contact-box a { color: var(--teal-lt); }
-    .ico-badge { display: inline-block; background: var(--teal-xl); color: var(--teal); font-size: 0.8rem; font-weight: 600; padding: 4px 12px; border-radius: 4px; margin-top: 8px; border: 1px solid var(--teal-md); }
-    footer { background: #060f0f; padding: 40px 0; text-align: center; }
-    footer p { color: #4b7070; font-size: 0.85rem; }
-  </style>
-</head>
-<body>
+V
+VYVE
+← Back to site
+Legal
+Privacy Policy
+Last updated: April 2026  ·  VYVE Health CIC  ·  ICO Registration: 00013608608
 
-  <nav id="navbar">
-    <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
-        <div class="nav-logo-badge">V</div>
-        <span class="nav-logo-text">VYVE</span>
-      </a>
-      <a href="index.html" class="nav-back">&larr; Back to site</a>
-    </div>
-  </nav>
+Your privacy matters to us. This policy explains what personal data VYVE Health CIC collects, why we collect it, how we use it, and your rights under UK GDPR and the Data Protection Act 2018. We process health-related data and take our obligations seriously. If you have any questions, contact us at team@vyvehealth.co.uk.
+Contents
+Who we are
+Data we collect
+How we use your data
+Legal basis for processing
+Health and wellbeing data
+Who we share data with
+How long we keep data
+Your rights
+Cookies and analytics
+Security
+Changes to this policy
+Contact us
+1. Who we are
+VYVE Health CIC (“VYVE”, “we”, “us”, “our”) is a UK-based workforce wellbeing platform registered as a Community Interest Company in England and Wales. We are the data controller for personal data collected through our website (www.vyvehealth.co.uk), member portal (online.vyvehealth.co.uk), and related services.
 
-  <section class="page-hero">
-    <div class="container">
-      <div class="section-tag">Legal</div>
-      <h1>Privacy Policy</h1>
-      <p class="meta">Last updated: March 2026 &nbsp;&middot;&nbsp; VYVE Health CIC &nbsp;&middot;&nbsp; ICO Registration: 00013608608</p>
-    </div>
-  </section>
+We are registered with the Information Commissioner’s Office (ICO) under registration number 00013608608.
 
-  <div class="legal-body">
-    <div class="container">
+ICO Registration Number: 00013608608
+Contact us at: team@vyvehealth.co.uk
 
-      <div class="legal-intro">
-        <strong>Your privacy matters to us.</strong> This policy explains what personal data VYVE Health CIC collects, why we collect it, how we use it, and your rights under UK GDPR and the Data Protection Act 2018. We process health-related data and take our obligations seriously. If you have any questions, contact us at <a href="mailto:team@vyvehealth.co.uk">team@vyvehealth.co.uk</a>.
-      </div>
+A Data Processing Agreement (DPA) is available for enterprise clients and employer partners upon request. Please contact us at team@vyvehealth.co.uk with the subject line “DPA Request”.
 
-      <div class="toc">
-        <h4>Contents</h4>
-        <ol>
-          <li><a href="#who-we-are">Who we are</a></li>
-          <li><a href="#data-we-collect">Data we collect</a></li>
-          <li><a href="#how-we-use">How we use your data</a></li>
-          <li><a href="#legal-basis">Legal basis for processing</a></li>
-          <li><a href="#health-data">Health and wellbeing data</a></li>
-          <li><a href="#sharing">Who we share data with</a></li>
-          <li><a href="#retention">How long we keep data</a></li>
-          <li><a href="#your-rights">Your rights</a></li>
-          <li><a href="#cookies">Cookies and analytics</a></li>
-          <li><a href="#security">Security</a></li>
-          <li><a href="#changes">Changes to this policy</a></li>
-          <li><a href="#contact">Contact us</a></li>
-        </ol>
-      </div>
+2. Data we collect
+When you create an account or are onboarded as a member
+Full name and email address
+Employer name (for corporate members)
+Age and gender (optional, used for personalisation)
+Date of account creation and onboarding responses
+Authentication credentials (managed securely via Supabase Auth)
+When you use the VYVE member portal
+Activity logs — workouts (including exercise names, sets, reps, and weight), cardio sessions, daily habits, and weekly check-ins completed
+Nutrition data — TDEE estimates, macro targets, hydration logs, and food diary entries (where used)
+Session engagement data — live sessions and replay content viewed, duration watched
+Wellbeing check-in responses — mood and wellbeing scores across multiple dimensions
+Habit tracking data — daily habit selections, streaks, and completion records
+Workout programme data — assigned plans, progress through programmes, and custom workouts built
+Q&A and education content completions
+Page visits and navigation behaviour within the portal
+Device type and browser information
+When you contact us
+Name, email address, and the content of your enquiry
+Company details (for employer enquiries)
+Automatically collected data
+IP address and approximate location
+Browser and device information
+Pages visited and time spent on our websites
+Referral source
+3. How we use your data
+We use your personal data to:
 
-      <div class="legal-section" id="who-we-are">
-        <h2>1. Who we are</h2>
-        <p>VYVE Health CIC (&ldquo;VYVE&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) is a UK-based corporate wellbeing platform registered as a Community Interest Company in England and Wales. We are the data controller for personal data collected through our website (www.vyvehealth.co.uk), member portal (online.vyvehealth.co.uk), and related services.</p>
-        <p>We are registered with the Information Commissioner&rsquo;s Office (ICO) under registration number <strong>00013608608</strong>.</p>
-        <div class="ico-badge">ICO Registration Number: 00013608608</div>
-        <p style="margin-top:16px;">Contact us at: <a href="mailto:team@vyvehealth.co.uk">team@vyvehealth.co.uk</a></p>
-        <p>A Data Processing Agreement (DPA) is available for enterprise clients and employer partners upon request. Please contact us at <a href="mailto:team@vyvehealth.co.uk">team@vyvehealth.co.uk</a> with the subject line &ldquo;DPA Request&rdquo;.</p>
-      </div>
+Create and manage your VYVE membership account
+Deliver the VYVE platform — including live sessions, replay content, habit tracking, workout programmes, nutrition tools, and wellbeing check-ins
+Generate personalised AI-powered content including workout recommendations and wellbeing coaching, using your profile and activity data
+Track your activity and progress within the platform
+Display your personalised wellbeing dashboard
+Send service emails — including account confirmations, milestone certificates, and re-engagement notifications
+Generate aggregated, anonymised engagement reports for your employer (where applicable) — individual data is never shared with employers
+Improve the VYVE service through analysis of platform usage
+Respond to enquiries and support requests
+Comply with legal and regulatory obligations
+4. Legal basis for processing
+We process your personal data on the following legal bases under UK GDPR:
 
-      <div class="legal-section" id="data-we-collect">
-        <h2>2. Data we collect</h2>
-        <h3>When you create an account or are onboarded as a member</h3>
-        <ul>
-          <li>Full name and email address</li>
-          <li>Employer name (for corporate members)</li>
-          <li>Date of account creation</li>
-          <li>Authentication credentials (managed securely via Auth0)</li>
-        </ul>
-        <h3>When you use the VYVE member portal</h3>
-        <ul>
-          <li>Activity logs &mdash; workouts, cardio sessions, daily habits, and weekly check-ins completed</li>
-          <li>Session engagement data &mdash; live sessions and replay content viewed, duration watched</li>
-          <li>Wellbeing check-in responses (mood and wellbeing scores)</li>
-          <li>Q&amp;A and education content completions</li>
-          <li>Page visits and navigation behaviour within the portal</li>
-          <li>Device type and browser information</li>
-        </ul>
-        <h3>When you contact us</h3>
-        <ul>
-          <li>Name, email address, and the content of your enquiry</li>
-          <li>Company details (for employer enquiries)</li>
-        </ul>
-        <h3>Automatically collected data</h3>
-        <ul>
-          <li>IP address and approximate location</li>
-          <li>Browser and device information</li>
-          <li>Pages visited and time spent on our websites</li>
-          <li>Referral source</li>
-        </ul>
-      </div>
+Contract performance
+— processing necessary to deliver the VYVE membership service you have signed up for
+Legitimate interests
+— improving the platform, preventing fraud, and maintaining platform security, where these do not override your rights
+Legal obligation
+— where we are required to process data to comply with applicable law
+Consent
+— for any optional processing, including marketing communications and AI-powered features, where we will always ask for your explicit consent first
+For health and wellbeing data (which is special category data under UK GDPR), we rely on your explicit consent provided during onboarding.
 
-      <div class="legal-section" id="how-we-use">
-        <h2>3. How we use your data</h2>
-        <p>We use your personal data to:</p>
-        <ul>
-          <li>Create and manage your VYVE membership account</li>
-          <li>Deliver the VYVE platform &mdash; including live sessions, replay content, habit tracking, and wellbeing check-ins</li>
-          <li>Track your activity and progress within the platform</li>
-          <li>Display your personalised wellbeing dashboard</li>
-          <li>Send service emails &mdash; including account confirmations, milestone certificates, and re-engagement notifications</li>
-          <li>Generate aggregated, anonymised engagement reports for your employer (where applicable) &mdash; individual data is never shared with employers</li>
-          <li>Improve the VYVE service through analysis of platform usage</li>
-          <li>Respond to enquiries and support requests</li>
-          <li>Comply with legal and regulatory obligations</li>
-        </ul>
-      </div>
+5. Health and wellbeing data
+VYVE collects data that may constitute health data under UK GDPR, including wellbeing scores, mood check-ins, physical activity logs, workout and nutrition data, and engagement with mental health content. This is classified as special category data and is subject to additional protections.
 
-      <div class="legal-section" id="legal-basis">
-        <h2>4. Legal basis for processing</h2>
-        <p>We process your personal data on the following legal bases under UK GDPR:</p>
-        <ul>
-          <li><strong>Contract performance</strong> &mdash; processing necessary to deliver the VYVE membership service you have signed up for</li>
-          <li><strong>Legitimate interests</strong> &mdash; improving the platform, preventing fraud, and maintaining platform security, where these do not override your rights</li>
-          <li><strong>Legal obligation</strong> &mdash; where we are required to process data to comply with applicable law</li>
-          <li><strong>Consent</strong> &mdash; for any optional processing, including marketing communications, where we will always ask for your explicit consent first</li>
-        </ul>
-        <p>For health and wellbeing data (which is special category data under UK GDPR), we rely on your <strong>explicit consent</strong> provided during onboarding.</p>
-      </div>
+We process this data only:
 
-      <div class="legal-section" id="health-data">
-        <h2>5. Health and wellbeing data</h2>
-        <p>VYVE collects data that may constitute health data under UK GDPR, including wellbeing scores, mood check-ins, physical activity logs, and engagement with mental health content. This is classified as <strong>special category data</strong> and is subject to additional protections.</p>
-        <p>We process this data only:</p>
-        <ul>
-          <li>With your explicit consent, given during the onboarding process</li>
-          <li>To deliver the personalised wellbeing service you have signed up for</li>
-          <li>In aggregated, anonymised form for employer reporting &mdash; no individual health data is ever shared with your employer</li>
-        </ul>
-        <p>You may withdraw consent for health data processing at any time by contacting us at <a href="mailto:team@vyvehealth.co.uk">team@vyvehealth.co.uk</a>. Withdrawal of consent will not affect the lawfulness of processing carried out before withdrawal but may mean we are unable to continue providing the full VYVE service.</p>
-      </div>
+With your explicit consent, given during the onboarding process
+To deliver the personalised wellbeing service you have signed up for
+To generate AI-powered coaching recommendations tailored to your goals and profile
+In aggregated, anonymised form for employer reporting — no individual health data is ever shared with your employer
+You may withdraw consent for health data processing at any time by contacting us at team@vyvehealth.co.uk. Withdrawal of consent will not affect the lawfulness of processing carried out before withdrawal but may mean we are unable to continue providing the full VYVE service.
 
-      <div class="legal-section" id="sharing">
-        <h2>6. Who we share data with</h2>
-        <p>We do not sell your personal data. We share data only where necessary to deliver our service, with the following categories of third parties:</p>
-        <ul>
-          <li><strong>Auth0 (Okta)</strong> &mdash; authentication and identity management. Your login credentials are managed by Auth0 under their own security standards. UK/EU tenant.</li>
-          <li><strong>Google (Google Sheets, Google Apps Script, Google Drive)</strong> &mdash; activity data and engagement metrics are stored and processed in Google Workspace. EU/UK data centres.</li>
-          <li><strong>Brevo</strong> &mdash; transactional email delivery (account confirmations, certificates, notifications). EU-based.</li>
-          <li><strong>Anthropic</strong> &mdash; AI coaching recommendations are generated via the Anthropic API. Prompts are anonymised where possible. A Data Processing Addendum is in place.</li>
-          <li><strong>PostHog</strong> &mdash; behavioural analytics within the member portal, linked to your authenticated identity.</li>
-          <li><strong>Kahunas</strong> &mdash; the underlying wellness platform used to deliver workout programmes and daily habit tracking. UK-based.</li>
-          <li><strong>YouTube (Google)</strong> &mdash; live session and replay content is hosted on unlisted YouTube channels embedded in the portal.</li>
-          <li><strong>Your employer</strong> &mdash; where you are a corporate member, your employer receives aggregated, anonymised engagement data only. Your name, individual activity data, and health information are never shared with your employer.</li>
-        </ul>
-        <p>All third-party processors are required to handle your data securely and only for the purposes we specify. We do not transfer personal data outside the UK/EEA without appropriate safeguards in place (Standard Contractual Clauses or UK International Data Transfer Agreements where applicable).</p>
-      </div>
+6. Who we share data with
+We do not sell your personal data. We share data only where necessary to deliver our service, with the following categories of third parties:
 
-      <div class="legal-section" id="retention">
-        <h2>7. How long we keep your data</h2>
-        <ul>
-          <li><strong>Member account data</strong> &mdash; retained for the duration of your membership and for 12 months after cancellation, after which it is deleted or anonymised</li>
-          <li><strong>Activity and engagement logs</strong> &mdash; retained for 24 months to support progress tracking and reporting, then anonymised</li>
-          <li><strong>Wellbeing check-in responses</strong> &mdash; retained for 12 months, then anonymised</li>
-          <li><strong>Running plan data</strong> &mdash; retained for 6 months after last use, then deleted</li>
-          <li><strong>Enquiry and contact data</strong> &mdash; retained for 12 months after last contact</li>
-          <li><strong>Financial records</strong> &mdash; retained for 7 years as required by UK law</li>
-        </ul>
-        <p>You may request early deletion of your data at any time (see Your Rights below). Our full Data Retention Policy is available upon request.</p>
-      </div>
+Supabase
+— our primary data store and authentication provider. All member data is stored in Supabase infrastructure located in the EU West (Ireland) region. Supabase is SOC 2 Type II certified and GDPR compliant.
+Brevo
+— transactional email delivery (account confirmations, certificates, re-engagement notifications). EU-based. A Data Processing Agreement is in place.
+Anthropic
+— AI-powered coaching recommendations and wellbeing content are generated via the Anthropic API. Prompts include pseudonymised profile data. A Data Processing Addendum is in place with Anthropic.
+PostHog
+— behavioural analytics within the member portal, linked to your authenticated identity. Used to understand platform usage and improve the service.
+Stripe
+— payment processing for individual memberships. Stripe is PCI DSS compliant. VYVE does not store card details.
+GitHub (Microsoft)
+— our member portal and marketing site are hosted via GitHub Pages. No personal member data is stored in GitHub repositories.
+YouTube (Google)
+— live session and replay content is hosted on unlisted YouTube channels embedded in the portal. YouTube’s privacy policy applies to embedded video content.
+Your employer
+— where you are a corporate member, your employer receives aggregated, anonymised engagement data only. Your name, individual activity data, and health information are never shared with your employer.
+All third-party processors are required to handle your data securely and only for the purposes we specify. We do not transfer personal data outside the UK/EEA without appropriate safeguards in place (Standard Contractual Clauses or UK International Data Transfer Agreements where applicable).
 
-      <div class="legal-section" id="your-rights">
-        <h2>8. Your rights</h2>
-        <p>Under UK GDPR, you have the following rights regarding your personal data:</p>
-        <ul>
-          <li><strong>Right of access</strong> &mdash; request a copy of the personal data we hold about you</li>
-          <li><strong>Right to rectification</strong> &mdash; request correction of inaccurate or incomplete data</li>
-          <li><strong>Right to erasure</strong> &mdash; request deletion of your personal data (&ldquo;right to be forgotten&rdquo;), subject to certain exceptions</li>
-          <li><strong>Right to restrict processing</strong> &mdash; request that we limit how we use your data</li>
-          <li><strong>Right to data portability</strong> &mdash; receive your data in a structured, machine-readable format (CSV)</li>
-          <li><strong>Right to object</strong> &mdash; object to processing based on legitimate interests</li>
-          <li><strong>Right to withdraw consent</strong> &mdash; withdraw consent for any consent-based processing at any time</li>
-        </ul>
-        <p>To exercise any of these rights, contact us at <a href="mailto:team@vyvehealth.co.uk">team@vyvehealth.co.uk</a> with the subject line &ldquo;Data Privacy Request&rdquo;. We will respond within 30 days. If you are unsatisfied with our response, you have the right to lodge a complaint with the <strong>Information Commissioner&rsquo;s Office (ICO)</strong> at <a href="https://ico.org.uk" target="_blank">ico.org.uk</a> &nbsp;&middot;&nbsp; 0303 123 1113.</p>
-      </div>
+7. How long we keep your data
+Member account data
+— retained for the duration of your membership and for 12 months after cancellation, after which it is deleted or anonymised
+Activity and engagement logs
+— retained for 24 months to support progress tracking and reporting, then anonymised
+Wellbeing check-in responses
+— retained for 12 months, then anonymised
+Nutrition and food diary data
+— retained for 12 months after last use, then deleted
+Enquiry and contact data
+— retained for 12 months after last contact
+Financial records
+— retained for 7 years as required by UK law
+You may request early deletion of your data at any time (see Your Rights below). Our full Data Retention Policy is available upon request.
 
-      <div class="legal-section" id="cookies">
-        <h2>9. Cookies and analytics</h2>
-        <p>Our websites use cookies and similar technologies for the following purposes:</p>
-        <ul>
-          <li><strong>Essential cookies</strong> &mdash; required for authentication and basic site functionality (Auth0 session management)</li>
-          <li><strong>Analytics cookies</strong> &mdash; PostHog is used to track member behaviour within the portal to help us improve the service. Analytics data is linked to your authenticated identity within the platform.</li>
-          <li><strong>YouTube embedded content</strong> &mdash; session replay content is delivered via embedded YouTube players, which may set their own cookies. YouTube&rsquo;s privacy policy applies to this content.</li>
-        </ul>
-        <p>You can control cookies through your browser settings. Disabling essential cookies may affect your ability to log in and use the platform.</p>
-      </div>
+8. Your rights
+Under UK GDPR, you have the following rights regarding your personal data:
 
-      <div class="legal-section" id="security">
-        <h2>10. Security</h2>
-        <p>We take the security of your personal data seriously and implement appropriate technical and organisational measures including:</p>
-        <ul>
-          <li>Authentication managed via Auth0 (UK/EU tenant) with invite-only access controls</li>
-          <li>HTTPS encryption enforced across all VYVE web properties and API endpoints</li>
-          <li>All API credentials and keys stored server-side only &mdash; never in client-facing code</li>
-          <li>Daily automated backups with 7-day rolling retention</li>
-          <li>Access controls limiting who within VYVE can access personal data on a need-to-know basis</li>
-          <li>Regular review of our data processing activities and third-party processors</li>
-        </ul>
-        <p>In the event of a data breach that is likely to result in risk to your rights and freedoms, we will notify the ICO within 72 hours and inform affected individuals without undue delay.</p>
-      </div>
+Right of access
+— request a copy of the personal data we hold about you
+Right to rectification
+— request correction of inaccurate or incomplete data
+Right to erasure
+— request deletion of your personal data (“right to be forgotten”), subject to certain exceptions
+Right to restrict processing
+— request that we limit how we use your data
+Right to data portability
+— receive your data in a structured, machine-readable format (CSV)
+Right to object
+— object to processing based on legitimate interests
+Right to withdraw consent
+— withdraw consent for any consent-based processing at any time
+To exercise any of these rights, contact us at team@vyvehealth.co.uk with the subject line “Data Privacy Request”. We will respond within 30 days. If you are unsatisfied with our response, you have the right to lodge a complaint with the Information Commissioner’s Office (ICO) at ico.org.uk  ·  0303 123 1113.
 
-      <div class="legal-section" id="changes">
-        <h2>11. Changes to this policy</h2>
-        <p>We may update this Privacy Policy from time to time. When we make significant changes, we will notify members by email and update the &ldquo;Last updated&rdquo; date at the top of this page. Your continued use of the VYVE platform after changes are published constitutes acceptance of the updated policy.</p>
-      </div>
+9. Cookies and analytics
+Our websites use cookies and similar technologies for the following purposes:
 
-      <div class="legal-section" id="contact">
-        <h2>12. Contact us</h2>
-        <div class="contact-box">
-          <h3>Data Controller Contact</h3>
-          <p>VYVE Health CIC &nbsp;&middot;&nbsp; Community Interest Company, England &amp; Wales</p>
-          <p>ICO Registration Number: 00013608608</p>
-          <p>Email: <a href="mailto:team@vyvehealth.co.uk">team@vyvehealth.co.uk</a></p>
-          <p>Website: <a href="https://www.vyvehealth.co.uk">www.vyvehealth.co.uk</a></p>
-          <p style="margin-top:16px;">For data protection queries, subject access requests, or to request a copy of our Data Processing Agreement, please email us with the subject line <strong>&ldquo;Data Privacy Request&rdquo;</strong> and we will respond within 30 days.</p>
-          <p style="margin-top:12px;">You also have the right to complain to the Information Commissioner&rsquo;s Office (ICO): <a href="https://ico.org.uk" target="_blank">ico.org.uk</a> &nbsp;&middot;&nbsp; 0303 123 1113</p>
-        </div>
-      </div>
+Essential cookies
+— required for authentication and basic site functionality (Supabase Auth session management)
+Local storage
+— the member portal uses browser local storage to cache your profile and activity data for performance, reducing load times on repeat visits
+Analytics cookies
+— PostHog is used to track member behaviour within the portal to help us improve the service. Analytics data is linked to your authenticated identity within the platform.
+YouTube embedded content
+— session replay content is delivered via embedded YouTube players, which may set their own cookies. YouTube’s privacy policy applies to this content.
+You can control cookies through your browser settings. Disabling essential cookies may affect your ability to log in and use the platform.
 
-    </div>
-  </div>
+10. Security
+We take the security of your personal data seriously and implement appropriate technical and organisational measures including:
 
-  <footer>
-    <div class="container">
-      <p>&copy; 2026 VYVE Health CIC. All rights reserved. &nbsp;&middot;&nbsp; <a href="privacy-policy.html" style="color:#4DAAAA;">Privacy Policy</a> &nbsp;&middot;&nbsp; <a href="terms.html" style="color:#4DAAAA;">Terms of Service</a> &nbsp;&middot;&nbsp; ICO: 00013608608</p>
-    </div>
-  </footer>
+Authentication managed via Supabase Auth with invite-only access controls and secure session management
+All member data stored in Supabase (EU West, Ireland) with encryption at rest, row-level security, and immutable audit logging
+HTTPS encryption enforced across all VYVE web properties and API endpoints
+All API credentials and keys stored server-side only in Supabase Edge Functions — never in client-facing code
+Automated point-in-time database backups provided by Supabase Pro infrastructure
+Employer-facing reporting returns aggregated data only — no individual PII is ever exposed via reporting endpoints
+Access controls limiting who within VYVE can access personal data on a need-to-know basis
+Regular review of our data processing activities and third-party processors
+In the event of a data breach that is likely to result in risk to your rights and freedoms, we will notify the ICO within 72 hours and inform affected individuals without undue delay.
 
-</body>
-</html>
+11. Changes to this policy
+We may update this Privacy Policy from time to time. When we make significant changes, we will notify members by email and update the “Last updated” date at the top of this page. Your continued use of the VYVE platform after changes are published constitutes acceptance of the updated policy.
+
+12. Contact us
+Data Controller Contact
+VYVE Health CIC  ·  Community Interest Company, England & Wales
+
+ICO Registration Number: 00013608608
+
+Email: team@vyvehealth.co.uk
+
+Website: www.vyvehealth.co.uk
+
+For data protection queries, subject access requests, or to request a copy of our Data Processing Agreement, please email us with the subject line “Data Privacy Request” and we will respond within 30 days.
+
+You also have the right to complain to the Information Commissioner’s Office (ICO): ico.org.uk  ·  0303 123 1113
+
+© 2026 VYVE Health CIC. All rights reserved.  ·  Privacy Policy  ·  Terms of Service  ·  ICO: 00013608608
