@@ -916,7 +916,29 @@ input[type="range"]::-moz-range-thumb {
       <div class="q-group">
         <div class="input-row">
           <div><label class="q-label">Date of birth</label><input type="date" id="dob" onchange="validateDOB(this)" required><div class="field-error" id="err-dob">You must be aged 16 or over to join VYVE</div></div>
-          <div><label class="q-label">Gender</label><select id="gender"><option value="">Select...</option><option>Male</option><option>Female</option><option>Prefer not to say</option></select></div>
+          <div>
+          <label class="q-label">Gender</label>
+          <select id="gender" onchange="handleGenderChange(this.value)">
+            <option value="">Select...</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Non-binary</option>
+            <option>Prefer to self-describe</option>
+            <option>Prefer not to say</option>
+          </select>
+          <div id="gender-self-describe-wrap" style="display:none;margin-top:8px;">
+            <input type="text" id="gender_self_describe" placeholder="How would you describe your gender? (optional)" style="width:100%;">
+          </div>
+          <div id="tdee-formula-wrap" style="display:none;margin-top:12px;">
+            <label class="q-label" style="font-size:13px;color:rgba(255,255,255,0.7);">For personalised calorie guidance, which formula should we use?</label>
+            <select id="tdee_formula">
+              <option value="">Select...</option>
+              <option value="Male">Male metabolic formula</option>
+              <option value="Female">Female metabolic formula</option>
+              <option value="Skip">Skip calorie guidance</option>
+            </select>
+          </div>
+        </div>
         </div>
       </div>
       <div class="q-group">
@@ -1467,8 +1489,10 @@ function calcTDEE() {
   const h=getHeightCm(); const w=getWeightKg(); const age=getAge();
   const gender=document.getElementById('gender').value;
   const goal=getSingleChoice('nutritionGoal');
-  if (!h||!w||!age||!gender||gender==='Prefer not to say') { document.getElementById('tdeeResult').classList.remove('show'); return; }
-  let bmr = gender==='Male' ? 10*w+6.25*h-5*age+5 : 10*w+6.25*h-5*age-161;
+  const nonBinary = gender==='Non-binary' || gender==='Prefer to self-describe';
+  const tdeeFml = nonBinary ? (document.getElementById('tdee_formula')?.value||'') : gender;
+  if (!h||!w||!age||!gender||gender==='Prefer not to say'||(nonBinary&&tdeeFml==='Skip')||(nonBinary&&!tdeeFml)) { document.getElementById('tdeeResult').classList.remove('show'); return; }
+  let bmr = tdeeFml==='Male' ? 10*w+6.25*h-5*age+5 : 10*w+6.25*h-5*age-161;
   const actMap={'Mostly sedentary':1.2,'Lightly active':1.375,'Moderately active':1.55,'Very active':1.725,'Extremely active':1.9};
   const act=getSingleChoice('tdeeActivity')||getSingleChoice('activityLevel');
   const tdee=Math.round(bmr*(actMap[act]||1.375));
@@ -1609,6 +1633,8 @@ async function submitQuestionnaire() {
     email: document.getElementById('email').value.trim().toLowerCase(),
     dob: document.getElementById('dob').value,
     gender: document.getElementById('gender').value,
+    gender_self_describe: document.getElementById('gender_self_describe')?.value?.trim()||null,
+    tdee_formula: document.getElementById('tdee_formula')?.value||null,
     heightCm: getHeightCm(),
     weightKg: getWeightKg(),
     age: getAge(),
@@ -1702,6 +1728,20 @@ function showResults(data, result) {
 function hideSkipPrompt(id) { const el=document.getElementById(id); if(el) el.classList.remove('show'); }
 function toggleEquipment(v) { const eq=document.getElementById('equipmentGroup'); if(eq) eq.style.display=['Home','Mix of home and gym','Flexible','Not sure'].includes(v)?'':'none'; }
 function toggleDietDetail(v) { const d=document.getElementById('dietDetail'); if(d) d.style.display=v==='Yes'?'':'none'; }
+
+function handleGenderChange(val) {
+  const selfWrap = document.getElementById('gender-self-describe-wrap');
+  const tdeeWrap = document.getElementById('tdee-formula-wrap');
+  const nonBinary = val === 'Non-binary' || val === 'Prefer to self-describe';
+  selfWrap.style.display = val === 'Prefer to self-describe' ? 'block' : 'none';
+  tdeeWrap.style.display = nonBinary ? 'block' : 'none';
+  if (!nonBinary) {
+    const sel = document.getElementById('tdee_formula');
+    if (sel) sel.value = '';
+    const txt = document.getElementById('gender_self_describe');
+    if (txt) txt.value = '';
+  }
+}
 </script>
 </body>
 </html>
