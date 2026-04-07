@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VYVE Health — Internal Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0a1a1a;
+    --surface: #0f2424;
+    --surface2: #132d2d;
+    --surface3: #1a3a3a;
+    --accent: #1D9E75;
+    --accent-dim: rgba(29,158,117,0.15);
+    --accent-glow: rgba(29,158,117,0.35);
+    --text: #e8f0ef;
+    --text-muted: #7a9e9a;
+    --text-dim: #4a6e6a;
+    --border: rgba(29,158,117,0.18);
+    --red: #e05555;
+    --amber: #d4a237;
+    --blue: #4a90c4;
+    --purple: #8b6bbf;
+    --font-num: 'Georgia', 'Times New Roman', serif;
+    --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --radius: 8px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+  #gate { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; gap: 24px; }
+  #gate .logo-text { font-family: var(--font-body); font-size: 28px; font-weight: 700; letter-spacing: 6px; color: var(--accent); text-transform: uppercase; }
+  #gate .sub { color: var(--text-muted); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; }
+  #gate input { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 12px 20px; border-radius: var(--radius); font-size: 15px; font-family: var(--font-body); width: 260px; text-align: center; outline: none; transition: border-color 0.2s; }
+  #gate input:focus { border-color: var(--accent); }
+  #gate button { background: var(--accent); color: #fff; border: none; padding: 11px 32px; border-radius: var(--radius); font-size: 13px; font-family: var(--font-body); font-weight: 600; letter-spacing: 1px; cursor: pointer; text-transform: uppercase; transition: opacity 0.2s; }
+  #gate button:hover { opacity: 0.85; }
+  #gate .err { color: var(--red); font-size: 12px; }
+  #app { display: none; }
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(10,26,26,0.96); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; gap: 0; height: 52px; }
+  .nav-brand { font-weight: 700; font-size: 14px; letter-spacing: 4px; color: var(--accent); text-transform: uppercase; margin-right: 32px; white-space: nowrap; }
+  .nav-links { display: flex; gap: 2px; flex: 1; overflow-x: auto; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 12px; letter-spacing: 0.5px; padding: 6px 12px; border-radius: 5px; white-space: nowrap; transition: color 0.15s, background 0.15s; }
+  .nav-links a:hover { color: var(--text); background: var(--surface2); }
+  .nav-right { display: flex; align-items: center; gap: 12px; margin-left: 16px; white-space: nowrap; }
+  #last-updated { color: var(--text-dim); font-size: 11px; }
+  .btn-refresh { background: var(--surface2); border: 1px solid var(--border); color: var(--accent); padding: 5px 12px; border-radius: 5px; font-size: 11px; cursor: pointer; font-family: var(--font-body); letter-spacing: 0.5px; transition: background 0.15s; }
+  .btn-refresh:hover { background: var(--surface3); }
+  #loading-bar { position: fixed; top: 0; left: 0; height: 2px; background: var(--accent); width: 0%; z-index: 200; transition: width 0.3s ease; }
+  .period-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 8px; }
+  .period-bar span { color: var(--text-muted); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; margin-right: 4px; }
+  .period-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 4px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; font-family: var(--font-body); letter-spacing: 0.5px; transition: all 0.15s; }
+  .period-btn.active, .period-btn:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  main { padding: 24px; max-width: 1600px; margin: 0 auto; }
+  section { margin-bottom: 40px; }
+  .section-title { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .section-title::before { content: ''; display: inline-block; width: 3px; height: 12px; background: var(--accent); border-radius: 2px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; position: relative; overflow: hidden; }
+  .stat-card::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
+  .stat-card.red::after { background: var(--red); }
+  .stat-card.amber::after { background: var(--amber); }
+  .stat-card.blue::after { background: var(--blue); }
+  .stat-card.purple::after { background: var(--purple); }
+  .stat-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .stat-value { font-family: var(--font-num); font-size: 32px; color: var(--text); line-height: 1; font-weight: normal; }
+  .stat-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+  .stat-delta { font-size: 11px; margin-top: 4px; }
+  .stat-delta.up { color: var(--accent); }
+  .stat-delta.down { color: var(--red); }
+  .stat-delta.neutral { color: var(--text-muted); }
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .chart-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+  .chart-card.wide { grid-column: span 2; }
+  .chart-title { font-size: 11px; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; }
+  .chart-wrap { position: relative; }
+  .chart-wrap canvas { max-height: 200px; }
+  .chart-wrap.tall canvas { max-height: 260px; }
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: auto; max-height: 520px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead { position: sticky; top: 0; background: var(--surface2); z-index: 10; }
+  th { padding: 10px 12px; text-align: left; color: var(--text-muted); font-weight: 600; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; }
+  th:hover { color: var(--accent); }
+  td { padding: 9px 12px; border-bottom: 1px solid rgba(29,158,117,0.07); vertical-align: middle; white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(29,158,117,0.04); }
+  .badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+  .badge-green { background: rgba(29,158,117,0.2); color: var(--accent); }
+  .badge-red { background: rgba(224,85,85,0.2); color: var(--red); }
+  .badge-amber { background: rgba(212,162,55,0.2); color: var(--amber); }
+  .badge-blue { background: rgba(74,144,196,0.2); color: var(--blue); }
+  .badge-purple { background: rgba(139,107,191,0.2); color: var(--purple); }
+  .badge-dim { background: rgba(122,158,154,0.1); color: var(--text-muted); }
+  .filter-bar { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  .filter-bar input, .filter-bar select { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: 5px; font-size: 12px; font-family: var(--font-body); outline: none; transition: border-color 0.15s; }
+  .filter-bar input:focus, .filter-bar select:focus { border-color: var(--accent); }
+  .filter-bar input { min-width: 200px; }
+  .filter-bar select option { background: var(--surface2); }
+  .filter-label { font-size: 11px; color: var(--text-muted); }
+  .prog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .prog-label { font-size: 11px; color: var(--text-muted); min-width: 80px; text-align: right; }
+  .prog-bar-wrap { flex: 1; background: var(--surface3); border-radius: 3px; height: 6px; overflow: hidden; }
+  .prog-bar { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.6s ease; }
+  .prog-val { font-size: 11px; color: var(--text-dim); min-width: 30px; }
+  .stream-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  .stream-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; text-align: center; }
+  .stream-name { font-size: 16px; font-weight: 700; color: var(--accent); font-family: var(--font-num); }
+  .stream-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .stream-count { font-size: 28px; font-family: var(--font-num); color: var(--text); margin: 6px 0 2px; }
+  .alert-list { display: flex; flex-direction: column; gap: 8px; }
+  .alert-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; display: flex; align-items: center; gap: 10px; font-size: 12px; }
+  .alert-item .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .dot-red { background: var(--red); }
+  .dot-amber { background: var(--amber); }
+  .dot-green { background: var(--accent); }
+  .alert-email { color: var(--text); flex: 1; font-weight: 500; }
+  .alert-detail { color: var(--text-muted); }
+  .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 400% 100%; animation: shimmer 1.4s infinite; border-radius: 4px; height: 32px; }
+  @keyframes shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+  @media (max-width: 900px) { .chart-grid { grid-template-columns: 1fr; } .chart-card.wide { grid-column: span 1; } .chart-grid-3 { grid-template-columns: 1fr; } .stream-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 600px) { main { padding: 12px; } nav { padding: 0 12px; } .stat-grid { grid-template-columns: repeat(2, 1fr); } .stream-grid { grid-template-columns: repeat(2, 1fr); } }
+  .error-box { background: rgba(224,85,85,0.08); border: 1px solid rgba(224,85,85,0.25); border-radius: var(--radius); padding: 12px 16px; color: var(--red); font-size: 12px; }
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+  .mono { font-family: 'Courier New', monospace; font-size: 11px; }
+  /* AI DECISIONS */
+  .decision-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px;position:relative}
+  .decision-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:2px 0 0 2px}
+  .decision-card.flag::after{background:var(--amber)}
+  .decision-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .decision-name{font-size:13px;font-weight:600;color:var(--text)}
+  .decision-time{font-size:11px;color:var(--text-dim);margin-left:auto}
+  .decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  @media(max-width:700px){.decision-grid{grid-template-columns:1fr}}
+  .decision-block{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:10px 12px}
+  .decision-block-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px}
+  .decision-block-value{font-size:12px;color:var(--text);line-height:1.5}
+  .decision-block-reason{font-size:11px;color:var(--text-muted);margin-top:5px;line-height:1.5;border-top:1px solid var(--border);padding-top:5px}
+  .decision-inputs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .input-pill{background:var(--surface3);border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-size:10px;color:var(--text-muted)}
+  .input-pill.highlight{border-color:var(--amber);color:var(--amber)}
+  .method-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .method-hard{background:rgba(29,158,117,.15);color:var(--accent)}
+  .method-ai{background:rgba(139,107,191,.15);color:var(--purple)}
+  .method-fallback{background:rgba(212,162,55,.2);color:var(--amber)}
+  .decisions-empty{padding:40px;text-align:center;color:var(--text-dim);font-size:13px}
+  .cert-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .cert-row:last-child { border-bottom: none; }
+  .cert-icon { font-size: 20px; }
+  .cert-info { flex: 1; }
+  .cert-name { font-size: 12px; color: var(--text); }
+  .cert-sub { font-size: 11px; color: var(--text-muted); }
+  .cert-count { font-family: var(--font-num); font-size: 22px; color: var(--accent); }
+</style>
+</head>
+<body>
+<div id="loading-bar"></div>
+<div id="gate">
+  <div class="logo-text">VYVE</div>
+  <div class="sub">Internal Dashboard — Restricted Access</div>
+  <input type="password" id="pw-input" placeholder="Password" autocomplete="off" />
+  <button onclick="checkPw()">Enter</button>
+  <div class="err" id="pw-err"></div>
+</div>
+<div id="app">
+  <nav>
+    <div class="nav-brand">VYVE</div>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#engagement">Engagement</a>
+      <a href="#retention">Retention</a>
+      <a href="#charity">Charity</a>
+      <a href="#members">Members</a>
+      <a href="#business">Business</a>
+      <a href="#decisions">AI Decisions</a>
+    </div>
+    <div class="nav-right">
+      <span id="last-updated"></span>
+      <button class="btn-refresh" onclick="loadAll()">↻ Refresh</button>
+    </div>
+  </nav>
+  <div class="period-bar">
+    <span>Period:</span>
+    <button class="period-btn active" data-period="week" onclick="setPeriod('week',this)">This Week</button>
+    <button class="period-btn" data-period="month" onclick="setPeriod('month',this)">This Month</button>
+    <button class="period-btn" data-period="quarter" onclick="setPeriod('quarter',this)">This Quarter</button>
+    <button class="period-btn" data-period="year" onclick="setPeriod('year',this)">This Year</button>
+    <button class="period-btn" data-period="all" onclick="setPeriod('all',this)">All Time</button>
+  </div>
+  <main>
+    <section id="overview">
+      <div class="section-title">Overview</div>
+      <div class="stat-grid" id="overview-stats">
+        <div class="stat-card"><div class="stat-label">Total Members</div><div class="stat-value" id="s-total">—</div><div class="stat-sub">registered accounts</div></div>
+        <div class="stat-card"><div class="stat-label">Active Today</div><div class="stat-value" id="s-today">—</div><div class="stat-sub" id="s-today-sub"></div></div>
+        <div class="stat-card"><div class="stat-label">Active This Week</div><div class="stat-value" id="s-week">—</div><div class="stat-sub" id="s-week-sub"></div></div>
+        <div class="stat-card"><div class="stat-label">Active This Month</div><div class="stat-value" id="s-month">—</div><div class="stat-sub" id="s-month-sub"></div></div>
+        <div class="stat-card blue"><div class="stat-label">App Opened</div><div class="stat-value" id="s-app-open">—</div><div class="stat-sub">kahunas Q&A complete</div></div>
+        <div class="stat-card blue"><div class="stat-label">Onboarding Complete</div><div class="stat-value" id="s-onboarding">—</div><div class="stat-sub">of total members</div></div>
+        <div class="stat-card amber"><div class="stat-label">Period Activities</div><div class="stat-value" id="s-period-acts">—</div><div class="stat-sub" id="s-period-label">selected period</div></div>
+        <div class="stat-card amber"><div class="stat-label">Period Active Members</div><div class="stat-value" id="s-period-members">—</div><div class="stat-sub" id="s-period-members-sub"></div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title">Member Growth — Last 6 Months</div><div class="chart-wrap"><canvas id="chart-growth"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">New Members by Month</div><div class="chart-wrap"><canvas id="chart-new-members"></canvas></div></div>
+      </div>
+    </section>
+    <section id="engagement">
+      <div class="section-title">Engagement</div>
+      <div class="stat-grid" id="act-breakdown">
+        <div class="stat-card"><div class="stat-label">Habits Logged</div><div class="stat-value" id="s-habits">—</div></div>
+        <div class="stat-card"><div class="stat-label">Workouts</div><div class="stat-value" id="s-workouts">—</div></div>
+        <div class="stat-card"><div class="stat-label">Cardio Sessions</div><div class="stat-value" id="s-cardio">—</div></div>
+        <div class="stat-card"><div class="stat-label">Sessions Viewed</div><div class="stat-value" id="s-sessions">—</div></div>
+        <div class="stat-card"><div class="stat-label">Wellbeing Check-ins</div><div class="stat-value" id="s-checkins">—</div></div>
+        <div class="stat-card"><div class="stat-label">Total Activities</div><div class="stat-value" id="s-total-acts">—</div></div>
+        <div class="stat-card purple"><div class="stat-label">Acts / Active Member</div><div class="stat-value" id="s-intensity">—</div><div class="stat-sub">intensity metric</div></div>
+      </div>
+      <div class="chart-grid"><div class="chart-card wide"><div class="chart-title">Weekly Activity Trend — Last 8 Weeks</div><div class="chart-wrap tall"><canvas id="chart-weekly-acts"></canvas></div></div></div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title">Avg Wellbeing Score — Last 8 ISO Weeks</div><div class="chart-wrap"><canvas id="chart-wellbeing"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Avg Engagement Score — Last 8 ISO Weeks</div><div class="chart-wrap"><canvas id="chart-engagement"></canvas></div></div>
+      </div>
+    </section>
+    <section id="retention">
+      <div class="section-title">Retention & Health</div>
+      <div class="section-title" style="font-size:9px; border:none; padding:0; margin-bottom:12px; color:var(--text-dim);">Re-engagement Stream Distribution</div>
+      <div class="stream-grid" id="stream-grid" style="margin-bottom:20px;"></div>
+      <div class="two-col">
+        <div><div class="chart-title" style="margin-bottom:10px;">Never Logged Activity</div><div class="alert-list" id="never-active-list"></div></div>
+        <div><div class="chart-title" style="margin-bottom:10px;">Dormant Members</div><div class="alert-list" id="dormant-list"></div></div>
+      </div>
+      <div class="divider"></div>
+      <div class="chart-title" style="margin-bottom:10px;">On a Streak (Active 2+ Consecutive Weeks)</div>
+      <div class="alert-list" id="streak-list"></div>
+    </section>
+    <section id="charity">
+      <div class="section-title">Charity Mechanic</div>
+      <div class="two-col">
+        <div class="chart-card">
+          <div class="chart-title">Certificates Earned — All Time</div>
+          <div id="cert-breakdown"></div>
+          <div class="divider"></div>
+          <div class="stat-label" style="margin-top:8px;">Total Donated Months</div>
+          <div style="font-family:var(--font-num); font-size:36px; color:var(--accent); margin-top:4px;" id="total-donated">—</div>
+          <div class="stat-sub">charity partner referrals unlocked</div>
+        </div>
+        <div class="chart-card"><div class="chart-title">Near Next Certificate (Within 5 Activities)</div><div class="alert-list" id="near-cert-list"></div></div>
+      </div>
+    </section>
+    <section id="members">
+      <div class="section-title">Member Detail</div>
+      <div class="filter-bar">
+        <span class="filter-label">Filter:</span>
+        <input type="text" id="f-search" placeholder="Search name or email…" oninput="renderTable()">
+        <select id="f-stream" onchange="renderTable()"><option value="">All Streams</option><option value="active">Active</option><option value="A">Stream A</option><option value="B">Stream B</option><option value="C1">Stream C1</option><option value="C2">Stream C2</option><option value="C3">Stream C3</option></select>
+        <select id="f-company" onchange="renderTable()"><option value="">All Companies</option></select>
+        <select id="f-persona" onchange="renderTable()"><option value="">All Personas</option><option value="NOVA">NOVA</option><option value="RIVER">RIVER</option><option value="SPARK">SPARK</option><option value="SAGE">SAGE</option><option value="HAVEN">HAVEN</option></select>
+        <select id="f-status" onchange="renderTable()"><option value="">Active & Dormant</option><option value="active">Active (7d)</option><option value="dormant">Dormant (7d+)</option></select>
+      </div>
+      <div class="table-wrap">
+        <table id="member-table">
+          <thead><tr><th onclick="sortTable('first_name')">Name</th><th onclick="sortTable('company')">Company</th><th onclick="sortTable('persona')">Persona</th><th>Stream</th><th onclick="sortTable('baseline_wellbeing')">Baseline W</th><th>Last Active</th><th onclick="sortTable('habits')">Habits</th><th onclick="sortTable('workouts')">Workouts</th><th onclick="sortTable('cardio')">Cardio</th><th onclick="sortTable('sessions')">Sessions</th><th onclick="sortTable('checkins')">Check-ins</th><th>Certs</th><th>Onboarded</th></tr></thead>
+          <tbody id="member-tbody"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:8px; font-size:11px; color:var(--text-dim);" id="table-count"></div>
+    </section>
+    <section id="business">
+      <div class="section-title">Business Metrics</div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label">Activities This Month</div><div class="stat-value" id="b-month">—</div></div>
+        <div class="stat-card"><div class="stat-label">Activities This Quarter</div><div class="stat-value" id="b-quarter">—</div></div>
+        <div class="stat-card"><div class="stat-label">Activities This Year</div><div class="stat-value" id="b-year">—</div></div>
+        <div class="stat-card"><div class="stat-label">All-Time Activities</div><div class="stat-value" id="b-alltime">—</div></div>
+        <div class="stat-card blue"><div class="stat-label">Avg Baseline Wellbeing</div><div class="stat-value" id="b-wellbeing">—</div><div class="stat-sub">/10 across all members</div></div>
+        <div class="stat-card purple"><div class="stat-label">Companies Represented</div><div class="stat-value" id="b-companies">—</div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title">Persona Distribution</div><div class="chart-wrap"><canvas id="chart-personas"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Companies by Member Count</div><div id="company-list" style="margin-top:4px;"></div></div>
+      </div>
+    </section>
+
+    <!-- AI DECISIONS -->
+    <section id="decisions">
+      <div class="section-title">AI Decisions &mdash; Onboarding Log</div>
+      <div style="margin-bottom:14px;font-size:12px;color:var(--text-muted);">
+        Every AI decision made at onboarding &mdash; persona assignment and plan type selection, with the exact inputs and rules that drove each one.
+        Cards with an <strong style="color:var(--amber)">amber border</strong> used the AI fallback (no hard rule matched) &mdash; worth reviewing.
+      </div>
+      <div class="filter-bar" style="margin-bottom:14px;">
+        <span class="filter-label">Filter:</span>
+        <input type="text" id="d-search" placeholder="Search name or email&hellip;" oninput="renderDecisions()">
+        <select id="d-persona" onchange="renderDecisions()">
+          <option value="">All Personas</option>
+          <option value="NOVA">NOVA</option>
+          <option value="RIVER">RIVER</option>
+          <option value="SPARK">SPARK</option>
+          <option value="SAGE">SAGE</option>
+          <option value="HAVEN">HAVEN</option>
+        </select>
+        <select id="d-plan" onchange="renderDecisions()">
+          <option value="">All Plans</option>
+          <option value="PPL">PPL</option>
+          <option value="Upper_Lower">Upper / Lower</option>
+          <option value="Full_Body">Full Body</option>
+          <option value="Home">Home</option>
+          <option value="Movement_Wellbeing">Movement &amp; Wellbeing</option>
+        </select>
+        <select id="d-method" onchange="renderDecisions()">
+          <option value="">All Methods</option>
+          <option value="hard_rule">Hard Rule</option>
+          <option value="ai_decision">AI Decision</option>
+          <option value="ai_fallback">AI Fallback &#9888;</option>
+        </select>
+      </div>
+      <div id="decisions-list"><div class="decisions-empty">Loading decision log&hellip;</div></div>
+    </section>
+
+  </main>
+</div>
+<script>
+const SUPABASE_URL = 'https://ixjfklpckgxrwjlfsaaz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_LvM2gBCqnb5q_h-BHEYT-g_MA11Ybzr';
+const EXCLUDED = ['test@test.com', 'maketest@vyvehealth.co.uk', 'team@vyvehealth.co.uk'];
+const PASSWORD = 'vyve2026';
+let DB = { members: [], habits: [], workouts: [], cardio: [], sessions: [], checkins: [], weekly: [], emails: [], certs: [] };
+let currentPeriod = 'week';
+let sortCol = 'first_name', sortDir = 1;
+let charts = {};
+function checkPw() { const v = document.getElementById('pw-input').value; if (v === PASSWORD) { document.getElementById('gate').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadAll(); } else { document.getElementById('pw-err').textContent = 'Incorrect password.'; } }
+document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPw(); });
+async function sbFetch(table, params = '') { const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}&limit=10000`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' } }); if (!r.ok) throw new Error(`${table}: ${r.status}`); return r.json(); }
+async function loadAll() {
+  setLoadBar(10);
+  try {
+    const [members, habits, workouts, cardio, sessions, checkins, weekly, emails, certs] = await Promise.all([
+      sbFetch('members', 'select=*'),
+      sbFetch('daily_habits', 'select=member_email,activity_date'),
+      sbFetch('workouts', 'select=member_email,activity_date'),
+      sbFetch('cardio', 'select=member_email,activity_date'),
+      sbFetch('session_views', 'select=member_email,activity_date'),
+      sbFetch('wellbeing_checkins', 'select=member_email,activity_date'),
+      sbFetch('weekly_scores', 'select=*'),
+      sbFetch('engagement_emails', 'select=member_email,stream,sent_at'),
+      sbFetch('certificates', 'select=*'),
+    ]);
+    setLoadBar(80);
+    const validEmails = new Set(members.filter(m => !EXCLUDED.includes(m.email)).map(m => m.email));
+    DB.members = members.filter(m => !EXCLUDED.includes(m.email));
+    const filterActs = (arr, key = 'member_email') => arr.filter(r => validEmails.has(r[key]));
+    DB.habits = filterActs(habits); DB.workouts = filterActs(workouts); DB.cardio = filterActs(cardio);
+    DB.sessions = filterActs(sessions); DB.checkins = filterActs(checkins); DB.weekly = filterActs(weekly);
+    DB.emails = filterActs(emails); DB.certs = filterActs(certs);
+    enrichMembers();
+    setLoadBar(100);
+    document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+    renderAll();
+    loadDecisions();
+  } catch (e) { console.error(e); setLoadBar(0); alert('Error loading data: ' + e.message); }
+}
+function setLoadBar(pct) { const bar = document.getElementById('loading-bar'); bar.style.width = pct + '%'; if (pct >= 100) setTimeout(() => bar.style.width = '0%', 600); }
+function enrichMembers() {
+  const now = new Date();
+  const lastActive = {};
+  const updateLast = (arr, dateField) => { arr.forEach(r => { const d = new Date(r[dateField] || r.activity_date); if (!lastActive[r.member_email] || d > lastActive[r.member_email]) lastActive[r.member_email] = d; }); };
+  updateLast(DB.habits, 'activity_date'); updateLast(DB.workouts, 'activity_date'); updateLast(DB.cardio, 'activity_date'); updateLast(DB.sessions, 'activity_date'); updateLast(DB.checkins, 'activity_date');
+  const countMap = (arr, key = 'member_email') => { const m = {}; arr.forEach(r => { m[r[key]] = (m[r[key]] || 0) + 1; }); return m; };
+  const hc = countMap(DB.habits); const wc = countMap(DB.workouts); const cc = countMap(DB.cardio); const sc = countMap(DB.sessions); const chk = countMap(DB.checkins);
+  const certCount = {}; DB.certs.forEach(c => { certCount[c.member_email] = (certCount[c.member_email] || 0) + 1; });
+  const streamMap = {}; const sortedEmails = [...DB.emails].sort((a,b) => new Date(b.sent_at) - new Date(a.sent_at)); sortedEmails.forEach(e => { if (!streamMap[e.member_email]) streamMap[e.member_email] = e.stream; });
+  DB.members.forEach(m => { m.habits = hc[m.email] || 0; m.workouts = wc[m.email] || 0; m.cardio = cc[m.email] || 0; m.sessions = sc[m.email] || 0; m.checkins = chk[m.email] || 0; m.certCount = certCount[m.email] || 0; m.lastActive = lastActive[m.email] || null; m.stream = streamMap[m.email] || 'active'; m.totalActs = m.habits + m.workouts + m.cardio + m.sessions + m.checkins; m.daysSinceLast = m.lastActive ? Math.floor((now - m.lastActive) / 86400000) : 9999; });
+}
+function setPeriod(p, btn) { currentPeriod = p; document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderPeriodMetrics(); }
+function periodStart(p) { const now = new Date(); if (p === 'week') { const d = new Date(now); d.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1)); d.setHours(0,0,0,0); return d; } if (p === 'month') return new Date(now.getFullYear(), now.getMonth(), 1); if (p === 'quarter') { const q = Math.floor(now.getMonth() / 3); return new Date(now.getFullYear(), q*3, 1); } if (p === 'year') return new Date(now.getFullYear(), 0, 1); return new Date(0); }
+function activitiesInPeriod(start) { const filter = (arr, dateField) => arr.filter(r => new Date(r[dateField]) >= start); return { habits: filter(DB.habits, 'activity_date'), workouts: filter(DB.workouts, 'activity_date'), cardio: filter(DB.cardio, 'activity_date'), sessions: filter(DB.sessions, 'activity_date'), checkins: filter(DB.checkins, 'activity_date') }; }
+function activeInPeriod(start) { const emails = new Set(); const add = (arr, field) => arr.filter(r => new Date(r[field]) >= start).forEach(r => emails.add(r.member_email)); add(DB.habits, 'activity_date'); add(DB.workouts, 'activity_date'); add(DB.cardio, 'activity_date'); add(DB.sessions, 'activity_date'); add(DB.checkins, 'activity_date'); return emails; }
+function renderAll() { renderOverview(); renderEngagement(); renderRetention(); renderCharity(); renderTable(); renderBusiness(); renderPeriodMetrics(); populateFilters(); }
+function renderOverview() { const now = new Date(); const todayStart = new Date(now); todayStart.setHours(0,0,0,0); const weekStart = periodStart('week'); const monthStart = periodStart('month'); const activeToday = activeInPeriod(todayStart); const activeWeek = activeInPeriod(weekStart); const activeMonth = activeInPeriod(monthStart); const total = DB.members.length; const appOpen = DB.members.filter(m => m.kahunas_qa_complete).length; const onboarded = DB.members.filter(m => m.onboarding_complete).length; document.getElementById('s-total').textContent = total; document.getElementById('s-today').textContent = activeToday.size; document.getElementById('s-today-sub').textContent = pct(activeToday.size, total) + '% of members'; document.getElementById('s-week').textContent = activeWeek.size; document.getElementById('s-week-sub').textContent = pct(activeWeek.size, total) + '% of members'; document.getElementById('s-month').textContent = activeMonth.size; document.getElementById('s-month-sub').textContent = pct(activeMonth.size, total) + '% of members'; document.getElementById('s-app-open').textContent = pct(appOpen, total) + '%'; document.getElementById('s-onboarding').textContent = pct(onboarded, total) + '%'; renderGrowthChart(); renderNewMembersChart(); }
+function renderGrowthChart() { const months = last6Months(); const cumulative = months.map(({year, month}) => DB.members.filter(m => { const d = new Date(m.created_at); return d.getFullYear() < year || (d.getFullYear() === year && d.getMonth() <= month); }).length); destroyChart('chart-growth'); charts['chart-growth'] = new Chart(document.getElementById('chart-growth'), { type: 'line', data: { labels: months.map(m => m.label), datasets: [{ label: 'Cumulative Members', data: cumulative, borderColor: '#1D9E75', backgroundColor: 'rgba(29,158,117,0.08)', fill: true, tension: 0.4, pointBackgroundColor: '#1D9E75', pointRadius: 4 }] }, options: chartOpts() }); }
+function renderNewMembersChart() { const months = last6Months(); const counts = months.map(({year, month}) => DB.members.filter(m => { const d = new Date(m.created_at); return d.getFullYear() === year && d.getMonth() === month; }).length); destroyChart('chart-new-members'); charts['chart-new-members'] = new Chart(document.getElementById('chart-new-members'), { type: 'bar', data: { labels: months.map(m => m.label), datasets: [{ label: 'New Members', data: counts, backgroundColor: 'rgba(29,158,117,0.5)', borderColor: '#1D9E75', borderWidth: 1, borderRadius: 3 }] }, options: chartOpts() }); }
+function renderEngagement() { const start = new Date(0); const p = activitiesInPeriod(start); const total = p.habits.length + p.workouts.length + p.cardio.length + p.sessions.length + p.checkins.length; document.getElementById('s-habits').textContent = p.habits.length; document.getElementById('s-workouts').textContent = p.workouts.length; document.getElementById('s-cardio').textContent = p.cardio.length; document.getElementById('s-sessions').textContent = p.sessions.length; document.getElementById('s-checkins').textContent = p.checkins.length; document.getElementById('s-total-acts').textContent = total; const activeAll = activeInPeriod(new Date(0)); document.getElementById('s-intensity').textContent = activeAll.size > 0 ? (total / activeAll.size).toFixed(1) : '0'; renderWeeklyActsChart(); renderWellbeingTrendChart(); renderEngagementTrendChart(); }
+function renderWeeklyActsChart() { const weeks = last8Weeks(); const datasets = [{ label: 'Habits', arr: DB.habits, field: 'activity_date', color: '#1D9E75' },{ label: 'Workouts', arr: DB.workouts, field: 'activity_date', color: '#4a90c4' },{ label: 'Cardio', arr: DB.cardio, field: 'activity_date', color: '#d4a237' },{ label: 'Sessions', arr: DB.sessions, field: 'activity_date', color: '#8b6bbf' },{ label: 'Check-ins', arr: DB.checkins, field: 'activity_date', color: '#e05555' }].map(ds => ({ label: ds.label, data: weeks.map(w => ds.arr.filter(r => { const d = new Date(r[ds.field]); return d >= w.start && d < w.end; }).length), backgroundColor: ds.color + 'aa', borderColor: ds.color, borderWidth: 1, borderRadius: 2 })); destroyChart('chart-weekly-acts'); charts['chart-weekly-acts'] = new Chart(document.getElementById('chart-weekly-acts'), { type: 'bar', data: { labels: weeks.map(w => w.label), datasets }, options: { ...chartOpts(), scales: { x: { stacked: false, ...axisStyle() }, y: { stacked: false, ...axisStyle() } } } }); }
+function renderWellbeingTrendChart() { const weeks = last8ISOWeeks(); const data = weeks.map(({year, week}) => { const rows = DB.weekly.filter(r => r.iso_year === year && r.iso_week === week); if (!rows.length) return null; return avg(rows.map(r => r.wellbeing_score)); }); destroyChart('chart-wellbeing'); charts['chart-wellbeing'] = new Chart(document.getElementById('chart-wellbeing'), { type: 'line', data: { labels: weeks.map(w => `W${w.week}`), datasets: [{ label: 'Avg Wellbeing', data, borderColor: '#1D9E75', backgroundColor: 'rgba(29,158,117,0.07)', fill: true, tension: 0.4, pointBackgroundColor: '#1D9E75', pointRadius: 4, spanGaps: true }] }, options: { ...chartOpts(), scales: { x: axisStyle(), y: { ...axisStyle(), min: 0, max: 10 } } } }); }
+function renderEngagementTrendChart() { const weeks = last8ISOWeeks(); const data = weeks.map(({year, week}) => { const rows = DB.weekly.filter(r => r.iso_year === year && r.iso_week === week); if (!rows.length) return null; return avg(rows.map(r => r.engagement_score)); }); destroyChart('chart-engagement'); charts['chart-engagement'] = new Chart(document.getElementById('chart-engagement'), { type: 'line', data: { labels: weeks.map(w => `W${w.week}`), datasets: [{ label: 'Avg Engagement', data, borderColor: '#8b6bbf', backgroundColor: 'rgba(139,107,191,0.07)', fill: true, tension: 0.4, pointBackgroundColor: '#8b6bbf', pointRadius: 4, spanGaps: true }] }, options: { ...chartOpts(), scales: { x: axisStyle(), y: { ...axisStyle(), min: 0, max: 100 } } } }); }
+function renderPeriodMetrics() { const start = periodStart(currentPeriod); const p = activitiesInPeriod(start); const total = p.habits.length + p.workouts.length + p.cardio.length + p.sessions.length + p.checkins.length; const activeSet = activeInPeriod(start); const labels = { week: 'this week', month: 'this month', quarter: 'this quarter', year: 'this year', all: 'all time' }; document.getElementById('s-period-acts').textContent = total; document.getElementById('s-period-label').textContent = labels[currentPeriod]; document.getElementById('s-period-members').textContent = activeSet.size; document.getElementById('s-period-members-sub').textContent = pct(activeSet.size, DB.members.length) + '% of total'; }
+function renderRetention() { const streamCounts = { active: 0, A: 0, B: 0, C1: 0, C2: 0, C3: 0 }; DB.members.forEach(m => { const s = m.stream || 'active'; if (streamCounts[s] !== undefined) streamCounts[s]++; else streamCounts['active']++; }); const streamLabels = { active: 'Active', A: 'Re-eng A', B: 'Re-eng B', C1: 'Lapsed C1', C2: 'Lapsed C2', C3: 'Lapsed C3' }; document.getElementById('stream-grid').innerHTML = Object.entries(streamCounts).map(([k,v]) => `<div class="stream-box"><div class="stream-name">${k}</div><div class="stream-label">${streamLabels[k]}</div><div class="stream-count">${v}</div></div>`).join(''); const neverActive = DB.members.filter(m => m.totalActs === 0); const neverList = document.getElementById('never-active-list'); if (!neverActive.length) { neverList.innerHTML = '<div class="alert-item"><div class="dot dot-green"></div><div class="alert-email">All members have logged activity</div></div>'; } else { neverList.innerHTML = neverActive.map(m => `<div class="alert-item"><div class="dot dot-red"></div><div class="alert-email">${m.first_name || ''} ${m.last_name || ''}</div><div class="alert-detail">${m.email}</div></div>`).join(''); } const dormant7 = DB.members.filter(m => m.daysSinceLast >= 7 && m.daysSinceLast < 14 && m.totalActs > 0); const dormant14 = DB.members.filter(m => m.daysSinceLast >= 14 && m.daysSinceLast < 30 && m.totalActs > 0); const dormant30 = DB.members.filter(m => m.daysSinceLast >= 30 && m.totalActs > 0); const dormantList = document.getElementById('dormant-list'); const mkDormantItems = (arr, label, cls) => arr.slice(0,6).map(m => `<div class="alert-item"><div class="dot ${cls}"></div><div class="alert-email">${m.first_name || ''} ${m.last_name || ''}</div><div class="alert-detail">${label}</div></div>`).join(''); dormantList.innerHTML = [mkDormantItems(dormant7, '7–14 days', 'dot-amber'), mkDormantItems(dormant14, '14–30 days', 'dot-red'), mkDormantItems(dormant30, '30d+', 'dot-red')].join('') || '<div class="alert-item"><div class="dot dot-green"></div><div class="alert-email">No dormant members</div></div>'; const streakList = document.getElementById('streak-list'); const streakers = DB.members.filter(m => { const memberWeeks = DB.weekly.filter(w => w.member_email === m.email).sort((a,b) => a.iso_year !== b.iso_year ? a.iso_year - b.iso_year : a.iso_week - b.iso_week); if (memberWeeks.length < 2) return false; const last = memberWeeks[memberWeeks.length - 1]; const prev = memberWeeks[memberWeeks.length - 2]; if (last.iso_year === prev.iso_year) return last.iso_week - prev.iso_week === 1; return last.iso_week === 1 && prev.iso_week >= 52; }); streakList.innerHTML = streakers.length ? streakers.map(m => `<div class="alert-item"><div class="dot dot-green"></div><div class="alert-email">${m.first_name || ''} ${m.last_name || ''}</div><div class="alert-detail">${m.email} — active ${DB.weekly.filter(w => w.member_email === m.email).length} weeks</div></div>`).join('') : '<div class="alert-item"><div class="dot dot-amber"></div><div class="alert-email">No streak data yet</div></div>'; }
+function renderCharity() { const typeMap = { habits: '🏃', workouts: '💪', cardio: '❤️', checkins: '✅', sessions: '📺' }; const counts = {}; DB.certs.forEach(c => { counts[c.activity_type] = (counts[c.activity_type] || 0) + 1; }); const donated = DB.certs.filter(c => c.charity_moment_triggered).length; document.getElementById('total-donated').textContent = donated; document.getElementById('cert-breakdown').innerHTML = Object.entries(typeMap).map(([type, icon]) => `<div class="cert-row"><div class="cert-icon">${icon}</div><div class="cert-info"><div class="cert-name">${type.charAt(0).toUpperCase() + type.slice(1)}</div><div class="cert-sub">${counts[type] || 0} certificate${(counts[type] || 0) !== 1 ? 's' : ''} earned</div></div><div class="cert-count">${counts[type] || 0}</div></div>`).join(''); const milestones = [10, 20, 30]; const nearList = []; DB.members.forEach(m => { ['habits', 'workouts', 'cardio', 'checkins', 'sessions'].forEach(type => { const count = m[type] || 0; milestones.forEach(ms => { const remaining = ms - count; if (remaining > 0 && remaining <= 5) { const earned = DB.certs.filter(c => c.member_email === m.email && c.activity_type === type && c.milestone_count === ms).length; if (!earned) nearList.push({ m, type, remaining, ms }); } }); }); }); const nearEl = document.getElementById('near-cert-list'); nearEl.innerHTML = nearList.length ? nearList.slice(0, 15).map(({ m, type, remaining, ms }) => `<div class="alert-item"><div class="dot dot-amber"></div><div class="alert-email">${m.first_name || m.email}</div><div class="alert-detail">${remaining} ${type} to ${ms} cert</div></div>`).join('') : '<div class="alert-item"><div class="dot dot-dim"></div><div class="alert-email">No members within 5 activities of a cert</div></div>'; }
+function populateFilters() { const companies = [...new Set(DB.members.map(m => m.company).filter(Boolean))].sort(); const sel = document.getElementById('f-company'); sel.innerHTML = '<option value="">All Companies</option>' + companies.map(c => `<option value="${c}">${c}</option>`).join(''); }
+function sortTable(col) { if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; } renderTable(); }
+function renderTable() { const search = document.getElementById('f-search').value.toLowerCase(); const stream = document.getElementById('f-stream').value; const company = document.getElementById('f-company').value; const persona = document.getElementById('f-persona').value; const status = document.getElementById('f-status').value; let rows = DB.members.filter(m => { const name = `${m.first_name || ''} ${m.last_name || ''}`.toLowerCase(); if (search && !name.includes(search) && !m.email.toLowerCase().includes(search)) return false; if (stream && m.stream !== stream) return false; if (company && m.company !== company) return false; if (persona && m.persona !== persona) return false; if (status === 'active' && m.daysSinceLast > 7) return false; if (status === 'dormant' && m.daysSinceLast <= 7) return false; return true; }); rows.sort((a, b) => { let av = a[sortCol] ?? '', bv = b[sortCol] ?? ''; if (typeof av === 'string') av = av.toLowerCase(); if (typeof bv === 'string') bv = bv.toLowerCase(); return av < bv ? -sortDir : av > bv ? sortDir : 0; }); const streamBadge = s => { const map = { active: 'badge-green', A: 'badge-amber', B: 'badge-amber', C1: 'badge-red', C2: 'badge-red', C3: 'badge-red' }; return `<span class="badge ${map[s] || 'badge-dim'}">${s}</span>`; }; const personaBadge = p => { const map = { NOVA: 'badge-red', RIVER: 'badge-blue', SPARK: 'badge-amber', SAGE: 'badge-purple', HAVEN: 'badge-green' }; return p ? `<span class="badge ${map[p] || 'badge-dim'}">${p}</span>` : '—'; }; const lastActiveStr = m => { if (!m.lastActive) return '<span style="color:var(--text-dim)">Never</span>'; const d = m.daysSinceLast; if (d === 0) return '<span style="color:var(--accent)">Today</span>'; if (d === 1) return '<span style="color:var(--accent)">Yesterday</span>'; if (d <= 7) return `<span style="color:var(--amber)">${d}d ago</span>`; if (d <= 30) return `<span style="color:var(--red)">${d}d ago</span>`; return `<span style="color:var(--red)">${d}d ago</span>`; }; document.getElementById('member-tbody').innerHTML = rows.map(m => `<tr><td><strong>${m.first_name || ''} ${m.last_name || ''}</strong><br><span style="color:var(--text-dim); font-size:10px;">${m.email}</span></td><td>${m.company || '<span style="color:var(--text-dim)">—</span>'}</td><td>${personaBadge(m.persona)}</td><td>${streamBadge(m.stream)}</td><td style="font-family:var(--font-num)">${m.baseline_wellbeing || '—'}</td><td>${lastActiveStr(m)}</td><td style="font-family:var(--font-num)">${m.habits}</td><td style="font-family:var(--font-num)">${m.workouts}</td><td style="font-family:var(--font-num)">${m.cardio}</td><td style="font-family:var(--font-num)">${m.sessions}</td><td style="font-family:var(--font-num)">${m.checkins}</td><td style="font-family:var(--font-num)">${m.certCount > 0 ? `<span style="color:var(--accent)">${m.certCount} 🏅</span>` : '—'}</td><td>${m.onboarding_complete ? '<span class="badge badge-green">Done</span>' : '<span class="badge badge-dim">Pending</span>'}</td></tr>`).join(''); document.getElementById('table-count').textContent = `Showing ${rows.length} of ${DB.members.length} members`; }
+function renderBusiness() { const inPeriod = (arr, field, start) => arr.filter(r => new Date(r[field]) >= start).length; const allSrcs = [[DB.habits, 'activity_date'], [DB.workouts, 'activity_date'], [DB.cardio, 'activity_date'], [DB.sessions, 'activity_date'], [DB.checkins, 'activity_date']]; const sumPeriod = start => allSrcs.reduce((t, [arr, f]) => t + inPeriod(arr, f, start), 0); const sumAll = () => allSrcs.reduce((t, [arr]) => t + arr.length, 0); document.getElementById('b-month').textContent = sumPeriod(periodStart('month')); document.getElementById('b-quarter').textContent = sumPeriod(periodStart('quarter')); document.getElementById('b-year').textContent = sumPeriod(periodStart('year')); document.getElementById('b-alltime').textContent = sumAll(); const wbVals = DB.members.map(m => m.baseline_wellbeing).filter(Boolean); document.getElementById('b-wellbeing').textContent = wbVals.length ? (wbVals.reduce((a,b) => a+b, 0) / wbVals.length).toFixed(1) : '—'; const companies = [...new Set(DB.members.map(m => m.company).filter(Boolean))]; document.getElementById('b-companies').textContent = companies.length; const personaCounts = {}; DB.members.forEach(m => { const p = m.persona || 'Unknown'; personaCounts[p] = (personaCounts[p] || 0) + 1; }); const pColors = { NOVA: '#e05555', RIVER: '#4a90c4', SPARK: '#d4a237', SAGE: '#8b6bbf', HAVEN: '#1D9E75', Unknown: '#4a6e6a' }; destroyChart('chart-personas'); charts['chart-personas'] = new Chart(document.getElementById('chart-personas'), { type: 'doughnut', data: { labels: Object.keys(personaCounts), datasets: [{ data: Object.values(personaCounts), backgroundColor: Object.keys(personaCounts).map(k => pColors[k] || '#4a6e6a'), borderColor: '#0f2424', borderWidth: 2 }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#7a9e9a', font: { size: 11 }, padding: 12 } } } } }); const companyCounts = {}; DB.members.forEach(m => { if (m.company) companyCounts[m.company] = (companyCounts[m.company] || 0) + 1; }); const sorted = Object.entries(companyCounts).sort((a,b) => b[1] - a[1]); const maxCount = sorted[0]?.[1] || 1; document.getElementById('company-list').innerHTML = sorted.map(([co, count]) => `<div class="prog-row"><div class="prog-label">${co}</div><div class="prog-bar-wrap"><div class="prog-bar" style="width:${(count/maxCount*100)}%"></div></div><div class="prog-val">${count}</div></div>`).join('') || '<div style="color:var(--text-dim); font-size:12px;">No company data</div>'; }
+function chartOpts() { return { responsive: true, plugins: { legend: { labels: { color: '#7a9e9a', font: { size: 11 }, padding: 12 } } }, scales: { x: axisStyle(), y: axisStyle() } }; }
+function axisStyle() { return { grid: { color: 'rgba(29,158,117,0.08)' }, ticks: { color: '#7a9e9a', font: { size: 10 } }, border: { color: 'rgba(29,158,117,0.15)' } }; }
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+function last6Months() { const result = []; const now = new Date(); for (let i = 5; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); result.push({ year: d.getFullYear(), month: d.getMonth(), label: d.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' }) }); } return result; }
+function last8Weeks() { const result = []; const now = new Date(); for (let i = 7; i >= 0; i--) { const end = new Date(now); end.setDate(now.getDate() - i * 7); end.setHours(23,59,59,999); const start = new Date(end); start.setDate(end.getDate() - 6); start.setHours(0,0,0,0); result.push({ start, end, label: start.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) }); } return result; }
+function last8ISOWeeks() { const result = []; const now = new Date(); for (let i = 7; i >= 0; i--) { const d = new Date(now); d.setDate(d.getDate() - i * 7); const { year, week } = isoWeek(d); result.push({ year, week }); } return result; }
+function isoWeek(date) { const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())); const dayNum = d.getUTCDay() || 7; d.setUTCDate(d.getUTCDate() + 4 - dayNum); const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1)); return { year: d.getUTCFullYear(), week: Math.ceil((((d - yearStart) / 86400000) + 1) / 7) }; }
+function avg(arr) { if (!arr.length) return null; return arr.reduce((a,b) => a+b, 0) / arr.length; }
+function pct(n, total) {
+  if (!total) return 0;
+  return Math.round(n / total * 100);
+}
+
+// ============================================================
+// AI DECISIONS
+// ============================================================
+let DB_decisions = [];
+
+async function loadDecisions() {
+  try {
+    const rows = await sbFetch('ai_interactions', 'select=member_email,persona,decision_log,created_at&triggered_by=eq.onboarding&order=created_at.desc&limit=200');
+    DB_decisions = rows.filter(r => r.decision_log);
+    renderDecisions();
+  } catch(e) {
+    const el = document.getElementById('decisions-list');
+    if (el) el.innerHTML = '<div class="decisions-empty">Could not load decision log: ' + e.message + '</div>';
+  }
+}
+
+function renderDecisions() {
+  const search = (document.getElementById('d-search')?.value || '').toLowerCase();
+  const filterPersona = document.getElementById('d-persona')?.value || '';
+  const filterPlan = document.getElementById('d-plan')?.value || '';
+  const filterMethod = document.getElementById('d-method')?.value || '';
+
+  let rows = DB_decisions.filter(r => {
+    const dl = r.decision_log;
+    if (!dl) return false;
+    const email = (r.member_email || '').toLowerCase();
+    const member = DB.members.find(m => m.email === r.member_email);
+    const name = member ? (member.first_name || '') + ' ' + (member.last_name || '') : '';
+    if (search && !email.includes(search) && !name.toLowerCase().includes(search)) return false;
+    if (filterPersona && dl.persona_decision?.persona !== filterPersona) return false;
+    if (filterPlan && dl.plan_decision?.plan_type !== filterPlan) return false;
+    if (filterMethod) {
+      const method = dl.persona_decision?.method || '';
+      if (filterMethod === 'hard_rule' && !method.startsWith('hard_rule')) return false;
+      if (filterMethod === 'ai_decision' && method !== 'ai_decision') return false;
+      if (filterMethod === 'ai_fallback' && method !== 'ai_fallback') return false;
+    }
+    return true;
+  });
+
+  const el = document.getElementById('decisions-list');
+  if (!el) return;
+
+  if (!rows.length) {
+    el.innerHTML = '<div class="decisions-empty">No decision logs match this filter.<br>Logs are recorded from onboarding v40 onwards.</div>';
+    return;
+  }
+
+  const methodLabel = m => {
+    if (!m) return '';
+    if (m.startsWith('hard_rule')) return '<span class="method-badge method-hard">&#10003; Hard Rule</span>';
+    if (m === 'ai_decision') return '<span class="method-badge method-ai">AI Decision</span>';
+    if (m === 'ai_fallback') return '<span class="method-badge method-fallback">&#9888; AI Fallback</span>';
+    return '<span class="method-badge method-ai">' + m + '</span>';
+  };
+  const personaBadge = p => {
+    const map = {NOVA:'badge-red',RIVER:'badge-blue',SPARK:'badge-amber',SAGE:'badge-purple',HAVEN:'badge-green'};
+    return p ? '<span class="badge ' + (map[p] || 'badge-dim') + '">' + p + '</span>' : '';
+  };
+
+  el.innerHTML = rows.map(r => {
+    const dl = r.decision_log;
+    const pd = dl.persona_decision || {};
+    const pld = dl.plan_decision || {};
+    const inputs = dl.inputs || {};
+    const member = DB.members.find(m => m.email === r.member_email);
+    const displayName = member ? ((member.first_name || '') + ' ' + (member.last_name || '')).trim() || r.member_email : r.member_email;
+    const ts = new Date(r.created_at).toLocaleString('en-GB', {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    const isFlag = pd.method === 'ai_fallback';
+
+    const pills = [
+      inputs.location ? {label: inputs.location, hl: String(inputs.location).toLowerCase().includes('mix')} : null,
+      inputs.experience ? {label: inputs.experience, hl: false} : null,
+      inputs.train_days ? {label: inputs.train_days + 'd/week', hl: false} : null,
+      inputs.wellbeing ? {label: 'Wellbeing: ' + inputs.wellbeing + '/10', hl: parseInt(inputs.wellbeing) <= 4} : null,
+      inputs.stress ? {label: 'Stress: ' + inputs.stress + '/10', hl: parseInt(inputs.stress) >= 7} : null,
+      inputs.energy ? {label: 'Energy: ' + inputs.energy + '/10', hl: parseInt(inputs.energy) <= 3} : null,
+      inputs.sensitive_context ? {label: 'Sensitive Context', hl: true} : null,
+      ...(inputs.life_context || []).map(lc => ({label: lc, hl: ['Bereavement','Struggling with mental health'].includes(lc)})),
+    ].filter(Boolean);
+
+    const goalsStr = Array.isArray(inputs.goals) ? inputs.goals.join(', ') : (inputs.goals || '');
+    const injuryArr = Array.isArray(inputs.injuries) ? inputs.injuries : (inputs.injuries ? [inputs.injuries] : []);
+    const injuriesStr = injuryArr.filter(i => i && i !== 'None' && i !== 'none').join(', ');
+
+    return '<div class="decision-card' + (isFlag ? ' flag' : '') + '">' +
+      '<div class="decision-header">' +
+        '<div class="decision-name">' + displayName + '</div>' +
+        '<div style="font-size:11px;color:var(--text-dim)">' + r.member_email + '</div>' +
+        '<div class="decision-time">' + ts + '</div>' +
+      '</div>' +
+      '<div class="decision-grid">' +
+        '<div class="decision-block">' +
+          '<div class="decision-block-label">Persona Assignment</div>' +
+          '<div class="decision-block-value" style="display:flex;align-items:center;gap:8px">' +
+            personaBadge(pd.persona) + ' ' + methodLabel(pd.method) +
+          '</div>' +
+          '<div class="decision-block-reason">' + (pd.reason || '&mdash;') + '</div>' +
+        '</div>' +
+        '<div class="decision-block">' +
+          '<div class="decision-block-label">Plan Selection</div>' +
+          '<div class="decision-block-value">' +
+            '<strong>' + (pld.split_type || pld.plan_type || '&mdash;') + '</strong>' +
+            ' <span class="method-badge method-hard">&#10003; Hard Rule</span>' +
+          '</div>' +
+          '<div class="decision-block-reason">' + (pld.reason || '&mdash;') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">Member Inputs</div>' +
+      '<div class="decision-inputs">' +
+        pills.map(p => '<span class="input-pill' + (p.hl ? ' highlight' : '') + '">' + p.label + '</span>').join('') +
+      '</div>' +
+      (goalsStr ? '<div style="margin-top:6px;font-size:11px;color:var(--text-muted)">Goals: ' + goalsStr + '</div>' : '') +
+      (injuriesStr ? '<div style="margin-top:4px;font-size:11px;color:var(--amber)">Injuries/avoid: ' + injuriesStr + '</div>' : '') +
+    '</div>';
+  }).join('');
+}
+
+</script>
+</body>
+</html>
