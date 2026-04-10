@@ -1292,7 +1292,18 @@ input[type="range"]::-moz-range-thumb {
   <div class="loading-screen" id="loadingScreen">
     <div class="spinner"></div>
     <h2 class="section-title" style="margin-bottom:12px;text-align:center;">Building your plan...</h2>
-    <p class="section-sub" style="text-align:center;">We're reviewing your answers and creating personalised recommendations. This takes just a moment.</p>
+    <p class="section-sub" style="text-align:center;" id="loadingSubtext">We're reviewing your answers and creating personalised recommendations. This takes just a moment.</p>
+  </div>
+
+  <!-- ERROR -->
+  <div class="loading-screen" id="errorScreen" style="gap:16px;">
+    <div style="width:52px;height:52px;border-radius:50%;background:rgba(224,96,96,0.12);border:2px solid rgba(224,96,96,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#E06060" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+    <h2 class="section-title" style="margin-bottom:8px;text-align:center;" id="errorTitle">Something went wrong</h2>
+    <p class="section-sub" style="text-align:center;max-width:400px;" id="errorMessage">We couldn't complete your setup. Your answers have been saved — please try again.</p>
+    <button onclick="retrySubmit()" style="margin-top:8px;padding:14px 36px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:var(--font-body);font-size:15px;font-weight:600;cursor:pointer;letter-spacing:0.02em;">Try again</button>
+    <p style="font-size:13px;color:var(--text-3);margin-top:4px;">If this keeps happening, email <a href="mailto:team@vyvehealth.co.uk" style="color:var(--accent);">team@vyvehealth.co.uk</a></p>
   </div>
 
   <!-- RESULTS -->
@@ -1719,14 +1730,113 @@ async function submitQuestionnaire() {
   document.getElementById('loadingScreen').classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
 
+  // Store data for retry
+  window._lastSubmitData = data;
+
   try {
-    const response = await fetch(ONBOARDING_EDGE_FN, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 90000); // 90s — onboarding makes 5 AI calls, needs headroom
+
+    // At 30s, update the loading message so user knows it's still working
+    const slowTimer = setTimeout(() => {
+      const sub = document.getElementById('loadingSubtext');
+      if (sub) sub.textContent = "Still working — we\'re creating your personalised plan. This can take up to a minute.";
+    }, 30000);
+
+    const response = await fetch(ONBOARDING_EDGE_FN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+    clearTimeout(slowTimer);
+
+    if (!response.ok) {
+      const errText = await response.text().catch(() => 'Unknown error');
+      throw new Error('Server error (' + response.status + '): ' + errText);
+    }
+
     const result = await response.json();
-    if (!response.ok||result.error) throw new Error(result.error||'Edge Function error');
+    if (result.error) throw new Error(result.error);
+
     showResults(data, result);
+
   } catch(err) {
     console.error('Onboarding error:', err);
-    showResults(data, {persona:'RIVER',persona_reason:"We've set you up with RIVER as your coach — a calm, empathetic guide to get you started.",rec_1:'Start with one daily habit this week — consistency beats intensity every time.',rec_2:'Join a live session this week — even 20 minutes makes a real difference.',rec_3:'Complete your weekly check-in on Monday to set your intentions for the week.'});
+    document.querySelectorAll('.section, .loading-screen').forEach(s => s.classList.remove('active'));
+    const errorScreen = document.getElementById('errorScreen');
+    if (errorScreen) errorScreen.classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+
+    // Show timeout-specific message
+    if (err.name === 'AbortError') {
+      const title = document.getElementById('errorTitle');
+      const msg = document.getElementById('errorMessage');
+      if (title) title.textContent = 'This is taking longer than expected';
+      if (msg) msg.textContent = "Our servers are busy. Your answers are saved — tap Try again and it should work straight away.";
+    }
+  }
+}
+
+// Store last submitted data so retry can reuse it without re-running the form
+let _retryCount = 0;
+async function retrySubmit() {
+  _retryCount++;
+  if (_retryCount > 3) {
+    const msg = document.getElementById('errorMessage');
+    if (msg) msg.textContent = "We\'re still having trouble. Please email team@vyvehealth.co.uk and we\'ll get you set up manually.";
+    return;
+  }
+  const data = window._lastSubmitData;
+  if (!data) return;
+
+  // Reset loading screen text
+  const sub = document.getElementById('loadingSubtext');
+  if (sub) sub.textContent = "We\'re reviewing your answers and creating personalised recommendations. This takes just a moment.";
+
+  document.querySelectorAll('.section, .loading-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('loadingScreen').classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
+    const slowTimer = setTimeout(() => {
+      const sub = document.getElementById('loadingSubtext');
+      if (sub) sub.textContent = "Still working — we\'re creating your personalised plan. This can take up to a minute.";
+    }, 30000);
+
+    const response = await fetch(ONBOARDING_EDGE_FN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+    clearTimeout(slowTimer);
+
+    if (!response.ok) throw new Error('Server error (' + response.status + ')');
+    const result = await response.json();
+    if (result.error) throw new Error(result.error);
+
+    showResults(data, result);
+
+  } catch(err) {
+    console.error('Retry error:', err);
+    document.querySelectorAll('.section, .loading-screen').forEach(s => s.classList.remove('active'));
+    const errorScreen = document.getElementById('errorScreen');
+    if (errorScreen) errorScreen.classList.add('active');
+    if (err.name === 'AbortError') {
+      const title = document.getElementById('errorTitle');
+      const msg = document.getElementById('errorMessage');
+      if (title) title.textContent = 'This is taking longer than expected';
+      if (msg) msg.textContent = "Our servers are busy. Tap Try again — it usually works on the second attempt.";
+    }
   }
 }
 
