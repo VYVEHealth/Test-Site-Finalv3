@@ -1684,6 +1684,10 @@ async function submitQuestionnaire() {
     membershipType: 'Individual',
     status: 'complete',
     recommendedCalories: state.tdeeFinal || null,
+    tdeeMaintenance: state.tdeeMaintenance || null,
+    deficitPercentage: (() => { const g=getSingleChoice('nutritionGoal'); if(g==='Losing body fat'){const sl=document.getElementById('tdeeAdjust');return 10+(sl?parseInt(sl.value):0);} return 0; })(),
+    nutritionGoal: getSingleChoice('nutritionGoal'),
+    nutritionGuidance: getSingleChoice('nutritionGuidance'),
     scores: {
       wellbeing: document.getElementById('sl-wellbeing').value,
       sleep:     document.getElementById('sl-sleep').value,
