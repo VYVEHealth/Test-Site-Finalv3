@@ -260,18 +260,18 @@ let DATA = null;
 window.addEventListener('DOMContentLoaded', () => setTimeout(loadAll, 500));
 
 // ── API Key management ──────────────────────────────────────────────────────
-// Key is stored in sessionStorage (not source) for security.
+// Key is stored in localStorage (not source) for security — persists across sessions.
 // To set: paste into browser console: sessionStorage.setItem('vyve_emp_key','YOUR_KEY')
 function getEmpKey() {
-  return sessionStorage.getItem('vyve_emp_key') || '';
+  return localStorage.getItem('vyve_emp_key') || '';
 }
 
 function promptForKey() {
   const key = window.prompt(
-    'VYVE Employer Dashboard\n\nEnter your API key to continue:\n(Tip: paste into browser console to avoid re-entering:\nsessionStorage.setItem(\'vyve_emp_key\',\'YOUR_KEY\'))'
+    'VYVE Employer Dashboard\n\nEnter your API key to continue:\n(Tip: paste into browser console to avoid re-entering:\nlocalStorage.setItem(\'vyve_emp_key\',\'YOUR_KEY\'))'
   );
   if (key && key.trim()) {
-    sessionStorage.setItem('vyve_emp_key', key.trim());
+    localStorage.setItem('vyve_emp_key', key.trim());
     return key.trim();
   }
   return '';
@@ -287,7 +287,7 @@ async function fetchDashboard(company) {
     if (!key) throw new Error('API key required');
     const r2 = await fetch(url, { headers: { 'x-api-key': key } });
     if (!r2.ok) {
-      sessionStorage.removeItem('vyve_emp_key'); // clear bad key
+      localStorage.removeItem('vyve_emp_key'); // clear bad key
       const j2 = await r2.json().catch(() => ({}));
       throw new Error(j2.error || `HTTP ${r2.status}`);
     }
