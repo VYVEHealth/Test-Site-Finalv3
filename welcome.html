@@ -1338,8 +1338,6 @@ input[type="range"]::-moz-range-thumb {
 
 <script>
 const ONBOARDING_EDGE_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/onboarding';
-const ONBOARDING_KEY = 'REPLACE_WITH_ONBOARDING_SECRET';
-
 const state = {
   path: 'full',
   currentSection: 0,
@@ -1748,7 +1746,7 @@ async function submitQuestionnaire() {
 
     const response = await fetch(ONBOARDING_EDGE_FN, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-onboarding-key': ONBOARDING_KEY },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
       signal: controller.signal
     });
