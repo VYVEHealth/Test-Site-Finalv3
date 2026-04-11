@@ -1727,6 +1727,9 @@ async function submitQuestionnaire() {
     specificGoal: document.getElementById('specificGoal').value,
     anythingElse: document.getElementById('anythingElse').value,
     location: document.getElementById('location').value,
+    sleepHours: getSingleChoice('sleepHours'),
+    bedtime: getSingleChoice('bedtime'),
+    heightUnit: state.heightUnit || 'cm',
   };
 
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
