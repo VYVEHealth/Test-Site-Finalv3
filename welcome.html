@@ -1338,6 +1338,23 @@ input[type="range"]::-moz-range-thumb {
 
 <script>
 const ONBOARDING_EDGE_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/onboarding';
+// ── Shared workout referral ──────────────────────────────────────────────────
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  const code = params.get('code');
+  if (ref === 'shared' && code) {
+    // Show a referral banner once the DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      const banner = document.createElement('div');
+      banner.id = 'shared-referral-banner';
+      banner.style.cssText = 'background:linear-gradient(135deg,rgba(27,120,120,0.95),rgba(77,170,170,0.9));color:#fff;padding:14px 20px;text-align:center;font-family:-apple-system,sans-serif;font-size:0.88rem;font-weight:600;position:sticky;top:0;z-index:9999;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap';
+      banner.innerHTML = '<span>🎁 Your friend shared a VYVE workout &mdash; join for <strong>£10/month</strong> with code <strong style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:4px">' + code + '</strong></span>';
+      document.body.insertBefore(banner, document.body.firstChild);
+    });
+  }
+})();
+
 const state = {
   path: 'full',
   currentSection: 0,
