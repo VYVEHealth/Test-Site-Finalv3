@@ -1,1 +1,1173 @@
-placeholder
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Careers | VYVE Health</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- ============================================================
+    VYVE CAREERS PAGE
+    ============================================================
+    HOW TO MANAGE JOBS
+    ------------------
+    1. Scroll to the <script> section at the bottom of this file
+    2. Find the JOBS array (it's clearly labelled)
+    3. To ADD a job:  copy an existing job object, paste it at the
+       end of the array, update all fields, set active: true
+    4. To REMOVE a job: delete the whole job object from the array
+       (or set active: false to hide it temporarily)
+    5. Save the file and push to GitHub - changes go live instantly
+
+    TRACKING APPLICANTS
+    -------------------
+    Each role has an apply_email and apply_subject field.
+    Clicking "Apply Now" opens the candidate's email client with
+    the subject pre-filled. All applications land in your inbox.
+    Tip: create a Gmail filter for "Application:" to auto-label them.
+    ============================================================ -->
+
+  <style>
+    /* ---- Design Tokens (matching vyvehealth.co.uk) ---- */
+    :root {
+      --teal:       #1B7878;
+      --teal-lt:    #4DAAAA;
+      --teal-xl:    #E0F2F2;
+      --teal-md:    #B2DEDE;
+      --dark:       #0D2B2B;
+      --charcoal:   #1E293B;
+      --grey:       #64748B;
+      --white:      #FFFFFF;
+      --off-white:  #F4FAFA;
+      --font-head:  'Playfair Display', Georgia, serif;
+      --font-body:  'Inter', system-ui, sans-serif;
+      --transition: all 0.3s ease;
+      --radius:     10px;
+      --shadow:     0 2px 20px rgba(0,0,0,0.08);
+    }
+
+    /* ---- Reset & Base ---- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--charcoal);
+      background: var(--white);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+    /* ---- Buttons ---- */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 8px;
+      font-family: var(--font-body); font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; border: 2px solid transparent;
+      transition: var(--transition);
+    }
+    .btn-primary {
+      background: var(--teal); color: var(--white);
+    }
+    .btn-primary:hover {
+      background: var(--teal-lt); transform: translateY(-2px);
+    }
+    .btn-outline {
+      background: transparent; color: var(--white);
+      border-color: rgba(255,255,255,0.5);
+    }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.1); border-color: var(--white);
+    }
+    .btn-teal-outline {
+      background: transparent; color: var(--teal);
+      border-color: var(--teal);
+    }
+    .btn-teal-outline:hover {
+      background: var(--teal); color: var(--white); transform: translateY(-2px);
+    }
+
+    /* ---- Navbar (identical structure to main site) ---- */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 18px 0;
+      background: var(--dark);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo-badge {
+      width: 36px; height: 36px;
+      background: var(--teal);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-head); font-size: 1.1rem; font-weight: 700;
+      color: var(--white); border-radius: 4px; flex-shrink: 0;
+    }
+    .nav-logo-text {
+      font-family: var(--font-head); font-weight: 700;
+      color: var(--white); letter-spacing: 0.1em;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 28px; list-style: none;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.85);
+      transition: color var(--transition);
+      font-size: 0.9rem;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--teal-lt); }
+    .nav-cta { display: flex; align-items: center; gap: 10px; }
+    .members-btn {
+      background: var(--teal-lt) !important;
+      color: var(--white) !important;
+      padding: 8px 16px !important; border-radius: 6px;
+      font-size: 0.82rem !important; font-weight: 600 !important;
+    }
+    .members-btn:hover { background: var(--teal) !important; }
+
+    /* Mobile nav */
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px; background: none; border: none;
+    }
+    .nav-hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); border-radius: 2px;
+    }
+    .mobile-menu {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--dark); z-index: 999;
+      flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 1.2rem; font-weight: 600; color: var(--white); }
+    .mobile-menu a:hover { color: var(--teal-lt); }
+    .mobile-close {
+      position: absolute; top: 24px; right: 24px;
+      font-size: 1.8rem; color: var(--white); cursor: pointer;
+      background: none; border: none;
+    }
+
+    /* ---- Hero ---- */
+    .careers-hero {
+      background: var(--dark);
+      padding: 160px 0 100px;
+      position: relative; overflow: hidden;
+    }
+    .careers-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(27,120,120,0.15) 0%, transparent 70%);
+    }
+    .careers-hero-inner {
+      position: relative; z-index: 1;
+      max-width: 680px; margin: 0 auto; text-align: center;
+    }
+    .section-tag {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--teal-lt); margin-bottom: 12px;
+      display: block;
+    }
+    .careers-hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 800; color: var(--white);
+      line-height: 1.1; margin-bottom: 20px;
+    }
+    .careers-hero h1 span { color: var(--teal-lt); }
+    .careers-hero p {
+      color: var(--teal-md); font-size: 1.1rem; line-height: 1.75;
+      margin-bottom: 36px;
+    }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ---- Why VYVE strip ---- */
+    .why-strip {
+      background: var(--teal);
+      padding: 28px 0;
+    }
+    .why-strip-inner {
+      display: flex; justify-content: center; gap: 60px; flex-wrap: wrap;
+    }
+    .why-item {
+      text-align: center; color: var(--white);
+    }
+    .why-item strong {
+      display: block; font-family: var(--font-head);
+      font-size: 1.6rem; font-weight: 800; line-height: 1;
+      margin-bottom: 4px;
+    }
+    .why-item span {
+      font-size: 0.82rem; opacity: 0.85; font-weight: 500;
+    }
+
+    /* ---- Culture section ---- */
+    .culture-section {
+      background: var(--off-white);
+      padding: 96px 0;
+    }
+    .culture-section .section-tag { color: var(--teal); }
+    .section-header {
+      text-align: center; max-width: 640px; margin: 0 auto 56px;
+    }
+    .section-header h2 {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800; color: var(--dark); line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .section-header p {
+      font-size: 1rem; color: var(--grey); line-height: 1.75;
+    }
+    .culture-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .culture-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    .culture-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(27,120,120,0.12);
+    }
+    .culture-icon {
+      width: 48px; height: 48px;
+      background: var(--teal-xl);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+    }
+    .culture-card h3 {
+      font-family: var(--font-head);
+      font-size: 1.15rem; font-weight: 700;
+      color: var(--dark); margin-bottom: 10px;
+    }
+    .culture-card p {
+      font-size: 0.9rem; color: var(--grey); line-height: 1.7;
+    }
+
+    /* ---- Jobs section ---- */
+    .jobs-section {
+      padding: 96px 0;
+      background: var(--white);
+    }
+    .jobs-section .section-tag { color: var(--teal); }
+    .jobs-controls {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .search-box {
+      flex: 1; min-width: 220px;
+      padding: 12px 18px;
+      border: 2px solid var(--teal-xl);
+      border-radius: 8px;
+      font-family: var(--font-body); font-size: 0.95rem;
+      color: var(--charcoal); outline: none;
+      transition: var(--transition);
+    }
+    .search-box:focus { border-color: var(--teal-lt); }
+    .filter-group {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .filter-btn {
+      padding: 8px 18px; border-radius: 20px;
+      font-family: var(--font-body); font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; border: 2px solid var(--teal-xl);
+      background: transparent; color: var(--grey);
+      transition: var(--transition);
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--teal); color: var(--white);
+      border-color: var(--teal);
+    }
+
+    /* No results message */
+    #no-results {
+      display: none; text-align: center; padding: 48px 24px;
+      color: var(--grey);
+    }
+    #no-results h3 { font-family: var(--font-head); font-size: 1.4rem; margin-bottom: 8px; color: var(--dark); }
+
+    /* Job cards */
+    #jobs-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .job-card {
+      border: 2px solid var(--teal-xl);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: var(--transition);
+      background: var(--white);
+    }
+    .job-card:hover { border-color: var(--teal-lt); box-shadow: var(--shadow); }
+    .job-card.expanded { border-color: var(--teal); }
+
+    .job-header {
+      padding: 24px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; gap: 16px;
+    }
+    .job-header:hover { background: var(--off-white); }
+    .job-header-left { flex: 1; min-width: 0; }
+    .job-dept-tag {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--teal);
+      background: var(--teal-xl); padding: 3px 10px; border-radius: 20px;
+      display: inline-block; margin-bottom: 8px;
+    }
+    .job-title {
+      font-family: var(--font-head); font-size: 1.2rem; font-weight: 700;
+      color: var(--dark); margin-bottom: 8px; line-height: 1.3;
+    }
+    .job-meta {
+      display: flex; gap: 16px; flex-wrap: wrap;
+    }
+    .job-meta-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.85rem; color: var(--grey);
+    }
+    .job-meta-item svg { flex-shrink: 0; }
+    .job-type-badge {
+      font-size: 0.78rem; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+      border: 1.5px solid var(--teal-xl); color: var(--teal);
+    }
+    .job-header-right {
+      display: flex; align-items: center; gap: 16px; flex-shrink: 0;
+    }
+    .job-chevron {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--teal-xl); color: var(--teal);
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition); flex-shrink: 0;
+    }
+    .job-card.expanded .job-chevron { transform: rotate(180deg); background: var(--teal); color: var(--white); }
+
+    /* Job body (expandable) */
+    .job-body {
+      display: none;
+      padding: 0 28px 28px;
+      border-top: 1px solid var(--teal-xl);
+    }
+    .job-card.expanded .job-body { display: block; }
+    .job-body-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+      padding-top: 24px;
+    }
+    @media (max-width: 640px) { .job-body-grid { grid-template-columns: 1fr; } }
+    .job-section h4 {
+      font-family: var(--font-head); font-size: 1rem; font-weight: 700;
+      color: var(--dark); margin-bottom: 12px;
+    }
+    .job-section ul {
+      list-style: none; display: flex; flex-direction: column; gap: 7px;
+    }
+    .job-section ul li {
+      font-size: 0.9rem; color: var(--grey); line-height: 1.6;
+      padding-left: 18px; position: relative;
+    }
+    .job-section ul li::before {
+      content: '→'; position: absolute; left: 0;
+      color: var(--teal); font-size: 0.8rem; top: 1px;
+    }
+    .job-full-desc {
+      font-size: 0.95rem; color: var(--grey); line-height: 1.75;
+      margin-bottom: 20px; padding-top: 20px;
+    }
+    .job-apply-row {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+      padding-top: 24px; border-top: 1px solid var(--teal-xl);
+      margin-top: 24px;
+    }
+    .job-apply-row-info { font-size: 0.85rem; color: var(--grey); }
+    .job-apply-row-info strong { color: var(--dark); }
+
+    /* ---- No roles CTA ---- */
+    .no-role-section {
+      background: var(--dark);
+      padding: 80px 0;
+      text-align: center;
+    }
+    .no-role-section .section-tag { color: var(--teal-lt); }
+    .no-role-section h2 {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      color: var(--white); font-weight: 800;
+      margin-bottom: 14px;
+    }
+    .no-role-section p {
+      color: var(--teal-md); font-size: 1rem; max-width: 520px;
+      margin: 0 auto 32px; line-height: 1.75;
+    }
+
+    /* ---- Footer (matching main site) ---- */
+    footer {
+      background: var(--dark);
+      padding: 64px 0 32px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 48px;
+    }
+    .footer-brand p {
+      color: var(--teal-md); font-size: 0.9rem; line-height: 1.7;
+      margin-top: 16px; max-width: 280px;
+    }
+    .footer-col h4 {
+      font-family: var(--font-head); font-size: 0.95rem; font-weight: 700;
+      color: var(--white); margin-bottom: 16px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a {
+      color: var(--teal-md); font-size: 0.88rem;
+      transition: color var(--transition);
+    }
+    .footer-col ul li a:hover { color: var(--white); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-bottom p { color: var(--grey); font-size: 0.82rem; }
+    .footer-socials { display: flex; gap: 12px; }
+    .footer-socials a {
+      width: 36px; height: 36px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--teal-md); font-size: 0.75rem; font-weight: 600;
+      transition: var(--transition);
+    }
+    .footer-socials a:hover { border-color: var(--teal-lt); color: var(--white); background: rgba(27,120,120,0.2); }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      .why-strip-inner { gap: 32px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .job-header-right .job-apply-quick { display: none; }
+    }
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .why-strip-inner { gap: 24px; }
+    }
+
+    /* Fade in animation */
+    .fade-in {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible {
+      opacity: 1; transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+    NAVBAR
+  ============================================================ -->
+  <nav id="navbar">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+          <div class="nav-logo-badge">V</div>
+          <span class="nav-logo-text">VYVE</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="individual.html">For Individuals</a></li>
+          <li><a href="employers.html">For Employers</a></li>
+          <li><a href="vyve-podcast.html">Podcast</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="careers.html" class="active">Careers</a></li>
+        </ul>
+        <div class="nav-cta">
+          <a href="https://online.vyvehealth.co.uk" class="btn members-btn">Member Area</a>
+          <a href="contact.html" class="btn btn-primary" style="padding:10px 20px;font-size:0.85rem;">Book a Demo</a>
+        </div>
+        <button class="nav-hamburger" onclick="document.querySelector('.mobile-menu').classList.toggle('open')" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu">
+    <button class="mobile-close" onclick="document.querySelector('.mobile-menu').classList.remove('open')">✕</button>
+    <a href="individual.html">For Individuals</a>
+    <a href="employers.html">For Employers</a>
+    <a href="vyve-podcast.html">VYVE Podcast</a>
+    <a href="about.html">About</a>
+    <a href="careers.html">Careers</a>
+    <a href="https://online.vyvehealth.co.uk">Member Area →</a>
+    <a href="contact.html" class="btn btn-primary" style="margin-top:8px;">Book a Demo</a>
+  </div>
+
+  <!-- ============================================================
+    HERO
+  ============================================================ -->
+  <section class="careers-hero">
+    <div class="container">
+      <div class="careers-hero-inner fade-in">
+        <span class="section-tag">Join the Team</span>
+        <h1>Build health before<br><span>it breaks</span> - with us</h1>
+        <p>We're on a mission to make proactive wellbeing the norm, not the exception. If you want to do meaningful work that genuinely helps people live healthier, happier lives, you're in the right place.</p>
+        <div class="hero-btns">
+          <a href="#open-roles" class="btn btn-primary">See Open Roles</a>
+          <a href="/cdn-cgi/l/email-protection#7c08191d113c0a050a1914191d100814521f13520917430f091e16191f08412f0c191f09101d08150a195c3d0c0c10151f1d08151312" class="btn btn-outline">Send a Speculative CV</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+    WHY VYVE STRIP
+  ============================================================ -->
+  <div class="why-strip">
+    <div class="container">
+      <div class="why-strip-inner">
+        <div class="why-item">
+          <strong>CIC</strong>
+          <span>Community Interest Company</span>
+        </div>
+        <div class="why-item">
+          <strong>Remote</strong>
+          <span>Work from anywhere in the UK</span>
+        </div>
+        <div class="why-item">
+          <strong>3 Pillars</strong>
+          <span>Physical · Mental · Social</span>
+        </div>
+        <div class="why-item">
+          <strong>Mission</strong>
+          <span>Purpose-driven from day one</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+    CULTURE / WHY WORK HERE
+  ============================================================ -->
+  <section class="culture-section">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-tag">Why VYVE</span>
+        <h2>A place where your wellbeing comes first</h2>
+        <p>We can't ask organisations to invest in their people if we don't invest in ours. Here's what it's like to work at VYVE.</p>
+      </div>
+      <div class="culture-grid">
+        <div class="culture-card fade-in">
+          <div class="culture-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B7878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          <h3>Meaningful work</h3>
+          <p>Everything you build at VYVE directly impacts real people's health. We're solving a genuine problem - reactive wellbeing - and doing it with purpose and clinical rigour.</p>
+        </div>
+        <div class="culture-card fade-in">
+          <div class="culture-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B7878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V12"/><path d="M12 12C12 7 7 3 2 3c0 5 4 9 10 9z"/><path d="M12 12c0-5 5-9 10-9 0 5-4 9-10 9z"/></svg></div>
+          <h3>Wellbeing in practice</h3>
+          <p>Full access to the VYVE platform, flexible working, and a culture that genuinely walks the talk on physical, mental and social health - not just on a poster.</p>
+        </div>
+        <div class="culture-card fade-in">
+          <div class="culture-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B7878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+          <h3>Grow with us</h3>
+          <p>We're early-stage and growing fast. That means real ownership, visible impact, and the chance to shape how a health-tech company scales - from the inside.</p>
+        </div>
+        <div class="culture-card fade-in">
+          <div class="culture-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B7878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h3>Give Back built in</h3>
+          <p>As a CIC, every role at VYVE contributes to our social mission. Your work helps fund wellbeing initiatives for communities and individuals who need it most.</p>
+        </div>
+        <div class="culture-card fade-in">
+          <div class="culture-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B7878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <h3>Remote-first</h3>
+          <p>Work from wherever you do your best thinking. We're a fully remote team across the UK, with regular in-person sessions to connect, collaborate and recharge.</p>
+        </div>
+        <div class="culture-card fade-in">
+          <div class="culture-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1B7878" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg></div>
+          <h3>Honest, open culture</h3>
+          <p>Small team, no politics. We move fast, share ideas openly, and trust everyone to do great work. If you want to make a real difference, you'll be heard here.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+    OPEN ROLES
+  ============================================================ -->
+  <section class="jobs-section" id="open-roles">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-tag">Open Roles</span>
+        <h2>Find your place at VYVE</h2>
+        <p>Browse our current openings below. Can't see the right role? Send us a speculative application - we're always interested in great people.</p>
+      </div>
+
+      <!-- Search + Filters -->
+      <div class="jobs-controls fade-in">
+        <input
+          type="text"
+          id="job-search"
+          class="search-box"
+          placeholder="Search roles, skills, keywords…"
+          oninput="filterJobs()"
+        >
+      </div>
+      <div class="filter-group fade-in" id="dept-filters">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Job list -->
+      <div id="jobs-list">
+        <!-- Populated by JS -->
+      </div>
+
+      <div id="no-results">
+        <h3>No roles found</h3>
+        <p>Try a different search or filter, or <a href="/cdn-cgi/l/email-protection#82f6e7e3efc2f4fbf4e7eae7e3eef6eaace1edacf7e9bdf1f7e0e8e7e1f6bfd1f2e7e1f7eee3f6ebf4e7a2c3f2f2eeebe1e3f6ebedec" style="color:var(--teal);">send us a speculative CV</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+    DON'T SEE YOUR ROLE CTA
+  ============================================================ -->
+  <section class="no-role-section">
+    <div class="container">
+      <div class="fade-in">
+        <span class="section-tag">Always Interested in Great People</span>
+        <h2>Don't see the right role?</h2>
+        <p>We'd still love to hear from you. Send us a short note about yourself and what you'd love to contribute to VYVE.</p>
+        <a href="/cdn-cgi/l/email-protection#0c78696d614c7a757a6964696d607864226f63227967337f796e66696f78315f7c696f79606d78657a692c4d7c7c60656f6d786563622c212c5a555a492c4f6d7e69697e7f" class="btn btn-outline">
+          Get in Touch
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+    FOOTER
+  ============================================================ -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <div class="nav-logo-badge">V</div>
+            <span class="nav-logo-text">VYVE</span>
+          </a>
+          <p>Building health before it breaks. Proactive wellbeing for individuals and the organisations they belong to.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Individuals</h4>
+          <ul>
+            <li><a href="individual.html">Overview</a></li>
+            <li><a href="individual-platform.html">Our Service</a></li>
+            <li><a href="give-back.html">Give Back</a></li>
+            <li><a href="https://buy.stripe.com/00wfZicla1Em0NnaIB93y00">Sign Up - £20/mo</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Employers</h4>
+          <ul>
+            <li><a href="employers.html">Overview</a></li>
+            <li><a href="employers.html#pricing">Pricing</a></li>
+            <li><a href="roi-calculator.html">ROI Calculator</a></li>
+            <li><a href="contact.html">Book a Demo</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="careers.html">Careers</a></li>
+            <li><a href="/cdn-cgi/l/email-protection#dbafbebab69bada2adbeb3bebab7afb3f5b8b4f5aeb0"><span class="__cf_email__" data-cfemail="c4b0a1a5a984b2bdb2a1aca1a5a8b0aceaa7abeab1af">[email&#160;protected]</span></a></li>
+            <li><a href="https://online.vyvehealth.co.uk">Member Area</a></li>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 VYVE Health CIC. All rights reserved. Registered in England & Wales. ICO No. 00013608608</p>
+        <div class="footer-socials">
+          <a href="#" title="LinkedIn">in</a>
+          <a href="#" title="Instagram">ig</a>
+          <a href="#" title="X / Twitter">X</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ============================================================
+    JOB DATA - EDIT THIS SECTION TO MANAGE ROLES
+    ============================================================
+    To add a job:    Copy a job object below and fill in the fields.
+    To remove a job: Delete its entire object (from { to }).
+    To hide a job:   Set  active: false
+    ============================================================ -->
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+
+    const JOBS = [
+      {
+        id: "vyve-001",
+        active: true,
+        title: "Non-Executive HR Director",
+        department: "Advisory",
+        location: "Remote (UK)",
+        type: "Non-Executive",
+        salary: "",
+        posted: "2026-04-13",
+        summary: "VYVE is a purpose-driven health technology CIC at an exciting stage of growth, and we are looking for an experienced HR leader to join our advisory board. This is a rare chance to shape the people strategy of a business that exists to genuinely improve lives - from the ground up. For the right person, shareholding will be considered as part of this relationship.",
+        responsibilities: [
+          "Provide strategic guidance on people, culture and talent as VYVE scales",
+          "Advise the founding team on employment structures, contracts and HR best practice",
+          "Help shape a values-led culture that reflects VYVE's three wellbeing pillars",
+          "Support hiring decisions and advise on team design as the business grows",
+          "Attend quarterly advisory board sessions and be available for ad-hoc input"
+        ],
+        requirements: [
+          "Senior HR leadership experience, ideally including time as an HR Director or equivalent",
+          "Understanding of UK employment law and scaling teams in early-stage businesses",
+          "Genuine passion for workplace wellbeing and the mission behind VYVE",
+          "Someone who wants to do meaningful work, not just add a credential to their portfolio",
+          "Network in HR, People or professional services is a bonus"
+        ],
+        apply_email: "team@vyvehealth.co.uk",
+        apply_subject: "Application: Non-Executive HR Director"
+      },
+      {
+        id: "vyve-002",
+        active: true,
+        title: "Non-Executive Medical Doctor",
+        department: "Advisory",
+        location: "Remote (UK)",
+        type: "Non-Executive",
+        salary: "",
+        posted: "2026-04-13",
+        summary: "We are looking for a practising or recently practising doctor who shares our belief that prevention is better than cure. As VYVE's medical advisor, you will help ensure our platform content is clinically sound, our governance is robust and our approach to wellbeing is grounded in evidence. For the right candidate, we are open to a shareholding arrangement that reflects the importance of this role to VYVE's long-term credibility.",
+        responsibilities: [
+          "Provide clinical oversight and sign-off on VYVE's health and wellbeing content",
+          "Advise on safeguarding, duty of care and clinical governance frameworks",
+          "Support VYVE in building credibility with NHS partners, insurers and enterprise clients",
+          "Review new content, programmes and product features from a medical perspective",
+          "Be available to the team for guidance on clinical or public health questions"
+        ],
+        requirements: [
+          "Qualified doctor (GMC registered or recently registered) with a background in general practice, occupational health or public health preferred",
+          "Genuine interest in preventive health and the wider determinants of wellbeing",
+          "Comfortable advising an early-stage team and willing to roll up their sleeves",
+          "Strong communication skills - able to translate clinical thinking for a non-clinical audience",
+          "An interest in health technology and the future of proactive wellbeing"
+        ],
+        apply_email: "team@vyvehealth.co.uk",
+        apply_subject: "Application: Non-Executive Medical Doctor"
+      },
+      {
+        id: "vyve-003",
+        active: true,
+        title: "Podcast Producer",
+        department: "Podcast",
+        location: "Remote (UK)",
+        type: "Freelance / Part-time",
+        salary: "",
+        posted: "2026-04-13",
+        summary: "The VYVE Podcast (formerly The Everyman Podcast) is growing, and we need a skilled producer to help us take it to the next level. You will work closely with our hosts and guests to shape episodes that genuinely inform, inspire and connect people around the topic of health and wellbeing. This is a chance to get in early on a podcast with real momentum and a growing audience.",
+        responsibilities: [
+          "Manage end-to-end episode production from recording to published release",
+          "Handle audio editing, sound quality and episode structure",
+          "Coordinate guest bookings, briefings and pre-interview preparation",
+          "Produce show notes, transcripts and social cut-downs for each episode",
+          "Work with the marketing team to maximise reach and audience growth"
+        ],
+        requirements: [
+          "Proven experience producing a podcast or long-form audio content",
+          "Proficient in audio editing software (Adobe Audition, Descript, Hindenburg or similar)",
+          "Organised and reliable - you can manage a production schedule without dropping the ball",
+          "Interest in health, wellbeing or lifestyle content",
+          "A good ear for storytelling and what makes a conversation compelling to listen to"
+        ],
+        apply_email: "team@vyvehealth.co.uk",
+        apply_subject: "Application: Podcast Producer"
+      },
+      {
+        id: "vyve-004",
+        active: true,
+        title: "Marketing and Content Lead",
+        department: "Marketing",
+        location: "Remote (UK)",
+        type: "Full-time",
+        salary: "",
+        posted: "2026-04-13",
+        summary: "VYVE is building something that matters, and we need the right person to help the world know about it. As our Marketing and Content Lead, you will own how VYVE shows up across every channel - from LinkedIn and Instagram to email, the platform and beyond. This is a senior content role at an exciting moment in the business, and for the right person, shareholding will be part of the conversation.",
+        responsibilities: [
+          "Lead VYVE's content strategy across social media, email, the website and the platform",
+          "Create and manage a content calendar that reflects VYVE's three wellbeing pillars",
+          "Write compelling copy for employer-facing and individual-facing audiences",
+          "Build and grow VYVE's organic presence on LinkedIn and Instagram",
+          "Collaborate with the podcast team to repurpose long-form content across channels",
+          "Track performance and use data to improve what we put out"
+        ],
+        requirements: [
+          "At least three years in a marketing, content or social media role",
+          "Strong writing skills with experience creating content for health, wellness or B2B audiences",
+          "Someone who can work independently and take ownership of a channel from day one",
+          "An understanding of what good employer branding looks like",
+          "Genuine enthusiasm for health and wellbeing - you practise what you preach"
+        ],
+        apply_email: "team@vyvehealth.co.uk",
+        apply_subject: "Application: Marketing and Content Lead"
+      },
+      {
+        id: "vyve-005",
+        active: true,
+        title: "Community Manager",
+        department: "Community",
+        location: "Remote (UK)",
+        type: "Full-time",
+        salary: "",
+        posted: "2026-04-13",
+        summary: "Community is one of VYVE's three core wellbeing pillars, and we need someone who truly understands the power of bringing people together. As Community Manager, you will be the heartbeat of the VYVE member experience - nurturing connection, sparking engagement and ensuring every member feels supported on their wellbeing journey. This is a chance to build something from scratch inside a business that is genuinely changing lives.",
+        responsibilities: [
+          "Manage and grow the VYVE member community across the platform and social channels",
+          "Design and run community challenges, group activities and engagement programmes",
+          "Respond to members, resolve queries and create a warm and welcoming environment",
+          "Work closely with the clinical team to ensure community spaces feel safe and supportive",
+          "Gather member feedback and bring insights back into the product and content teams"
+        ],
+        requirements: [
+          "Experience managing an online community or membership platform",
+          "Warm, empathetic and energetic - people feel at ease around you",
+          "Organised enough to run structured programmes alongside day-to-day community management",
+          "A genuine belief in the importance of social connection for health and wellbeing",
+          "Comfortable using digital tools and community platforms"
+        ],
+        apply_email: "team@vyvehealth.co.uk",
+        apply_subject: "Application: Community Manager"
+      },
+      {
+        id: "vyve-006",
+        active: true,
+        title: "Online Group Therapist (CBT)",
+        department: "Clinical",
+        location: "Remote (UK)",
+        type: "Freelance / Part-time",
+        salary: "",
+        posted: "2026-04-13",
+        summary: "Mental wellbeing sits at the core of what VYVE does, and we are looking for a qualified therapist with a CBT background to deliver group therapy sessions through our platform. You will be working with individuals and workplace groups, helping people build genuine mental resilience rather than just coping strategies. If you want to reach more people and make a bigger impact without the limitations of a traditional caseload, VYVE offers a compelling alternative.",
+        responsibilities: [
+          "Facilitate regular online group therapy sessions via the VYVE platform",
+          "Design structured CBT-based programmes for both individual members and workplace groups",
+          "Work within VYVE's clinical governance framework and safeguarding procedures",
+          "Contribute to VYVE's mental wellbeing content and programme library",
+          "Participate in clinical team reviews and continuous improvement discussions"
+        ],
+        requirements: [
+          "Qualified therapist with a recognised CBT accreditation (BABCP or equivalent)",
+          "Experience facilitating group therapy or group wellbeing interventions",
+          "Fully insured and compliant with your professional body's standards",
+          "Comfortable delivering sessions remotely via video",
+          "Passionate about making quality mental health support more accessible"
+        ],
+        apply_email: "team@vyvehealth.co.uk",
+        apply_subject: "Application: Online Group Therapist"
+      },
+      {
+        id: "vyve-007",
+        active: true,
+        title: "Dietician / Nutrition Coach",
+        department: "Clinical",
+        location: "Remote (UK)",
+        type: "Freelance / Part-time",
+        salary: "",
+        posted: "2026-04-13",
+        summary: "Food and nutrition are fundamental to physical health, and VYVE wants to give its members access to genuinely qualified, evidence-based nutrition support. We are looking for a registered dietician or qualified nutrition coach to deliver sessions, create content and help our members build a healthier relationship with food - without the fads or quick fixes.",
+        responsibilities: [
+          "Deliver live nutrition sessions and Q&As via the VYVE platform",
+          "Create nutrition-focused content, guides and programmes for the VYVE content library",
+          "Provide one-to-one and group nutrition support within your professional scope",
+          "Review and quality-check existing nutrition content on the platform",
+          "Contribute to clinical governance reviews and content standards"
+        ],
+        requirements: [
+          "Registered dietician (HCPC) or qualified nutritionist (AfN or equivalent)",
+          "Experience delivering nutrition advice in a group or online setting",
+          "Fully insured and compliant with professional registration requirements",
+          "Able to communicate clearly and warmly with a non-clinical audience",
+          "Enthusiastic about preventive nutrition and long-term healthy habits"
+        ],
+        apply_email: "team@vyvehealth.co.uk",
+        apply_subject: "Application: Dietician / Nutrition Coach"
+      },
+      {
+        id: "vyve-008",
+        active: true,
+        title: "Yoga and Pilates Coach",
+        department: "Clinical",
+        location: "Remote (UK)",
+        type: "Freelance / Part-time",
+        salary: "",
+        posted: "2026-04-13",
+        summary: "Movement is medicine, and VYVE wants to bring high-quality yoga and pilates instruction to a wider audience. Whether you specialise in yoga, pilates or both, we want to work with coaches who can deliver engaging live sessions and create content that helps our members build consistency, not just flexibility. This is a great opportunity to expand your reach and be part of something with real purpose behind it.",
+        responsibilities: [
+          "Deliver regular live yoga and/or pilates sessions via the VYVE platform",
+          "Create on-demand session content for the VYVE library across different levels and goals",
+          "Design short programmes (such as a 4-week morning yoga series) for member challenges",
+          "Engage with members during and after sessions to build connection and accountability",
+          "Contribute to the physical wellbeing strand of VYVE's content calendar"
+        ],
+        requirements: [
+          "Recognised yoga or pilates qualification (YA, REPs, CIMSPA or equivalent)",
+          "Experience delivering sessions online with confidence and good energy on camera",
+          "Reliable home studio setup suitable for live video instruction",
+          "Inclusive teaching style that can work across a wide range of abilities and backgrounds",
+          "Professional insurance in place and commitment to ongoing CPD"
+        ],
+        apply_email: "team@vyvehealth.co.uk",
+        apply_subject: "Application: Yoga and Pilates Coach"
+      },
+      {
+        id: "vyve-009",
+        active: true,
+        title: "Breathwork and Mindfulness Coach",
+        department: "Clinical",
+        location: "Remote (UK)",
+        type: "Freelance / Part-time",
+        salary: "",
+        posted: "2026-04-13",
+        summary: "Breathwork and mindfulness are two of the most powerful and underused tools in preventive health, and VYVE wants to make them genuinely accessible. We are looking for an experienced practitioner who can deliver sessions that feel grounded, evidence-informed and practical - not abstract or inaccessible. If you believe these practices can change lives and want a platform to reach more people, we would love to hear from you.",
+        responsibilities: [
+          "Deliver live breathwork and mindfulness sessions via the VYVE platform",
+          "Create a library of guided practices for different needs - stress, sleep, focus, recovery",
+          "Design structured programmes such as a beginner's mindfulness course or a stress reset series",
+          "Work alongside the CBT therapist and clinical team to ensure a joined-up mental wellbeing offering",
+          "Support members in building a consistent daily practice"
+        ],
+        requirements: [
+          "Recognised qualification in mindfulness instruction and/or breathwork facilitation",
+          "Experience teaching in group or online settings",
+          "Ability to make these practices feel accessible to people who are entirely new to them",
+          "Fully insured and maintaining CPD in line with your professional body",
+          "Calm, grounded presence that comes through on screen"
+        ],
+        apply_email: "team@vyvehealth.co.uk",
+        apply_subject: "Application: Breathwork and Mindfulness Coach"
+      },
+      {
+        id: "vyve-010",
+        active: true,
+        title: "Podcast Host",
+        department: "Podcast",
+        location: "Remote (UK)",
+        type: "Freelance / Part-time",
+        salary: "",
+        posted: "2026-04-13",
+        summary: "The VYVE Podcast is looking for a natural, credible host with a background in health and experience in public speaking or broadcasting. You will interview guests, lead conversations and help our listeners think differently about their health - in a way that feels honest, engaging and human. For the right person, this role has real growth potential and shareholding may be part of the discussion.",
+        responsibilities: [
+          "Host VYVE Podcast episodes, leading interviews with guests across health, wellbeing, sport and medicine",
+          "Prepare thoroughly for each episode and bring genuine curiosity to every conversation",
+          "Represent the VYVE brand authentically and consistently across all content",
+          "Collaborate with the producer and marketing team on episode themes and audience growth",
+          "Contribute ideas for guests, topics and formats that keep the podcast fresh and relevant"
+        ],
+        requirements: [
+          "A background in health, fitness, medicine, psychology or a related field",
+          "Experience in public speaking, presenting, broadcasting or hosting (formal or informal)",
+          "A warm and natural conversational style that puts guests and listeners at ease",
+          "Credible and trustworthy - someone our audience will genuinely connect with",
+          "Enthusiastic about health and wellbeing and able to speak to it with authority"
+        ],
+        apply_email: "team@vyvehealth.co.uk",
+        apply_subject: "Application: Podcast Host"
+      },
+      {
+        id: "vyve-011",
+        active: true,
+        title: "Podcast Guest - VYVE Podcast",
+        department: "Podcast",
+        location: "Remote (UK)",
+        type: "Guest / One-off",
+        salary: "",
+        posted: "2026-04-13",
+        summary: "We are always looking for interesting, knowledgeable and authentic voices to join us on the VYVE Podcast (previously known as The Everyman Podcast). If you have a story, expertise or perspective that connects to physical health, mental wellbeing, social connection, nutrition, sport, medicine or the future of work - we want to hear from you. This is an open and ongoing invitation.",
+        responsibilities: [
+          "Join a recorded conversation with one of our hosts (typically 45 to 60 minutes)",
+          "Share your expertise, experience or story in a way that is accessible and genuinely useful to our audience",
+          "Participate in a short pre-interview briefing with our producer",
+          "Promote the episode through your own channels where possible"
+        ],
+        requirements: [
+          "A genuine area of expertise or lived experience relevant to health and wellbeing",
+          "Comfortable speaking on camera or audio in a conversational format",
+          "Something real to say - we are not looking for PR appearances, we are looking for honest conversations",
+          "A home or studio setup suitable for recording (we can advise on this)"
+        ],
+        apply_email: "team@vyvehealth.co.uk",
+        apply_subject: "Podcast Guest Enquiry - VYVE Podcast"
+      }
+    ];
+
+
+    /* ============================================================
+       PAGE LOGIC - no need to edit below this line
+    ============================================================ */
+
+    let activeFilter = 'All';
+
+    function getDepartments() {
+      const depts = ['All', ...new Set(JOBS.filter(j => j.active).map(j => j.department))];
+      return depts;
+    }
+
+    function renderFilters() {
+      const container = document.getElementById('dept-filters');
+      getDepartments().forEach(dept => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn' + (dept === 'All' ? ' active' : '');
+        btn.textContent = dept;
+        btn.onclick = () => {
+          activeFilter = dept;
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          filterJobs();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function filterJobs() {
+      const query = document.getElementById('job-search').value.toLowerCase().trim();
+      const list = document.getElementById('jobs-list');
+      const noResults = document.getElementById('no-results');
+      let visibleCount = 0;
+
+      list.querySelectorAll('.job-card').forEach(card => {
+        const dept = card.dataset.dept;
+        const text = card.dataset.search;
+        const deptMatch = activeFilter === 'All' || dept === activeFilter;
+        const textMatch = !query || text.includes(query);
+        const show = deptMatch && textMatch;
+        card.style.display = show ? '' : 'none';
+        if (show) visibleCount++;
+      });
+
+      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function toggleJob(card) {
+      card.classList.toggle('expanded');
+    }
+
+    function renderJobs() {
+      const list = document.getElementById('jobs-list');
+      const activeJobs = JOBS.filter(j => j.active);
+
+      if (activeJobs.length === 0) {
+        document.getElementById('no-results').style.display = 'block';
+        return;
+      }
+
+      activeJobs.forEach(job => {
+        const searchText = [job.title, job.department, job.location, job.type, job.summary,
+          ...(job.responsibilities || []), ...(job.requirements || [])].join(' ').toLowerCase();
+
+        const card = document.createElement('div');
+        card.className = 'job-card';
+        card.dataset.dept = job.department;
+        card.dataset.search = searchText;
+
+        card.innerHTML = `
+          <div class="job-header" onclick="toggleJob(this.closest('.job-card'))">
+            <div class="job-header-left">
+              <span class="job-dept-tag">${job.department}</span>
+              <div class="job-title">${job.title}</div>
+              <div class="job-meta">
+                <span class="job-meta-item">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  ${job.location}
+                </span>
+                <span class="job-meta-item">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  ${job.type}
+                </span>
+              </div>
+            </div>
+            <div class="job-header-right">
+              <a class="btn btn-teal-outline job-apply-quick" style="padding:10px 20px;font-size:0.83rem;"
+                href="mailto:${job.apply_email}?subject=${encodeURIComponent(job.apply_subject)}"
+                onclick="event.stopPropagation()">Apply Now</a>
+              <div class="job-chevron">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="job-body">
+            <p class="job-full-desc">${job.summary}</p>
+            <div class="job-body-grid">
+              ${job.responsibilities && job.responsibilities.length ? `
+              <div class="job-section">
+                <h4>What you'll do</h4>
+                <ul>${job.responsibilities.map(r => `<li>${r}</li>`).join('')}</ul>
+              </div>` : ''}
+              ${job.requirements && job.requirements.length ? `
+              <div class="job-section">
+                <h4>What we're looking for</h4>
+                <ul>${job.requirements.map(r => `<li>${r}</li>`).join('')}</ul>
+              </div>` : ''}
+            </div>
+            <div class="job-apply-row">
+              <div class="job-apply-row-info">
+                Posted <strong>${formatDate(job.posted)}</strong> · ${job.type} · ${job.location}
+              </div>
+              <a class="btn btn-primary"
+                href="mailto:${job.apply_email}?subject=${encodeURIComponent(job.apply_subject)}">
+                Apply for This Role →
+              </a>
+            </div>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    // Scroll fade-in
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      renderFilters();
+      renderJobs();
+    });
+  </script>
+</body>
+</html>
