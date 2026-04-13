@@ -1760,13 +1760,13 @@ async function submitQuestionnaire() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => {
       controller.abort();
-    }, 90000); // 90s — onboarding makes 5 AI calls, needs headroom
+    }, 150000); // 150s — inline workout plan adds parallel AI calls
 
     // At 30s, update the loading message so user knows it's still working
     const slowTimer = setTimeout(() => {
       const sub = document.getElementById('loadingSubtext');
-      if (sub) sub.textContent = "Still working — we\'re creating your personalised plan. This can take up to a minute.";
-    }, 30000);
+      if (sub) sub.textContent = "Still working — we\'re creating your personalised plan. This can take up to two minutes.";
+    }, 45000);
 
     const response = await fetch(ONBOARDING_EDGE_FN, {
       method: 'POST',
@@ -1827,11 +1827,11 @@ async function retrySubmit() {
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 90000);
+    const timeoutId = setTimeout(() => controller.abort(), 150000);
     const slowTimer = setTimeout(() => {
       const sub = document.getElementById('loadingSubtext');
-      if (sub) sub.textContent = "Still working — we\'re creating your personalised plan. This can take up to a minute.";
-    }, 30000);
+      if (sub) sub.textContent = "Still working — we\'re creating your personalised plan. This can take up to two minutes.";
+    }, 45000);
 
     const response = await fetch(ONBOARDING_EDGE_FN, {
       method: 'POST',
