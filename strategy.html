@@ -214,7 +214,7 @@
     <div class="metric-card" style="--accent-color: var(--amber)">
       <div class="metric-label">Overall Score</div>
       <div class="metric-value c-amber" id="metric-overall">58</div>
-      <div class="metric-sub">out of 100 <span class="delta-pill" style="background:var(--green-bg);color:var(--green);border:1px solid rgba(82,183,136,0.25);">&#x25B2; +9 vs early Apr</span></div>
+      <div class="metric-sub">out of 100 <span id="overallDeltaPill"></span></div>
     </div>
     <div class="metric-card" style="--accent-color: var(--amber)">
       <div class="metric-label">Gap to 95+</div>
@@ -224,7 +224,7 @@
     <div class="metric-card" style="--accent-color: var(--red)">
       <div class="metric-label">Critical Areas</div>
       <div class="metric-value c-red" id="metric-critical">4</div>
-      <div class="metric-sub">of 15 areas <span class="delta-pill" style="background:var(--green-bg);color:var(--green);border:1px solid rgba(82,183,136,0.25);">&#x25BC; −2 vs early Apr</span></div>
+      <div class="metric-sub">of 15 areas <span id="criticalDeltaPill"></span></div>
     </div>
     <div class="metric-card" style="--accent-color: var(--teal)">
       <div class="metric-label">Stage</div>
@@ -233,12 +233,8 @@
     </div>
   </div>
 
-  <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:32px;" class="fade-up">
-    <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--text-dim);">Early April 2026</span>
-    <div id="scoreToggle" onclick="toggleScores()" style="width:52px;height:28px;background:var(--teal);border-radius:14px;cursor:pointer;position:relative;transition:background 0.3s;">
-      <div id="toggleThumb" style="width:22px;height:22px;background:white;border-radius:50%;position:absolute;top:3px;right:3px;transition:right 0.3s;"></div>
-    </div>
-    <span style="font-size:12px;font-family:'DM Mono',monospace;color:var(--teal);">Late April 2026</span>
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:32px;flex-wrap:wrap;" class="fade-up">
+    <div id="snapshotPills" style="display:inline-flex;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:4px;gap:2px;"></div>
     <span id="toggleLabel" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text-dim);margin-left:4px;">(showing current)</span>
   </div>
 
@@ -258,7 +254,7 @@
         <div class="chart-wrap" style="height: 520px"><canvas id="barChart"></canvas></div>
       </div>
       <div class="chart-card">
-        <div class="chart-title">Radar — early April vs late April</div>
+        <div class="chart-title">Radar — March · early April · late April</div>
         <div class="chart-wrap" style="height: 520px"><canvas id="radarChart"></canvas></div>
       </div>
     </div>
@@ -320,7 +316,13 @@
 
   <div class="tab-panel" id="tab-changes">
     <div class="section-title">Score Updates — Late April 2026</div>
-    <div class="section-sub">Early April &rarr; Late April. What moved, what didn't, and why. Two areas went <em>down</em> — that's deliberate; an honest dashboard has to be willing to mark things down, not just hand out trophies.</div>
+    <div class="section-sub">Two snapshots, two stories. Two areas went <em>down</em> in March → Early April (honest scoring of Make publisher going stale and Typeform retirement leaving a gap) — that's deliberate. An honest dashboard has to be willing to mark things down.</div>
+
+    <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0;">
+      <button class="changes-seg-btn" data-seg="recent" style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--teal);padding:10px 16px;cursor:pointer;border-bottom:2px solid var(--teal);margin-bottom:-1px;">Last two weeks (Early &rarr; Late April)</button>
+      <button class="changes-seg-btn" data-seg="prior" style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-dim);padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;">Previous month (March &rarr; Early April)</button>
+    </div>
+
     <div id="changesGrid" class="fade-up"></div>
   </div>
 
@@ -923,10 +925,21 @@ const mustBuild = [
 ];
 
 // ============================================================
-// EARLY APRIL vs LATE APRIL DATA — the two snapshots
+// THREE SNAPSHOTS — March · Early April · Late April 2026
 // ============================================================
-const lateAprilData  = [80,76,38,78,64,78,58,82,54,58,25,64,48,36,30];
+const marchData      = [42,60,22,40,50,78,38,74,48,28,18,37,25,20,20];
 const earlyAprilData = [65,72,25,62,52,78,50,78,50,37,20,62,32,24,24];
+const lateAprilData  = [80,76,38,78,64,78,58,82,54,58,25,64,48,36,30];
+
+// Snapshot registry — declared BEFORE any rendering that references it (fixes TDZ).
+const snapshots = [
+  { key: 'march',      label: 'March 2026',       short: 'Mar',   data: marchData,      color: 'rgba(224,85,85,0.75)',   bg: 'rgba(224,85,85,0.08)' },
+  { key: 'earlyApril', label: 'Early April 2026', short: 'E.Apr', data: earlyAprilData, color: 'rgba(201,168,76,0.85)',  bg: 'rgba(201,168,76,0.08)' },
+  { key: 'lateApril',  label: 'Late April 2026',  short: 'L.Apr', data: lateAprilData,  color: '#3db89f',                bg: 'rgba(61,184,159,0.15)' }
+];
+let activeSnapshotIdx = 2; // default: Late April (current)
+function activeSnap()   { return snapshots[activeSnapshotIdx]; }
+function previousSnap() { return activeSnapshotIdx > 0 ? snapshots[activeSnapshotIdx - 1] : null; }
 
 // ============================================================
 // DETAILED CHANGE NARRATIVE — what moved, what stayed
@@ -1159,32 +1172,36 @@ let openIdx = -1;
 
 function renderScorecard() {
   grid.innerHTML = '';
+  const snap = activeSnap();
+  const prev = previousSnap();
   areas.forEach((a, i) => {
-    const c = scoreColor(a.score);
-    const oldScore = showingCurrent ? earlyAprilData[i] : null;
-    const delta = showingCurrent ? (a.score - earlyAprilData[i]) : 0;
-    const deltaText = showingCurrent ? (delta > 0 ? '+' + delta : delta === 0 ? '—' : String(delta)) : '';
-    const deltaColor = showingCurrent ? (delta > 0 ? '#52b788' : delta < 0 ? '#e05555' : '#7a9e99') : '';
-    const deltaBg = showingCurrent ? (delta > 0 ? 'rgba(82,183,136,0.15)' : delta < 0 ? 'rgba(224,85,85,0.15)' : 'rgba(122,158,153,0.12)') : '';
+    const currentScore = snap.data[i];
+    const prevScore = prev ? prev.data[i] : null;
+    const c = scoreColor(currentScore);
+    const showDelta = prev !== null;
+    const delta = showDelta ? (currentScore - prevScore) : 0;
+    const deltaText = showDelta ? (delta > 0 ? '+' + delta : delta === 0 ? '—' : String(delta)) : '';
+    const deltaColor = showDelta ? (delta > 0 ? '#52b788' : delta < 0 ? '#e05555' : '#7a9e99') : '';
+    const deltaBg = showDelta ? (delta > 0 ? 'rgba(82,183,136,0.15)' : delta < 0 ? 'rgba(224,85,85,0.15)' : 'rgba(122,158,153,0.12)') : '';
     const isOpen = openIdx === i;
     const div = document.createElement('div');
     div.className = 'score-item' + (isOpen ? ' open' : '');
-    const oldMarker = (showingCurrent && oldScore !== null) ? `<div class="bar-old" style="width:${oldScore}%"></div>` : '';
+    const oldMarker = (prev !== null) ? `<div class="bar-old" style="width:${prevScore}%" title="${prev.label}: ${prevScore}"></div>` : '';
     div.innerHTML = `
       <div class="score-item-header">
         <div class="score-item-name">${i + 1}. ${a.name}</div>
         <div>
-          <span class="score-num" style="color:${c}">${a.score}</span>
-          ${showingCurrent ? `<span class="score-delta" style="background:${deltaBg};color:${deltaColor};">${deltaText}</span>` : ''}
+          <span class="score-num" style="color:${c}">${currentScore}</span>
+          ${showDelta ? `<span class="score-delta" style="background:${deltaBg};color:${deltaColor};" title="vs ${prev.label}">${deltaText}</span>` : ''}
         </div>
       </div>
       <div class="bar-track">
-        <div class="bar-fill" style="width:${a.score}%;background:${c}"></div>
+        <div class="bar-fill" style="width:${currentScore}%;background:${c}"></div>
         ${oldMarker}
       </div>
       <div class="score-footer">
         ${priorityBadge(a.priority)}
-        <span class="gap-text">${95 - a.score} pts to 95</span>
+        <span class="gap-text">${95 - currentScore} pts to 95</span>
         <div class="chevron"><svg viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </div>
       <div class="expand-panel">
@@ -1294,11 +1311,10 @@ function renderTopMovers() {
 renderTopMovers();
 
 // ============================================================
-// CHARTS (bar + radar)
+// CHARTS (bar + radar) — 3-snapshot aware
 // ============================================================
 let barChartRef = null;
 let radarChartRef = null;
-let showingCurrent = true;
 const shortLabels = areas.map((a,i) => (i+1)+'. '+a.name.substring(0,18));
 const radarLabels = areas.map(a => a.name.substring(0,14));
 
@@ -1306,7 +1322,7 @@ barChartRef = new Chart(document.getElementById('barChart'), {
   type: 'bar',
   data: {
     labels: shortLabels,
-    datasets: [{ label: 'Score', data: lateAprilData.slice(), backgroundColor: lateAprilData.map(s => scoreColor(s)+'33'), borderColor: lateAprilData.map(scoreColor), borderWidth: 1.5, borderRadius: 4, borderSkipped: false }]
+    datasets: [{ label: 'Score', data: activeSnap().data.slice(), backgroundColor: activeSnap().data.map(s => scoreColor(s)+'33'), borderColor: activeSnap().data.map(scoreColor), borderWidth: 1.5, borderRadius: 4, borderSkipped: false }]
   },
   options: {
     indexAxis: 'y', responsive: true, maintainAspectRatio: false,
@@ -1320,8 +1336,9 @@ radarChartRef = new Chart(document.getElementById('radarChart'), {
   data: {
     labels: radarLabels,
     datasets: [
-      { label: 'Late April 2026 (now)', data: lateAprilData.slice(), backgroundColor: 'rgba(61,184,159,0.15)', borderColor: '#3db89f', borderWidth: 2, pointBackgroundColor: '#3db89f', pointRadius: 3, pointHoverRadius: 5 },
-      { label: 'Early April 2026', data: earlyAprilData.slice(), backgroundColor: 'rgba(201,168,76,0.08)', borderColor: 'rgba(201,168,76,0.7)', borderWidth: 1.5, pointBackgroundColor: 'rgba(201,168,76,0.7)', pointRadius: 2, pointHoverRadius: 4 }
+      { label: 'Late April 2026',  data: lateAprilData.slice(),  backgroundColor: 'rgba(61,184,159,0.15)',  borderColor: '#3db89f',             borderWidth: 2,   pointBackgroundColor: '#3db89f',             pointRadius: 3, pointHoverRadius: 5 },
+      { label: 'Early April 2026', data: earlyAprilData.slice(), backgroundColor: 'rgba(201,168,76,0.08)',  borderColor: 'rgba(201,168,76,0.8)', borderWidth: 1.5, pointBackgroundColor: 'rgba(201,168,76,0.8)', pointRadius: 2, pointHoverRadius: 4 },
+      { label: 'March 2026',       data: marchData.slice(),      backgroundColor: 'rgba(224,85,85,0.06)',   borderColor: 'rgba(224,85,85,0.65)', borderWidth: 1.3, pointBackgroundColor: 'rgba(224,85,85,0.65)', pointRadius: 2, pointHoverRadius: 4, borderDash: [4,3] }
     ]
   },
   options: {
@@ -1332,16 +1349,278 @@ radarChartRef = new Chart(document.getElementById('radarChart'), {
 });
 
 // ============================================================
+// 3-STATE SNAPSHOT PILL STRIP + state application
+// ============================================================
+function renderSnapshotPills() {
+  const host = document.getElementById('snapshotPills');
+  if (!host) return;
+  host.innerHTML = '';
+  snapshots.forEach((s, i) => {
+    const active = i === activeSnapshotIdx;
+    const pill = document.createElement('button');
+    pill.type = 'button';
+    pill.textContent = s.label;
+    pill.style.cssText = `
+      font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.04em;
+      border:none;border-radius:7px;padding:8px 14px;cursor:pointer;
+      background:${active ? s.bg : 'transparent'};
+      color:${active ? (s.key === 'lateApril' ? '#3db89f' : s.key === 'earlyApril' ? '#c9a84c' : '#e05555') : 'var(--text-muted)'};
+      transition:background 0.2s, color 0.2s;
+      font-weight:${active ? 600 : 400};
+    `;
+    pill.addEventListener('mouseenter', () => { if (!active) pill.style.color = 'var(--text)'; });
+    pill.addEventListener('mouseleave', () => { if (!active) pill.style.color = 'var(--text-muted)'; });
+    pill.addEventListener('click', () => selectSnapshot(i));
+    host.appendChild(pill);
+  });
+  const lbl = document.getElementById('toggleLabel');
+  if (lbl) {
+    const snap = activeSnap();
+    const suffix = snap.key === 'lateApril' ? ' (current)' : snap.key === 'earlyApril' ? ' (2 weeks ago)' : ' (origin)';
+    lbl.textContent = '(showing ' + snap.label + suffix + ')';
+  }
+}
+
+function applyOverallMetrics() {
+  const scores = activeSnap().data;
+  const ov = Math.round(scores.reduce((a,b)=>a+b,0) / scores.length);
+  const hdr = document.querySelector('.header-score');
+  if (hdr) hdr.textContent = ov + ' / 100';
+  const mo = document.getElementById('metric-overall');
+  const mg = document.getElementById('metric-gap');
+  const mc = document.getElementById('metric-critical');
+  if (mo) mo.textContent = ov;
+  if (mg) mg.textContent = 95 - ov;
+  if (mc) mc.textContent = scores.filter(s => s <= 40).length;
+
+  // Overall score delta pill under the big number
+  const prev = previousSnap();
+  const overallDeltaEl = document.getElementById('overallDeltaPill');
+  if (overallDeltaEl) {
+    if (prev) {
+      const prevOv = Math.round(prev.data.reduce((a,b)=>a+b,0) / prev.data.length);
+      const d = ov - prevOv;
+      const up = d > 0, flat = d === 0;
+      const arrow = up ? '&#x25B2;' : flat ? '—' : '&#x25BC;';
+      const col = up ? '#52b788' : flat ? '#7a9e99' : '#e05555';
+      const bg  = up ? 'rgba(82,183,136,0.15)' : flat ? 'rgba(122,158,153,0.12)' : 'rgba(224,85,85,0.15)';
+      overallDeltaEl.innerHTML = `<span class="delta-pill" style="background:${bg};color:${col};border:1px solid ${col}44;">${arrow} ${d > 0 ? '+' + d : d} vs ${prev.short}</span>`;
+    } else {
+      overallDeltaEl.innerHTML = '<span class="delta-pill" style="background:rgba(122,158,153,0.12);color:var(--text-dim);border:1px solid rgba(122,158,153,0.25);">origin snapshot</span>';
+    }
+  }
+
+  // Critical-areas delta
+  const critEl = document.getElementById('criticalDeltaPill');
+  if (critEl) {
+    if (prev) {
+      const prevCrit = prev.data.filter(s => s <= 40).length;
+      const curCrit  = scores.filter(s => s <= 40).length;
+      const d = curCrit - prevCrit;
+      const col = d < 0 ? '#52b788' : d === 0 ? '#7a9e99' : '#e05555';
+      const bg  = d < 0 ? 'rgba(82,183,136,0.15)' : d === 0 ? 'rgba(122,158,153,0.12)' : 'rgba(224,85,85,0.15)';
+      const arrow = d < 0 ? '&#x25BC;' : d === 0 ? '—' : '&#x25B2;';
+      critEl.innerHTML = `<span class="delta-pill" style="background:${bg};color:${col};border:1px solid ${col}44;">${arrow} ${d > 0 ? '+' + d : d} vs ${prev.short}</span>`;
+    } else {
+      critEl.innerHTML = '';
+    }
+  }
+}
+
+function selectSnapshot(idx) {
+  if (idx < 0 || idx >= snapshots.length) return;
+  activeSnapshotIdx = idx;
+  openIdx = -1;
+  const scores = activeSnap().data;
+  renderSnapshotPills();
+  applyOverallMetrics();
+  renderScorecard();
+  if (barChartRef) {
+    barChartRef.data.datasets[0].data = scores.slice();
+    barChartRef.data.datasets[0].backgroundColor = scores.map(s => scoreColor(s)+'33');
+    barChartRef.data.datasets[0].borderColor = scores.map(scoreColor);
+    barChartRef.update('none');
+  }
+}
+
+// Initial paint of pill strip + metric deltas
+renderSnapshotPills();
+applyOverallMetrics();
+
+// ============================================================
 // CHANGES TAB
 // ============================================================
+// ============================================================
+// MARCH → EARLY APRIL delta narrative (reconstructed from the
+// original strategy.html, aligned with the real marchData values)
+// ============================================================
+const scoreChangesMarchToEarly = [
+  { area: 'Product & Platform Technology', old: 42, new: 65, delta: '+23',
+    done: [
+      'Supabase migration work — moving off legacy infrastructure',
+      'All portal pages migrated off Apps Script and Google Sheets',
+      'Member portal fully live: dashboard, wellbeing check-in, running plan, session pages',
+      'Weekly check-in AI recs rendering in persona voice with 8-week history context',
+      'Onboarding v8 live — Typeform retired',
+      '5 AI personas with full system prompts in Supabase'
+    ],
+    remaining: [
+      'PAD physical-machine failover not documented',
+      'Two-login friction (legacy)',
+      'No enterprise SSO/SAML',
+      'No native mobile app yet (pre-Capacitor)'
+    ] },
+  { area: 'AI & Personalisation', old: 60, new: 72, delta: '+12',
+    done: [
+      'Weekly check-in AI fully rendering on page in persona voice',
+      'Weekly goals system seeded at onboarding',
+      'AI interactions audit log stable (triggered_by, persona, tokens)'
+    ],
+    remaining: [
+      'No burnout / disengagement prediction model',
+      'No proactive nudging',
+      'Persona context modifier system not built',
+      'HAVEN still awaiting clinical review'
+    ] },
+  { area: 'Clinical Validation', old: 22, new: 25, delta: '+3',
+    done: ['Marginal movement — nothing clinically validated'],
+    remaining: [
+      'No clinical advisory board',
+      'Wellbeing check-in still uses 1-10 scale — not validated (PHQ-2, GAD-2, WHO-5 are free)',
+      'Highest-impact Lewis action on the entire board'
+    ] },
+  { area: 'Data Architecture & Security', old: 40, new: 62, delta: '+22',
+    done: [
+      'Supabase Pro plan + RLS baseline established',
+      'Edge Functions structure tightened',
+      'Legacy Apps Script + Google Sheets data-storage dependencies retired'
+    ],
+    remaining: [
+      'No penetration test',
+      'Google Workspace not migrated (resolved post-Supabase-only)',
+      'No SOC 2',
+      'Employer dashboard password-only (pre-JWT/API-key refactor)'
+    ] },
+  { area: 'User Experience & Engagement', old: 50, new: 52, delta: '+2',
+    done: [
+      'Weekly goals strip live on member dashboard',
+      'Certificates table seeded and tracking'
+    ],
+    remaining: [
+      'Certificate automation not built',
+      'Charity mechanic UI not built',
+      'No push notifications'
+    ] },
+  { area: 'Content & Thought Leadership', old: 78, new: 78, delta: '0',
+    done: ['Content engine steady — no material content change this window'],
+    remaining: [
+      'Publisher broken / paused',
+      'Distribution cadence still a Lewis-only effort'
+    ] },
+  { area: 'Sales & Commercial Readiness', old: 38, new: 50, delta: '+12',
+    done: [
+      'Weekly check-in page demo-ready — removes last Sage demo blocker',
+      'Presentation deck usable for enterprise pitches',
+      'Sales Intelligence infrastructure built (pre-call briefs, displacement table, ROI calculator)'
+    ],
+    remaining: [
+      'B2B pricing tiers not formally defined',
+      'Wellbeing Scorecard built but not hosted',
+      'No annual pricing option',
+      'Brevo logo in outgoing emails'
+    ] },
+  { area: 'Automation & Operations', old: 74, new: 78, delta: '+4',
+    done: [
+      'Re-engagement scheduler live — 5 streams, 16 emails, daily 8am UTC cron',
+      'Activity capping BEFORE INSERT triggers deployed',
+      'Daily / weekly / monthly report crons stable'
+    ],
+    remaining: [
+      'Re-engagement copy still placeholder — sending to real members',
+      'Certificate automation not yet built'
+    ] },
+  { area: 'Brand & Market Presence', old: 48, new: 50, delta: '+2',
+    done: [
+      'Marketing site live with three audience paths and aligned brand palette'
+    ],
+    remaining: [
+      'No press coverage, no awards, no speaking slots',
+      'PR pitch task disabled'
+    ] },
+  { area: 'Team & Scalability', old: 28, new: 37, delta: '+9',
+    done: [
+      'Dean director appointment filed at Companies House',
+      'Team structure formalised (Lewis + Dean)'
+    ],
+    remaining: [
+      'Dean still part-time — entire platform on one person',
+      'No clinical advisory board',
+      'No emergency / deployment documentation'
+    ] },
+  { area: 'Financial Model & Revenue', old: 18, new: 20, delta: '+2',
+    done: [
+      'Commercial model and scenario planning built',
+      'ROI calculator live'
+    ],
+    remaining: [
+      'Zero revenue — model entirely unvalidated',
+      'B2B pricing tiers not defined'
+    ] },
+  { area: 'Compliance & Regulatory', old: 37, new: 62, delta: '+25',
+    done: [
+      'Full GDPR documentation complete and live',
+      'ICO registration (00013608608)',
+      'DPA, DPIA, data retention, breach notification procedures documented'
+    ],
+    remaining: [
+      'Google Workspace not migrated',
+      'No Cyber Essentials',
+      'No external DPO',
+      'No DSPT'
+    ] },
+  { area: 'Customer Success & Retention', old: 25, new: 32, delta: '+7',
+    done: [
+      'Re-engagement scheduler live — 5 streams, 16 emails, daily cron',
+      'Weekly goals strip on member dashboard'
+    ],
+    remaining: [
+      'Certificate automation not built',
+      'Charity mechanic not built',
+      'Re-engagement copy is placeholder',
+      'No NPS measurement'
+    ] },
+  { area: 'Partnerships & Ecosystem', old: 20, new: 24, delta: '+4',
+    done: ['Charity totals SQL function deployed and ready'],
+    remaining: [
+      'No named charity partners',
+      'No HR platform integrations',
+      'No distribution partners'
+    ] },
+  { area: 'Investor & Growth Readiness', old: 20, new: 24, delta: '+4',
+    done: [
+      'Presentation deck demo-ready',
+      'Grant targets identified (National Lottery, The Fore)'
+    ],
+    remaining: [
+      'Zero revenue — premature for investor conversations',
+      'No traction metrics at scale',
+      'One Sage contract changes everything'
+    ] }
+];
+
+// active segment of What Changed tab: 'recent' (early → late April) or 'prior' (March → early April)
+let changesSegment = 'recent';
+
 function renderChanges() {
   const g = document.getElementById('changesGrid');
   if (!g) return;
-  scoreChanges.forEach(c => {
+  const data = changesSegment === 'recent' ? scoreChanges : scoreChangesMarchToEarly;
+  const prevLabel = changesSegment === 'recent' ? 'early Apr' : 'March';
+  g.innerHTML = '';
+  data.forEach(c => {
     const n = parseInt(c.delta.replace('+','')) || 0;
     const isUp = n > 0;
     const isFlat = n === 0;
-    const isDown = n < 0;
     const arrowColor = isUp ? '#52b788' : isFlat ? '#7a9e99' : '#e05555';
     const arrow = isUp ? '&#x25B2;' : isFlat ? '&#x2014;' : '&#x25BC;';
     const div = document.createElement('div');
@@ -1350,7 +1629,7 @@ function renderChanges() {
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
         <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--text);">${c.area}</div>
         <div style="display:flex;align-items:center;gap:12px;">
-          <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text-dim);">early Apr <span style="color:var(--text-muted)">${c.old}</span></div>
+          <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text-dim);">${prevLabel} <span style="color:var(--text-muted)">${c.old}</span></div>
           <div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:${arrowColor};">${arrow} ${c.new}</div>
           <div style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:${arrowColor};background:${arrowColor}22;padding:3px 10px;border-radius:4px;">${c.delta} pts</div>
         </div>
@@ -1368,38 +1647,24 @@ function renderChanges() {
     g.appendChild(div);
   });
 }
+
+// Wire segment buttons
+document.querySelectorAll('.changes-seg-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    changesSegment = btn.dataset.seg;
+    document.querySelectorAll('.changes-seg-btn').forEach(b => {
+      const active = b === btn;
+      b.style.color = active ? 'var(--teal)' : 'var(--text-dim)';
+      b.style.borderBottomColor = active ? 'var(--teal)' : 'transparent';
+    });
+    renderChanges();
+  });
+});
+
 renderChanges();
 
 // ============================================================
-// SNAPSHOT TOGGLE
-// ============================================================
-function toggleScores() {
-  showingCurrent = !showingCurrent;
-  const scores = showingCurrent ? lateAprilData : earlyAprilData;
-  const label  = showingCurrent ? 'Late April 2026' : 'Early April 2026';
-  const thumb = document.getElementById('toggleThumb');
-  const lbl   = document.getElementById('toggleLabel');
-  if (thumb) thumb.style.right = showingCurrent ? '3px' : 'calc(100% - 25px)';
-  if (lbl)   lbl.textContent   = '(showing ' + label + ')';
-  const ov = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
-  const hdr = document.querySelector('.header-score');
-  if (hdr) hdr.textContent = ov + ' / 100';
-  const mo = document.getElementById('metric-overall');
-  const mg = document.getElementById('metric-gap');
-  const mc = document.getElementById('metric-critical');
-  if (mo) mo.textContent = ov;
-  if (mg) mg.textContent = 95 - ov;
-  if (mc) mc.textContent = scores.filter(s=>s<=40).length;
-  areas.forEach((a,i) => { a.score = scores[i]; });
-  openIdx = -1;
-  renderScorecard();
-  if (barChartRef) {
-    barChartRef.data.datasets[0].data = scores.slice();
-    barChartRef.data.datasets[0].backgroundColor = scores.map(s => scoreColor(s)+'33');
-    barChartRef.data.datasets[0].borderColor = scores.map(scoreColor);
-    barChartRef.update('none');
-  }
-}
+// TAB SWITCH
 
 function switchTab(id, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
