@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VYVE — Continue your membership</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0D2B2B;--teal-lt:#4DAAAA;--gold:#c9a84c;--paper:#F4F1E9;--muted:rgba(244,241,233,.62)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:"DM Sans",system-ui,sans-serif;color:var(--paper);background:var(--ink);
+    -webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;align-items:center;justify-content:center;
+    padding:32px 24px;text-align:center;position:relative;overflow:hidden}
+  body::before{content:"";position:absolute;inset:-20%;z-index:0;pointer-events:none;
+    background:radial-gradient(60% 50% at 50% 12%,rgba(77,170,170,.20),transparent 70%),
+               radial-gradient(80% 60% at 50% 110%,rgba(27,120,120,.30),transparent 65%)}
+  .card{position:relative;z-index:1;max-width:360px}
+  .mark{font-family:"Playfair Display",serif;font-weight:600;letter-spacing:.18em;font-size:14px;
+    color:var(--gold);text-transform:uppercase}
+  .mark .dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin:0 .5em 2px;vertical-align:middle}
+  .spinner{width:34px;height:34px;margin:34px auto 26px;border-radius:50%;
+    border:2px solid rgba(201,168,76,.25);border-top-color:var(--gold);animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  h1{font-family:"Playfair Display",serif;font-weight:500;font-size:24px;line-height:1.25;margin-bottom:12px}
+  p{font-size:14.5px;line-height:1.55;color:var(--muted)}
+  .cta{display:none;margin-top:26px;padding:15px 22px;font-weight:500;font-size:15px;color:var(--ink);
+    background:var(--gold);border-radius:13px;text-decoration:none}
+  @media (prefers-reduced-motion:reduce){.spinner{animation:none}}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="mark">VYVE<span class="dot"></span>Health</div>
+    <div class="spinner" id="spinner"></div>
+    <h1>Taking you to secure checkout</h1>
+    <p id="msg">One moment while we set up your &pound;10/month membership.</p>
+    <a class="cta" id="fallback" rel="noopener">Continue to checkout</a>
+  </div>
+<script>
+(function(){
+  // ── Dean: paste the NEW conversion Payment Link here (the £20/mo link variant
+  //    that redirects back to the app, with VYVE10 valid). Replaces the placeholder. ──
+  var CONVERSION_LINK = '__PASTE_STRIPE_CONVERSION_LINK__';
+  var PROMO = 'VYVE10';
+
+  function qp(n){ try { return new URLSearchParams(location.search).get(n); } catch(_) { return null; } }
+  var cid = qp('cid');                       // members.id, passed by the app wall
+  var configured = CONVERSION_LINK.indexOf('http') === 0;
+
+  if (!configured) {
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('msg').textContent = 'Checkout is being set up — please try again shortly.';
+    return;
+  }
+
+  var target;
+  try {
+    var u = new URL(CONVERSION_LINK);
+    u.searchParams.set('prefilled_promo_code', PROMO);   // £10 applied, nothing to type
+    if (cid) u.searchParams.set('client_reference_id', cid); // binds payment -> member for the webhook
+    target = u.toString();
+  } catch (_) { target = CONVERSION_LINK; }
+
+  var fb = document.getElementById('fallback');
+  fb.href = target; fb.style.display = 'inline-block';
+  setTimeout(function(){ location.replace(target); }, 800);
+})();
+</script>
+</body>
+</html>
