@@ -1451,6 +1451,7 @@ input[type="range"]::-moz-range-thumb {
 
 <script>
 const ONBOARDING_EDGE_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/onboarding';
+const APPLY_TRIAL_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/apply-trial';
 // ── Shared workout referral ──────────────────────────────────────────────────
 (function() {
   const params = new URLSearchParams(window.location.search);
@@ -2000,6 +2001,17 @@ async function retrySubmit() {
 }
 
 function showResults(data, result) {
+  // PM-440 — if they signed up via a /welcome?c= trial link, stamp the trial now (fire-and-forget;
+  // guarded server-side so it only ever affects this fresh signup). Failure is non-fatal.
+  try {
+    if (typeof TRIAL_CAMPAIGN_CODE !== 'undefined' && TRIAL_CAMPAIGN_CODE) {
+      fetch(APPLY_TRIAL_FN, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: (data && data.email) || '', campaign_code: TRIAL_CAMPAIGN_CODE }),
+      }).catch(function () {});
+    }
+  } catch (_) {}
   document.getElementById('loadingScreen').classList.remove('active');
   document.getElementById('resultScreen').classList.add('active');
   document.getElementById('resultName').textContent = data.firstName;
