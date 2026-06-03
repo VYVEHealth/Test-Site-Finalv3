@@ -1469,6 +1469,17 @@ const ONBOARDING_EDGE_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v
   }
 })();
 
+// ── PM-440 — trial campaign capture: ?c=<code> on /welcome resolves server-side to
+// trial length + attribution label. Persisted for the session so it survives the
+// multi-section form, then sent to the onboarding EF in the submit payload.
+const TRIAL_CAMPAIGN_CODE = (function() {
+  try {
+    var c = new URLSearchParams(window.location.search).get('c');
+    if (c) { sessionStorage.setItem('vyve-trial-campaign', c); return c; }
+    return sessionStorage.getItem('vyve-trial-campaign') || '';
+  } catch (_) { return ''; }
+})();
+
 const state = {
   path: 'full',
   currentSection: 0,
@@ -1871,6 +1882,7 @@ async function submitQuestionnaire() {
     sleepHours: getSingleChoice('sleepHours'),
     bedtime: getSingleChoice('bedtime'),
     heightUnit: state.heightUnit || 'cm',
+    campaign_code: TRIAL_CAMPAIGN_CODE,
   };
 
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
