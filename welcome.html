@@ -664,34 +664,20 @@ input[type="range"]::-moz-range-thumb {
   font-size: 26px;
 }
 
-.video-placeholder {
-  background: var(--accent-dk);
+.why-full {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
   border-radius: 14px;
-  padding: 40px;
+  padding: 22px 22px 18px;
   margin: 24px 0;
-  text-align: center;
-  cursor: pointer;
-  transition: opacity 0.2s, transform 0.2s;
+  text-align: left;
 }
-
-[data-theme="light"] .video-placeholder { background: var(--accent-dk); }
-.video-placeholder:hover { opacity: 0.9; transform: translateY(-1px); }
-
-.video-play {
-  width: 50px; height: 50px;
-  background: var(--accent);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 14px;
-}
-
-.video-play::after {
-  content: '';
-  border-left: 18px solid white;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  margin-left: 4px;
-}
+.why-full-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+.why-full-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.why-full-list li { font-size: 13.5px; line-height: 1.5; color: var(--text-2); padding-left: 24px; position: relative; }
+.why-full-list li::before { content: '✓'; position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 700; }
+.why-full-list strong { color: var(--text); font-weight: 600; }
+.why-full-foot { font-size: 12.5px; color: var(--text-3); margin-top: 16px; }
 
 .path-choice { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; width: 100%; }
 
@@ -939,10 +925,14 @@ input[type="range"]::-moz-range-thumb {
       <div class="section-tag">Welcome to VYVE</div>
       <h1 class="section-title">Let's build your personal<br>wellbeing plan</h1>
       <p class="section-sub" style="margin-top:10px;">This questionnaire helps us understand you — your goals, your lifestyle, and what support looks like for you. The more you share, the more tailored your experience will be.</p>
-      <div class="video-placeholder">
-        <div class="video-play"></div>
-        <div style="font-size:15px;font-weight:500;color:#fff;margin-bottom:4px;">A message from the VYVE team</div>
-        <div style="font-size:13px;color:rgba(255,255,255,0.6);">60 seconds — why this matters</div>
+      <div class="why-full">
+        <div class="why-full-title">Why the full questionnaire is worth it</div>
+        <ul class="why-full-list">
+          <li><strong>Recommendations that actually fit.</strong> Movement, nutrition and mindset tuned to your goals — not generic advice.</li>
+          <li><strong>A weekly plan around your real life.</strong> Built from your time, energy and the things you're already juggling.</li>
+          <li><strong>AI coaching from day one.</strong> Every conversation starts already knowing your context, so nothing has to be re-explained.</li>
+        </ul>
+        <div class="why-full-foot">It takes about five minutes — and your plan keeps adapting through your weekly check-ins.</div>
       </div>
       <div class="path-choice">
         <div class="path-card selected" id="pathFull" onclick="selectPath('full')">
