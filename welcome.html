@@ -2,7 +2,7 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, interactive-widget=resizes-content">
 <title>VYVE Health — Your Personal Wellbeing Plan</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -77,6 +77,8 @@ body {
   font-family: 'DM Sans', sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: touch;
   transition: background 0.3s, color 0.3s;
 }
 
@@ -350,18 +352,27 @@ select option { background: var(--bg); color: var(--text); }
 [data-theme="light"] .choice:hover { color: var(--accent); }
 
 .choice.selected {
-  border-color: var(--accent);
-  background: var(--accent-pale);
-  color: var(--accent-xl);
-  font-weight: 500;
+  border-color: var(--accent-dk);
+  background: var(--accent);
+  color: #FFFFFF;
+  font-weight: 600;
 }
 
-[data-theme="light"] .choice.selected { color: var(--accent); }
+[data-theme="light"] .choice.selected {
+  border-color: var(--accent-dk);
+  background: var(--accent-dk);
+  color: #FFFFFF;
+}
 
 .choice.selected:hover {
-  background: var(--surface);
-  border-color: var(--accent);
-  color: var(--text-3);
+  background: var(--accent);
+  border-color: var(--accent-dk);
+  color: #FFFFFF;
+}
+
+[data-theme="light"] .choice.selected:hover {
+  background: var(--accent-dk);
+  color: #FFFFFF;
 }
 
 /* ══════════════════════════════════════════
