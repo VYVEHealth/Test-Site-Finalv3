@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VYVE Health — Employer Dashboard (Preview)</title>
+  <title>VYVE Health — Employer Dashboard (Demo)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -179,14 +179,14 @@
 
 <div class="modebar">
   <span style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted)">View</span>
-  <button class="mode-btn on" id="mode-live" onclick="setProjMode(false)">Live data</button>
+  <button class="mode-btn on" id="mode-live" onclick="setProjMode(false)">Current</button>
   <button class="mode-btn" id="mode-proj" onclick="setProjMode(true)">Projection</button>
   <div class="proj-ctrl" id="proj-ctrl">
     <span style="font-size:0.72rem;color:var(--muted)">Headcount</span>
     <input type="number" id="proj-hc" value="10000" min="1" step="500" oninput="onProjHc(this.value)">
   </div>
 </div>
-<div id="proj-badge">&#9888;&#65039; <span><b>Illustrative projection</b> &mdash; live engagement rates from the current cohort applied to a <b id="proj-hc-lbl">10,000</b>-person workforce. Not real members; a scale model for illustration.</span></div>
+<div id="proj-badge">&#9888;&#65039; <span><b>Illustrative projection</b> &mdash; sample engagement rates scaled to a <b id="proj-hc-lbl">10,000</b>-person workforce. Not real members; a scale model for illustration.</span></div>
 <div class="ctabs" id="ctabs">
   <button class="ct on" data-co="ALL" onclick="switchCo('ALL',this)">All Companies</button>
 </div>
@@ -280,85 +280,47 @@
 </footer>
 
 <script>
-const EDGE_URL = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/employer-dashboard';
 let activeCo = 'ALL';
 let DATA = null;
 let projMode = false, projHeadcount = 10000;
 
-window.addEventListener('DOMContentLoaded', () => setTimeout(loadAll, 500));
+// Self-contained DEMO data — no API key, no live fetch, no real client figures.
+// Illustrative sample of a mid-size employer; engagement mix mirrors real VYVE cohort behaviour.
+const SAMPLE_DATA = {
+  companies: [],
+  members: { total: 240, active: 96, quiet: 54, inactive: 90, engagementRate: 62 },
+  activities: { total: 4180, thisMonth: 360, avgPerMember: '17.4', habits: 1700, checkins: 520, workouts: 820, cardio: 700 },
+  sessions: {
+    totalLiveViews: 240, totalReplayViews: 200, totalLiveMins: 7500, totalReplayMins: 6250,
+    byCategory: [
+      { category:'Mindfulness',     liveViews:70, liveMins:2100, replayViews:60, replayMins:1800 },
+      { category:'Movement & HIIT', liveViews:55, liveMins:1900, replayViews:45, replayMins:1500 },
+      { category:'Yoga',            liveViews:50, liveMins:1600, replayViews:40, replayMins:1300 },
+      { category:'Strength',        liveViews:40, liveMins:1200, replayViews:35, replayMins:1050 },
+      { category:'Breathwork',      liveViews:25, liveMins:700,  replayViews:20, replayMins:600 }
+    ]
+  },
+  charity: { monthsDonated: 139, remainder: 10, progressPct: 33, nextMilestone: { remaining: 20 } },
+  trend: [
+    {label:'Sep 24', count:180},{label:'Oct 24', count:240},{label:'Nov 24', count:300},
+    {label:'Dec 24', count:280},{label:'Jan 25', count:360},{label:'Feb 25', count:410},
+    {label:'Mar 25', count:460},{label:'Apr 25', count:520},{label:'May 25', count:560},{label:'Jun 25', count:360}
+  ]
+};
 
-// ── API Key management ──────────────────────────────────────────────────────
-// Key is stored in localStorage (not source) for security — persists across sessions.
-// To set: paste into browser console: sessionStorage.setItem('vyve_emp_key','YOUR_KEY')
-function getEmpKey() {
-  return localStorage.getItem('vyve_emp_key') || '';
+window.addEventListener('DOMContentLoaded', () => setTimeout(loadAll, 400));
+
+function loadAll() {
+  DATA = SAMPLE_DATA;
+  buildCoTabs();
+  rerender();
+  document.getElementById('active-co-label').textContent = 'Sample Employer';
+  document.getElementById('ts').textContent = 'Sample data';
+  document.getElementById('loader').classList.add('gone');
 }
 
-function promptForKey() {
-  const key = window.prompt(
-    'VYVE Employer Dashboard\n\nEnter your API key to continue:\n(Tip: paste into browser console to avoid re-entering:\nlocalStorage.setItem(\'vyve_emp_key\',\'YOUR_KEY\'))'
-  );
-  if (key && key.trim()) {
-    localStorage.setItem('vyve_emp_key', key.trim());
-    return key.trim();
-  }
-  return '';
-}
-
-async function fetchDashboard(company) {
-  let key = getEmpKey();
-  const url = `${EDGE_URL}?company=${encodeURIComponent(company)}`;
-  const r = await fetch(url, { headers: key ? { 'x-api-key': key } : {} });
-  if (r.status === 401) {
-    // Key missing or wrong — prompt once
-    key = promptForKey();
-    if (!key) throw new Error('API key required');
-    const r2 = await fetch(url, { headers: { 'x-api-key': key } });
-    if (!r2.ok) {
-      localStorage.removeItem('vyve_emp_key'); // clear bad key
-      const j2 = await r2.json().catch(() => ({}));
-      throw new Error(j2.error || `HTTP ${r2.status}`);
-    }
-    const json2 = await r2.json();
-    if (json2.error) throw new Error(json2.error);
-    return json2;
-  }
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  const json = await r.json();
-  if (json.error) throw new Error(json.error);
-  return json;
-}
-
-async function loadAll() {
-  msg('Connecting to live data…');
-  try {
-    const withTimeout = (p, ms=20000) => Promise.race([p, new Promise((_,rej)=>setTimeout(()=>rej(new Error('Timed out')),ms))]);
-    DATA = await withTimeout(fetchDashboard('ALL'));
-    buildCoTabs();
-    rerender();
-    document.getElementById('ts').textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('loader').classList.add('gone');
-    setInterval(refresh, 5*60*1000);
-  } catch(e) {
-    console.error(e);
-    document.getElementById('loader').classList.add('gone');
-    const eb = document.getElementById('err-bar');
-    eb.style.display = 'block';
-    eb.innerHTML = `⚠️ Could not load data: <strong>${e.message}</strong>`;
-    document.getElementById('ts').textContent = 'Error';
-  }
-}
-
-async function refresh() {
-  try {
-    const fresh = await fetchDashboard(activeCo);
-    DATA = fresh;
-    rerender();
-    document.getElementById('ts').textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  } catch(e) { console.warn('Refresh failed', e); }
-}
-
-function msg(t) { document.getElementById('l-msg').textContent = t; }
+function refresh() { rerender(); }
+function msg(t) { const e = document.getElementById('l-msg'); if (e) e.textContent = t; }
 
 function buildCoTabs() {
   const wrap = document.getElementById('ctabs');
@@ -371,18 +333,12 @@ function buildCoTabs() {
   });
 }
 
-async function switchCo(co, btn) {
+function switchCo(co, btn) {
   activeCo = co;
   document.querySelectorAll('.ct').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
-  document.getElementById('active-co-label').textContent = co === 'ALL' ? 'All Companies' : co;
-  document.getElementById('loader').classList.remove('gone');
-  try {
-    DATA = await fetchDashboard(co);
-    rerender();
-    document.getElementById('ts').textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  } catch(e) { console.warn('Switch failed', e); }
-  document.getElementById('loader').classList.add('gone');
+  if (!projMode) document.getElementById('active-co-label').textContent = co === 'ALL' ? 'Sample Employer' : co;
+  rerender();
 }
 
 function render(d) {
@@ -516,7 +472,7 @@ function setProjMode(on){
   document.getElementById('mode-proj').classList.toggle('on', on);
   document.getElementById('proj-ctrl').style.display = on ? 'flex' : 'none';
   document.getElementById('proj-badge').style.display = on ? 'flex' : 'none';
-  document.getElementById('active-co-label').textContent = on ? ('Projection \u2014 ' + projHeadcount.toLocaleString('en-GB') + ' staff') : (activeCo === 'ALL' ? 'All Companies' : activeCo);
+  document.getElementById('active-co-label').textContent = on ? ('Projection \u2014 ' + projHeadcount.toLocaleString('en-GB') + ' staff') : (activeCo === 'ALL' ? 'Sample Employer' : activeCo);
   rerender();
 }
 function onProjHc(v){ projHeadcount = parseInt(v,10)||0; document.getElementById('proj-hc-lbl').textContent = projHeadcount.toLocaleString('en-GB'); if(projMode){ document.getElementById('active-co-label').textContent = 'Projection \u2014 ' + projHeadcount.toLocaleString('en-GB') + ' staff'; rerender(); } }
