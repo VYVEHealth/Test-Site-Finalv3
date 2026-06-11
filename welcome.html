@@ -1432,6 +1432,10 @@ input[type="range"]::-moz-range-thumb {
       <div style="font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:10px;font-weight:600;">Get the app</div>
       <h3 style="font-size:22px;font-weight:700;color:#fff;margin:0 0 8px;line-height:1.3;">Download VYVE Health</h3>
       <p style="font-size:14px;color:rgba(255,255,255,0.85);margin:0 0 22px;line-height:1.6;">Your personalised plan, AI coach, and live sessions — all in one place.</p>
+      <div id="open-app-btn-wrap" style="display:none;margin-bottom:18px;">
+        <a id="open-app-btn" href="vyve://" style="display:inline-block;background:#fff;color:#0A1F1F;font-size:16px;font-weight:700;padding:14px 36px;border-radius:50px;text-decoration:none;letter-spacing:0.2px;">Open VYVE</a>
+        <p style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:10px;">Already installed? Tap to open the app directly.</p>
+      </div>
       <div id="store-badges" style="display:flex;flex-direction:column;align-items:center;gap:14px;">
         <a id="badge-ios" href="https://apps.apple.com/gb/app/vyve-health/id6762100652" target="_blank" rel="noopener" style="display:none;">
           <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" style="height:54px;width:auto;" />
@@ -1456,8 +1460,10 @@ input[type="range"]::-moz-range-thumb {
       var isIOS = /iPhone|iPad|iPod/i.test(ua);
       var isAndroid = /Android/i.test(ua);
       if (isIOS) {
+        document.getElementById('open-app-btn-wrap').style.display = 'block';
         document.getElementById('badge-ios').style.display = 'inline-block';
       } else if (isAndroid) {
+        document.getElementById('open-app-btn-wrap').style.display = 'block';
         document.getElementById('badge-android').style.display = 'inline-block';
       } else {
         document.getElementById('badge-both').style.display = 'flex';
@@ -1466,8 +1472,8 @@ input[type="range"]::-moz-range-thumb {
     </script>
     <div class="next-steps-card">
       <div style="font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:600;">What happens next</div>
-      <p style="font-size:14px;line-height:1.7;color:var(--text-2);">Your VYVE account is being set up now. Keep an eye out for a welcome email from <strong><!--email_off-->team@vyvehealth.co.uk<!--/email_off--></strong> — it'll arrive within the next few minutes with your login details and everything you need to get started.</p>
-      <p style="font-size:13px;line-height:1.6;color:var(--text-2);margin-top:10px;"><strong>Can't see the email?</strong> Check your junk or spam folder — it sometimes lands there. If you still can't find it, reply to the email or contact us at <!--email_off-->team@vyvehealth.co.uk<!--/email_off--> and we'll get it sorted straight away.</p>
+      <p style="font-size:14px;line-height:1.7;color:var(--text-2);">Your VYVE account is ready. <strong>Download the app and open it</strong> — tap "I already have an account" and log in with the email address you just used. Can't find it? Check your junk folder or tap Forgot Password on the login screen.</p>
+      <p style="font-size:13px;line-height:1.6;color:var(--text-2);margin-top:10px;">A welcome email from <strong><!--email_off-->team@vyvehealth.co.uk<!--/email_off--></strong> is on its way with a sign-in link too. If you need help, email us at <!--email_off-->team@vyvehealth.co.uk<!--/email_off-->.</p>
     </div>
     <div style="margin-top:18px;padding:22px;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;width:100%;text-align:left;">
       <div style="font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;font-weight:600;">What's inside VYVE</div>
