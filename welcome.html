@@ -1400,7 +1400,15 @@ input[type="range"]::-moz-range-thumb {
     <div class="form-area">
       <div class="q-group"><label class="q-label">What's your specific goal for the next 6–8 weeks? <span style="color:var(--text-3);font-weight:400;">(optional)</span></label><input type="text" id="specificGoal" placeholder="e.g. Run a 5K, lose 5kg, sleep better"></div>
       <div class="q-group"><label class="q-label">Anything else we should know? <span style="color:var(--text-3);font-weight:400;">(optional)</span></label><span class="q-hint">Is there anything that could help us support you better?</span><textarea id="anythingElse" rows="3" placeholder="Tell us anything you'd like us to know..." style="resize:vertical;"></textarea></div>
-      <div class="q-group"><label class="q-label">Create your password</label><span class="q-hint">You'll use this with your email to sign in to the VYVE app</span><input type="password" id="password" placeholder="At least 8 characters" autocomplete="new-password" oninput="validatePassword(this)"><div class="field-error" id="err-password">Your password must be at least 8 characters</div></div>
+      <div class="q-group"><label class="q-label">Create your password</label><span class="q-hint">You'll use this with your email to sign in to the VYVE app</span><input type="password" id="password" placeholder="Create a password" autocomplete="new-password" oninput="validatePassword(this)">
+        <ul id="pw-reqs" style="list-style:none;padding:0;margin:10px 0 0;font-size:13px;line-height:1.9;">
+          <li data-req="len"><span class="pw-x">○</span> At least 8 characters</li>
+          <li data-req="upper"><span class="pw-x">○</span> One uppercase letter</li>
+          <li data-req="lower"><span class="pw-x">○</span> One lowercase letter</li>
+          <li data-req="num"><span class="pw-x">○</span> One number</li>
+          <li data-req="sym"><span class="pw-x">○</span> One symbol (e.g. ! @ # $ %)</li>
+        </ul>
+      </div>
       <div class="q-group"><label class="q-label">Confirm your password</label><input type="password" id="passwordConfirm" placeholder="Re-enter your password" autocomplete="new-password" oninput="validatePasswordConfirm(this)"><div class="field-error" id="err-passwordConfirm">Passwords don't match</div></div>
     </div>
     <div class="nav-row"><button class="btn-back" onclick="goToPrev(10)">← Back</button><button class="btn-next" id="submitBtn" onclick="submitQuestionnaire()">Build my plan →</button></div>
@@ -1498,6 +1506,20 @@ input[type="range"]::-moz-range-thumb {
 const ONBOARDING_EDGE_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/onboarding';
 const APPLY_TRIAL_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/apply-trial';
 const SET_PW_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/set-member-password';
+
+// Sets the member's chosen password on their (now-created) auth user and CONFIRMS success.
+// Returns true only if Supabase accepted the password. Caller gates the success screen on this.
+async function confirmPasswordSet(email, password){
+  try {
+    const r = await fetch(SET_PW_FN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: password })
+    });
+    const j = await r.json().catch(function(){ return {}; });
+    return r.ok && j && j.success === true;
+  } catch (_) { return false; }
+}
 // ── Shared workout referral ──────────────────────────────────────────────────
 (function() {
   const params = new URLSearchParams(window.location.search);
@@ -1860,23 +1882,40 @@ function validateSection(section) {
   return true;
 }
 
-// ── PASSWORD VALIDATION ──
+// ── PASSWORD VALIDATION ── (mirrors Supabase: lower+upper+number+symbol, min 8)
+function pwChecks(v){
+  v = v || '';
+  return {
+    len: v.length >= 8,
+    upper: /[A-Z]/.test(v),
+    lower: /[a-z]/.test(v),
+    num: /[0-9]/.test(v),
+    sym: /[^A-Za-z0-9]/.test(v)
+  };
+}
 function validatePassword(el){
-  const ok = (el.value || '').length >= 8;
-  const err = document.getElementById('err-password');
-  if(ok){ el.classList.remove('error'); if(err) err.classList.remove('show'); }
-  else { el.classList.add('error'); if(err) err.classList.add('show'); }
-  // revalidate confirm if it has a value
-  const c = document.getElementById('passwordConfirm');
-  if(c && c.value) validatePasswordConfirm(c);
+  const c = pwChecks(el.value);
+  const list = document.getElementById('pw-reqs');
+  if(list){
+    list.querySelectorAll('li').forEach(function(li){
+      const key = li.getAttribute('data-req');
+      const mark = li.querySelector('.pw-x');
+      if(c[key]){ li.style.color = '#1B7878'; if(mark) mark.textContent = '✓'; }
+      else { li.style.color = 'var(--text-3)'; if(mark) mark.textContent = '○'; }
+    });
+  }
+  const ok = c.len && c.upper && c.lower && c.num && c.sym;
+  if(ok){ el.classList.remove('error'); } else { el.classList.add('error'); }
+  const cf = document.getElementById('passwordConfirm');
+  if(cf && cf.value) validatePasswordConfirm(cf);
   return ok;
 }
 function validatePasswordConfirm(el){
   const pw = document.getElementById('password').value;
-  const ok = el.value === pw && el.value.length >= 8;
+  const ok = el.value === pw && el.value.length > 0;
   const err = document.getElementById('err-passwordConfirm');
   if(ok){ el.classList.remove('error'); if(err) err.classList.remove('show'); }
-  else { el.classList.add('error'); if(err){ err.textContent = el.value.length < 8 ? 'Your password must be at least 8 characters' : "Passwords don't match"; err.classList.add('show'); } }
+  else { el.classList.add('error'); if(err){ err.textContent = "Passwords don't match"; err.classList.add('show'); } }
   return ok;
 }
 
@@ -2000,6 +2039,13 @@ async function submitQuestionnaire() {
     const result = await response.json();
     if (result.error) throw new Error(result.error);
 
+    // Gate: confirm the chosen password is set before showing success.
+    const pwSet = await confirmPasswordSet(data.email, data.password);
+    if (!pwSet) {
+      const pwSet2 = await confirmPasswordSet(data.email, data.password);
+      if (!pwSet2) throw new Error('PASSWORD_SET_FAILED');
+    }
+
     showResults(data, result);
 
   } catch(err) {
@@ -2015,6 +2061,11 @@ async function submitQuestionnaire() {
       const msg = document.getElementById('errorMessage');
       if (title) title.textContent = 'This is taking longer than expected';
       if (msg) msg.textContent = "Our servers are busy. Your answers are saved — tap Try again and it should work straight away.";
+    } else if (String(err.message || '').indexOf('PASSWORD_SET_FAILED') !== -1) {
+      const title = document.getElementById('errorTitle');
+      const msg = document.getElementById('errorMessage');
+      if (title) title.textContent = 'Almost there';
+      if (msg) msg.textContent = "Your plan is ready but we couldn't set your password just now. Tap Try again to finish setting up your sign-in.";
     }
   }
 }
@@ -2061,6 +2112,13 @@ async function retrySubmit() {
     const result = await response.json();
     if (result.error) throw new Error(result.error);
 
+    // Gate: confirm the chosen password is set before showing success.
+    const pwSet = await confirmPasswordSet(data.email, data.password);
+    if (!pwSet) {
+      const pwSet2 = await confirmPasswordSet(data.email, data.password);
+      if (!pwSet2) throw new Error('PASSWORD_SET_FAILED');
+    }
+
     showResults(data, result);
 
   } catch(err) {
@@ -2078,17 +2136,6 @@ async function retrySubmit() {
 }
 
 function showResults(data, result) {
-  // Set the member's chosen password on their (now-created) auth user. Fire-and-forget;
-  // the welcome email's recovery link is the fallback if this ever fails.
-  try {
-    if (data && data.email && data.password) {
-      fetch(SET_PW_FN, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: data.email, password: data.password }),
-      }).catch(function () {});
-    }
-  } catch (_) {}
   // PM-440 — if they signed up via a /welcome?c= trial link, stamp the trial now (fire-and-forget;
   // guarded server-side so it only ever affects this fresh signup). Failure is non-fatal.
   try {
