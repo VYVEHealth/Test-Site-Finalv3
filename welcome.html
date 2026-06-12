@@ -1400,6 +1400,8 @@ input[type="range"]::-moz-range-thumb {
     <div class="form-area">
       <div class="q-group"><label class="q-label">What's your specific goal for the next 6–8 weeks? <span style="color:var(--text-3);font-weight:400;">(optional)</span></label><input type="text" id="specificGoal" placeholder="e.g. Run a 5K, lose 5kg, sleep better"></div>
       <div class="q-group"><label class="q-label">Anything else we should know? <span style="color:var(--text-3);font-weight:400;">(optional)</span></label><span class="q-hint">Is there anything that could help us support you better?</span><textarea id="anythingElse" rows="3" placeholder="Tell us anything you'd like us to know..." style="resize:vertical;"></textarea></div>
+      <div class="q-group"><label class="q-label">Create your password</label><span class="q-hint">You'll use this with your email to sign in to the VYVE app</span><input type="password" id="password" placeholder="At least 8 characters" autocomplete="new-password" oninput="validatePassword(this)"><div class="field-error" id="err-password">Your password must be at least 8 characters</div></div>
+      <div class="q-group"><label class="q-label">Confirm your password</label><input type="password" id="passwordConfirm" placeholder="Re-enter your password" autocomplete="new-password" oninput="validatePasswordConfirm(this)"><div class="field-error" id="err-passwordConfirm">Passwords don't match</div></div>
     </div>
     <div class="nav-row"><button class="btn-back" onclick="goToPrev(10)">← Back</button><button class="btn-next" id="submitBtn" onclick="submitQuestionnaire()">Build my plan →</button></div>
   </div>
@@ -1495,6 +1497,7 @@ input[type="range"]::-moz-range-thumb {
 <script>
 const ONBOARDING_EDGE_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/onboarding';
 const APPLY_TRIAL_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/apply-trial';
+const SET_PW_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/set-member-password';
 // ── Shared workout referral ──────────────────────────────────────────────────
 (function() {
   const params = new URLSearchParams(window.location.search);
@@ -1857,14 +1860,38 @@ function validateSection(section) {
   return true;
 }
 
+// ── PASSWORD VALIDATION ──
+function validatePassword(el){
+  const ok = (el.value || '').length >= 8;
+  const err = document.getElementById('err-password');
+  if(ok){ el.classList.remove('error'); if(err) err.classList.remove('show'); }
+  else { el.classList.add('error'); if(err) err.classList.add('show'); }
+  // revalidate confirm if it has a value
+  const c = document.getElementById('passwordConfirm');
+  if(c && c.value) validatePasswordConfirm(c);
+  return ok;
+}
+function validatePasswordConfirm(el){
+  const pw = document.getElementById('password').value;
+  const ok = el.value === pw && el.value.length >= 8;
+  const err = document.getElementById('err-passwordConfirm');
+  if(ok){ el.classList.remove('error'); if(err) err.classList.remove('show'); }
+  else { el.classList.add('error'); if(err){ err.textContent = el.value.length < 8 ? 'Your password must be at least 8 characters' : "Passwords don't match"; err.classList.add('show'); } }
+  return ok;
+}
+
 // ── SUBMIT ──
 async function submitQuestionnaire() {
   if (!validateSection(10)) return;
+  const pwOk = validatePassword(document.getElementById('password'));
+  const pwcOk = validatePasswordConfirm(document.getElementById('passwordConfirm'));
+  if (!pwOk || !pwcOk) { document.getElementById(!pwOk ? 'password' : 'passwordConfirm').scrollIntoView({behavior:'smooth',block:'center'}); return; }
   const data = {
     firstName: document.getElementById('firstName').value.trim(),
     lastName: document.getElementById('lastName').value.trim(),
     phone: document.getElementById('phone').value.trim(),
     email: document.getElementById('email').value.trim().toLowerCase(),
+    password: document.getElementById('password').value,
     dob: document.getElementById('dob').value,
     gender: document.getElementById('gender').value,
     gender_self_describe: document.getElementById('gender_self_describe')?.value?.trim()||null,
@@ -2051,6 +2078,17 @@ async function retrySubmit() {
 }
 
 function showResults(data, result) {
+  // Set the member's chosen password on their (now-created) auth user. Fire-and-forget;
+  // the welcome email's recovery link is the fallback if this ever fails.
+  try {
+    if (data && data.email && data.password) {
+      fetch(SET_PW_FN, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: data.email, password: data.password }),
+      }).catch(function () {});
+    }
+  } catch (_) {}
   // PM-440 — if they signed up via a /welcome?c= trial link, stamp the trial now (fire-and-forget;
   // guarded server-side so it only ever affects this fresh signup). Failure is non-fatal.
   try {
