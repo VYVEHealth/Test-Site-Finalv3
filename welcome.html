@@ -783,6 +783,17 @@ input[type="range"]::-moz-range-thumb {
 .life-card:hover { border-color: var(--accent); background: var(--accent-pale); }
 .life-card.selected { border-color: var(--accent); background: var(--accent-pale); }
 
+/* PM-610: activity cards carry both .life-card AND .choice. The .choice.selected dark-pill
+   rule (esp. its [data-theme="light"] variant) out-specifies .life-card.selected and paints
+   a dark background while the title/sub keep their dark colours = invisible text in light mode.
+   Force the pale card treatment to win in BOTH themes and keep text readable. */
+.life-card.choice.selected { background: var(--accent-pale); border-color: var(--accent); color: var(--text); }
+.life-card.choice.selected .life-card-title { color: var(--text); }
+.life-card.choice.selected .life-card-sub { color: var(--text-3); }
+[data-theme="light"] .life-card.choice.selected { background: var(--accent-pale); border-color: var(--accent); color: var(--text); }
+[data-theme="light"] .life-card.choice.selected .life-card-title { color: var(--text); }
+[data-theme="light"] .life-card.choice.selected .life-card-sub { color: var(--text-3); }
+
 .life-card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; transition: color 0.3s; }
 .life-card-sub { font-size: 12px; color: var(--text-3); line-height: 1.45; }
 
