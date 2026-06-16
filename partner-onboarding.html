@@ -451,21 +451,6 @@
 
 </div>
 
-<!-- ============ AUTH OVERLAY ============ -->
-<div class="ov" id="authOv">
-  <div class="ov-card">
-    <h3 id="authTitle">Verify your email</h3>
-    <p id="authMsg">We've sent a 6-digit code to your email. Enter it below to secure your application so you can save and come back any time.</p>
-    <div class="field"><input type="text" class="otp-in" id="otpCode" inputmode="numeric" maxlength="6" placeholder="······"></div>
-    <div class="ov-actions">
-      <button class="btn btn-primary" id="otpVerifyBtn" onclick="verifyOtp()">Verify &amp; continue</button>
-      <button class="btn btn-ghost" onclick="resendOtp()">Resend code</button>
-      <span class="ov-skip" id="otpSkip" onclick="skipAuth()">Skip for now</span>
-    </div>
-    <p class="muted" id="authErr" style="color:#f0a5a5;display:none;margin-top:10px"></p>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -507,23 +492,28 @@ const state={fields:{},files:{},checks:{agree:false,revshare:false,payoutlater:f
 const total=8;
 const stepTitles=['About you','Verification','Agreement','Video modules','Education','Build your space','Starter content','Launch'];
 let step=0;
-let authed=false;       // verified magic-link session
 let online=!!sb;        // backend reachable
-let pendingAfterAuth=null;
 
-/* ===== BACKEND BRIDGE ===== */
-async function getToken(){ if(!sb) return null; try{const {data}=await sb.auth.getSession();return data?.session?.access_token||null;}catch(e){return null;} }
+/* ===== BACKEND BRIDGE (public EF, no login) ===== */
 async function efCall(action,body){
-  const token=await getToken();
-  if(!token) throw new Error('no-session');
   const res=await fetch(`${CONFIG.url}/functions/v1/${CONFIG.fn}`,{
     method:'POST',
-    headers:{'Authorization':`Bearer ${token}`,'apikey':CONFIG.anon,'Content-Type':'application/json'},
+    headers:{'Authorization':`Bearer ${CONFIG.anon}`,'apikey':CONFIG.anon,'Content-Type':'application/json'},
     body:JSON.stringify({action,...body})
   });
   const j=await res.json().catch(()=>({}));
   if(!res.ok) throw new Error(j.error||('http-'+res.status));
   return j;
+}
+async function ensureDraft(){
+  if(state.partnerId||!online) return;
+  try{
+    const r=await efCall('start',{
+      contact:{name:state.fields.contactName,business:state.fields.businessName,email:state.fields.email,phone:state.fields.phone,location:state.fields.location,website:state.fields.website},
+      practice:{pillar:state.pillar,specialism:state.fields.specialism,yearsExperience:state.fields.years,description:state.fields.description}
+    });
+    state.partnerId=r.partner_id; saveLocal();
+  }catch(e){ online=false; }
 }
 function credentialsBlob(){
   return {formFields:state.fields,pillar:state.pillar,program:state.program,
@@ -583,44 +573,26 @@ function saveLocal(){
 }
 async function saveState(){
   saveLocal();
-  if(!authed||!state.partnerId) return;
+  if(!online||!state.partnerId) return;
   try{
     await efCall('save',{partner_id:state.partnerId,credentialsPatch:credentialsBlob(),steps:gateSteps(),
       pct_complete:Math.round(step/total*100),
       assessment:{safeguarding_passed:state.quizPassed,gdpr_passed:state.quizPassed,score:state.quizScore}});
   }catch(e){ online=false; }
 }
-function manualSave(){saveState();toast(authed?'Progress saved to your account — resume any time':'Progress saved on this device');}
-async function startOver(){try{localStorage.removeItem(KEY);}catch(e){} if(sb){try{await sb.auth.signOut();}catch(e){}} location.reload();}
+function manualSave(){saveState();toast('Progress saved — resume on this device any time');}
+function startOver(){try{localStorage.removeItem(KEY);}catch(e){} location.reload();}
 
 async function restoreState(){
-  // Prefer server (authed session) over local mirror
   let snap=null;
   try{snap=JSON.parse(localStorage.getItem(KEY));}catch(e){}
-  if(sb){
-    try{
-      const {data}=await sb.auth.getSession();
-      if(data?.session){
-        authed=true;
-        const r=await efCall('start',{});
-        state.partnerId=r.partner_id;
-        const cr=r.credentials||{};
-        if(cr.formFields) state.fields={...state.fields,...cr.formFields};
-        if(cr.pillar) state.pillar=cr.pillar;
-        if(cr.program) state.program=cr.program;
-        const prog=r.progress||{};
-        const st=prog.steps||{};
-        state.quizPassed=!!st.safeguarding_passed; state.watched=st.videos_watched?4:state.watched;
-        if(snap&&snap.files) hydrateFiles(snap.files,true); // chips from local mirror; already uploaded server-side
-        applyRestoredDom('account'); return true;
-      }
-    }catch(e){ online=false; }
-  }
-  // local-only restore
   if(!snap||!snap.fields) return false;
   state.fields=snap.fields||{};state.checks=snap.checks||state.checks;state.pillar=snap.pillar||null;
   state.program=snap.program||null;state.watched=snap.watched||0;state.quizPassed=!!snap.quizPassed;state.quizScore=snap.quizScore||0;step=snap.step||0;state.partnerId=snap.partnerId||null;
   if(snap.files) hydrateFiles(snap.files,true);
+  if(online&&state.partnerId){
+    try{ const r=await efCall('start',{resume_id:state.partnerId}); const cr=r.credentials||{}; if(cr.formFields) state.fields={...cr.formFields,...state.fields}; }catch(e){ online=false; }
+  }
   applyRestoredDom('device'); return true;
 }
 function hydrateFiles(files,reattach){
@@ -661,57 +633,13 @@ function showStepDom(){
 function goStep(i){if(i>step)return;step=i;renderRail();showStepDom();saveState();}
 async function nextStep(){
   if(!validateStep(step))return;
-  // After step 1, secure the application with a verified email (best-effort).
-  if(step===0 && !authed && online){ await beginAuth(); return; }
+  if(step===0){ await ensureDraft(); }
   if(step<total-1){step++;renderRail();showStepDom();saveState();}
   else{submitJourney();}
 }
 function prevStep(){if(step>0){step--;renderRail();showStepDom();saveState();}}
 
-/* ===== AUTH (magic-link OTP) ===== */
-async function beginAuth(){
-  const email=(state.fields.email||'').trim();
-  if(!email){return;}
-  pendingAfterAuth=()=>{ if(step<total-1){step++;renderRail();showStepDom();saveState();} };
-  document.getElementById('authErr').style.display='none';
-  document.getElementById('authTitle').textContent='Verify your email';
-  document.getElementById('authMsg').textContent='We\u2019ve sent a 6-digit code to '+email+'. Enter it to secure your application so you can save and return any time.';
-  document.getElementById('otpSkip').style.display='inline';
-  document.getElementById('authOv').classList.add('show');
-  try{
-    const {error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:true}});
-    if(error) throw error;
-  }catch(e){
-    // backend unreachable (e.g. preview) — let them continue on-device
-    document.getElementById('authErr').textContent='Could not send a code right now — you can continue and verify before submitting.';
-    document.getElementById('authErr').style.display='block';
-    online=false;
-  }
-}
-async function resendOtp(){ const email=(state.fields.email||'').trim(); try{await sb.auth.signInWithOtp({email,options:{shouldCreateUser:true}});toast('Code re-sent');}catch(e){toast('Could not resend');} }
-async function verifyOtp(){
-  const email=(state.fields.email||'').trim();
-  const tokenCode=(document.getElementById('otpCode').value||'').trim();
-  if(tokenCode.length<6){document.getElementById('authErr').textContent='Enter the 6-digit code.';document.getElementById('authErr').style.display='block';return;}
-  try{
-    const {error}=await sb.auth.verifyOtp({email,token:tokenCode,type:'email'});
-    if(error) throw error;
-    authed=true; online=true;
-    const r=await efCall('start',{
-      contact:{name:state.fields.contactName,business:state.fields.businessName,email,phone:state.fields.phone,location:state.fields.location,website:state.fields.website},
-      practice:{pillar:state.pillar,specialism:state.fields.specialism,yearsExperience:state.fields.years,description:state.fields.description}
-    });
-    state.partnerId=r.partner_id;
-    await saveState();
-    closeAuth(); toast('Email verified — your application is secured');
-    if(pendingAfterAuth){const f=pendingAfterAuth;pendingAfterAuth=null;f();}
-  }catch(e){
-    document.getElementById('authErr').textContent='That code did not verify. Try again or resend.';
-    document.getElementById('authErr').style.display='block';
-  }
-}
-function skipAuth(){ online=false; closeAuth(); if(pendingAfterAuth){const f=pendingAfterAuth;pendingAfterAuth=null;f();} }
-function closeAuth(){ document.getElementById('authOv').classList.remove('show'); document.getElementById('otpCode').value=''; }
+/* (auth removed — public EF, no login) */
 
 /* ===== VALIDATION ===== */
 function clearFieldErr(el){const f=el.closest('.field');if(f)f.classList.remove('err');}
@@ -759,8 +687,8 @@ async function handleFile(box,key,kind,slot,file){
   // local preview object URL for images
   if(file.type&&file.type.startsWith('image/')){rec.previewUrl=URL.createObjectURL(file);}
   renderUploaded(box,key,false);
-  // Real upload only when authed + online; otherwise it's a local-only preview (works in preview/sandbox)
-  if(authed&&online&&state.partnerId&&sb){
+  // Real upload only when the draft exists + online; otherwise a local-only preview (works in offline/preview)
+  if(online&&state.partnerId&&sb){
     const chip=box.parentElement.querySelector('.uploaded[data-for="'+key+'"]');
     if(chip){chip.classList.add('uploading');chip.insertAdjacentHTML('beforeend','<div class="upbar"><i></i></div>');}
     try{
@@ -872,24 +800,12 @@ function buildRecord(){
 }
 async function submitJourney(){
   if(!validateStep(7))return;
-  // Submit requires a verified account. If not yet verified, gate here (no skip).
-  if(!authed){
-    if(!online){ /* preview/offline: fall through to local confirmation */ }
-    else{
-      pendingAfterAuth=()=>doSubmit();
-      document.getElementById('otpSkip').style.display='none';
-      document.getElementById('authTitle').textContent='Verify to submit';
-      document.getElementById('authMsg').textContent='Enter the 6-digit code we emailed to '+(state.fields.email||'your email')+' to submit your application securely.';
-      document.getElementById('authOv').classList.add('show');
-      try{await sb.auth.signInWithOtp({email:(state.fields.email||'').trim(),options:{shouldCreateUser:true}});}catch(e){online=false;closeAuth();doSubmit();}
-      return;
-    }
-  }
+  await ensureDraft();
   doSubmit();
 }
 async function doSubmit(){
   const f=state.fields;
-  if(authed&&online&&state.partnerId){
+  if(online&&state.partnerId){
     try{
       await efCall('submit',{
         partner_id:state.partnerId,
