@@ -328,7 +328,7 @@
           <div class="check" data-check="payoutlater" onclick="toggleCheck(this)" style="margin-top:18px"><span class="box" data-i="check"></span><span class="ct">I understand payout/bank details are collected securely later, before my first payout — not in this application.</span></div>
           <div class="sign">
             <div class="field"><label>Type your full name to e-sign<span class="req">*</span></label><input type="text" data-k="signName" data-req placeholder="Full legal name"><div class="err-msg">Signature required</div></div>
-            <div class="field" style="max-width:170px"><label>Date</label><input type="date" data-k="signDate"></div>
+            <div class="field" style="max-width:170px"><label>Date</label><input type="text" data-k="signDate" readonly style="cursor:default"></div>
           </div>
         </div>
 
@@ -770,9 +770,9 @@ function syncPreview(){
   const html=document.getElementById('pfPhone');if(html)html.innerHTML=phoneHtml(name,role,bio,why,feel,c,init,photo);
 }
 function phoneHtml(name,role,bio,why,feel,c,init,photo){
-  const avStyle=photo?`background-image:url('${photo}')`:`background:${c}`;
+  const avInner=photo?`<img src="${photo}" style="width:100%;height:100%;object-fit:cover;border-radius:14px;display:block">`:init;
   return `<div class="ph-banner" style="background:linear-gradient(120deg,${c},var(--teal-deep))"></div>
-    <div class="ph-av" style="${avStyle}">${photo?'':init}</div>
+    <div class="ph-av" style="background:${c}">${avInner}</div>
     <div class="ph-info"><h4>${esc(name)}</h4><div class="r">${esc(role)}</div></div>
     <div class="ph-sec" style="border-top:none"><h5>About</h5><p>${esc(bio)}</p></div>
     <div class="ph-sec"><h5>Reason for being here</h5><p>${esc(why)}</p></div>
@@ -868,7 +868,10 @@ function showScreen(s){
 setIcons(document);
 renderOverview();renderVmods();renderEducation();renderContent();
 bindFields();bindUploads();
-(async()=>{ await restoreState(); renderRail();showStepDom();syncPreview(); })();
+(async()=>{ await restoreState();
+  const today=new Date().toISOString().slice(0,10);
+  state.fields.signDate=today; const sd=document.querySelector('[data-k="signDate"]'); if(sd) sd.value=today;
+  renderRail();showStepDom();syncPreview(); })();
 </script>
 </body>
 </html>
