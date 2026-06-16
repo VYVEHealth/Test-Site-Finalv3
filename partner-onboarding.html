@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VYVE · Partner Onboarding</title>
+<style>
+  :root{
+    --teal:#1a6b6b; --mint:#5ec4b0; --mint-light:#7dd4c4;
+    --dark:#0d1117; --card:#131f2b; --surface:#1a2b3a; --surface2:#22384a;
+    --teal-dark:#163a3e; --teal-deep:#0f4c4c;
+    --white:#f0f4f4; --muted:#8aacac; --muted-light:#a8c8c8;
+    --physical:#5ec4b0; --mental:#4a9eba; --social:#e8a855;
+    --success:#5ec4b0; --warning:#e8a855; --danger:#e06060;
+    --line:rgba(138,172,172,.13);
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:var(--font);background:radial-gradient(circle at 15% -10%,#16323a 0%,#0d1117 55%);color:var(--white);font-size:14px;min-height:100vh;-webkit-font-smoothing:antialiased}
+  ::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:6px}
+  svg{display:block}
+  a{color:var(--mint)}
+
+  .top{display:flex;align-items:center;gap:12px;padding:16px 30px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(13,17,23,.82);backdrop-filter:blur(10px);z-index:40}
+  .mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--mint),var(--teal));display:flex;align-items:center;justify-content:center;font-weight:800;color:#05201d;font-size:18px}
+  .logo{font-weight:800;letter-spacing:3px;font-size:17px}.logo b{color:var(--mint)}
+  .top .sub{font-size:10px;color:var(--muted);letter-spacing:1.3px}
+  .top .right{margin-left:auto;display:flex;gap:9px;align-items:center}
+  .btn{border:none;border-radius:11px;padding:11px 18px;font-family:var(--font);font-size:13.5px;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+  .btn svg,.bic svg{width:15px;height:15px}.bic{display:inline-flex;width:15px;height:15px}
+  .btn-primary{background:linear-gradient(135deg,var(--mint),var(--teal));color:#05201d}
+  .btn-primary:hover{filter:brightness(1.05)}
+  .btn-ghost{background:var(--card);border:1px solid var(--line);color:var(--muted-light)}
+  .btn-ghost:hover{border-color:var(--mint);color:var(--white)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:30px 26px 80px}
+  .screen{display:none;animation:fade .35s ease}.screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  h1{font-size:30px;font-weight:800;letter-spacing:-.5px}
+  .lead{color:var(--muted-light);font-size:15px;max-width:680px;line-height:1.6;margin-top:10px}
+  h2{font-size:19px;font-weight:800;margin-bottom:4px}
+  .sec-sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+  .mt{margin-top:18px}.mt2{margin-top:30px}
+
+  .flowline{position:relative;margin-top:24px}
+  .flowstep{display:flex;gap:18px;padding-bottom:26px;position:relative}
+  .flowstep:not(:last-child)::before{content:"";position:absolute;left:21px;top:44px;bottom:-4px;width:2px;background:linear-gradient(var(--mint),var(--line))}
+  .flownum{width:44px;height:44px;border-radius:13px;flex:none;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--mint);z-index:2}
+  .flowstep h3{font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .flowstep p{color:var(--muted-light);font-size:13px;line-height:1.55;margin-top:5px}
+  .who-tag{font-size:10px;font-weight:700;letter-spacing:.4px;padding:3px 9px;border-radius:20px;text-transform:uppercase}
+  .who-partner{background:rgba(94,196,176,.15);color:var(--mint)}
+  .who-vyve{background:rgba(232,168,85,.15);color:var(--social)}
+  .collects{margin-top:9px;font-size:12px;color:var(--muted)}
+  .collects b{color:var(--muted-light)}
+
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .stat .v{font-size:24px;font-weight:800}.stat .l{font-size:12px;color:var(--muted);margin-top:3px}
+  .info-pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--mint);background:rgba(94,196,176,.12);padding:6px 12px;border-radius:20px}
+  .info-pill svg{width:14px;height:14px}
+
+  .dreq{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:14px}
+  .dreq-h{background:var(--surface);padding:12px 16px;font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:10px}
+  .dreq-h svg{width:16px;height:16px;color:var(--mint)}
+  .dreq-b{padding:6px 16px}
+  .dreq-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .dreq-row:last-child{border:none}.dreq-row .f{flex:1}
+  .req-yes{font-size:10px;font-weight:700;color:var(--social);background:rgba(232,168,85,.14);padding:2px 8px;border-radius:10px}
+  .req-opt{font-size:10px;font-weight:700;color:var(--muted);background:var(--surface2);padding:2px 8px;border-radius:10px}
+
+  .journey{display:grid;grid-template-columns:280px 1fr;gap:26px;align-items:start}
+  .rail{position:sticky;top:90px}
+  .rail .pct{font-size:12px;color:var(--muted);margin-bottom:6px}
+  .progress{height:8px;background:var(--surface);border-radius:6px;overflow:hidden;margin-bottom:20px}
+  .progress .fill{height:100%;background:linear-gradient(90deg,var(--mint),var(--mint-light));border-radius:6px;transition:.4s;width:0}
+  .rstep{display:flex;gap:12px;align-items:flex-start;padding:9px 0;cursor:pointer}
+  .rdot{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+  .rdot svg{width:13px;height:13px}
+  .rstep.done .rdot{background:var(--mint);color:#05201d;border-color:var(--mint)}
+  .rstep.active .rdot{background:rgba(94,196,176,.18);border:2px solid var(--mint);color:var(--mint)}
+  .rstep .rt{font-size:13px;font-weight:600;color:var(--muted)}
+  .rstep.active .rt{color:var(--white);font-weight:700}.rstep.done .rt{color:var(--muted-light)}
+
+  .panel{min-height:480px}
+  .step{display:none}.step.active{display:block;animation:fade .3s}
+  .step .eyebrow{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mint)}
+  .step h2{font-size:22px;margin-top:6px}
+  .step .intro{color:var(--muted-light);font-size:13.5px;line-height:1.55;margin-top:8px;max-width:640px}
+
+  .field{margin-top:16px}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--muted-light);margin-bottom:7px}
+  .field label .req{color:var(--social);margin-left:3px}
+  input[type=text],input[type=email],input[type=tel],input[type=date],input[type=time],input[type=number],select,textarea{
+    width:100%;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:12px 14px;color:var(--white);font-family:var(--font);font-size:13.5px;outline:none;transition:.15s}
+  input:focus,select:focus,textarea:focus{border-color:var(--mint)}
+  textarea{resize:vertical;min-height:84px;line-height:1.5}
+  .hint{font-size:11px;color:var(--muted);margin-top:6px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  .field.err input,.field.err textarea,.field.err select,.field.err .upload{border-color:var(--danger)}
+  .err-msg{color:#f0a5a5;font-size:11px;margin-top:6px;display:none}
+  .field.err .err-msg{display:block}
+
+  .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;border-radius:13px}
+  .opts.err{outline:1px solid var(--danger);outline-offset:4px}
+  .opt{border:1px solid var(--line);border-radius:13px;padding:14px;cursor:pointer;transition:.15s;background:var(--surface)}
+  .opt:hover{border-color:var(--mint-light)}
+  .opt.sel{border-color:var(--mint);background:rgba(94,196,176,.08)}
+  .opt .dot{width:11px;height:11px;border-radius:50%;display:inline-block;margin-bottom:8px}
+  .opt .ot{font-weight:700;font-size:13.5px}.opt .os{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+
+  .upload{border:1.5px dashed rgba(138,172,172,.35);border-radius:13px;padding:18px;text-align:center;cursor:pointer;transition:.15s;background:var(--surface);display:block}
+  .upload:hover{border-color:var(--mint);background:rgba(94,196,176,.05)}
+  .upload svg{width:22px;height:22px;color:var(--mint);margin:0 auto 7px}
+  .upload .ut{font-size:13px;font-weight:600}.upload .us{font-size:11px;color:var(--muted);margin-top:3px}
+  .upload input{display:none}
+  .uploaded{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin-top:9px;font-size:12.5px}
+  .uploaded svg{width:16px;height:16px;color:var(--mint);flex:none}
+  .uploaded img{width:40px;height:40px;border-radius:8px;object-fit:cover;flex:none}
+  .uploaded .un{font-weight:600}.uploaded .usz{color:var(--muted);font-size:11px}
+  .uploaded .x{margin-left:auto;color:var(--muted);cursor:pointer;font-size:18px;line-height:1}
+  .uploaded.reattach{border-color:var(--warning)}
+  .uploaded.reattach svg{color:var(--warning)}
+  .uploaded.uploading{opacity:.7}
+  .upbar{height:3px;background:var(--surface2);border-radius:3px;margin-top:8px;overflow:hidden}
+  .upbar i{display:block;height:100%;width:0;background:var(--mint);transition:.2s}
+
+  .vmod{display:flex;gap:13px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:11px;background:var(--surface);cursor:pointer;transition:.15s}
+  .vmod:hover{border-color:var(--mint-light)}
+  .vmod .vth{width:74px;height:50px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center}
+  .vmod .vth svg{width:18px;height:18px;color:#fff}
+  .vmod .vt{font-size:13.5px;font-weight:700}.vmod .vs{font-size:11px;color:var(--muted);margin-top:2px}
+  .vmod .vchk{margin-left:auto;width:24px;height:24px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+  .vmod.watched .vchk{background:var(--mint);color:#05201d;border-color:var(--mint)}
+  .vmod.watched .vchk svg{width:13px;height:13px}
+
+  .lesson{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .lesson:last-child{border:none}
+  .lesson .lchk{width:22px;height:22px;border-radius:50%;flex:none;background:var(--mint);color:#05201d;display:flex;align-items:center;justify-content:center}
+  .lesson .lchk svg{width:12px;height:12px}
+  .lesson .lt{font-size:13px;font-weight:600}.lesson .ls{font-size:11px;color:var(--muted)}
+  .quiz{margin-top:8px}.q{margin-bottom:18px}.q .qt{font-size:13.5px;font-weight:700;margin-bottom:10px}
+  .qa{border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-bottom:8px;cursor:pointer;font-size:13px;transition:.15s;display:flex;align-items:center;gap:10px}
+  .qa:hover{border-color:var(--mint-light)}
+  .qa .mk{width:18px;height:18px;border-radius:50%;border:1px solid var(--muted);flex:none}
+  .qa.sel{border-color:var(--mint);background:rgba(94,196,176,.07)}
+  .qa.correct{border-color:var(--success);background:rgba(94,196,176,.12)}
+  .qa.wrong{border-color:var(--danger);background:rgba(224,96,96,.1)}
+  .quiz-result{padding:13px 16px;border-radius:12px;font-size:13px;font-weight:600;margin-top:6px;display:none}
+  .quiz-result.show{display:block}
+  .pass{background:rgba(94,196,176,.14);color:var(--mint)}
+  .fail{background:rgba(224,96,96,.12);color:#f0a5a5}
+
+  .terms{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;max-height:200px;overflow-y:auto;font-size:12.5px;color:var(--muted-light);line-height:1.6}
+  .terms h4{color:var(--white);font-size:13px;margin:10px 0 4px}
+  .check{display:flex;gap:11px;align-items:flex-start;margin-top:13px;cursor:pointer}
+  .check .box{width:20px;height:20px;border-radius:6px;border:1px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;background:var(--surface);transition:.15s}
+  .check.on .box{background:var(--mint);border-color:var(--mint);color:#05201d}
+  .check .box svg{width:12px;height:12px;opacity:0}.check.on .box svg{opacity:1}
+  .check .ct{font-size:13px;line-height:1.5}
+  .sign{margin-top:14px;display:flex;gap:14px;align-items:flex-end}.sign .field{flex:1;margin:0}
+
+  .done-wrap{display:grid;grid-template-columns:1fr 320px;gap:30px;align-items:start}
+  .phone{width:300px;height:600px;background:var(--dark);border-radius:34px;border:1px solid var(--line);box-shadow:0 0 0 9px #05080c,0 0 0 10px #1c2630;overflow:hidden;display:flex;flex-direction:column;margin:0 auto}
+  .ph-not{height:22px;background:#05080c;width:112px;margin:0 auto;border-radius:0 0 14px 14px}
+  .ph-scroll{flex:1;overflow-y:auto}.ph-scroll::-webkit-scrollbar{width:0}
+  .ph-banner{height:84px;position:relative}
+  .ph-av{width:60px;height:60px;border-radius:17px;border:3px solid var(--dark);position:absolute;left:16px;bottom:-24px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#05201d;font-weight:800;background-size:cover;background-position:center}
+  .ph-info{padding:32px 16px 0}.ph-info h4{font-size:15px;font-weight:800}.ph-info .r{font-size:11px;color:var(--mint);font-weight:600}
+  .ph-sec{padding:12px 16px;border-top:1px solid var(--line)}.ph-sec h5{font-size:11px;font-weight:700;margin-bottom:6px}
+  .ph-sec p{font-size:11px;color:var(--muted);line-height:1.5}
+
+  .summary-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .summary-row:last-child{border:none}.summary-row .k{color:var(--muted)}.summary-row .v{font-weight:600;text-align:right;max-width:60%}
+
+  .foot{display:flex;align-items:center;gap:12px;margin-top:30px;padding-top:20px;border-top:1px solid var(--line);flex-wrap:wrap}
+  .foot .links{margin-left:auto;display:flex;gap:18px}
+  .foot .lnk{font-size:12px;color:var(--muted);cursor:pointer}.foot .lnk:hover{color:var(--mint)}
+
+  .banner{background:linear-gradient(120deg,var(--teal-deep),var(--card));border:1px solid rgba(94,196,176,.25);border-radius:16px;padding:18px 20px;display:flex;align-items:center;gap:16px;margin-bottom:8px}
+  .banner svg{width:26px;height:26px;color:var(--mint);flex:none}
+  .banner h3{font-size:15px;font-weight:800}.banner p{font-size:12.5px;color:var(--muted-light);margin-top:3px}
+  .resume{display:none;align-items:center;gap:12px;background:rgba(232,168,85,.1);border:1px solid rgba(232,168,85,.3);border-radius:12px;padding:11px 15px;margin-bottom:18px;font-size:12.5px}
+  .resume.show{display:flex}
+
+  .muted{color:var(--muted)}.hl{color:var(--mint)}
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid rgba(94,196,176,.35);color:var(--white);font-size:13px;font-weight:600;padding:12px 22px;border-radius:30px;opacity:0;transition:.3s;z-index:200;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* auth overlay */
+  .ov{position:fixed;inset:0;background:rgba(5,8,12,.72);backdrop-filter:blur(6px);z-index:120;display:none;align-items:center;justify-content:center;padding:20px}
+  .ov.show{display:flex}
+  .ov-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;max-width:420px;width:100%;animation:fade .25s}
+  .ov-card h3{font-size:18px;font-weight:800}
+  .ov-card p{font-size:13px;color:var(--muted-light);margin-top:6px;line-height:1.55}
+  .ov-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .ov-skip{font-size:12px;color:var(--muted);cursor:pointer;align-self:center}
+  .otp-in{letter-spacing:6px;text-align:center;font-size:18px;font-weight:700}
+  @media(max-width:900px){.journey{grid-template-columns:1fr}.rail{position:static}.done-wrap{grid-template-columns:1fr}.g4,.g3{grid-template-columns:1fr 1fr}.row3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="mark">V</div>
+  <div><div class="logo">V<b>Y</b>VE</div><div class="sub">PARTNER ONBOARDING</div></div>
+  <div class="right">
+    <button class="btn btn-ghost" onclick="showScreen('overview')">Process overview</button>
+    <button class="btn btn-primary" onclick="showScreen('journey')"><span class="bic" data-i="arrow"></span>Start onboarding</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ OVERVIEW ============ -->
+  <section class="screen active" id="screen-overview">
+    <div class="info-pill"><span data-i="info"></span>For prospective VYVE partners — yoga teachers, speakers, educators, workshop &amp; session hosts</div>
+    <h1 style="margin-top:14px">Becoming a VYVE partner</h1>
+    <p class="lead">Everything you need to go from application to live community space inside the VYVE app. The journey takes most partners about <b class="hl">6 days</b> across 8 guided steps. Here is exactly what happens and what we will ask you for.</p>
+    <div class="grid g4 mt2">
+      <div class="stat"><div class="v">8</div><div class="l">Guided steps</div></div>
+      <div class="stat"><div class="v">~6 days</div><div class="l">Average to go live</div></div>
+      <div class="stat"><div class="v">2</div><div class="l">Required assessments</div></div>
+      <div class="stat"><div class="v">30%</div><div class="l">Standard revenue share</div></div>
+    </div>
+    <h2 class="mt2">The onboarding process</h2>
+    <p class="sec-sub">Each step shows who actions it and what we collect.</p>
+    <div class="flowline" id="flowline"></div>
+    <h2 class="mt2">Information &amp; documents we collect</h2>
+    <p class="sec-sub">Have these ready before you start — it makes the journey quick.</p>
+    <div class="grid g2" id="dataReqs"></div>
+    <div class="banner mt2">
+      <span data-i="shield"></span>
+      <div style="flex:1"><h3>Why we vet every partner</h3><p>VYVE carries a duty of care to thousands of employees. Verification, safeguarding and content review protect members and keep partner quality high — it is also what lets us put your name in front of enterprise clients with confidence.</p></div>
+      <button class="btn btn-primary" onclick="showScreen('journey')">Begin</button>
+    </div>
+  </section>
+
+  <!-- ============ JOURNEY ============ -->
+  <section class="screen" id="screen-journey">
+    <div class="resume" id="resumeBar"><span data-i="info" style="width:16px;height:16px;color:var(--social);display:inline-flex"></span><span id="resumeText">Welcome back — we restored your saved progress.</span></div>
+    <div class="journey">
+      <div class="rail">
+        <div class="pct" id="pctLabel">0% complete</div>
+        <div class="progress"><div class="fill" id="progFill"></div></div>
+        <div id="railSteps"></div>
+      </div>
+
+      <div class="panel">
+
+        <!-- STEP 1 -->
+        <div class="step active" id="st0">
+          <div class="eyebrow">Step 1 of 8</div>
+          <h2>About you &amp; your practice</h2>
+          <p class="intro">Tell us who you are and what you do. This is for our records and vetting — you will build your public, member-facing profile later in step 6.</p>
+          <div class="row2">
+            <div class="field"><label>Lead contact name<span class="req">*</span></label><input type="text" data-k="contactName" data-req placeholder="e.g. Maya Thompson"><div class="err-msg">Please enter your name</div></div>
+            <div class="field"><label>Business / trading name</label><input type="text" data-k="businessName" placeholder="e.g. Maya Movement Ltd"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Email<span class="req">*</span></label><input type="email" data-k="email" data-req placeholder="you@example.com"><div class="err-msg">Enter a valid email</div></div>
+            <div class="field"><label>Phone<span class="req">*</span></label><input type="tel" data-k="phone" data-req placeholder="+44 …"><div class="err-msg">Please enter a phone number</div></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Location (city, country)</label><input type="text" data-k="location" placeholder="Bristol, UK"></div>
+            <div class="field"><label>Website / main social handle</label><input type="text" data-k="website" placeholder="@ or https://"></div>
+          </div>
+          <div class="field" id="pillarField"><label>Which VYVE pillar best fits your work?<span class="req">*</span></label>
+            <div class="opts" id="pillarGroup">
+              <div class="opt" data-p="physical" onclick="pickPillar(this)"><span class="dot" style="background:var(--physical)"></span><div class="ot">Physical</div><div class="os">Movement, fitness, nutrition, recovery</div></div>
+              <div class="opt" data-p="mental" onclick="pickPillar(this)"><span class="dot" style="background:var(--mental)"></span><div class="ot">Mental</div><div class="os">Mindfulness, resilience, sleep, psychology</div></div>
+              <div class="opt" data-p="social" onclick="pickPillar(this)"><span class="dot" style="background:var(--social)"></span><div class="ot">Social</div><div class="os">Belonging, connection, financial wellbeing</div></div>
+            </div><div class="err-msg" style="display:none" id="pillarErr">Please choose a pillar</div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Specialism / discipline<span class="req">*</span></label><input type="text" data-k="specialism" data-req placeholder="e.g. Vinyasa yoga & mobility"><div class="err-msg">Please enter your specialism</div></div>
+            <div class="field"><label>Years of professional experience</label><input type="number" data-k="years" placeholder="9"></div>
+          </div>
+          <div class="field"><label>Short description of what you offer<span class="req">*</span></label><textarea data-k="description" data-req placeholder="A few lines on your style, who you help and the formats you run…"></textarea><div class="err-msg">Please add a short description</div></div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step" id="st1">
+          <div class="eyebrow">Step 2 of 8</div>
+          <h2>Verification &amp; compliance</h2>
+          <p class="intro">We verify every partner before going live. Upload the documents below. Required items must be completed before approval. These documents are encrypted, stored privately and never shown to members.</p>
+          <div class="field"><label>Photo ID (passport / driving licence)<span class="req">*</span></label>
+            <label class="upload" data-file="idDoc" data-slot="photo-id" data-kind="doc"><div data-i="upload"></div><div class="ut">Upload photo ID</div><div class="us">PDF, JPG or PNG · max 15MB</div><input type="file" accept=".pdf,image/*"></label>
+            <div class="err-msg">Photo ID is required</div></div>
+          <div class="field"><label>Professional qualifications / certifications<span class="req">*</span></label>
+            <label class="upload" data-file="qualDoc" data-slot="qualifications" data-kind="doc"><div data-i="upload"></div><div class="ut">Upload certificate</div><div class="us">PDF or image</div><input type="file" accept=".pdf,image/*"></label>
+            <div class="err-msg">At least one qualification is required</div></div>
+          <div class="row2">
+            <div class="field"><label>Governing body / membership</label><input type="text" data-k="govBody" placeholder="e.g. Yoga Alliance"></div>
+            <div class="field"><label>Membership / registration no.</label><input type="text" data-k="govNumber" placeholder="RYT-500-…"></div>
+          </div>
+          <div class="field"><label>DBS / background check<span class="req">*</span></label>
+            <label class="upload" data-file="dbsDoc" data-slot="dbs" data-kind="doc"><div data-i="upload"></div><div class="ut">Upload DBS certificate or declaration</div><div class="us">PDF or image</div><input type="file" accept=".pdf,image/*"></label>
+            <div class="err-msg">DBS check is required</div></div>
+          <h3 style="font-size:14px;margin-top:22px;font-weight:700">Two references</h3>
+          <div class="row3 mt">
+            <div class="field" style="margin:0"><label>Reference 1 — name<span class="req">*</span></label><input type="text" data-k="ref1Name" data-req placeholder="Name"><div class="err-msg">Required</div></div>
+            <div class="field" style="margin:0"><label>Relationship</label><input type="text" data-k="ref1Rel" placeholder="e.g. Studio owner"></div>
+            <div class="field" style="margin:0"><label>Email<span class="req">*</span></label><input type="email" data-k="ref1Email" data-req placeholder="email"><div class="err-msg">Valid email required</div></div>
+          </div>
+          <div class="row3 mt">
+            <div class="field" style="margin:0"><label>Reference 2 — name<span class="req">*</span></label><input type="text" data-k="ref2Name" data-req placeholder="Name"><div class="err-msg">Required</div></div>
+            <div class="field" style="margin:0"><label>Relationship</label><input type="text" data-k="ref2Rel" placeholder="e.g. Client lead"></div>
+            <div class="field" style="margin:0"><label>Email<span class="req">*</span></label><input type="email" data-k="ref2Email" data-req placeholder="email"><div class="err-msg">Valid email required</div></div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step" id="st2">
+          <div class="eyebrow">Step 3 of 8</div>
+          <h2>Partner agreement &amp; commercials</h2>
+          <p class="intro">Review and accept the partner agreement, confirm how you will be paid, and acknowledge the revenue share.</p>
+          <div class="terms">
+            <h4>1. Partnership</h4>You agree to provide wellbeing content and live sessions to VYVE members through your partner space, maintaining professional standards and the quality bar set out in onboarding.
+            <h4>2. Revenue share</h4>VYVE retains a platform fee and pays you a <b class="hl">30% share</b> of subscription revenue attributed to your space, paid monthly in arrears. Share is configurable by agreement.
+            <h4>3. Content &amp; licensing</h4>You retain ownership of your content and grant VYVE a licence to host and stream it to members for the duration of the partnership.
+            <h4>4. Conduct &amp; safeguarding</h4>You agree to the VYVE Code of Conduct, safeguarding policy and data-protection obligations.
+            <h4>5. Termination</h4>Either party may end the partnership with 30 days' notice; member access to your space is wound down gracefully.
+            <p class="muted" style="margin-top:10px;font-size:11px">Draft terms shown for review. Final agreement copy is subject to VYVE sign-off before go-live.</p>
+          </div>
+          <div class="check" data-check="agree" onclick="toggleCheck(this)"><span class="box" data-i="check"></span><span class="ct">I have read and accept the <b>VYVE Partner Agreement</b> and <b>Code of Conduct</b>.<span class="req">*</span></span></div>
+          <div class="check" data-check="revshare" onclick="toggleCheck(this)"><span class="box" data-i="check"></span><span class="ct">I acknowledge the <b>30% revenue share</b> and monthly payout terms.<span class="req">*</span></span></div>
+          <div class="check" data-check="payoutlater" onclick="toggleCheck(this)" style="margin-top:18px"><span class="box" data-i="check"></span><span class="ct">I understand payout/bank details are collected securely later, before my first payout — not in this application.</span></div>
+          <div class="sign">
+            <div class="field"><label>Type your full name to e-sign<span class="req">*</span></label><input type="text" data-k="signName" data-req placeholder="Full legal name"><div class="err-msg">Signature required</div></div>
+            <div class="field" style="max-width:170px"><label>Date</label><input type="date" data-k="signDate"></div>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="step" id="st3">
+          <div class="eyebrow">Step 4 of 8</div>
+          <h2>Onboarding video modules</h2>
+          <p class="intro">Four short videos that show you how VYVE works and how to build a brilliant space. Watch all four to continue.</p>
+          <div id="vmods"></div>
+          <p class="hint" id="vmodHint">0 of 4 watched</p>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="step" id="st4">
+          <div class="eyebrow">Step 5 of 8</div>
+          <h2>Education &amp; assessments</h2>
+          <p class="intro">A short curriculum on working safely and inclusively on VYVE. The Safeguarding and GDPR assessment is required and must be passed before go-live.</p>
+          <div class="card" style="padding:16px"><div id="lessons"></div></div>
+          <div class="card mt" style="border-left:3px solid var(--social)">
+            <h3 style="font-size:14px;font-weight:800;margin-bottom:4px">Required assessment — Safeguarding &amp; data</h3>
+            <p class="muted" style="font-size:12.5px">Answer all questions correctly to pass. You can retake it.</p>
+            <div class="quiz" id="quiz"></div>
+            <button class="btn btn-ghost" onclick="gradeQuiz()">Submit assessment</button>
+            <div class="quiz-result" id="quizResult"></div>
+          </div>
+        </div>
+
+        <!-- STEP 6 -->
+        <div class="step" id="st5">
+          <div class="eyebrow">Step 6 of 8</div>
+          <h2>Build your space</h2>
+          <p class="intro">This is what members see in the app. Make it personal — your bio, your reason for being here, and the feel of your community. The preview updates as you type.</p>
+          <div class="done-wrap" style="margin-top:14px">
+            <div>
+              <div class="field" style="margin-top:0"><label>Profile photo</label><label class="upload" data-file="profilePhoto" data-slot="profile-photo" data-kind="doc"><div data-i="upload"></div><div class="ut">Upload a clear, friendly photo</div><input type="file" accept="image/*"></label></div>
+              <div class="row2">
+                <div class="field"><label>Display name<span class="req">*</span></label><input type="text" id="pf-name" data-k="pfName" data-req placeholder="Maya Thompson"><div class="err-msg">Required</div></div>
+                <div class="field"><label>Tagline / role<span class="req">*</span></label><input type="text" id="pf-role" data-k="pfRole" data-req placeholder="Yoga & Mobility Coach"><div class="err-msg">Required</div></div>
+              </div>
+              <div class="field"><label>Bio<span class="req">*</span></label><textarea id="pf-bio" data-k="pfBio" data-req placeholder="Who you are and how you help members…"></textarea><div class="err-msg">Required</div></div>
+              <div class="field"><label>Reason for being here<span class="req">*</span></label><textarea id="pf-why" data-k="pfWhy" data-req placeholder="The personal 'why' behind your work — members connect with this."></textarea><div class="err-msg">Required</div></div>
+              <div class="field"><label>The feel of your community</label><textarea id="pf-feel" data-k="pfFeel" placeholder="e.g. Warm, no-judgement, beginners welcome, cameras optional."></textarea></div>
+            </div>
+            <div>
+              <p class="hint" style="margin-top:0;margin-bottom:8px;text-align:center">Live member preview</p>
+              <div class="phone"><div class="ph-not"></div><div class="ph-scroll" id="pfPhone"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 7 -->
+        <div class="step" id="st6">
+          <div class="eyebrow">Step 7 of 8</div>
+          <h2>Upload your starter content</h2>
+          <p class="intro">Add three short on-demand videos so members have something valuable the moment they join. These go to the VYVE team for review before publishing.</p>
+          <div id="contentSlots"></div>
+          <div class="field"><label>Optional — a welcome post for your community feed</label><textarea data-k="welcomePost" placeholder="Say hello, tell members where to start, and what you'll run each week."></textarea></div>
+        </div>
+
+        <!-- STEP 8 -->
+        <div class="step" id="st7">
+          <div class="eyebrow">Step 8 of 8</div>
+          <h2>Schedule your launch</h2>
+          <p class="intro">Set your first live session and (optionally) a welcome program. Then submit your space for final VYVE review — most are approved within 48 hours.</p>
+          <div class="card" style="padding:16px">
+            <h3 style="font-size:14px;font-weight:700;margin-bottom:4px">Your first live session</h3>
+            <div class="row2 mt"><div class="field" style="margin:0"><label>Session title<span class="req">*</span></label><input type="text" data-k="sessionTitle" data-req placeholder="e.g. Lunchtime Mobility Flow"><div class="err-msg">Required</div></div><div class="field" style="margin:0"><label>Format</label><select data-k="sessionFormat"><option>Live class</option><option>Workshop</option><option>Talk / Q&A</option><option>Sound bath</option></select></div></div>
+            <div class="row3 mt"><div class="field" style="margin:0"><label>Date<span class="req">*</span></label><input type="date" data-k="sessionDate" data-req><div class="err-msg">Required</div></div><div class="field" style="margin:0"><label>Time<span class="req">*</span></label><input type="time" data-k="sessionTime" data-req><div class="err-msg">Required</div></div><div class="field" style="margin:0"><label>Duration (min)</label><input type="number" data-k="sessionDuration" placeholder="25"></div></div>
+          </div>
+          <div class="card mt" style="padding:16px">
+            <h3 style="font-size:14px;font-weight:700;margin-bottom:4px">Welcome program (optional)</h3>
+            <p class="muted" style="font-size:12.5px;margin-bottom:6px">Members who complete a program are far more likely to stay. Start from a template or skip for now.</p>
+            <div class="opts" id="progOpts" style="grid-template-columns:1fr 1fr">
+              <div class="opt" data-prog="template" onclick="pickProg(this)"><div class="ot">Use a template</div><div class="os">e.g. 21-Day Foundations Challenge</div></div>
+              <div class="opt" data-prog="skip" onclick="pickProg(this)"><div class="ot">Skip for now</div><div class="os">Add one after launch</div></div>
+            </div>
+          </div>
+          <div class="check mt" data-check="final" onclick="toggleCheck(this)" style="margin-top:18px"><span class="box" data-i="check"></span><span class="ct">Everything is accurate and I am ready to submit my space for VYVE review.<span class="req">*</span></span></div>
+        </div>
+
+        <div class="foot">
+          <button class="btn btn-ghost" id="backBtn" onclick="prevStep()" style="display:none"><span class="bic" data-i="chev-left"></span>Back</button>
+          <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Continue<span class="bic" data-i="arrow"></span></button>
+          <div class="links"><span class="lnk" onclick="manualSave()">Save &amp; exit</span><span class="lnk" onclick="startOver()">Start over</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DONE ============ -->
+  <section class="screen" id="screen-done">
+    <div class="banner"><span data-i="party"></span><div style="flex:1"><h3>Your space has been submitted</h3><p>Nice work. The VYVE team will review your profile and starter content — you will be notified within 48 hours, then your community goes live in the Connect area.</p></div></div>
+    <div class="done-wrap mt2">
+      <div>
+        <h2>Your partner record</h2>
+        <p class="sec-sub">This is the complete submission captured by the onboarding. Download a copy for your records.</p>
+        <button class="btn btn-primary" onclick="downloadRecord()"><span class="bic" data-i="download"></span>Download submission (.json)</button>
+        <h2 class="mt2">What happens next</h2>
+        <div class="card mt" style="padding:18px">
+          <div class="lesson"><span class="lchk" data-i="check"></span><div><div class="lt">Final review by VYVE</div><div class="ls">We check your profile, documents and starter content</div></div></div>
+          <div class="lesson"><span class="lchk" style="background:var(--surface);border:1px solid var(--line);color:var(--muted)">2</span><div><div class="lt">Approval &amp; go-live</div><div class="ls">Your space appears in Connect for members to join</div></div></div>
+          <div class="lesson"><span class="lchk" style="background:var(--surface);border:1px solid var(--line);color:var(--muted)">3</span><div><div class="lt">Your first session</div><div class="ls">We help promote your launch session to relevant members</div></div></div>
+        </div>
+        <h2 class="mt2">Submission summary</h2>
+        <div class="card mt" id="summaryCard"></div>
+      </div>
+      <div>
+        <p class="hint" style="margin-top:0;margin-bottom:8px;text-align:center">Your space, as members will see it</p>
+        <div class="phone"><div class="ph-not"></div><div class="ph-scroll" id="donePhone"></div></div>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:14px" onclick="startOver()">Start a new onboarding</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ AUTH OVERLAY ============ -->
+<div class="ov" id="authOv">
+  <div class="ov-card">
+    <h3 id="authTitle">Verify your email</h3>
+    <p id="authMsg">We've sent a 6-digit code to your email. Enter it below to secure your application so you can save and come back any time.</p>
+    <div class="field"><input type="text" class="otp-in" id="otpCode" inputmode="numeric" maxlength="6" placeholder="······"></div>
+    <div class="ov-actions">
+      <button class="btn btn-primary" id="otpVerifyBtn" onclick="verifyOtp()">Verify &amp; continue</button>
+      <button class="btn btn-ghost" onclick="resendOtp()">Resend code</button>
+      <span class="ov-skip" id="otpSkip" onclick="skipAuth()">Skip for now</span>
+    </div>
+    <p class="muted" id="authErr" style="color:#f0a5a5;display:none;margin-top:10px"></p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ===== CONFIG ===== */
+const CONFIG={
+  url:'https://ixjfklpckgxrwjlfsaaz.supabase.co',
+  anon:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4amZrbHBja2d4cndqbGZzYWF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjY0OTUsImV4cCI6MjA5MDY0MjQ5NX0.to0pwmP-F1g93hb-Fbbq4BZUPkJ4KAGEIFwDtn4whCg',
+  fn:'partner-onboarding'
+};
+let sb=null;
+try{ if(window.supabase) sb=window.supabase.createClient(CONFIG.url,CONFIG.anon,{auth:{persistSession:true,storageKey:'vyve_partner_auth'}}); }catch(e){ sb=null; }
+
+/* ===== ICONS ===== */
+const S='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">';
+const I={
+  arrow:S+'<path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  'chev-left':S+'<path d="M15 6l-6 6 6 6"/></svg>',
+  check:S+'<path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+  info:S+'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg>',
+  shield:S+'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+  upload:S+'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M5 20h14"/></svg>',
+  download:S+'<path d="M12 4v12M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>',
+  play:S+'<path d="M8 5v14l12-7z" fill="currentColor" stroke="none"/></svg>',
+  doc:S+'<path d="M6.5 3h7l4 4v14h-11z"/><path d="M13.5 3v4h4"/></svg>',
+  user:S+'<circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>',
+  award:S+'<circle cx="12" cy="9" r="5"/><path d="M9 13l-1.5 8L12 18l4.5 3L15 13"/></svg>',
+  card:S+'<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/></svg>',
+  cap:S+'<path d="M3 8.5l9-4 9 4-9 4z"/><path d="M7 10.5v4.5c0 1.2 2.4 2.5 5 2.5s5-1.3 5-2.5v-4.5"/></svg>',
+  film:S+'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10 9l5 3-5 3z"/></svg>',
+  party:S+'<path d="M3 21l5-13 8 8z"/><path d="M14 4c1.5 0 2 1.5 1 2.5M18 7c1.5 0 2.5 1 2 2.5M20 13c1 0 1.5.7 1.2 1.6"/></svg>'
+};
+function setIcons(scope){(scope||document).querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i');if(I[k]){el.innerHTML=I[k];el.removeAttribute('data-i');}});}
+let toastT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);}
+
+/* ===== STATE ===== */
+const KEY='vyve_partner_onboarding_v1';
+const state={fields:{},files:{},checks:{agree:false,revshare:false,payoutlater:false,final:false},pillar:null,program:null,watched:0,quizPassed:false,quizScore:0,step:0,partnerId:null};
+const total=8;
+const stepTitles=['About you','Verification','Agreement','Video modules','Education','Build your space','Starter content','Launch'];
+let step=0;
+let authed=false;       // verified magic-link session
+let online=!!sb;        // backend reachable
+let pendingAfterAuth=null;
+
+/* ===== BACKEND BRIDGE ===== */
+async function getToken(){ if(!sb) return null; try{const {data}=await sb.auth.getSession();return data?.session?.access_token||null;}catch(e){return null;} }
+async function efCall(action,body){
+  const token=await getToken();
+  if(!token) throw new Error('no-session');
+  const res=await fetch(`${CONFIG.url}/functions/v1/${CONFIG.fn}`,{
+    method:'POST',
+    headers:{'Authorization':`Bearer ${token}`,'apikey':CONFIG.anon,'Content-Type':'application/json'},
+    body:JSON.stringify({action,...body})
+  });
+  const j=await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(j.error||('http-'+res.status));
+  return j;
+}
+function credentialsBlob(){
+  return {formFields:state.fields,pillar:state.pillar,program:state.program,
+    references:[{name:state.fields.ref1Name||'',relationship:state.fields.ref1Rel||'',email:state.fields.ref1Email||''},
+                {name:state.fields.ref2Name||'',relationship:state.fields.ref2Rel||'',email:state.fields.ref2Email||''}]};
+}
+function gateSteps(){
+  return {
+    identity_verified:['idDoc','qualDoc','dbsDoc'].every(k=>state.files[k]&&!state.files[k].needsReattach),
+    agreement_signed:!!(state.checks.agree&&state.checks.revshare&&(state.fields.signName||'').trim()),
+    videos_watched:state.watched>=4,
+    safeguarding_passed:state.quizPassed, gdpr_passed:state.quizPassed,
+    profile_complete:!!((state.fields.pfName||'').trim()&&(state.fields.pfBio||'').trim()),
+    starter_videos_uploaded:[1,2,3].every(n=>state.files['cVideo'+n]&&!state.files['cVideo'+n].needsReattach)
+  };
+}
+
+/* ===== OVERVIEW DATA ===== */
+const flow=[
+  {n:1,t:'Apply & introduce yourself',who:'partner',d:'Submit your details, discipline and what you offer. Takes about 5 minutes.',collects:['Contact details','Pillar & specialism','Experience','Description']},
+  {n:2,t:'Vetting & verification',who:'vyve',d:'VYVE verifies your identity, qualifications and references. This is the core quality gate.',collects:['Photo ID','Certifications','DBS','References']},
+  {n:3,t:'Agreement & commercials',who:'partner',d:'Review and e-sign the partner agreement and acknowledge the revenue share. Payout details are collected securely later.',collects:['E-signature','Revenue share consent']},
+  {n:4,t:'Watch the onboarding modules',who:'partner',d:'Four short videos on how VYVE works and how to build a great space.',collects:['Module completion']},
+  {n:5,t:'Education & assessments',who:'partner',d:'Short curriculum plus a required Safeguarding and GDPR assessment you must pass.',collects:['Assessment result','Lesson completion']},
+  {n:6,t:'Build your space',who:'partner',d:'Create your public, member-facing profile: photo, bio, your reason for being here and your community feel.',collects:['Profile photo','Bio & mission','Community feel']},
+  {n:7,t:'Upload starter content',who:'partner',d:'Add three intro videos so members get value from day one. Reviewed before publishing.',collects:['3 starter videos','Welcome post']},
+  {n:8,t:'Schedule launch & submit',who:'partner',d:'Set your first live session, optionally add a welcome program, and submit for final review.',collects:['First session','Welcome program']},
+];
+const dataReqs=[
+  {icon:'user',h:'About you',rows:[['Lead contact name',1],['Business / trading name',0],['Email & phone',1],['Location',0],['Website / socials',0],['Pillar & specialism',1],['Years of experience',0],['Description of your offer',1]]},
+  {icon:'shield',h:'Verification & compliance',rows:[['Photo ID',1],['Professional qualifications',1],['Governing body & membership no.',0],['DBS / background check',1],['Two references',1]]},
+  {icon:'card',h:'Agreement & commercials',rows:[['Signed partner agreement',1],['Code of Conduct acceptance',1],['Revenue share acknowledgement',1],['Payout / bank details (later)',0]]},
+  {icon:'cap',h:'Education & assessments',rows:[['Onboarding modules watched',1],['Safeguarding assessment',1],['GDPR & data assessment',1],['Accessibility & quality lessons',0]]},
+  {icon:'award',h:'Your public profile',rows:[['Profile photo',1],['Display name & tagline',1],['Member-facing bio',1],['Reason for being here',1],['Community feel',0]]},
+  {icon:'film',h:'Content & launch',rows:[['Three starter videos',1],['Welcome post',0],['First live session',1],['Welcome program',0]]},
+];
+function renderOverview(){
+  document.getElementById('flowline').innerHTML=flow.map(f=>`<div class="flowstep"><div class="flownum">${f.n}</div><div style="flex:1"><h3>${f.t}<span class="who-tag ${f.who==='vyve'?'who-vyve':'who-partner'}">${f.who==='vyve'?'VYVE actions':'You complete'}</span></h3><p>${f.d}</p><div class="collects"><b>Collected:</b> ${f.collects.join(' · ')}</div></div></div>`).join('');
+  document.getElementById('dataReqs').innerHTML=dataReqs.map(d=>`<div class="dreq"><div class="dreq-h"><span data-i="${d.icon}"></span>${d.h}</div><div class="dreq-b">${d.rows.map(r=>`<div class="dreq-row"><span class="f">${r[0]}</span>${r[1]?'<span class="req-yes">Required</span>':'<span class="req-opt">Optional</span>'}</div>`).join('')}</div></div>`).join('');
+  setIcons(document.getElementById('screen-overview'));
+}
+
+/* ===== FIELD BINDING + SAVE ===== */
+let saveT;
+function scheduleSave(){clearTimeout(saveT);saveT=setTimeout(saveState,500);}
+function bindFields(){
+  document.querySelectorAll('#screen-journey [data-k]').forEach(el=>{
+    const k=el.dataset.k;
+    const handler=()=>{state.fields[k]=el.value;if(k.startsWith('pf'))syncPreview();clearFieldErr(el);scheduleSave();};
+    el.addEventListener('input',handler);el.addEventListener('change',handler);
+  });
+}
+function saveLocal(){
+  const snap={fields:state.fields,checks:state.checks,pillar:state.pillar,program:state.program,watched:state.watched,quizPassed:state.quizPassed,quizScore:state.quizScore,step:step,partnerId:state.partnerId,
+    files:Object.fromEntries(Object.entries(state.files).map(([k,f])=>[k,{name:f.name,size:f.size,type:f.type,path:f.path||null,bucket:f.bucket||null}]))};
+  try{localStorage.setItem(KEY,JSON.stringify(snap));}catch(e){}
+}
+async function saveState(){
+  saveLocal();
+  if(!authed||!state.partnerId) return;
+  try{
+    await efCall('save',{partner_id:state.partnerId,credentialsPatch:credentialsBlob(),steps:gateSteps(),
+      pct_complete:Math.round(step/total*100),
+      assessment:{safeguarding_passed:state.quizPassed,gdpr_passed:state.quizPassed,score:state.quizScore}});
+  }catch(e){ online=false; }
+}
+function manualSave(){saveState();toast(authed?'Progress saved to your account — resume any time':'Progress saved on this device');}
+async function startOver(){try{localStorage.removeItem(KEY);}catch(e){} if(sb){try{await sb.auth.signOut();}catch(e){}} location.reload();}
+
+async function restoreState(){
+  // Prefer server (authed session) over local mirror
+  let snap=null;
+  try{snap=JSON.parse(localStorage.getItem(KEY));}catch(e){}
+  if(sb){
+    try{
+      const {data}=await sb.auth.getSession();
+      if(data?.session){
+        authed=true;
+        const r=await efCall('start',{});
+        state.partnerId=r.partner_id;
+        const cr=r.credentials||{};
+        if(cr.formFields) state.fields={...state.fields,...cr.formFields};
+        if(cr.pillar) state.pillar=cr.pillar;
+        if(cr.program) state.program=cr.program;
+        const prog=r.progress||{};
+        const st=prog.steps||{};
+        state.quizPassed=!!st.safeguarding_passed; state.watched=st.videos_watched?4:state.watched;
+        if(snap&&snap.files) hydrateFiles(snap.files,true); // chips from local mirror; already uploaded server-side
+        applyRestoredDom('account'); return true;
+      }
+    }catch(e){ online=false; }
+  }
+  // local-only restore
+  if(!snap||!snap.fields) return false;
+  state.fields=snap.fields||{};state.checks=snap.checks||state.checks;state.pillar=snap.pillar||null;
+  state.program=snap.program||null;state.watched=snap.watched||0;state.quizPassed=!!snap.quizPassed;state.quizScore=snap.quizScore||0;step=snap.step||0;state.partnerId=snap.partnerId||null;
+  if(snap.files) hydrateFiles(snap.files,true);
+  applyRestoredDom('device'); return true;
+}
+function hydrateFiles(files,reattach){
+  Object.entries(files||{}).forEach(([k,meta])=>{
+    state.files[k]={name:meta.name,size:meta.size,type:meta.type,path:meta.path||null,bucket:meta.bucket||null,needsReattach:reattach&&!meta.path};
+    const box=document.querySelector('.upload[data-file="'+k+'"]');if(box)renderUploaded(box,k,state.files[k].needsReattach);
+  });
+}
+function applyRestoredDom(source){
+  document.querySelectorAll('#screen-journey [data-k]').forEach(el=>{if(state.fields[el.dataset.k]!=null)el.value=state.fields[el.dataset.k];});
+  if(state.pillar){const o=document.querySelector('#pillarGroup .opt[data-p="'+state.pillar+'"]');if(o)o.classList.add('sel');}
+  if(state.program){const o=document.querySelector('#progOpts .opt[data-prog="'+state.program+'"]');if(o)o.classList.add('sel');}
+  Object.keys(state.checks).forEach(c=>{if(state.checks[c]){const el=document.querySelector('[data-check="'+c+'"]');if(el)el.classList.add('on');}});
+  for(let i=0;i<state.watched;i++){const el=document.getElementById('vm'+i);if(el){el.classList.add('watched');el.querySelector('.vchk').innerHTML=I.check;}}
+  const vh=document.getElementById('vmodHint'); if(vh) vh.textContent=state.watched+' of 4 watched';
+  if(state.quizPassed){const r=document.getElementById('quizResult');if(r){r.className='quiz-result pass show';r.textContent='Passed — you can continue.';}}
+  syncPreview();
+  const needReattach=Object.values(state.files).some(f=>f.needsReattach);
+  document.getElementById('resumeText').textContent=(source==='account'?'Welcome back — progress restored from your account':'Welcome back — progress restored to step '+(step+1))+(needReattach?'. Any files marked below need re-attaching before you submit.':'.');
+  document.getElementById('resumeBar').classList.add('show');
+}
+
+/* ===== RAIL / STEP NAV ===== */
+function renderRail(){
+  document.getElementById('railSteps').innerHTML=stepTitles.map((t,i)=>`<div class="rstep ${i===step?'active':''} ${i<step?'done':''}" onclick="goStep(${i})"><span class="rdot" ${i<step?'data-i="check"':''}>${i<step?'':i+1}</span><span class="rt">${t}</span></div>`).join('');
+  setIcons(document.getElementById('railSteps'));
+  const pct=Math.round(step/total*100);
+  document.getElementById('progFill').style.width=pct+'%';document.getElementById('pctLabel').textContent=pct+'% complete';
+}
+function showStepDom(){
+  document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('active',i===step));
+  document.getElementById('backBtn').style.display=step===0?'none':'inline-flex';
+  document.getElementById('nextBtn').innerHTML=(step===total-1?'Submit for review':'Continue')+'<span class="bic" data-i="arrow"></span>';
+  setIcons(document.getElementById('nextBtn'));
+  if(step===5)syncPreview();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goStep(i){if(i>step)return;step=i;renderRail();showStepDom();saveState();}
+async function nextStep(){
+  if(!validateStep(step))return;
+  // After step 1, secure the application with a verified email (best-effort).
+  if(step===0 && !authed && online){ await beginAuth(); return; }
+  if(step<total-1){step++;renderRail();showStepDom();saveState();}
+  else{submitJourney();}
+}
+function prevStep(){if(step>0){step--;renderRail();showStepDom();saveState();}}
+
+/* ===== AUTH (magic-link OTP) ===== */
+async function beginAuth(){
+  const email=(state.fields.email||'').trim();
+  if(!email){return;}
+  pendingAfterAuth=()=>{ if(step<total-1){step++;renderRail();showStepDom();saveState();} };
+  document.getElementById('authErr').style.display='none';
+  document.getElementById('authTitle').textContent='Verify your email';
+  document.getElementById('authMsg').textContent='We\u2019ve sent a 6-digit code to '+email+'. Enter it to secure your application so you can save and return any time.';
+  document.getElementById('otpSkip').style.display='inline';
+  document.getElementById('authOv').classList.add('show');
+  try{
+    const {error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:true}});
+    if(error) throw error;
+  }catch(e){
+    // backend unreachable (e.g. preview) — let them continue on-device
+    document.getElementById('authErr').textContent='Could not send a code right now — you can continue and verify before submitting.';
+    document.getElementById('authErr').style.display='block';
+    online=false;
+  }
+}
+async function resendOtp(){ const email=(state.fields.email||'').trim(); try{await sb.auth.signInWithOtp({email,options:{shouldCreateUser:true}});toast('Code re-sent');}catch(e){toast('Could not resend');} }
+async function verifyOtp(){
+  const email=(state.fields.email||'').trim();
+  const tokenCode=(document.getElementById('otpCode').value||'').trim();
+  if(tokenCode.length<6){document.getElementById('authErr').textContent='Enter the 6-digit code.';document.getElementById('authErr').style.display='block';return;}
+  try{
+    const {error}=await sb.auth.verifyOtp({email,token:tokenCode,type:'email'});
+    if(error) throw error;
+    authed=true; online=true;
+    const r=await efCall('start',{
+      contact:{name:state.fields.contactName,business:state.fields.businessName,email,phone:state.fields.phone,location:state.fields.location,website:state.fields.website},
+      practice:{pillar:state.pillar,specialism:state.fields.specialism,yearsExperience:state.fields.years,description:state.fields.description}
+    });
+    state.partnerId=r.partner_id;
+    await saveState();
+    closeAuth(); toast('Email verified — your application is secured');
+    if(pendingAfterAuth){const f=pendingAfterAuth;pendingAfterAuth=null;f();}
+  }catch(e){
+    document.getElementById('authErr').textContent='That code did not verify. Try again or resend.';
+    document.getElementById('authErr').style.display='block';
+  }
+}
+function skipAuth(){ online=false; closeAuth(); if(pendingAfterAuth){const f=pendingAfterAuth;pendingAfterAuth=null;f();} }
+function closeAuth(){ document.getElementById('authOv').classList.remove('show'); document.getElementById('otpCode').value=''; }
+
+/* ===== VALIDATION ===== */
+function clearFieldErr(el){const f=el.closest('.field');if(f)f.classList.remove('err');}
+function markErr(el){const f=el.closest('.field');if(f)f.classList.add('err');}
+function clearErrors(i){document.getElementById('st'+i).querySelectorAll('.field.err').forEach(f=>f.classList.remove('err'));}
+function isEmail(v){return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v);}
+function validateStep(i){
+  clearErrors(i);let ok=true;const stepEl=document.getElementById('st'+i);
+  stepEl.querySelectorAll('[data-req]').forEach(el=>{
+    const v=(el.value||'').trim();let bad=!v;
+    if(!bad&&el.type==='email'&&!isEmail(v))bad=true;
+    if(bad){markErr(el);ok=false;}
+  });
+  if(i===0){const pe=document.getElementById('pillarErr');if(!state.pillar){document.getElementById('pillarGroup').classList.add('err');pe.style.display='block';ok=false;}else{document.getElementById('pillarGroup').classList.remove('err');pe.style.display='none';}}
+  if(i===1){['idDoc','qualDoc','dbsDoc'].forEach(k=>{const f=state.files[k];if(!f||f.needsReattach){const box=document.querySelector('.upload[data-file="'+k+'"]');if(box)box.closest('.field').classList.add('err');ok=false;}});}
+  if(i===2){if(!state.checks.agree||!state.checks.revshare){ok=false;toast('Please accept the agreement and revenue share');}}
+  if(i===3){if(state.watched<4){ok=false;toast('Watch all four modules to continue');}}
+  if(i===4){if(!state.quizPassed){ok=false;toast('Pass the required assessment to continue');}}
+  if(i===6){[1,2,3].forEach(n=>{const k='cVideo'+n;const f=state.files[k];if(!f||f.needsReattach){const box=document.querySelector('.upload[data-file="'+k+'"]');if(box)box.closest('.field').classList.add('err');ok=false;}});}
+  if(i===7){if(!state.checks.final){ok=false;toast('Please confirm before submitting');}}
+  if(!ok&&stepEl.querySelector('.field.err'))toast('Please complete the required fields');
+  return ok;
+}
+
+/* ===== PICKERS ===== */
+function pickPillar(el){document.querySelectorAll('#pillarGroup .opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');state.pillar=el.dataset.p;document.getElementById('pillarGroup').classList.remove('err');document.getElementById('pillarErr').style.display='none';syncPreview();saveState();}
+function pickProg(el){document.querySelectorAll('#progOpts .opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');state.program=el.dataset.prog;saveState();}
+function toggleCheck(el){const k=el.dataset.check;el.classList.toggle('on');state.checks[k]=el.classList.contains('on');saveState();}
+
+/* ===== FILE UPLOADS ===== */
+function humanSize(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(0)+' KB';return (b/1048576).toFixed(1)+' MB';}
+function bindUploads(){
+  document.querySelectorAll('.upload[data-file] input[type=file]').forEach(inp=>{
+    inp.addEventListener('change',e=>{
+      const file=e.target.files[0];if(!file)return;
+      const box=inp.closest('.upload');const key=box.dataset.file;const kind=box.dataset.kind||'doc';const slot=box.dataset.slot||key;
+      handleFile(box,key,kind,slot,file);
+    });
+  });
+}
+async function handleFile(box,key,kind,slot,file){
+  const rec={name:file.name,size:file.size,type:file.type,path:null,bucket:null};
+  state.files[key]=rec;
+  box.closest('.field').classList.remove('err');
+  // local preview object URL for images
+  if(file.type&&file.type.startsWith('image/')){rec.previewUrl=URL.createObjectURL(file);}
+  renderUploaded(box,key,false);
+  // Real upload only when authed + online; otherwise it's a local-only preview (works in preview/sandbox)
+  if(authed&&online&&state.partnerId&&sb){
+    const chip=box.parentElement.querySelector('.uploaded[data-for="'+key+'"]');
+    if(chip){chip.classList.add('uploading');chip.insertAdjacentHTML('beforeend','<div class="upbar"><i></i></div>');}
+    try{
+      const ud=await efCall('upload-url',{partner_id:state.partnerId,kind,slot,filename:file.name});
+      const {error}=await sb.storage.from(ud.bucket).uploadToSignedUrl(ud.path,ud.token,file);
+      if(error) throw error;
+      rec.path=ud.path;rec.bucket=ud.bucket;rec.needsReattach=false;
+      if(chip){chip.classList.remove('uploading');const bar=chip.querySelector('.upbar i');if(bar)bar.style.width='100%';}
+      saveState();
+    }catch(e){
+      if(chip)chip.classList.remove('uploading');
+      toast('Upload will retry — saved locally for now'); online=false;
+    }
+  }else{
+    saveState();
+  }
+}
+function renderUploaded(box,key,reattach){
+  box.style.display='none';
+  const f=state.files[key];const old=box.parentElement.querySelector('.uploaded[data-for="'+key+'"]');if(old)old.remove();
+  const chip=document.createElement('div');chip.className='uploaded'+(reattach?' reattach':'');chip.setAttribute('data-for',key);
+  const img=(f.previewUrl||(f.type&&f.type.startsWith('image/')&&f.path?null:null));
+  chip.innerHTML=(f.previewUrl?`<img src="${f.previewUrl}">`:`<span>${I.doc}</span>`)+`<div><div class="un">${f.name}</div><div class="usz">${reattach?'Saved earlier — click to re-attach':humanSize(f.size)}</div></div><span class="x">×</span>`;
+  chip.querySelector('.x').onclick=()=>{delete state.files[key];chip.remove();box.style.display='block';saveState();};
+  if(reattach)chip.onclick=(ev)=>{if(ev.target.classList.contains('x'))return;chip.remove();box.style.display='block';box.querySelector('input').click();};
+  box.parentElement.insertBefore(chip,box.nextSibling);
+  if(key==='profilePhoto')syncPreview();
+}
+
+/* ===== VIDEO MODULES ===== */
+const vmodData=[{t:'Welcome to VYVE',d:'4:20',c:'var(--teal)'},{t:'Building your space',d:'7:10',c:'var(--mental)'},{t:'Recording great sessions',d:'9:45',c:'var(--physical)'},{t:'Growing your community',d:'6:30',c:'var(--social)'}];
+function renderVmods(){
+  document.getElementById('vmods').innerHTML=vmodData.map((v,i)=>`<div class="vmod" id="vm${i}" onclick="watchMod(${i})"><div class="vth" style="background:linear-gradient(135deg,${v.c},var(--teal-deep))"><span data-i="play"></span></div><div style="flex:1"><div class="vt">${v.t}</div><div class="vs">Module ${i+1} · ${v.d}</div></div><div class="vchk"></div></div>`).join('');
+  setIcons(document.getElementById('vmods'));
+}
+function watchMod(i){const el=document.getElementById('vm'+i);if(el.classList.contains('watched'))return;el.classList.add('watched');el.querySelector('.vchk').innerHTML=I.check;state.watched++;document.getElementById('vmodHint').textContent=state.watched+' of 4 watched';if(state.watched===4)toast('All modules complete');saveState();}
+
+/* ===== EDUCATION + QUIZ ===== */
+const lessons=[['VYVE brand & tone of voice','Article · 8 min'],['The three pillars explained','Article · 6 min'],['Accessibility & inclusive language','Article · 5 min'],['Content quality standards','Article + checklist']];
+const quizData=[
+  {q:'A member discloses they are struggling with their mental health in your session chat. What do you do?',a:['Ignore it to avoid overstepping','Follow the VYVE safeguarding escalation process and signpost support','Diagnose the issue yourself'],correct:1},
+  {q:'Which is appropriate handling of member personal data?',a:['Export member emails to your own mailing list','Only access member data through VYVE for the service you provide','Share member names publicly to celebrate them'],correct:1},
+  {q:'Your content should always be…',a:['Inclusive, accurate and within your qualified scope','As advanced as possible to impress','Free of any safety guidance'],correct:0}
+];
+const answers={};
+function renderEducation(){
+  document.getElementById('lessons').innerHTML=lessons.map(l=>`<div class="lesson"><span class="lchk" data-i="check"></span><div><div class="lt">${l[0]}</div><div class="ls">${l[1]} · completed</div></div></div>`).join('');
+  document.getElementById('quiz').innerHTML=quizData.map((q,qi)=>`<div class="q" id="q${qi}"><div class="qt">${qi+1}. ${q.q}</div>${q.a.map((a,ai)=>`<div class="qa" onclick="pickAns(${qi},${ai})"><span class="mk"></span><span>${a}</span></div>`).join('')}</div>`).join('');
+  setIcons(document.getElementById('lessons'));
+}
+function pickAns(qi,ai){answers[qi]=ai;document.getElementById('q'+qi).querySelectorAll('.qa').forEach((el,i)=>{el.classList.remove('sel','correct','wrong');if(i===ai)el.classList.add('sel');});}
+function gradeQuiz(){
+  let ok=0;quizData.forEach((q,qi)=>{const sel=answers[qi];const el=document.getElementById('q'+qi);el.querySelectorAll('.qa').forEach((a,ai)=>{a.classList.remove('correct','wrong');if(ai===q.correct)a.classList.add('correct');else if(ai===sel)a.classList.add('wrong');});if(sel===q.correct)ok++;});
+  const r=document.getElementById('quizResult');
+  state.quizScore=Math.round(ok/quizData.length*100);
+  if(ok===quizData.length){state.quizPassed=true;r.className='quiz-result pass show';r.textContent='Passed — all correct. You can continue.';}
+  else{state.quizPassed=false;r.className='quiz-result fail show';r.textContent=ok+' of '+quizData.length+' correct. Review and try again to continue.';}
+  saveState();
+}
+
+/* ===== PROFILE PREVIEW ===== */
+function syncPreview(){
+  const g=k=>(state.fields[k]||'').trim();
+  const name=g('pfName')||'Your name';const role=g('pfRole')||'Your role / tagline';
+  const bio=g('pfBio')||'Your bio will appear here as members read it.';
+  const why=g('pfWhy')||'Your reason for being here — the personal why members connect with.';
+  const feel=g('pfFeel');
+  const c=({physical:'var(--physical)',mental:'var(--mental)',social:'var(--social)'})[state.pillar||'physical'];
+  const photo=state.files.profilePhoto&&state.files.profilePhoto.previewUrl;
+  const init=(name.replace(/[^a-zA-Z ]/g,' ').split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('')||'Y').toUpperCase();
+  const html=document.getElementById('pfPhone');if(html)html.innerHTML=phoneHtml(name,role,bio,why,feel,c,init,photo);
+}
+function phoneHtml(name,role,bio,why,feel,c,init,photo){
+  const avStyle=photo?`background-image:url('${photo}')`:`background:${c}`;
+  return `<div class="ph-banner" style="background:linear-gradient(120deg,${c},var(--teal-deep))"></div>
+    <div class="ph-av" style="${avStyle}">${photo?'':init}</div>
+    <div class="ph-info"><h4>${esc(name)}</h4><div class="r">${esc(role)}</div></div>
+    <div class="ph-sec" style="border-top:none"><h5>About</h5><p>${esc(bio)}</p></div>
+    <div class="ph-sec"><h5>Reason for being here</h5><p>${esc(why)}</p></div>
+    ${feel?`<div class="ph-sec"><h5>Community feel</h5><p>${esc(feel)}</p></div>`:''}
+    <div class="ph-sec"><h5>Upcoming</h5><p>Your first live session will show here once scheduled.</p></div>`;
+}
+function esc(s){return (s||'').replace(/</g,'&lt;');}
+
+/* ===== STARTER CONTENT ===== */
+function renderContent(){
+  document.getElementById('contentSlots').innerHTML=[1,2,3].map(n=>`<div class="card" style="padding:15px;margin-bottom:12px"><div style="font-weight:700;font-size:13px;margin-bottom:6px">Starter video ${n}<span class="req" style="color:var(--social)">*</span></div><div class="row2"><div class="field" style="margin:0"><label>Title</label><input type="text" data-k="cTitle${n}" placeholder="e.g. Morning Flow (10 min)"></div><div class="field" style="margin:0"><label>Level</label><select data-k="cLevel${n}"><option>Beginner</option><option>Intermediate</option><option>All levels</option></select></div></div><div class="field"><label>Short description</label><input type="text" data-k="cDesc${n}" placeholder="One line members will see"></div><div class="field" style="margin-bottom:0"><label class="upload" data-file="cVideo${n}" data-slot="starter-${n}" data-kind="content"><div data-i="upload"></div><div class="ut">Upload video file</div><div class="us">MP4 · we transcode for the app</div><input type="file" accept="video/*"></label><div class="err-msg">A video file is required</div></div></div>`).join('');
+  setIcons(document.getElementById('contentSlots'));
+}
+
+/* ===== SUBMIT / RECORD ===== */
+function fileRef(k){const f=state.files[k];if(!f)return null;return {name:f.name,size:f.size,type:f.type,path:f.path||null,bucket:f.bucket||null};}
+function buildRecord(){
+  const f=state.fields;
+  return {
+    submittedAt:new Date().toISOString(),status:'pending_review',partnerId:state.partnerId||null,
+    contact:{name:f.contactName||'',business:f.businessName||'',email:f.email||'',phone:f.phone||'',location:f.location||'',website:f.website||''},
+    practice:{pillar:state.pillar,specialism:f.specialism||'',yearsExperience:f.years||'',description:f.description||''},
+    verification:{governingBody:f.govBody||'',membershipNo:f.govNumber||'',
+      references:[{name:f.ref1Name||'',relationship:f.ref1Rel||'',email:f.ref1Email||''},{name:f.ref2Name||'',relationship:f.ref2Rel||'',email:f.ref2Email||''}]},
+    agreement:{partnerAgreement:state.checks.agree,revenueShareAccepted:state.checks.revshare,revenueSharePct:30,signature:f.signName||'',signedDate:f.signDate||''},
+    training:{modulesWatched:state.watched,assessmentPassed:state.quizPassed,assessmentScore:state.quizScore},
+    profile:{displayName:f.pfName||'',tagline:f.pfRole||'',bio:f.pfBio||'',reasonForBeingHere:f.pfWhy||'',communityFeel:f.pfFeel||''},
+    starterContent:[1,2,3].map(n=>({title:f['cTitle'+n]||'',level:f['cLevel'+n]||'',description:f['cDesc'+n]||'',file:fileRef('cVideo'+n)})),
+    welcomePost:f.welcomePost||'',
+    launch:{sessionTitle:f.sessionTitle||'',format:f.sessionFormat||'',date:f.sessionDate||'',time:f.sessionTime||'',durationMin:f.sessionDuration||'',welcomeProgram:state.program||'none'},
+    documents:{photoId:fileRef('idDoc'),qualifications:fileRef('qualDoc'),dbs:fileRef('dbsDoc'),profilePhoto:fileRef('profilePhoto')}
+  };
+}
+async function submitJourney(){
+  if(!validateStep(7))return;
+  // Submit requires a verified account. If not yet verified, gate here (no skip).
+  if(!authed){
+    if(!online){ /* preview/offline: fall through to local confirmation */ }
+    else{
+      pendingAfterAuth=()=>doSubmit();
+      document.getElementById('otpSkip').style.display='none';
+      document.getElementById('authTitle').textContent='Verify to submit';
+      document.getElementById('authMsg').textContent='Enter the 6-digit code we emailed to '+(state.fields.email||'your email')+' to submit your application securely.';
+      document.getElementById('authOv').classList.add('show');
+      try{await sb.auth.signInWithOtp({email:(state.fields.email||'').trim(),options:{shouldCreateUser:true}});}catch(e){online=false;closeAuth();doSubmit();}
+      return;
+    }
+  }
+  doSubmit();
+}
+async function doSubmit(){
+  const f=state.fields;
+  if(authed&&online&&state.partnerId){
+    try{
+      await efCall('submit',{
+        partner_id:state.partnerId,
+        profile:{tagline:f.pfRole,bio:f.pfBio,reasonForBeingHere:f.pfWhy,communityFeel:f.pfFeel,pillar:state.pillar},
+        agreement:{partnerAgreement:state.checks.agree,revenueShareAccepted:state.checks.revshare,signature:f.signName||'',signedDate:f.signDate||''},
+        references:[{name:f.ref1Name||'',relationship:f.ref1Rel||'',email:f.ref1Email||''},{name:f.ref2Name||'',relationship:f.ref2Rel||'',email:f.ref2Email||''}],
+        starterContent:[1,2,3].map(n=>({title:f['cTitle'+n]||'',level:f['cLevel'+n]||'',description:f['cDesc'+n]||'',file:fileRef('cVideo'+n)})),
+        welcomePost:f.welcomePost||'',
+        launch:{sessionTitle:f.sessionTitle||'',format:f.sessionFormat||'',date:f.sessionDate||'',time:f.sessionTime||'',durationMin:f.sessionDuration||'',welcomeProgram:state.program||'none'},
+        documents:{photoId:fileRef('idDoc'),qualifications:fileRef('qualDoc'),dbs:fileRef('dbsDoc'),profilePhoto:fileRef('profilePhoto')}
+      });
+    }catch(e){
+      toast('Submit failed — your data is saved; please retry'); return;
+    }
+  }
+  buildSummary();showScreen('done');try{localStorage.removeItem(KEY);}catch(e){}
+}
+let lastRecord=null;
+function buildSummary(){
+  lastRecord=buildRecord();const f=state.fields;
+  const pillar=({physical:'Physical',mental:'Mental',social:'Social'})[state.pillar]||'—';
+  const rows=[['Partner',f.pfName||f.contactName||'New partner'],['Role',f.pfRole||'—'],['Pillar',pillar],['Email',f.email||'—'],['Verification docs',Object.keys(state.files).filter(k=>['idDoc','qualDoc','dbsDoc'].includes(k)).length+' / 3 attached'],['Assessment',state.quizPassed?('Passed ('+state.quizScore+'%)'):'Pending'],['Modules',state.watched+'/4 watched'],['Starter content',[1,2,3].filter(n=>state.files['cVideo'+n]).length+' / 3 videos'],['First session',f.sessionTitle||'—'],['Status','Awaiting VYVE approval']];
+  document.getElementById('summaryCard').innerHTML=rows.map(r=>`<div class="summary-row"><span class="k">${r[0]}</span><span class="v">${esc(String(r[1]))}</span></div>`).join('');
+  const c=({physical:'var(--physical)',mental:'var(--mental)',social:'var(--social)'})[state.pillar||'physical'];
+  const init=((f.pfName||'Y').replace(/[^a-zA-Z ]/g,' ').split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('')||'Y').toUpperCase();
+  const photo=state.files.profilePhoto&&state.files.profilePhoto.previewUrl;
+  document.getElementById('donePhone').innerHTML=phoneHtml(f.pfName||'Your name',f.pfRole||'Your role',f.pfBio||'A new VYVE partner space.',f.pfWhy||'',f.pfFeel||'',c,init,photo);
+  setIcons(document.getElementById('screen-done'));
+}
+function downloadRecord(){
+  const rec=lastRecord||buildRecord();
+  const blob=new Blob([JSON.stringify(rec,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  const nm=(rec.profile.displayName||rec.contact.name||'partner').replace(/[^a-z0-9]+/gi,'-').toLowerCase();
+  a.download='vyve-partner-'+nm+'.json';document.body.appendChild(a);a.click();a.remove();
+  toast('Submission downloaded');
+}
+
+/* ===== SCREENS ===== */
+function showScreen(s){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.getElementById('screen-'+s).classList.add('active');
+  if(s==='journey'){renderRail();showStepDom();syncPreview();}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===== INIT ===== */
+setIcons(document);
+renderOverview();renderVmods();renderEducation();renderContent();
+bindFields();bindUploads();
+(async()=>{ await restoreState(); renderRail();showStepDom();syncPreview(); })();
+</script>
+</body>
+</html>
