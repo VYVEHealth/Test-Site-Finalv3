@@ -311,6 +311,8 @@
           <div class="field"><label>Photo ID<span class="req">*</span></label>
             <label class="upload" data-file="idDoc" data-slot="photo-id" data-kind="doc"><div data-i="upload"></div><div class="ut">Upload photo ID</div><div class="us">Passport or driving licence — PDF or image</div><input type="file" accept=".pdf,image/*"></label>
             <div class="err-msg">Photo ID is required</div></div>
+          <div class="field"><label>Professional qualifications / certifications <span class="muted" style="font-weight:500">(optional)</span></label>
+            <label class="upload" data-file="qualDoc" data-slot="qualifications" data-kind="doc"><div data-i="upload"></div><div class="ut">Upload certificate</div><div class="us">Add it if you'd like — PDF or image. Not required.</div><input type="file" accept=".pdf,image/*"></label></div>
           <div class="row2">
             <div class="field"><label>Governing body / membership</label><input type="text" data-k="govBody" placeholder="e.g. Yoga Alliance"></div>
             <div class="field"><label>Membership / registration no.</label><input type="text" data-k="govNumber" placeholder="RYT-500-…"></div>
@@ -1094,7 +1096,7 @@ function buildRecord(){
     starterContent:[1,2,3].map(n=>({title:f['cTitle'+n]||'',level:f['cLevel'+n]||'',description:f['cDesc'+n]||'',file:fileRef('cVideo'+n)})),
     welcomePost:f.welcomePost||'',
     launch:{sessionTitle:f.sessionTitle||'',format:f.sessionFormat||'',date:f.sessionDate||'',time:f.sessionTime||'',durationMin:f.sessionDuration||'',welcomeProgram:state.program||'none'},
-    documents:{photoId:fileRef('idDoc'),profilePhoto:fileRef('profilePhoto')}
+    documents:{photoId:fileRef('idDoc'),qualifications:fileRef('qualDoc'),profilePhoto:fileRef('profilePhoto')}
   };
 }
 function submitJourney(){
