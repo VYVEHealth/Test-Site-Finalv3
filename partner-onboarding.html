@@ -308,23 +308,12 @@
           <div class="eyebrow">Step 2 of 8</div>
           <h2>Verification &amp; compliance</h2>
           <p class="intro">We verify every partner before going live. Upload the documents below. Required items must be completed before approval. These documents are encrypted, stored privately and never shown to members.</p>
-          <div class="field"><label>Professional qualifications / certifications<span class="req">*</span></label>
-            <label class="upload" data-file="qualDoc" data-slot="qualifications" data-kind="doc"><div data-i="upload"></div><div class="ut">Upload certificate</div><div class="us">PDF or image</div><input type="file" accept=".pdf,image/*"></label>
-            <div class="err-msg">At least one qualification is required</div></div>
+          <div class="field"><label>Photo ID<span class="req">*</span></label>
+            <label class="upload" data-file="idDoc" data-slot="photo-id" data-kind="doc"><div data-i="upload"></div><div class="ut">Upload photo ID</div><div class="us">Passport or driving licence — PDF or image</div><input type="file" accept=".pdf,image/*"></label>
+            <div class="err-msg">Photo ID is required</div></div>
           <div class="row2">
             <div class="field"><label>Governing body / membership</label><input type="text" data-k="govBody" placeholder="e.g. Yoga Alliance"></div>
             <div class="field"><label>Membership / registration no.</label><input type="text" data-k="govNumber" placeholder="RYT-500-…"></div>
-          </div>
-          <h3 style="font-size:14px;margin-top:22px;font-weight:700">Two references</h3>
-          <div class="row3 mt">
-            <div class="field" style="margin:0"><label>Reference 1 — name<span class="req">*</span></label><input type="text" data-k="ref1Name" data-req placeholder="Name"><div class="err-msg">Required</div></div>
-            <div class="field" style="margin:0"><label>Relationship</label><input type="text" data-k="ref1Rel" placeholder="e.g. Studio owner"></div>
-            <div class="field" style="margin:0"><label>Email<span class="req">*</span></label><input type="email" data-k="ref1Email" data-req placeholder="email"><div class="err-msg">Valid email required</div></div>
-          </div>
-          <div class="row3 mt">
-            <div class="field" style="margin:0"><label>Reference 2 — name<span class="req">*</span></label><input type="text" data-k="ref2Name" data-req placeholder="Name"><div class="err-msg">Required</div></div>
-            <div class="field" style="margin:0"><label>Relationship</label><input type="text" data-k="ref2Rel" placeholder="e.g. Client lead"></div>
-            <div class="field" style="margin:0"><label>Email<span class="req">*</span></label><input type="email" data-k="ref2Email" data-req placeholder="email"><div class="err-msg">Valid email required</div></div>
           </div>
         </div>
 
@@ -754,13 +743,11 @@ async function ensureDraft(){
   }catch(e){ online=false; }
 }
 function credentialsBlob(){
-  return {formFields:state.fields,pillar:state.pillar,program:state.program,
-    references:[{name:state.fields.ref1Name||'',relationship:state.fields.ref1Rel||'',email:state.fields.ref1Email||''},
-                {name:state.fields.ref2Name||'',relationship:state.fields.ref2Rel||'',email:state.fields.ref2Email||''}]};
+  return {formFields:state.fields,pillar:state.pillar,program:state.program};
 }
 function gateSteps(){
   return {
-    identity_verified:!!(state.files.qualDoc&&!state.files.qualDoc.needsReattach),
+    identity_verified:!!(state.files.idDoc&&!state.files.idDoc.needsReattach),
     agreement_signed:!!(state.checks.agree&&state.checks.revshare&&(state.fields.signName||'').trim()),
     videos_watched:state.watched>=4,
     safeguarding_passed:state.quizPassed, gdpr_passed:state.quizPassed,
@@ -772,7 +759,7 @@ function gateSteps(){
 /* ===== OVERVIEW DATA ===== */
 const flow=[
   {n:1,t:'Apply & introduce yourself',who:'partner',d:'Submit your details, discipline and what you offer. Takes about 5 minutes.',collects:['Contact details','Pillar & specialism','Experience','Description']},
-  {n:2,t:'Vetting & verification',who:'vyve',d:'VYVE verifies your qualifications and references. This is the core quality gate.',collects:['Certifications','Governing body','References']},
+  {n:2,t:'Identity verification',who:'vyve',d:'VYVE verifies your identity before going live. Upload a government-issued photo ID — stored privately, never shown to members.',collects:['Photo ID','Governing body (optional)']},
   {n:3,t:'Agreement & commercials',who:'partner',d:'Review and e-sign the partner agreement and acknowledge the revenue share. Payout details are collected securely later.',collects:['E-signature','Revenue share consent']},
   {n:4,t:'Watch the onboarding modules',who:'partner',d:'Four short videos on how VYVE works and how to build a great space.',collects:['Module completion']},
   {n:5,t:'Education & assessments',who:'partner',d:'Short curriculum plus a required Safeguarding and GDPR assessment you must pass.',collects:['Assessment result','Lesson completion']},
@@ -782,7 +769,7 @@ const flow=[
 ];
 const dataReqs=[
   {icon:'user',h:'About you',rows:[['Lead contact name',1],['Business / trading name',0],['Email & phone',1],['Location',0],['Website / socials',0],['Pillar & specialism',1],['Years of experience',0],['Description of your offer',1]]},
-  {icon:'shield',h:'Verification & compliance',rows:[['Professional qualifications',1],['Governing body & membership no.',0],['Two references',1]]},
+  {icon:'shield',h:'Identity verification',rows:[['Photo ID',1],['Governing body & membership no.',0]]},
   {icon:'card',h:'Agreement & commercials',rows:[['Signed partner agreement',1],['Code of Conduct acceptance',1],['Revenue share acknowledgement',1],['Payout / bank details (later)',0]]},
   {icon:'cap',h:'Education & assessments',rows:[['Onboarding modules watched',1],['Safeguarding assessment',1],['GDPR & data assessment',1],['Accessibility & quality lessons',0]]},
   {icon:'award',h:'Your public profile',rows:[['Profile photo',1],['Display name & tagline',1],['Member-facing bio',1],['Reason for being here',1],['Community feel',0]]},
@@ -949,7 +936,7 @@ function isStepComplete(i){
   const f=state.fields, has=k=>!!(f[k]||'').trim(), em=v=>isEmail((v||'').trim());
   switch(i){
     case 0: return has('contactName')&&em(f.email)&&has('phone')&&!!state.pillar&&has('specialism')&&has('description');
-    case 1: return !!(state.files.qualDoc&&!state.files.qualDoc.needsReattach)&&has('ref1Name')&&em(f.ref1Email)&&has('ref2Name')&&em(f.ref2Email);
+    case 1: return !!(state.files.idDoc&&!state.files.idDoc.needsReattach);
     case 2: return state.checks.agree&&state.checks.revshare&&has('signName');
     case 3: return state.watched>=4;
     case 4: return state.quizPassed;
@@ -967,7 +954,7 @@ function validateStep(i){
     if(bad){markErr(el);ok=false;}
   });
   if(i===0){const pe=document.getElementById('pillarErr');if(!state.pillar){document.getElementById('pillarGroup').classList.add('err');pe.style.display='block';ok=false;}else{document.getElementById('pillarGroup').classList.remove('err');pe.style.display='none';}}
-  if(i===1){['qualDoc'].forEach(k=>{const f=state.files[k];if(!f||f.needsReattach){const box=document.querySelector('.upload[data-file="'+k+'"]');if(box)box.closest('.field').classList.add('err');ok=false;}});}
+  if(i===1){['idDoc'].forEach(k=>{const f=state.files[k];if(!f||f.needsReattach){const box=document.querySelector('.upload[data-file="'+k+'"]');if(box)box.closest('.field').classList.add('err');ok=false;}});}
   if(i===2){if(!state.checks.agree||!state.checks.revshare){ok=false;toast('Please accept the agreement and revenue share');}}
   if(i===3){if(state.watched<4){ok=false;toast('Watch all four modules to continue');}}
   if(i===4){if(!state.quizPassed){ok=false;toast('Pass the required assessment to continue');}}
@@ -1100,15 +1087,14 @@ function buildRecord(){
     submittedAt:new Date().toISOString(),status:'pending_review',partnerId:state.partnerId||null,
     contact:{name:f.contactName||'',business:f.businessName||'',email:f.email||'',phone:f.phone||'',location:f.location||'',website:f.website||''},
     practice:{pillar:state.pillar,specialism:f.specialism||'',yearsExperience:f.years||'',description:f.description||''},
-    verification:{governingBody:f.govBody||'',membershipNo:f.govNumber||'',
-      references:[{name:f.ref1Name||'',relationship:f.ref1Rel||'',email:f.ref1Email||''},{name:f.ref2Name||'',relationship:f.ref2Rel||'',email:f.ref2Email||''}]},
+    verification:{governingBody:f.govBody||'',membershipNo:f.govNumber||''},
     agreement:{partnerAgreement:state.checks.agree,revenueShareAccepted:state.checks.revshare,revenueSharePct:50,partnerLegalName:(f.contactName||f.businessName||''),signature:f.signName||'',signedDate:f.signDate||''},
     training:{modulesWatched:state.watched,assessmentPassed:state.quizPassed,assessmentScore:state.quizScore},
     profile:{displayName:f.pfName||'',tagline:f.pfRole||'',bio:f.pfBio||'',reasonForBeingHere:f.pfWhy||'',communityFeel:f.pfFeel||''},
     starterContent:[1,2,3].map(n=>({title:f['cTitle'+n]||'',level:f['cLevel'+n]||'',description:f['cDesc'+n]||'',file:fileRef('cVideo'+n)})),
     welcomePost:f.welcomePost||'',
     launch:{sessionTitle:f.sessionTitle||'',format:f.sessionFormat||'',date:f.sessionDate||'',time:f.sessionTime||'',durationMin:f.sessionDuration||'',welcomeProgram:state.program||'none'},
-    documents:{qualifications:fileRef('qualDoc'),profilePhoto:fileRef('profilePhoto')}
+    documents:{photoId:fileRef('idDoc'),profilePhoto:fileRef('profilePhoto')}
   };
 }
 function submitJourney(){
@@ -1128,11 +1114,10 @@ async function doSubmit(){
         partner_id:state.partnerId,
         profile:{tagline:f.pfRole,bio:f.pfBio,reasonForBeingHere:f.pfWhy,communityFeel:f.pfFeel,pillar:state.pillar},
         agreement:{partnerAgreement:state.checks.agree,revenueShareAccepted:state.checks.revshare,revenueSharePct:50,partnerLegalName:(f.contactName||f.businessName||''),signature:f.signName||'',signedDate:f.signDate||''},
-        references:[{name:f.ref1Name||'',relationship:f.ref1Rel||'',email:f.ref1Email||''},{name:f.ref2Name||'',relationship:f.ref2Rel||'',email:f.ref2Email||''}],
         starterContent:[1,2,3].map(n=>({title:f['cTitle'+n]||'',level:f['cLevel'+n]||'',description:f['cDesc'+n]||'',file:fileRef('cVideo'+n)})),
         welcomePost:f.welcomePost||'',
         launch:{sessionTitle:f.sessionTitle||'',format:f.sessionFormat||'',date:f.sessionDate||'',time:f.sessionTime||'',durationMin:f.sessionDuration||'',welcomeProgram:state.program||'none'},
-        documents:{qualifications:fileRef('qualDoc'),profilePhoto:fileRef('profilePhoto')}
+        documents:{photoId:fileRef('idDoc'),profilePhoto:fileRef('profilePhoto')}
       });
     }catch(e){
       toast('Submit failed — your data is saved; please retry'); return;
@@ -1144,7 +1129,7 @@ let lastRecord=null;
 function buildSummary(){
   lastRecord=buildRecord();const f=state.fields;
   const pillar=({physical:'Physical',mental:'Mental',social:'Social'})[state.pillar]||'—';
-  const rows=[['Partner',f.pfName||f.contactName||'New partner'],['Role',f.pfRole||'—'],['Pillar',pillar],['Email',f.email||'—'],['Qualifications',state.files.qualDoc?'Attached':'—'],['Assessment',state.quizPassed?('Passed ('+state.quizScore+'%)'):'Pending'],['Modules',state.watched+'/4 watched'],['Starter content',[1,2,3].filter(n=>state.files['cVideo'+n]).length+' / 3 videos'],['First session',f.sessionTitle||'—'],['Status','Awaiting VYVE approval']];
+  const rows=[['Partner',f.pfName||f.contactName||'New partner'],['Role',f.pfRole||'—'],['Pillar',pillar],['Email',f.email||'—'],['Photo ID',state.files.idDoc?'Attached':'—'],['Assessment',state.quizPassed?('Passed ('+state.quizScore+'%)'):'Pending'],['Modules',state.watched+'/4 watched'],['Starter content',[1,2,3].filter(n=>state.files['cVideo'+n]).length+' / 3 videos'],['First session',f.sessionTitle||'—'],['Status','Awaiting VYVE approval']];
   document.getElementById('summaryCard').innerHTML=rows.map(r=>`<div class="summary-row"><span class="k">${r[0]}</span><span class="v">${esc(String(r[1]))}</span></div>`).join('');
   const c=({physical:'var(--physical)',mental:'var(--mental)',social:'var(--social)'})[state.pillar||'physical'];
   const init=((f.pfName||'Y').replace(/[^a-zA-Z ]/g,' ').split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('')||'Y').toUpperCase();
