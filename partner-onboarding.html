@@ -240,11 +240,11 @@
   <section class="screen active" id="screen-overview">
     <div class="info-pill"><span data-i="info"></span>For prospective VYVE partners — yoga teachers, speakers, educators, workshop &amp; session hosts</div>
     <h1 style="margin-top:14px">Becoming a VYVE partner</h1>
-    <p class="lead">Everything you need to go from application to live community space inside the VYVE app. The journey takes most partners about <b class="hl">6 days</b> across 8 guided steps. Here is exactly what happens and what we will ask you for.</p>
+    <p class="lead">Everything you need to go from application to live community space inside the VYVE app. The journey takes most partners about <b class="hl">6 days</b> across 6 guided steps. Here is exactly what happens and what we will ask you for.</p>
     <div class="grid g4 mt2">
-      <div class="stat"><div class="v">8</div><div class="l">Guided steps</div></div>
+      <div class="stat"><div class="v">6</div><div class="l">Guided steps</div></div>
       <div class="stat"><div class="v">~6 days</div><div class="l">Average to go live</div></div>
-      <div class="stat"><div class="v">2</div><div class="l">Required assessments</div></div>
+      <div class="stat"><div class="v">48h</div><div class="l">Review turnaround</div></div>
       <div class="stat"><div class="v">50%</div><div class="l">Standard revenue share</div></div>
     </div>
     <h2 class="mt2">The onboarding process</h2>
@@ -609,8 +609,8 @@
         <!-- STEP 7 -->
         <div class="step" id="st6">
           <div class="eyebrow">Step 7 of 8</div>
-          <h2>Upload your starter content</h2>
-          <p class="intro">Add three short on-demand videos so members have something valuable the moment they join. These go to the VYVE team for review before publishing.</p>
+          <h2>Your welcome video</h2>
+          <p class="intro">Upload a short welcome video introducing who you are and what your community is about — it is the first thing members see. You can add more on-demand videos now if you like; everything goes to the VYVE team for review before publishing.</p>
           <div id="contentSlots"></div>
           <div class="field"><label>Optional — a welcome post for your community feed</label><textarea data-k="welcomePost" placeholder="Say hello, tell members where to start, and what you'll run each week."></textarea></div>
         </div>
@@ -718,8 +718,12 @@ let toastT;function toast(m){const t=document.getElementById('toast');t.textCont
 /* ===== STATE ===== */
 const KEY='vyve_partner_onboarding_v1';
 const state={fields:{},files:{},checks:{agree:false,revshare:false,payoutlater:false,final:false},pillar:null,program:null,watched:0,quizPassed:false,quizScore:0,step:0,partnerId:null};
-const total=8;
 const stepTitles=['About you','Verification','Agreement','Video modules','Education','Build your space','Starter content','Launch'];
+// Steps temporarily hidden: 3 'Video modules' + 4 'Education'. Re-enable by adding them back (sorted): const ACTIVE=[0,1,2,3,4,5,6,7];
+const ACTIVE=[0,1,2,5,6,7];
+const MODULES_DEFERRED=!(ACTIVE.includes(3)&&ACTIVE.includes(4));
+const total=ACTIVE.length;
+const activePos=(x)=>ACTIVE.indexOf(x);
 let step=0;
 let online=!!sb;        // backend reachable
 
@@ -751,10 +755,11 @@ function gateSteps(){
   return {
     identity_verified:!!(state.files.idDoc&&!state.files.idDoc.needsReattach),
     agreement_signed:!!(state.checks.agree&&state.checks.revshare&&(state.fields.signName||'').trim()),
-    videos_watched:state.watched>=4,
-    safeguarding_passed:state.quizPassed, gdpr_passed:state.quizPassed,
+    videos_watched:MODULES_DEFERRED?false:state.watched>=4,
+    safeguarding_passed:MODULES_DEFERRED?false:state.quizPassed, gdpr_passed:MODULES_DEFERRED?false:state.quizPassed,
     profile_complete:!!((state.fields.pfName||'').trim()&&(state.fields.pfBio||'').trim()),
-    starter_videos_uploaded:[1,2,3].every(n=>state.files['cVideo'+n]&&!state.files['cVideo'+n].needsReattach)
+    starter_videos_uploaded:!!(state.files.cVideo1&&!state.files.cVideo1.needsReattach),
+    modules_deferred:MODULES_DEFERRED
   };
 }
 
@@ -763,19 +768,16 @@ const flow=[
   {n:1,t:'Apply & introduce yourself',who:'partner',d:'Submit your details, discipline and what you offer. Takes about 5 minutes.',collects:['Contact details','Pillar & specialism','Experience','Description']},
   {n:2,t:'Identity verification',who:'vyve',d:'VYVE verifies your identity before going live. Upload a government-issued photo ID — stored privately, never shown to members.',collects:['Photo ID','Governing body (optional)']},
   {n:3,t:'Agreement & commercials',who:'partner',d:'Review and e-sign the partner agreement and acknowledge the revenue share. Payout details are collected securely later.',collects:['E-signature','Revenue share consent']},
-  {n:4,t:'Watch the onboarding modules',who:'partner',d:'Four short videos on how VYVE works and how to build a great space.',collects:['Module completion']},
-  {n:5,t:'Education & assessments',who:'partner',d:'Short curriculum plus a required Safeguarding and GDPR assessment you must pass.',collects:['Assessment result','Lesson completion']},
-  {n:6,t:'Build your space',who:'partner',d:'Create your public, member-facing profile: photo, bio, your reason for being here and your community feel.',collects:['Profile photo','Bio & mission','Community feel']},
-  {n:7,t:'Upload starter content',who:'partner',d:'Add three intro videos so members get value from day one. Reviewed before publishing.',collects:['3 starter videos','Welcome post']},
-  {n:8,t:'Schedule launch & submit',who:'partner',d:'Set your first live session, optionally add a welcome program, and submit for final review.',collects:['First session','Welcome program']},
+  {n:4,t:'Build your space',who:'partner',d:'Create your public, member-facing profile: photo, bio, your reason for being here and your community feel.',collects:['Profile photo','Bio & mission','Community feel']},
+  {n:5,t:'Add your welcome video',who:'partner',d:'Upload a short welcome video introducing who you are and what your community is about. Reviewed before publishing.',collects:['Welcome video','Welcome post']},
+  {n:6,t:'Schedule launch & submit',who:'partner',d:'Set your first live session, optionally add a welcome program, and submit for final review.',collects:['First session','Welcome program']},
 ];
 const dataReqs=[
   {icon:'user',h:'About you',rows:[['Lead contact name',1],['Business / trading name',0],['Email & phone',1],['Location',0],['Website / socials',0],['Pillar & specialism',1],['Years of experience',0],['Description of your offer',1]]},
   {icon:'shield',h:'Identity verification',rows:[['Photo ID',1],['Governing body & membership no.',0]]},
   {icon:'card',h:'Agreement & commercials',rows:[['Signed partner agreement',1],['Code of Conduct acceptance',1],['Revenue share acknowledgement',1],['Payout / bank details (later)',0]]},
-  {icon:'cap',h:'Education & assessments',rows:[['Onboarding modules watched',1],['Safeguarding assessment',1],['GDPR & data assessment',1],['Accessibility & quality lessons',0]]},
   {icon:'award',h:'Your public profile',rows:[['Profile photo',1],['Display name & tagline',1],['Member-facing bio',1],['Reason for being here',1],['Community feel',0]]},
-  {icon:'film',h:'Content & launch',rows:[['Three starter videos',1],['Welcome post',0],['First live session',1],['Welcome program',0]]},
+  {icon:'film',h:'Content & launch',rows:[['Welcome video — who you are & your community',1],['Welcome post',0],['First live session',1],['Welcome program',0]]},
 ];
 function renderOverview(){
   document.getElementById('flowline').innerHTML=flow.map(f=>`<div class="flowstep"><div class="flownum">${f.n}</div><div style="flex:1"><h3>${f.t}<span class="who-tag ${f.who==='vyve'?'who-vyve':'who-partner'}">${f.who==='vyve'?'VYVE actions':'You complete'}</span></h3><p>${f.d}</p><div class="collects"><b>Collected:</b> ${f.collects.join(' · ')}</div></div></div>`).join('');
@@ -803,7 +805,7 @@ async function saveState(){
   if(!online||!state.partnerId) return;
   try{
     await efCall('save',{partner_id:state.partnerId,credentialsPatch:credentialsBlob(),steps:gateSteps(),
-      pct_complete:Math.round(step/total*100),
+      pct_complete:Math.round((activePos(step)+1)/ACTIVE.length*100),
       assessment:{safeguarding_passed:state.quizPassed,gdpr_passed:state.quizPassed,score:state.quizScore}});
   }catch(e){ online=false; }
 }
@@ -815,7 +817,7 @@ async function restoreState(){
   try{snap=JSON.parse(localStorage.getItem(KEY));}catch(e){}
   if(!snap||!snap.fields) return false;
   state.fields=snap.fields||{};state.checks=snap.checks||state.checks;state.pillar=snap.pillar||null;
-  state.program=snap.program||null;state.watched=snap.watched||0;state.quizPassed=!!snap.quizPassed;state.quizScore=snap.quizScore||0;step=snap.step||0;state.partnerId=snap.partnerId||null;
+  state.program=snap.program||null;state.watched=snap.watched||0;state.quizPassed=!!snap.quizPassed;state.quizScore=snap.quizScore||0;step=snap.step||0;state.partnerId=snap.partnerId||null;if(!ACTIVE.includes(step))step=ACTIVE.reduce((a,si)=>si<=step?si:a,ACTIVE[0]);
   if(snap.files) hydrateFiles(snap.files,true);
   if(online&&state.partnerId){
     try{ const r=await efCall('start',{resume_id:state.partnerId}); const cr=r.credentials||{}; if(cr.formFields) state.fields={...cr.formFields,...state.fields}; }catch(e){ online=false; }
@@ -844,16 +846,17 @@ function applyRestoredDom(source){
 
 /* ===== RAIL / STEP NAV ===== */
 function renderRail(){
-  document.getElementById('railSteps').innerHTML=stepTitles.map((t,i)=>{const done=i!==step&&isStepComplete(i);return `<div class="rstep ${i===step?'active':''} ${done?'done':''}" onclick="goStep(${i})"><span class="rdot" ${done?'data-i="check"':''}>${done?'':i+1}</span><span class="rt">${t}</span></div>`;}).join('');
+  document.getElementById('railSteps').innerHTML=ACTIVE.map((si,pos)=>{const done=si!==step&&isStepComplete(si);return `<div class="rstep ${si===step?'active':''} ${done?'done':''}" onclick="goStep(${si})"><span class="rdot" ${done?'data-i="check"':''}>${done?'':pos+1}</span><span class="rt">${stepTitles[si]}</span></div>`;}).join('');
   setIcons(document.getElementById('railSteps'));
-  let comp=0;for(let i=0;i<total;i++)if(isStepComplete(i))comp++;
-  const pct=Math.round(comp/total*100);
+  let comp=0;for(const si of ACTIVE)if(isStepComplete(si))comp++;
+  const pct=Math.round(comp/ACTIVE.length*100);
   document.getElementById('progFill').style.width=pct+'%';document.getElementById('pctLabel').textContent=pct+'% complete';
 }
 function showStepDom(){
   document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('active',i===step));
-  document.getElementById('backBtn').style.display=step===0?'none':'inline-flex';
-  document.getElementById('nextBtn').innerHTML=(step===total-1?'Submit for review':'Continue')+'<span class="bic" data-i="arrow"></span>';
+  document.getElementById('backBtn').style.display=activePos(step)<=0?'none':'inline-flex';
+  document.getElementById('nextBtn').innerHTML=(activePos(step)===ACTIVE.length-1?'Submit for review':'Continue')+'<span class="bic" data-i="arrow"></span>';
+  {const cur=document.getElementById('st'+step);if(cur){const eb=cur.querySelector('.eyebrow');if(eb)eb.textContent='Step '+(activePos(step)+1)+' of '+ACTIVE.length;}}
   setIcons(document.getElementById('nextBtn'));
   if(step===5)syncPreview();
   if(step===2)fillContract();
@@ -922,10 +925,11 @@ function downloadSignedAgreement(){
 function goStep(i){step=i;renderRail();showStepDom();saveState();}
 async function nextStep(){
   if(step===0){ await ensureDraft(); }
-  if(step<total-1){step++;renderRail();showStepDom();saveState();}
+  const at=activePos(step);
+  if(at<ACTIVE.length-1){step=ACTIVE[at+1];renderRail();showStepDom();saveState();}
   else{submitJourney();}
 }
-function prevStep(){if(step>0){step--;renderRail();showStepDom();saveState();}}
+function prevStep(){const at=activePos(step);if(at>0){step=ACTIVE[at-1];renderRail();showStepDom();saveState();}}
 
 /* (auth removed — public EF, no login) */
 
@@ -943,7 +947,7 @@ function isStepComplete(i){
     case 3: return state.watched>=4;
     case 4: return state.quizPassed;
     case 5: return has('pfName')&&has('pfRole')&&has('pfBio')&&has('pfWhy');
-    case 6: return [1,2,3].every(n=>state.files['cVideo'+n]&&!state.files['cVideo'+n].needsReattach);
+    case 6: return !!(state.files['cVideo1']&&!state.files['cVideo1'].needsReattach);
     case 7: return has('sessionTitle')&&has('sessionDate')&&has('sessionTime')&&state.checks.final;
     default: return true;
   }
@@ -960,7 +964,7 @@ function validateStep(i){
   if(i===2){if(!state.checks.agree||!state.checks.revshare){ok=false;toast('Please accept the agreement and revenue share');}}
   if(i===3){if(state.watched<4){ok=false;toast('Watch all four modules to continue');}}
   if(i===4){if(!state.quizPassed){ok=false;toast('Pass the required assessment to continue');}}
-  if(i===6){[1,2,3].forEach(n=>{const k='cVideo'+n;const f=state.files[k];if(!f||f.needsReattach){const box=document.querySelector('.upload[data-file="'+k+'"]');if(box)box.closest('.field').classList.add('err');ok=false;}});}
+  if(i===6){const k='cVideo1';const f=state.files[k];if(!f||f.needsReattach){const box=document.querySelector('.upload[data-file="'+k+'"]');if(box)box.closest('.field').classList.add('err');ok=false;}}
   if(i===7){if(!state.checks.final){ok=false;toast('Please confirm before submitting');}}
   if(!ok&&stepEl.querySelector('.field.err'))toast('Please complete the required fields');
   return ok;
@@ -1077,7 +1081,12 @@ function esc(s){return (s||'').replace(/</g,'&lt;');}
 
 /* ===== STARTER CONTENT ===== */
 function renderContent(){
-  document.getElementById('contentSlots').innerHTML=[1,2,3].map(n=>`<div class="card" style="padding:15px;margin-bottom:12px"><div style="font-weight:700;font-size:13px;margin-bottom:6px">Starter video ${n}<span class="req" style="color:var(--social)">*</span></div><div class="row2"><div class="field" style="margin:0"><label>Title</label><input type="text" data-k="cTitle${n}" placeholder="e.g. Morning Flow (10 min)"></div><div class="field" style="margin:0"><label>Level</label><select data-k="cLevel${n}"><option>Beginner</option><option>Intermediate</option><option>All levels</option></select></div></div><div class="field"><label>Short description</label><input type="text" data-k="cDesc${n}" placeholder="One line members will see"></div><div class="field" style="margin-bottom:0"><label class="upload" data-file="cVideo${n}" data-slot="starter-${n}" data-kind="content"><div data-i="upload"></div><div class="ut">Upload video file</div><div class="us">MP4 · we transcode for the app</div><input type="file" accept="video/*"></label><div class="err-msg">A video file is required</div></div></div>`).join('');
+  const slots=[
+    {n:1,req:true,head:'Welcome to VYVE',ph:'e.g. Welcome to my space',dlabel:'What members will see first',desc:'Introduce yourself — who you are and what your community is about'},
+    {n:2,req:false,head:'Extra video 2 (optional)',ph:'e.g. Morning Flow (10 min)',dlabel:'Short description',desc:'One line members will see'},
+    {n:3,req:false,head:'Extra video 3 (optional)',ph:'e.g. Breathwork basics',dlabel:'Short description',desc:'One line members will see'}
+  ];
+  document.getElementById('contentSlots').innerHTML=slots.map(s=>`<div class="card" style="padding:15px;margin-bottom:12px"><div style="font-weight:700;font-size:13px;margin-bottom:6px">${s.head}${s.req?'<span class="req" style="color:var(--social)">*</span>':''}</div><div class="row2"><div class="field" style="margin:0"><label>Title</label><input type="text" data-k="cTitle${s.n}" placeholder="${s.ph}"></div><div class="field" style="margin:0"><label>Level</label><select data-k="cLevel${s.n}"><option>Beginner</option><option>Intermediate</option><option>All levels</option></select></div></div><div class="field"><label>${s.dlabel}</label><input type="text" data-k="cDesc${s.n}" placeholder="${s.desc}"></div><div class="field" style="margin-bottom:0"><label class="upload" data-file="cVideo${s.n}" data-slot="starter-${s.n}" data-kind="content"><div data-i="upload"></div><div class="ut">Upload video file</div><div class="us">MP4 · we transcode for the app</div><input type="file" accept="video/*"></label><div class="err-msg">A video file is required</div></div></div>`).join('');
   setIcons(document.getElementById('contentSlots'));
 }
 
@@ -1100,7 +1109,7 @@ function buildRecord(){
   };
 }
 function submitJourney(){
-  const incomplete=[];for(let i=0;i<total;i++)if(!isStepComplete(i))incomplete.push(i);
+  const incomplete=[];for(const i of ACTIVE)if(!isStepComplete(i))incomplete.push(i);
   if(incomplete.length){
     step=incomplete[0];renderRail();showStepDom();validateStep(step);
     toast('Finish these sections first: '+incomplete.map(i=>stepTitles[i]).join(', '));
@@ -1116,7 +1125,9 @@ async function doSubmit(){
         partner_id:state.partnerId,
         profile:{tagline:f.pfRole,bio:f.pfBio,reasonForBeingHere:f.pfWhy,communityFeel:f.pfFeel,pillar:state.pillar},
         agreement:{partnerAgreement:state.checks.agree,revenueShareAccepted:state.checks.revshare,revenueSharePct:50,partnerLegalName:(f.contactName||f.businessName||''),signature:f.signName||'',signedDate:f.signDate||''},
-        starterContent:[1,2,3].map(n=>({title:f['cTitle'+n]||'',level:f['cLevel'+n]||'',description:f['cDesc'+n]||'',file:fileRef('cVideo'+n)})),
+        modulesDeferred:MODULES_DEFERRED,
+        training:{modulesWatched:state.watched,assessmentPassed:state.quizPassed,assessmentScore:state.quizScore},
+        starterContent:[1,2,3].map(n=>({title:f['cTitle'+n]||'',level:f['cLevel'+n]||'',description:f['cDesc'+n]||'',file:fileRef('cVideo'+n)})).filter(x=>x.file),
         welcomePost:f.welcomePost||'',
         launch:{sessionTitle:f.sessionTitle||'',format:f.sessionFormat||'',date:f.sessionDate||'',time:f.sessionTime||'',durationMin:f.sessionDuration||'',welcomeProgram:state.program||'none'},
         documents:{photoId:fileRef('idDoc'),profilePhoto:fileRef('profilePhoto')}
@@ -1131,7 +1142,10 @@ let lastRecord=null;
 function buildSummary(){
   lastRecord=buildRecord();const f=state.fields;
   const pillar=({physical:'Physical',mental:'Mental',social:'Social'})[state.pillar]||'—';
-  const rows=[['Partner',f.pfName||f.contactName||'New partner'],['Role',f.pfRole||'—'],['Pillar',pillar],['Email',f.email||'—'],['Photo ID',state.files.idDoc?'Attached':'—'],['Assessment',state.quizPassed?('Passed ('+state.quizScore+'%)'):'Pending'],['Modules',state.watched+'/4 watched'],['Starter content',[1,2,3].filter(n=>state.files['cVideo'+n]).length+' / 3 videos'],['First session',f.sessionTitle||'—'],['Status','Awaiting VYVE approval']];
+  const rows=[['Partner',f.pfName||f.contactName||'New partner'],['Role',f.pfRole||'—'],['Pillar',pillar],['Email',f.email||'—'],['Photo ID',state.files.idDoc?'Attached':'—']];
+  if(!MODULES_DEFERRED){rows.push(['Assessment',state.quizPassed?('Passed ('+state.quizScore+'%)'):'Pending'],['Modules',state.watched+'/4 watched']);}
+  const _vids=[1,2,3].filter(n=>state.files['cVideo'+n]).length;rows.push(['Starter content',_vids+' video'+(_vids===1?'':'s')]);
+  rows.push(['First session',f.sessionTitle||'—'],['Status','Awaiting VYVE approval']);
   document.getElementById('summaryCard').innerHTML=rows.map(r=>`<div class="summary-row"><span class="k">${r[0]}</span><span class="v">${esc(String(r[1]))}</span></div>`).join('');
   const c=({physical:'var(--physical)',mental:'var(--mental)',social:'var(--social)'})[state.pillar||'physical'];
   const init=((f.pfName||'Y').replace(/[^a-zA-Z ]/g,' ').split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('')||'Y').toUpperCase();
