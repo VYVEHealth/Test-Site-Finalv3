@@ -19,7 +19,6 @@
   .err{display:none;margin-top:24px;}
   .err p{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:20px;line-height:1.6;}
   .btn{display:inline-block;padding:12px 28px;background:#1B7878;color:#fff;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;}
-  .btn:hover{background:#156060;}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
 </head>
@@ -31,7 +30,7 @@
   <div class="msg" id="msg">Getting your link ready&hellip;</div>
   <div class="sub" id="sub">You&rsquo;ll be redirected in a moment</div>
   <div class="err" id="err">
-    <p>That link doesn&rsquo;t exist yet. If you&rsquo;re trying to join VYVE, head to our site below.</p>
+    <p id="err-text">That link doesn&rsquo;t exist yet. If you&rsquo;re trying to join VYVE, head to our site below.</p>
     <a href="https://www.vyvehealth.co.uk" class="btn">Go to VYVE Health</a>
   </div>
 </div>
@@ -41,39 +40,50 @@
   var SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4amZrbHBja2d4cndqbGZzYWF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjY0OTUsImV4cCI6MjA5MDY0MjQ5NX0.to0pwmP-F1g93hb-Fbbq4BZUPkJ4KAGEIFwDtn4whCg';
   var FALLBACK  = 'https://buy.stripe.com/00wfZicla1Em0NnaIB93y00';
 
-  var path  = window.location.pathname.replace(/\/+$/, '');
-  var parts = path.split('/');
+  // GitHub Pages 404 trick: the ORIGINAL requested path is preserved in
+  // window.location when the 404.html is served, UNLESS Cloudflare intercepts.
+  // We check both pathname and the full href for the /join/ pattern.
+  var fullPath = window.location.pathname;
+  var fullHref = window.location.href;
 
-  // Only intercept /join/[slug] paths
-  // Everything else: show normal 404
-  if (parts[1] !== 'join' || !parts[2]) {
-    // Not a /join/ path — show standard 404 content
-    document.getElementById('spinner').style.display = 'none';
-    document.getElementById('msg').textContent = 'Page not found';
-    document.getElementById('sub').textContent = 'The page you’re looking for doesn’t exist.';
-    document.getElementById('err').style.display = 'block';
+  // Extract slug from any of these patterns:
+  //   /join/men-together-cic
+  //   /join/men-together-cic/
+  var joinMatch = fullPath.match(/\/join\/([^/?#]+)/);
+  if (!joinMatch) joinMatch = fullHref.match(/\/join\/([^/?#]+)/);
+
+  if (!joinMatch || !joinMatch[1]) {
+    // Not a /join/ path
+    showNormalError();
     return;
   }
 
-  var slug = parts[2];
+  var slug = joinMatch[1];
 
-  // /join/[slug] — look up partner and redirect
+  // Fetch partner by slug
   fetch(
     SUPA_URL + '/rest/v1/partner_partners' +
     '?slug=eq.' + encodeURIComponent(slug) +
     '&status=eq.live' +
     '&select=name,role_title,payment_link_url' +
     '&limit=1',
-    { headers: { 'apikey': SUPA_ANON } }
+    {
+      headers: {
+        'apikey': SUPA_ANON,
+        'Accept': 'application/json'
+      }
+    }
   )
-  .then(function(r){ return r.json(); })
+  .then(function(r){
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  })
   .then(function(rows){
     var p = rows && rows[0];
     if (!p || !p.payment_link_url) {
-      showError();
+      showJoinError(slug);
       return;
     }
-    // Update message with partner name then redirect
     var name = p.role_title || p.name;
     document.getElementById('msg').textContent = 'Taking you to VYVE via ' + name + '…';
     document.getElementById('sub').textContent = 'Your exclusive discount is already applied';
@@ -81,16 +91,25 @@
       window.location.replace(p.payment_link_url);
     }, 800);
   })
-  .catch(function(){
-    // Network error — don't dead-end them, send to general checkout
+  .catch(function(e){
+    // On any error fall back to general checkout so member isn't dead-ended
+    console.warn('VYVE join redirect error:', e);
     window.location.replace(FALLBACK);
   });
 
-  function showError(){
-    document.getElementById('spinner').style.display = 'none';
-    document.getElementById('msg').style.display = 'none';
-    document.getElementById('sub').style.display = 'none';
-    document.getElementById('err').style.display = 'block';
+  function showNormalError(){
+    document.getElementById('spinner').style.display='none';
+    document.getElementById('msg').textContent='Page not found';
+    document.getElementById('sub').textContent='The page you’re looking for doesn’t exist.';
+    document.getElementById('err').style.display='block';
+  }
+
+  function showJoinError(slug){
+    document.getElementById('spinner').style.display='none';
+    document.getElementById('msg').style.display='none';
+    document.getElementById('sub').style.display='none';
+    document.getElementById('err-text').textContent='That referral link isn’t active yet. If you were sent this link, please contact the person who shared it.';
+    document.getElementById('err').style.display='block';
   }
 })();
 </script>
