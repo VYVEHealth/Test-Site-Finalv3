@@ -40,27 +40,10 @@
   var SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4amZrbHBja2d4cndqbGZzYWF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjY0OTUsImV4cCI6MjA5MDY0MjQ5NX0.to0pwmP-F1g93hb-Fbbq4BZUPkJ4KAGEIFwDtn4whCg';
   var FALLBACK  = 'https://buy.stripe.com/00wfZicla1Em0NnaIB93y00';
 
-  // GitHub Pages 404 trick: the ORIGINAL requested path is preserved in
-  // window.location when the 404.html is served, UNLESS Cloudflare intercepts.
-  // We check both pathname and the full href for the /join/ pattern.
-  var fullPath = window.location.pathname;
-  var fullHref = window.location.href;
-
-  // Extract slug from any of these patterns:
-  //   /join/men-together-cic
-  //   /join/men-together-cic/
-  var joinMatch = fullPath.match(/\/join\/([^/?#]+)/);
-  if (!joinMatch) joinMatch = fullHref.match(/\/join\/([^/?#]+)/);
-
-  if (!joinMatch || !joinMatch[1]) {
-    // Not a /join/ path
-    showNormalError();
-    return;
-  }
-
+  var joinMatch = window.location.pathname.match(/\/join\/([^/?#]+)/);
+  if (!joinMatch) { showNormalError(); return; }
   var slug = joinMatch[1];
 
-  // Fetch partner by slug
   fetch(
     SUPA_URL + '/rest/v1/partner_partners' +
     '?slug=eq.' + encodeURIComponent(slug) +
@@ -70,32 +53,20 @@
     {
       headers: {
         'apikey': SUPA_ANON,
+        'Authorization': 'Bearer ' + SUPA_ANON,
         'Accept': 'application/json'
       }
     }
   )
-  .then(function(r){
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    return r.json();
-  })
+  .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
   .then(function(rows){
     var p = rows && rows[0];
-    if (!p || !p.payment_link_url) {
-      showJoinError(slug);
-      return;
-    }
-    var name = p.role_title || p.name;
-    document.getElementById('msg').textContent = 'Taking you to VYVE via ' + name + '…';
+    if (!p || !p.payment_link_url) { showJoinError(); return; }
+    document.getElementById('msg').textContent = 'Taking you to VYVE via ' + (p.role_title||p.name) + '…';
     document.getElementById('sub').textContent = 'Your exclusive discount is already applied';
-    setTimeout(function(){
-      window.location.replace(p.payment_link_url);
-    }, 800);
+    setTimeout(function(){ window.location.replace(p.payment_link_url); }, 800);
   })
-  .catch(function(e){
-    // On any error fall back to general checkout so member isn't dead-ended
-    console.warn('VYVE join redirect error:', e);
-    window.location.replace(FALLBACK);
-  });
+  .catch(function(){ window.location.replace(FALLBACK); });
 
   function showNormalError(){
     document.getElementById('spinner').style.display='none';
@@ -103,12 +74,11 @@
     document.getElementById('sub').textContent='The page you’re looking for doesn’t exist.';
     document.getElementById('err').style.display='block';
   }
-
-  function showJoinError(slug){
+  function showJoinError(){
     document.getElementById('spinner').style.display='none';
     document.getElementById('msg').style.display='none';
     document.getElementById('sub').style.display='none';
-    document.getElementById('err-text').textContent='That referral link isn’t active yet. If you were sent this link, please contact the person who shared it.';
+    document.getElementById('err-text').textContent='That referral link isn’t active yet. Please contact the person who shared it.';
     document.getElementById('err').style.display='block';
   }
 })();
