@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>VYVE Health</title>
 <meta name="robots" content="noindex,nofollow"/>
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate"/>
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;background:#0D2B2B;color:#fff;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
@@ -30,58 +31,31 @@
   <div class="msg" id="msg">Getting your link ready&hellip;</div>
   <div class="sub" id="sub">You&rsquo;ll be redirected in a moment</div>
   <div class="err" id="err">
-    <p id="err-text">That link doesn&rsquo;t exist yet. If you&rsquo;re trying to join VYVE, head to our site below.</p>
+    <p>That link doesn&rsquo;t exist. Head to our site to sign up.</p>
     <a href="https://www.vyvehealth.co.uk" class="btn">Go to VYVE Health</a>
   </div>
 </div>
 <script>
 (function(){
-  var SUPA_URL  = 'https://ixjfklpckgxrwjlfsaaz.supabase.co';
-  var SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4amZrbHBja2d4cndqbGZzYWF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjY0OTUsImV4cCI6MjA5MDY0MjQ5NX0.to0pwmP-F1g93hb-Fbbq4BZUPkJ4KAGEIFwDtn4whCg';
-  var FALLBACK  = 'https://buy.stripe.com/00wfZicla1Em0NnaIB93y00';
+  var EF_URL = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/partner-join-redirect';
+  var FALLBACK = 'https://buy.stripe.com/00wfZicla1Em0NnaIB93y00';
 
+  // Extract /join/[slug] from the current path
   var joinMatch = window.location.pathname.match(/\/join\/([^/?#]+)/);
-  if (!joinMatch) { showNormalError(); return; }
+  if (!joinMatch) { showError(); return; }
   var slug = joinMatch[1];
 
-  fetch(
-    SUPA_URL + '/rest/v1/partner_partners' +
-    '?slug=eq.' + encodeURIComponent(slug) +
-    '&status=eq.live' +
-    '&select=name,role_title,payment_link_url' +
-    '&limit=1',
-    {
-      headers: {
-        'apikey': SUPA_ANON,
-        'Authorization': 'Bearer ' + SUPA_ANON,
-        'Accept': 'application/json'
-      }
-    }
-  )
-  .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
-  .then(function(rows){
-    var p = rows && rows[0];
-    if (!p || !p.payment_link_url) { showJoinError(); return; }
-    document.getElementById('msg').textContent = 'Taking you to VYVE via ' + (p.role_title||p.name) + '…';
-    document.getElementById('sub').textContent = 'Your exclusive discount is already applied';
-    setTimeout(function(){ window.location.replace(p.payment_link_url); }, 800);
-  })
-  .catch(function(){ window.location.replace(FALLBACK); });
-
-  function showNormalError(){
-    document.getElementById('spinner').style.display='none';
-    document.getElementById('msg').textContent='Page not found';
-    document.getElementById('sub').textContent='The page you’re looking for doesn’t exist.';
-    document.getElementById('err').style.display='block';
-  }
-  function showJoinError(){
-    document.getElementById('spinner').style.display='none';
-    document.getElementById('msg').style.display='none';
-    document.getElementById('sub').style.display='none';
-    document.getElementById('err-text').textContent='That referral link isn’t active yet. Please contact the person who shared it.';
-    document.getElementById('err').style.display='block';
-  }
+  // Hit the server-side redirect EF — it returns 301 to the partner's Stripe link
+  // Using window.location.replace so the EF redirect is followed seamlessly
+  window.location.replace(EF_URL + '?slug=' + encodeURIComponent(slug));
 })();
+
+function showError(){
+  document.getElementById('spinner').style.display='none';
+  document.getElementById('msg').style.display='none';
+  document.getElementById('sub').style.display='none';
+  document.getElementById('err').style.display='block';
+}
 </script>
 </body>
 </html>
