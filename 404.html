@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VYVE Health</title>
+<meta name="robots" content="noindex,nofollow"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#0D2B2B;color:#fff;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+  .card{text-align:center;max-width:420px;width:100%;}
+  .logo{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:700;color:#4DAAAA;letter-spacing:-.01em;margin-bottom:6px;}
+  .tagline{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:.12em;text-transform:uppercase;margin-bottom:36px;}
+  .spinner{width:36px;height:36px;border:3px solid rgba(77,170,170,.2);border-top-color:#4DAAAA;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 24px;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .msg{font-size:15px;color:rgba(255,255,255,.7);margin-bottom:8px;}
+  .sub{font-size:13px;color:rgba(255,255,255,.35);}
+  .err{display:none;margin-top:24px;}
+  .err p{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:20px;line-height:1.6;}
+  .btn{display:inline-block;padding:12px 28px;background:#1B7878;color:#fff;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;}
+  .btn:hover{background:#156060;}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div class="card">
+  <div class="logo">VYVE</div>
+  <div class="tagline">Help yourself. Help others. Change the world.</div>
+  <div class="spinner" id="spinner"></div>
+  <div class="msg" id="msg">Getting your link ready&hellip;</div>
+  <div class="sub" id="sub">You&rsquo;ll be redirected in a moment</div>
+  <div class="err" id="err">
+    <p>That link doesn&rsquo;t exist yet. If you&rsquo;re trying to join VYVE, head to our site below.</p>
+    <a href="https://www.vyvehealth.co.uk" class="btn">Go to VYVE Health</a>
+  </div>
+</div>
+<script>
+(function(){
+  var SUPA_URL  = 'https://ixjfklpckgxrwjlfsaaz.supabase.co';
+  var SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4amZrbHBja2d4cndqbGZzYWF6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjY0OTUsImV4cCI6MjA5MDY0MjQ5NX0.to0pwmP-F1g93hb-Fbbq4BZUPkJ4KAGEIFwDtn4whCg';
+  var FALLBACK  = 'https://buy.stripe.com/00wfZicla1Em0NnaIB93y00';
+
+  var path  = window.location.pathname.replace(/\/+$/, '');
+  var parts = path.split('/');
+
+  // Only intercept /join/[slug] paths
+  // Everything else: show normal 404
+  if (parts[1] !== 'join' || !parts[2]) {
+    // Not a /join/ path — show standard 404 content
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('msg').textContent = 'Page not found';
+    document.getElementById('sub').textContent = 'The page you’re looking for doesn’t exist.';
+    document.getElementById('err').style.display = 'block';
+    return;
+  }
+
+  var slug = parts[2];
+
+  // /join/[slug] — look up partner and redirect
+  fetch(
+    SUPA_URL + '/rest/v1/partner_partners' +
+    '?slug=eq.' + encodeURIComponent(slug) +
+    '&status=eq.live' +
+    '&select=name,role_title,payment_link_url' +
+    '&limit=1',
+    { headers: { 'apikey': SUPA_ANON } }
+  )
+  .then(function(r){ return r.json(); })
+  .then(function(rows){
+    var p = rows && rows[0];
+    if (!p || !p.payment_link_url) {
+      showError();
+      return;
+    }
+    // Update message with partner name then redirect
+    var name = p.role_title || p.name;
+    document.getElementById('msg').textContent = 'Taking you to VYVE via ' + name + '…';
+    document.getElementById('sub').textContent = 'Your exclusive discount is already applied';
+    setTimeout(function(){
+      window.location.replace(p.payment_link_url);
+    }, 800);
+  })
+  .catch(function(){
+    // Network error — don't dead-end them, send to general checkout
+    window.location.replace(FALLBACK);
+  });
+
+  function showError(){
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('msg').style.display = 'none';
+    document.getElementById('sub').style.display = 'none';
+    document.getElementById('err').style.display = 'block';
+  }
+})();
+</script>
+</body>
+</html>
