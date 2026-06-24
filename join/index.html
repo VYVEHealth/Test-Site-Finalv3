@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VYVE Health</title>
+<meta name="robots" content="noindex,nofollow"/>
+<meta http-equiv="Cache-Control" content="no-store"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#0D2B2B;color:#fff;font-family:'Inter',system-ui,sans-serif;}
+  body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+  .card{text-align:center;max-width:420px;width:100%;}
+  .logo{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:700;color:#4DAAAA;margin-bottom:6px;}
+  .tagline{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:.12em;text-transform:uppercase;margin-bottom:36px;}
+  .spinner{width:36px;height:36px;border:3px solid rgba(77,170,170,.2);border-top-color:#4DAAAA;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 24px;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .msg{font-size:15px;color:rgba(255,255,255,.7);margin-bottom:8px;}
+  .sub{font-size:13px;color:rgba(255,255,255,.35);}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div class="card">
+  <div class="logo">VYVE</div>
+  <div class="tagline">Help yourself. Help others. Change the world.</div>
+  <div class="spinner"></div>
+  <div class="msg">Getting your link ready&hellip;</div>
+  <div class="sub">You&rsquo;ll be redirected in a moment</div>
+</div>
+<script>
+(function(){
+  var EF = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/partner-join-redirect';
+  var FALLBACK = 'https://buy.stripe.com/00wfZicla1Em0NnaIB93y00';
+  // Path is /join/[slug] — slug is the last non-empty segment
+  var parts = window.location.pathname.replace(/\/+$/,'').split('/');
+  var slug = parts[parts.length-1];
+  if (!slug || slug === 'join') {
+    window.location.replace(FALLBACK);
+    return;
+  }
+  window.location.replace(EF + '?slug=' + encodeURIComponent(slug));
+})();
+</script>
+</body>
+</html>
