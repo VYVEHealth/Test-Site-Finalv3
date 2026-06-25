@@ -40,14 +40,21 @@
   var EF_URL = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/partner-join-redirect';
   var FALLBACK = 'https://buy.stripe.com/00wfZicla1Em0NnaIB93y00';
 
-  // Extract /join/[slug] from the current path
-  var joinMatch = window.location.pathname.match(/\/join\/([^/?#]+)/);
+  // Extract /join/[slug] and optional /join/[slug]/[tier] from the current path.
+  // tier is one of 20 | 15 | 10 (the member price point); anything else is ignored
+  // and the partner's default (legacy) link behaviour applies.
+  var joinMatch = window.location.pathname.match(/\/join\/([^/?#]+)(?:\/([^/?#]+))?/);
   if (!joinMatch) { showError(); return; }
   var slug = joinMatch[1];
+  var tier = joinMatch[2];
 
-  // Hit the server-side redirect EF — it returns 301 to the partner's Stripe link
-  // Using window.location.replace so the EF redirect is followed seamlessly
-  window.location.replace(EF_URL + '?slug=' + encodeURIComponent(slug));
+  // Hit the server-side redirect EF — it mints a discounted Stripe Checkout Session
+  // and 303s to it. window.location.replace follows the redirect seamlessly.
+  var target = EF_URL + '?slug=' + encodeURIComponent(slug);
+  if (tier === '20' || tier === '15' || tier === '10') {
+    target += '&tier=' + tier;
+  }
+  window.location.replace(target);
 })();
 
 function showError(){
