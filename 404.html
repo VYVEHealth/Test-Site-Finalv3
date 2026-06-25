@@ -38,12 +38,26 @@
 <script>
 (function(){
   var EF_URL = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/partner-join-redirect';
-  var FALLBACK = 'https://buy.stripe.com/00wfZicla1Em0NnaIB93y00';
+  var WELCOME = 'https://www.vyvehealth.co.uk/welcome.html';
 
-  // Extract /join/[slug] and optional /join/[slug]/[tier] from the current path.
+  var path = window.location.pathname;
+
+  // /trial/[slug] — start a FREE trial attributed to the partner. The slug doubles
+  // as the trial campaign code: welcome.html captures ?c=<slug>, onboarding stamps
+  // members.signup_campaign_code=<slug>, apply_trial_campaign resolves the partner's
+  // trial length, and the partner is credited at the £10 conversion. No Stripe here —
+  // the trial is free and card-less.
+  var trialMatch = path.match(/\/trial\/([^/?#]+)/);
+  if (trialMatch) {
+    var tslug = trialMatch[1];
+    window.location.replace(WELCOME + '?c=' + encodeURIComponent(tslug));
+    return;
+  }
+
+  // /join/[slug] and optional /join/[slug]/[tier] — pay NOW via Stripe Checkout.
   // tier is one of 20 | 15 | 10 (the member price point); anything else is ignored
   // and the partner's default (legacy) link behaviour applies.
-  var joinMatch = window.location.pathname.match(/\/join\/([^/?#]+)(?:\/([^/?#]+))?/);
+  var joinMatch = path.match(/\/join\/([^/?#]+)(?:\/([^/?#]+))?/);
   if (!joinMatch) { showError(); return; }
   var slug = joinMatch[1];
   var tier = joinMatch[2];
