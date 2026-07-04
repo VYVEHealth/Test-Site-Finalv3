@@ -1514,19 +1514,14 @@ input[type="range"]::-moz-range-thumb {
 <script>
 const ONBOARDING_EDGE_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/onboarding';
 const APPLY_TRIAL_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/apply-trial';
-const SET_PW_FN = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/set-member-password';
 
-// Sets the member's chosen password on their (now-created) auth user and CONFIRMS success.
-// Returns true only if Supabase accepted the password. Caller gates the success screen on this.
-async function confirmPasswordSet(email, password){
+// PM-696: the member's chosen password is now set server-side by the onboarding EF (v99) at
+// auth-user creation -- the payload already carries it. The old set-member-password EF was an
+// unauthenticated account-takeover surface (killed PM-689, deleted PM-696). The success screen
+// gates on result.password_set from the onboarding response instead.
+function confirmPasswordSet(result){
   try {
-    const r = await fetch(SET_PW_FN, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, password: password })
-    });
-    const j = await r.json().catch(function(){ return {}; });
-    return r.ok && j && j.success === true;
+    return !!(result && result.password_set === true);
   } catch (_) { return false; }
 }
 // ── Shared workout referral ──────────────────────────────────────────────────
@@ -2048,12 +2043,9 @@ async function submitQuestionnaire() {
     const result = await response.json();
     if (result.error) throw new Error(result.error);
 
-    // Gate: confirm the chosen password is set before showing success.
-    const pwSet = await confirmPasswordSet(data.email, data.password);
-    if (!pwSet) {
-      const pwSet2 = await confirmPasswordSet(data.email, data.password);
-      if (!pwSet2) throw new Error('PASSWORD_SET_FAILED');
-    }
+    // Gate: the onboarding EF (v99) sets the chosen password at auth-user creation and
+    // reports it back. Retry re-fires onboarding, which re-applies the password (idempotent).
+    if (!confirmPasswordSet(result)) throw new Error('PASSWORD_SET_FAILED');
 
     showResults(data, result);
 
@@ -2121,12 +2113,9 @@ async function retrySubmit() {
     const result = await response.json();
     if (result.error) throw new Error(result.error);
 
-    // Gate: confirm the chosen password is set before showing success.
-    const pwSet = await confirmPasswordSet(data.email, data.password);
-    if (!pwSet) {
-      const pwSet2 = await confirmPasswordSet(data.email, data.password);
-      if (!pwSet2) throw new Error('PASSWORD_SET_FAILED');
-    }
+    // Gate: the onboarding EF (v99) sets the chosen password at auth-user creation and
+    // reports it back. Retry re-fires onboarding, which re-applies the password (idempotent).
+    if (!confirmPasswordSet(result)) throw new Error('PASSWORD_SET_FAILED');
 
     showResults(data, result);
 
