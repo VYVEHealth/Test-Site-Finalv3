@@ -777,10 +777,9 @@ function gateSteps(){
     identity_verified:!!(state.files.idDoc&&!state.files.idDoc.needsReattach),
     agreement_signed:!!(state.checks.agree&&state.checks.revshare&&(state.fields.signName||'').trim()),
     videos_watched:MODULES_DEFERRED?false:state.watched>=4,
-    safeguarding_passed:MODULES_DEFERRED?false:state.quizPassed, gdpr_passed:MODULES_DEFERRED?false:state.quizPassed,
+    /* PM-741: safeguarding_passed/gdpr_passed/modules_deferred no longer sent — server-owned (EF v7 strips them regardless) */
     profile_complete:!!((state.fields.pfName||'').trim()&&(state.fields.pfBio||'').trim()),
-    starter_videos_uploaded:!!(state.files.cVideo1&&!state.files.cVideo1.needsReattach),
-    modules_deferred:MODULES_DEFERRED
+    starter_videos_uploaded:!!(state.files.cVideo1&&!state.files.cVideo1.needsReattach)
   };
 }
 
@@ -825,9 +824,7 @@ async function saveState(){
   saveLocal();
   if(!online||!state.partnerId) return;
   try{
-    await efCall('save',{partner_id:state.partnerId,credentialsPatch:credentialsBlob(),steps:gateSteps(),
-      pct_complete:Math.round((activePos(step)+1)/ACTIVE.length*100),
-      assessment:{safeguarding_passed:state.quizPassed,gdpr_passed:state.quizPassed,score:state.quizScore}});
+    await efCall('save',{partner_id:state.partnerId,credentialsPatch:credentialsBlob(),steps:gateSteps()});
   }catch(e){ markOffline(); }
 }
 function manualSave(){saveState();toast('Progress saved — resume on this device any time');}
@@ -851,6 +848,9 @@ async function restoreState(urlResumeId){
       if(cr.formFields) state.fields={...cr.formFields,...state.fields};
       if(cr.pillar&&!state.pillar) state.pillar=cr.pillar;
       if(cr.program&&!state.program) state.program=cr.program;
+      /* PM-741: adopt server-graded assessment state — a pass earned on another device carries over */
+      const pg=r.progress||null;
+      if(pg&&pg.steps&&pg.steps.safeguarding_passed===true&&pg.steps.gdpr_passed===true){state.quizPassed=true;state.quizScore=Number(pg.assessment_score)||100;}
       if(urlResumeId){ vyveTrack('partner_resume',{source:'url'}); saveLocal(); }
       else vyveTrack('partner_resume',{source:'local'});
     }catch(e){
@@ -1077,10 +1077,12 @@ function watchMod(i){const el=document.getElementById('vm'+i);if(el.classList.co
 
 /* ===== EDUCATION + QUIZ ===== */
 const lessons=[['VYVE brand & tone of voice','Article · 8 min'],['The three pillars explained','Article · 6 min'],['Accessibility & inclusive language','Article · 5 min'],['Content quality standards','Article + checklist']];
+/* PM-741: answer key removed client-side — grading is server-side (partner-onboarding EF v7 `assessment` action).
+   Question ORDER must stay in lockstep with QUIZ_KEY in the EF. */
 const quizData=[
-  {q:'A member discloses they are struggling with their mental health in your session chat. What do you do?',a:['Ignore it to avoid overstepping','Follow the VYVE safeguarding escalation process and signpost support','Diagnose the issue yourself'],correct:1},
-  {q:'Which is appropriate handling of member personal data?',a:['Export member emails to your own mailing list','Only access member data through VYVE for the service you provide','Share member names publicly to celebrate them'],correct:1},
-  {q:'Your content should always be…',a:['Inclusive, accurate and within your qualified scope','As advanced as possible to impress','Free of any safety guidance'],correct:0}
+  {q:'A member discloses they are struggling with their mental health in your session chat. What do you do?',a:['Ignore it to avoid overstepping','Follow the VYVE safeguarding escalation process and signpost support','Diagnose the issue yourself']},
+  {q:'Which is appropriate handling of member personal data?',a:['Export member emails to your own mailing list','Only access member data through VYVE for the service you provide','Share member names publicly to celebrate them']},
+  {q:'Your content should always be…',a:['Inclusive, accurate and within your qualified scope','As advanced as possible to impress','Free of any safety guidance']}
 ];
 const answers={};
 function renderEducation(){
@@ -1089,12 +1091,18 @@ function renderEducation(){
   setIcons(document.getElementById('lessons'));
 }
 function pickAns(qi,ai){answers[qi]=ai;document.getElementById('q'+qi).querySelectorAll('.qa').forEach((el,i)=>{el.classList.remove('sel','correct','wrong');if(i===ai)el.classList.add('sel');});}
-function gradeQuiz(){
-  let ok=0;quizData.forEach((q,qi)=>{const sel=answers[qi];const el=document.getElementById('q'+qi);el.querySelectorAll('.qa').forEach((a,ai)=>{a.classList.remove('correct','wrong');if(ai===q.correct)a.classList.add('correct');else if(ai===sel)a.classList.add('wrong');});if(sel===q.correct)ok++;});
+async function gradeQuiz(){
+  /* PM-741: server-side grading. The EF is the only writer of the safeguarding/GDPR gate. */
   const r=document.getElementById('quizResult');
-  state.quizScore=Math.round(ok/quizData.length*100);
-  if(ok===quizData.length){state.quizPassed=true;r.className='quiz-result pass show';r.textContent='Passed — all correct. You can continue.';}
-  else{state.quizPassed=false;r.className='quiz-result fail show';r.textContent=ok+' of '+quizData.length+' correct. Review and try again to continue.';}
+  if(Object.keys(answers).length<quizData.length){r.className='quiz-result fail show';r.textContent='Answer every question, then submit.';return;}
+  if(!online||!state.partnerId){toast('Connect to the internet to submit the assessment');return;}
+  let res=null;
+  try{res=await efCall('assessment',{partner_id:state.partnerId,answers:answers});}
+  catch(e){markOffline();toast('Could not reach the server — try again in a moment');return;}
+  quizData.forEach((q,qi)=>{const sel=answers[qi];const el=document.getElementById('q'+qi);el.querySelectorAll('.qa').forEach((a,ai)=>{a.classList.remove('correct','wrong');if(ai===sel)a.classList.add(res.correct&&res.correct[qi]?'correct':'wrong');});});
+  state.quizScore=res.score||0;
+  if(res.passed){state.quizPassed=true;r.className='quiz-result pass show';r.textContent='Passed — all correct. You can continue.';}
+  else{state.quizPassed=false;r.className='quiz-result fail show';r.textContent=(res.score||0)+'% — review the marked answers and try again to continue.';}
   saveState();
 }
 
