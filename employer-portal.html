@@ -470,7 +470,7 @@
 
     <div class="story">
       <div class="hd"><span class="pt2">Your workforce this quarter</span><span class="tag tgold">The story</span></div>
-      <p id="story-txt">Engagement has climbed for four consecutive months to <b>62%</b> — well above the 5–8% utilisation typical of traditional EAPs. <b>Mindfulness is your fastest-growing pillar</b>, led by Marketing and HR &amp; People, and members who join for physical sessions are crossing into mental wellbeing content within six weeks. The area to watch is <b>Finance</b>, where engagement and wellbeing scores dipped through quarter-end — a classic pressure pattern, and exactly where a targeted intervention pays for itself.</p>
+      <p id="story-txt">Engagement has climbed for four consecutive months to <b>62%</b> — well above the 5–8% utilisation typical of traditional EAPs. <b>Mindfulness is your fastest-growing pillar</b>, led by Marketing and HR &amp; People, and members who join for physical sessions are crossing into mental wellbeing content within six weeks. The area to watch is <b>Finance</b>, where engagement dipped through quarter-end — a classic pressure pattern, and exactly where a targeted intervention pays for itself.</p>
     </div>
 
     <div class="ins-grid">
@@ -483,7 +483,7 @@
       <div class="ins watch">
         <div class="ins-k">Needs attention</div>
         <div class="ins-t">Finance under pressure</div>
-        <div class="ins-d">Engagement fell to 48% and average wellbeing to 5.9 during quarter-end close — the lowest of any team.</div>
+        <div class="ins-d">Engagement fell to 48% and activity per member dropped 8% through quarter-end close — the lowest of any team.</div>
         <div class="ins-a">→ Recommended: Stress &amp; Resilience workshop (bookable now)</div>
       </div>
       <div class="ins act">
@@ -502,10 +502,10 @@
 
     <div class="gf">
       <div class="p">
-        <div class="ph"><div><div class="pt">Team view</div><div class="ps">Engagement and wellbeing by team — aggregate only, teams under 8 members are rolled into “Other” to protect anonymity</div></div><span class="tag tt2">Micro view</span></div>
+        <div class="ph"><div><div class="pt">Team view</div><div class="ps">Engagement and activity by team — aggregate counts only. Wellbeing check-ins are never broken down below company level, and teams under 8 members are rolled into “Other”</div></div><span class="tag tt2">Micro view</span></div>
         <div class="pb" style="overflow-x:auto">
           <table class="st">
-            <thead><tr><th>Team</th><th>Members</th><th>Engagement</th><th>Avg Wellbeing</th><th>Vs last quarter</th><th>Status</th></tr></thead>
+            <thead><tr><th>Team</th><th>Members</th><th>Engagement</th><th>Activities / member</th><th>Vs last quarter</th><th>Status</th></tr></thead>
             <tbody id="team-body"></tbody>
           </table>
         </div>
@@ -514,7 +514,7 @@
 
     <div class="g2">
       <div class="p">
-        <div class="ph"><div><div class="pt">Wellbeing Trend</div><div class="ps">Average weekly check-in score (1–10), company-wide</div></div><span class="tag tg" id="wb-tag">—</span></div>
+        <div class="ph"><div><div class="pt">Wellbeing Trend</div><div class="ps">Anonymised company-level average check-in score (1–10) — individual responses are never visible to your employer</div></div><span class="tag tg" id="wb-tag">—</span></div>
         <div class="pb"><div class="trend" id="wb-chart"></div></div>
       </div>
       <div class="p">
@@ -671,7 +671,7 @@
             <div class="cl-st"><div class="cl-sv">8.1k</div><div class="cl-sl">Avg daily steps</div></div>
             <div class="cl-st"><div class="cl-sv">+41%</div><div class="cl-sl">Activity vs pre-challenge</div></div>
           </div>
-          <div style="font-size:0.76rem;color:rgba(255,255,255,0.5);line-height:1.6;margin-top:14px">Challenges run inside the VYVE app members already use — steps sync automatically from Apple Health and Health Connect. Team totals only; individual counts stay private.</div>
+          <div style="font-size:0.76rem;color:rgba(255,255,255,0.5);line-height:1.6;margin-top:14px">Challenges run inside the VYVE app members already use. Members opt in when they join a company challenge, and only team-level aggregates ever leave the app — individual counts stay private to the member.</div>
         </div>
         <div>
           <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Team leaderboard — avg daily steps</div>
@@ -821,13 +821,13 @@ const SAMPLE_DATA = {
 
 /* ---- demo teams (aggregate micro view) ---- */
 const TEAMS = [
-  { t:'Engineering',      n:62, eng:58, wb:6.4, d:-3, st:'Steady' },
-  { t:'Operations',       n:46, eng:63, wb:6.8, d:+2, st:'Steady' },
-  { t:'Sales',            n:38, eng:71, wb:7.1, d:+6, st:'Strong' },
-  { t:'Finance',          n:30, eng:48, wb:5.9, d:-8, st:'Watch' },
-  { t:'Marketing',        n:26, eng:74, wb:7.3, d:+9, st:'Strong' },
-  { t:'Customer Support', n:20, eng:55, wb:6.2, d:+1, st:'Steady' },
-  { t:'HR & People',      n:18, eng:82, wb:7.6, d:+5, st:'Strong' },
+  { t:'Engineering',      n:62, eng:58, apm:14.2, d:-3, st:'Steady' },
+  { t:'Operations',       n:46, eng:63, apm:16.1, d:+2, st:'Steady' },
+  { t:'Sales',            n:38, eng:71, apm:19.4, d:+6, st:'Strong' },
+  { t:'Finance',          n:30, eng:48, apm:11.3, d:-8, st:'Watch' },
+  { t:'Marketing',        n:26, eng:74, apm:21.0, d:+9, st:'Strong' },
+  { t:'Customer Support', n:20, eng:55, apm:13.5, d:+1, st:'Steady' },
+  { t:'HR & People',      n:18, eng:82, apm:23.8, d:+5, st:'Strong' },
 ];
 const WB_TREND = [
   {label:'Jan',v:6.1},{label:'Feb',v:6.3},{label:'Mar',v:6.2},{label:'Apr',v:6.6},
@@ -993,7 +993,7 @@ function renderTeams(r){
       <td><div class="sn2">${t.t}</div></td>
       <td class="nc">${Math.round(t.n*r).toLocaleString('en-GB')}</td>
       <td class="nc">${t.eng}%</td>
-      <td class="wbv" style="color:${t.wb>=7?'var(--green)':t.wb>=6.3?'var(--teal-lt)':'var(--amber)'}">${t.wb.toFixed(1)}</td>
+      <td class="wbv" style="color:${t.apm>=18?'var(--green)':t.apm>=14?'var(--teal-lt)':'var(--amber)'}">${t.apm.toFixed(1)}</td>
       <td>${arr}</td>
       <td><span class="tstat ${cls}">${t.st}</span></td>
     </tr>`;
@@ -1243,14 +1243,14 @@ function buildPrintReport(){
     <table><tr><th>Members</th><th>Engagement rate</th><th>Activities (all time)</th><th>This month</th><th>Months donated to charity</th></tr>
     <tr><td>${m.total.toLocaleString('en-GB')}</td><td>${m.engagementRate}%</td><td>${a.total.toLocaleString('en-GB')}</td><td>${a.thisMonth.toLocaleString('en-GB')}</td><td>${c.monthsDonated.toLocaleString('en-GB')}</td></tr></table>
     <h2>Team view</h2>
-    <table><tr><th>Team</th><th>Members</th><th>Engagement</th><th>Avg wellbeing</th><th>Vs last quarter</th><th>Status</th></tr>
-    ${TEAMS.map(t=>`<tr><td>${t.t}</td><td>${Math.round(t.n*(d._teamScale||1)).toLocaleString('en-GB')}</td><td>${t.eng}%</td><td>${t.wb.toFixed(1)}</td><td>${t.d>=0?'+':''}${t.d}%</td><td>${t.st}</td></tr>`).join('')}</table>
+    <table><tr><th>Team</th><th>Members</th><th>Engagement</th><th>Activities / member</th><th>Vs last quarter</th><th>Status</th></tr>
+    ${TEAMS.map(t=>`<tr><td>${t.t}</td><td>${Math.round(t.n*(d._teamScale||1)).toLocaleString('en-GB')}</td><td>${t.eng}%</td><td>${t.apm.toFixed(1)}</td><td>${t.d>=0?'+':''}${t.d}%</td><td>${t.st}</td></tr>`).join('')}</table>
     <h2>This quarter's insights</h2>
     <p><b>What's working:</b> Mindfulness attendance up 34%; strongest in Marketing and HR &amp; People. <b>Needs attention:</b> Finance engagement fell to 48% through quarter-end — a targeted Stress &amp; Resilience workshop is recommended. <b>Opportunity:</b> inactive members are in automated re-engagement; a manager nudge typically recovers 1 in 3. <b>Trend:</b> 58% of workout-first joiners cross into mental wellbeing content within six weeks.</p>
     <h2>Return on investment (illustrative)</h2>
     <p>Conservative absence-only model (CIPD 2025 benchmarks: 9.4 sickness days/employee/year, 41% mental-health driven; 20% reduction among engaged members at £160/day): see live portal for figures at your current headcount. Independent studies including Deloitte's workplace mental health analysis consistently find substantially higher full returns once presenteeism and turnover are included.</p>
     <h2>Privacy</h2>
-    <p>Employers see aggregate data only. Individual names, scores and check-in content are never shared. Teams under 8 members are rolled into "Other". All primary data is stored and processed in the EU (Ireland).</p>`;
+    <p>Employers see aggregate data only. Individual names, scores, check-in content and health data are never shared — in either direction. Wellbeing figures are reported at company level only; team views show activity counts. Teams under 8 members are rolled into "Other". All primary data is stored and processed in the EU (Ireland).</p>`;
 }
 
 /* ================= ASK VYVE CHAT ================= */
