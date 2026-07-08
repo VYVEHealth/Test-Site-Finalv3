@@ -222,6 +222,13 @@
     .links{width:100%;margin-left:0;justify-content:space-between;gap:12px}
   }
 </style>
+<!-- PostHog — mirrors PM-735 welcome.html config exactly: EU host, cookieless (memory persistence), session recording OFF, no PII. -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload group identify setPersonProperties setPersonPropertiesForFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_8gekeZglc1HBDu3d9kMuqOuRWn6HIChhnaiQi6uvonl',{api_host:'https://eu.i.posthog.com',persistence:'memory',disable_session_recording:true,autocapture:true,capture_pageview:true});
+try{posthog.register({flow:'partner_onboarding'});}catch(_){}
+function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
+</script>
 </head>
 <body>
 
@@ -683,14 +690,20 @@ const CONFIG={
 };
 let sb=null;
 function _loadSB(){
-  try{
-    var s=document.createElement('script');
-    s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-    s.async=true;
-    s.onload=function(){ try{ if(window.supabase){ sb=window.supabase.createClient(CONFIG.url,CONFIG.anon,{auth:{persistSession:true,storageKey:'vyve_partner_auth'}}); online=true; } }catch(e){ sb=null; } };
-    s.onerror=function(){ /* CDN blocked/slow -> stay in localStorage mode, page already usable */ };
-    document.head.appendChild(s);
-  }catch(e){}
+  // Session-1: returns a promise so init can await SDK readiness. Previously restoreState ran while the
+  // SDK was still loading (online=false), so the server-side resume merge silently never happened on load.
+  return new Promise(function(res){
+    var done=false; function fin(){ if(!done){done=true;res();} }
+    try{
+      var s=document.createElement('script');
+      s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+      s.async=true;
+      s.onload=function(){ try{ if(window.supabase){ sb=window.supabase.createClient(CONFIG.url,CONFIG.anon,{auth:{persistSession:true,storageKey:'vyve_partner_auth'}}); online=true; } }catch(e){ sb=null; } fin(); };
+      s.onerror=function(){ /* CDN blocked/slow -> stay in localStorage mode, page already usable */ fin(); };
+      document.head.appendChild(s);
+      setTimeout(fin,4000);
+    }catch(e){ fin(); }
+  });
 }
 
 /* ===== ICONS ===== */
@@ -726,6 +739,12 @@ const total=ACTIVE.length;
 const activePos=(x)=>ACTIVE.indexOf(x);
 let step=0;
 let online=!!sb;        // backend reachable
+let _reconnectT=null;
+function markOffline(){ // Session-1: offline is a state we retry out of, not a one-way fuse
+  online=false;
+  clearTimeout(_reconnectT);
+  _reconnectT=setTimeout(function(){ if(sb){ online=true; saveState(); } },15000);
+}
 
 /* ===== BACKEND BRIDGE (public EF, no login) ===== */
 async function efCall(action,body){
@@ -736,17 +755,19 @@ async function efCall(action,body){
   });
   const j=await res.json().catch(()=>({}));
   if(!res.ok) throw new Error(j.error||('http-'+res.status));
+  online=true; // any successful round-trip heals the offline state (Session-1)
   return j;
 }
-async function ensureDraft(){
-  if(state.partnerId||!online) return;
+async function ensureDraft(force){
+  if(state.partnerId) return;
+  if(!online&&!force) return;
   try{
     const r=await efCall('start',{
       contact:{name:state.fields.contactName,business:state.fields.businessName,email:state.fields.email,phone:state.fields.phone,location:state.fields.location,website:state.fields.website},
       practice:{pillar:state.pillar,specialism:state.fields.specialism,yearsExperience:state.fields.years,description:state.fields.description}
     });
     state.partnerId=r.partner_id; saveLocal();
-  }catch(e){ online=false; }
+  }catch(e){ markOffline(); }
 }
 function credentialsBlob(){
   return {formFields:state.fields,pillar:state.pillar,program:state.program};
@@ -807,20 +828,37 @@ async function saveState(){
     await efCall('save',{partner_id:state.partnerId,credentialsPatch:credentialsBlob(),steps:gateSteps(),
       pct_complete:Math.round((activePos(step)+1)/ACTIVE.length*100),
       assessment:{safeguarding_passed:state.quizPassed,gdpr_passed:state.quizPassed,score:state.quizScore}});
-  }catch(e){ online=false; }
+  }catch(e){ markOffline(); }
 }
 function manualSave(){saveState();toast('Progress saved — resume on this device any time');}
 function startOver(){try{localStorage.removeItem(KEY);}catch(e){} location.reload();}
 
-async function restoreState(){
+async function restoreState(urlResumeId){
   let snap=null;
   try{snap=JSON.parse(localStorage.getItem(KEY));}catch(e){}
-  if(!snap||!snap.fields) return false;
-  state.fields=snap.fields||{};state.checks=snap.checks||state.checks;state.pillar=snap.pillar||null;
-  state.program=snap.program||null;state.watched=snap.watched||0;state.quizPassed=!!snap.quizPassed;state.quizScore=snap.quizScore||0;step=snap.step||0;state.partnerId=snap.partnerId||null;if(!ACTIVE.includes(step))step=ACTIVE.reduce((a,si)=>si<=step?si:a,ACTIVE[0]);
-  if(snap.files) hydrateFiles(snap.files,true);
+  const hasSnap=!!(snap&&snap.fields);
+  if(!hasSnap&&!urlResumeId) return false;
+  if(hasSnap){
+    state.fields=snap.fields||{};state.checks=snap.checks||state.checks;state.pillar=snap.pillar||null;
+    state.program=snap.program||null;state.watched=snap.watched||0;state.quizPassed=!!snap.quizPassed;state.quizScore=snap.quizScore||0;step=snap.step||0;state.partnerId=snap.partnerId||null;if(!ACTIVE.includes(step))step=ACTIVE.reduce((a,si)=>si<=step?si:a,ACTIVE[0]);
+    if(snap.files) hydrateFiles(snap.files,true);
+  }
+  if(urlResumeId) state.partnerId=urlResumeId; // emailed ?resume= link wins over any local draft id
   if(online&&state.partnerId){
-    try{ const r=await efCall('start',{resume_id:state.partnerId}); const cr=r.credentials||{}; if(cr.formFields) state.fields={...cr.formFields,...state.fields}; }catch(e){ online=false; }
+    try{
+      const r=await efCall('start',{resume_id:state.partnerId});
+      const cr=r.credentials||{};
+      if(cr.formFields) state.fields={...cr.formFields,...state.fields};
+      if(cr.pillar&&!state.pillar) state.pillar=cr.pillar;
+      if(cr.program&&!state.program) state.program=cr.program;
+      if(urlResumeId){ vyveTrack('partner_resume',{source:'url'}); saveLocal(); }
+      else vyveTrack('partner_resume',{source:'local'});
+    }catch(e){
+      if(/resume_not_found|Draft not found/i.test(String((e&&e.message)||e))){
+        state.partnerId=null; saveLocal(); // stale draft id — start clean but keep local answers
+        if(urlResumeId) toast('That link has expired — starting a fresh application');
+      } else markOffline();
+    }
   }
   applyRestoredDom('device'); return true;
 }
@@ -853,6 +891,7 @@ function renderRail(){
   document.getElementById('progFill').style.width=pct+'%';document.getElementById('pctLabel').textContent=pct+'% complete';
 }
 function showStepDom(){
+  vyveTrack('partner_step_view',{step_index:step,step_title:stepTitles[step]||String(step)});
   document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('active',i===step));
   document.getElementById('backBtn').style.display=activePos(step)<=0?'none':'inline-flex';
   document.getElementById('nextBtn').innerHTML=(activePos(step)===ACTIVE.length-1?'Submit for review':'Continue')+'<span class="bic" data-i="arrow"></span>';
@@ -993,6 +1032,8 @@ async function handleFile(box,key,kind,slot,file){
   // local preview object URL for images
   if(file.type&&file.type.startsWith('image/')){rec.previewUrl=URL.createObjectURL(file);}
   renderUploaded(box,key,false);
+  rec._file=file; // in-memory only (saveLocal never serialises it) so failed uploads can retry at submit (Session-1)
+  if(!state.partnerId&&online&&sb){ try{ await ensureDraft(); }catch(e){} }
   // Real upload only when the draft exists + online; otherwise a local-only preview (works in offline/preview)
   if(online&&state.partnerId&&sb){
     const chip=box.parentElement.querySelector('.uploaded[data-for="'+key+'"]');
@@ -1006,9 +1047,11 @@ async function handleFile(box,key,kind,slot,file){
       saveState();
     }catch(e){
       if(chip)chip.classList.remove('uploading');
-      toast('Upload will retry — saved locally for now'); online=false;
+      rec.pendingUpload=true;
+      toast('Upload didn\'t reach the server yet — it will retry when you submit'); markOffline();
     }
   }else{
+    rec.pendingUpload=true; // no draft / offline — retried at submit
     saveState();
   }
 }
@@ -1117,10 +1160,56 @@ function submitJourney(){
   }
   (async()=>{ await ensureDraft(); doSubmit(); })();
 }
+async function retryPendingUploads(){
+  // Session-1: re-attempt any attachments that never reached storage (picked pre-draft or while offline).
+  for(const key of Object.keys(state.files)){
+    const rec=state.files[key];
+    if(!rec||rec.path||!rec._file) continue;
+    const box=document.querySelector('.upload[data-file="'+key+'"]');
+    const kind=(box&&box.dataset.kind)||'doc';
+    const slot=(box&&box.dataset.slot)||key;
+    try{
+      const ud=await efCall('upload-url',{partner_id:state.partnerId,kind,slot,filename:rec._file.name});
+      const {error}=await sb.storage.from(ud.bucket).uploadToSignedUrl(ud.path,ud.token,rec._file);
+      if(error) throw error;
+      rec.path=ud.path;rec.bucket=ud.bucket;rec.pendingUpload=false;rec.needsReattach=false;
+    }catch(e){ /* leave pending — submit still proceeds; content can follow via the moderation queue */ }
+  }
+  saveLocal();
+}
+function showSubmitFail(msg){
+  vyveTrack('partner_submit_fail_shown');
+  let ov=document.getElementById('submitFailOverlay');
+  if(!ov){
+    ov=document.createElement('div');ov.id='submitFailOverlay';
+    ov.style.cssText='position:fixed;inset:0;background:rgba(6,16,22,.72);backdrop-filter:blur(3px);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;';
+    ov.innerHTML='<div style="background:var(--card);border:1px solid var(--line);border-radius:18px;max-width:440px;width:100%;padding:30px 28px;text-align:center;">'
+      +'<div style="width:52px;height:52px;border-radius:50%;background:rgba(240,180,90,.12);border:1px solid rgba(240,180,90,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;">&#9888;&#65039;</div>'
+      +'<h3 style="color:var(--white);font-family:Georgia,serif;font-size:21px;margin:0 0 10px;">We couldn\'t submit your application</h3>'
+      +'<p id="submitFailMsg" style="color:var(--muted);font-size:14px;line-height:1.55;margin:0 0 6px;"></p>'
+      +'<p style="color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 22px;">Nothing is lost — your answers are saved on this device.</p>'
+      +'<button onclick="hideSubmitFail();doSubmit();" style="display:block;width:100%;background:var(--mint);color:#07211d;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;">Try again</button>'
+      +'<button onclick="downloadRecord();" style="display:block;width:100%;background:transparent;color:var(--white);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px;cursor:pointer;margin-bottom:14px;">Download my application</button>'
+      +'<p style="color:var(--muted);font-size:12.5px;margin:0;">Still stuck? Email your downloaded application to <a href="mailto:team@vyvehealth.co.uk" style="color:var(--mint);">team@vyvehealth.co.uk</a> and we\'ll take it from there.</p>'
+      +'</div>';
+    document.body.appendChild(ov);
+  }
+  document.getElementById('submitFailMsg').textContent=msg||'Your application didn\'t reach us.';
+  lastRecord=buildRecord();
+  ov.style.display='flex';
+}
+function hideSubmitFail(){const ov=document.getElementById('submitFailOverlay');if(ov)ov.style.display='none';}
 async function doSubmit(){
   const f=state.fields;
-  if(online&&state.partnerId){
-    try{
+  vyveTrack('partner_submit_attempt');
+  if(!state.partnerId){ if(sb) online=true; await ensureDraft(true); }
+  if(!state.partnerId||!sb){
+    vyveTrack('partner_submit_error',{reason:'no_draft'});
+    showSubmitFail('We couldn\'t reach the VYVE server to create your application.');
+    return;
+  }
+  try{ await retryPendingUploads(); }catch(e){}
+  try{
       await efCall('submit',{
         partner_id:state.partnerId,
         profile:{tagline:f.pfRole,bio:f.pfBio,reasonForBeingHere:f.pfWhy,communityFeel:f.pfFeel,pillar:state.pillar},
@@ -1132,10 +1221,12 @@ async function doSubmit(){
         launch:{sessionTitle:f.sessionTitle||'',format:f.sessionFormat||'',date:f.sessionDate||'',time:f.sessionTime||'',durationMin:f.sessionDuration||'',welcomeProgram:state.program||'none'},
         documents:{photoId:fileRef('idDoc'),profilePhoto:fileRef('profilePhoto')}
       });
-    }catch(e){
-      toast('Submit failed — your data is saved; please retry'); return;
-    }
+  }catch(e){
+    vyveTrack('partner_submit_error',{reason:String((e&&e.message)||e).slice(0,120)});
+    showSubmitFail('Your application didn\'t reach us.');
+    return;
   }
+  vyveTrack('partner_submit_success');
   buildSummary();showScreen('done');try{localStorage.removeItem(KEY);}catch(e){}
 }
 let lastRecord=null;
@@ -1174,7 +1265,9 @@ function showScreen(s){
 setIcons(document);
 renderOverview();renderVmods();renderEducation();renderContent();
 bindFields();bindUploads();
-(async()=>{ _loadSB(); await restoreState();
+(async()=>{ vyveTrack('partner_onboarding_view');
+  const _rp=(function(){try{return new URLSearchParams(location.search).get('resume');}catch(e){return null;}})();
+  await _loadSB(); await restoreState(_rp);
   const today=new Date().toISOString().slice(0,10);
   state.fields.signDate=today; const sd=document.querySelector('[data-k="signDate"]'); if(sd) sd.value=today;
   renderRail();showStepDom();syncPreview(); })();
