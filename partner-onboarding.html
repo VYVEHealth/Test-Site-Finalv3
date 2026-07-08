@@ -1233,7 +1233,7 @@ async function doSubmit(){
         starterContent:[1,2,3].map(n=>({title:f['cTitle'+n]||'',level:f['cLevel'+n]||'',description:f['cDesc'+n]||'',file:fileRef('cVideo'+n)})).filter(x=>x.file),
         welcomePost:f.welcomePost||'',
         launch:{sessionTitle:f.sessionTitle||'',format:f.sessionFormat||'',date:f.sessionDate||'',time:f.sessionTime||'',durationMin:f.sessionDuration||'',welcomeProgram:state.program||'none'},
-        documents:{photoId:fileRef('idDoc'),profilePhoto:fileRef('profilePhoto')}
+        documents:{photoId:fileRef('idDoc'),qualifications:fileRef('qualDoc'),profilePhoto:fileRef('profilePhoto')} // PM-748: qualifications was missing — uploaded certs landed in storage but were never referenced in the application record
       });
   }catch(e){
     vyveTrack('partner_submit_error',{reason:String((e&&e.message)||e).slice(0,120)});
