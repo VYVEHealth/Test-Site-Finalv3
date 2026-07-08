@@ -153,6 +153,48 @@
     .prog-n{font-size:0.67rem;color:var(--dim);margin-top:5px}
     .empty{color:var(--muted);font-size:0.8rem;text-align:center;padding:28px}
 
+    /* ---------- story / insights / teams / roi ---------- */
+    .story{background:linear-gradient(135deg,rgba(27,120,120,0.14),rgba(201,168,76,0.07));border:1px solid var(--border2);border-radius:var(--r);padding:22px 26px;margin-bottom:16px}
+    .story .hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .story .hd .pt2{font-family:var(--font-h);font-size:1.05rem;font-weight:800}
+    .story p{font-size:0.86rem;color:rgba(255,255,255,0.68);line-height:1.65;max-width:980px}
+    .story p b{color:var(--white)}
+    .ins-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:16px}
+    .ins{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:18px;border-top:3px solid var(--teal)}
+    .ins.win{border-top-color:var(--green)}
+    .ins.watch{border-top-color:var(--amber)}
+    .ins.act{border-top-color:var(--gold)}
+    .ins.trd{border-top-color:var(--blue)}
+    .ins-k{font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px}
+    .ins.win .ins-k{color:var(--green)}.ins.watch .ins-k{color:var(--amber)}.ins.act .ins-k{color:var(--gold)}.ins.trd .ins-k{color:var(--blue)}
+    .ins-t{font-size:0.9rem;font-weight:700;margin-bottom:7px}
+    .ins-d{font-size:0.77rem;color:rgba(255,255,255,0.56);line-height:1.55}
+    .ins-a{font-size:0.73rem;color:var(--teal-lt);font-weight:600;margin-top:10px}
+    .tstat{font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap}
+    .ts-g{background:rgba(34,197,94,0.1);color:var(--green)}
+    .ts-a{background:rgba(249,115,22,0.1);color:var(--amber)}
+    .ts-n{background:rgba(255,255,255,0.05);color:var(--muted)}
+    .arr-u{color:var(--green);font-weight:700}
+    .arr-d{color:var(--amber);font-weight:700}
+    .arr-f{color:var(--muted);font-weight:700}
+    .wbv{font-weight:700}
+    .pill3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px}
+    .pl{background:rgba(255,255,255,0.03);border-radius:8px;padding:16px;text-align:center}
+    .pl .v{font-family:var(--font-h);font-size:1.6rem;font-weight:800}
+    .pl .l{font-size:0.68rem;color:var(--muted);margin-top:4px}
+    .pl.mind .v{color:var(--purple)}.pl.body .v{color:var(--teal-lt)}.pl.conn .v{color:var(--gold)}
+    .plbar{height:7px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;margin-top:10px}
+    .plbar div{height:100%;border-radius:4px}
+    .pl.mind .plbar div{background:linear-gradient(90deg,#5b21b6,var(--purple))}
+    .pl.body .plbar div{background:linear-gradient(90deg,var(--teal),var(--teal-lt))}
+    .pl.conn .plbar div{background:linear-gradient(90deg,#8a6f2a,var(--gold))}
+    .roi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;padding:20px}
+    .roi-c{background:rgba(255,255,255,0.03);border-radius:8px;padding:18px;text-align:center}
+    .roi-v{font-family:var(--font-h);font-size:1.8rem;font-weight:800;color:var(--gold)}
+    .roi-v.g{color:var(--green)}
+    .roi-l{font-size:0.7rem;color:var(--muted);margin-top:6px;line-height:1.4}
+    .roi-note{padding:0 20px 18px;font-size:0.73rem;color:rgba(255,255,255,0.45);line-height:1.6}
+
     /* ---------- experts ---------- */
     .x-intro{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:20px}
     @media(max-width:960px){.x-intro{grid-template-columns:1fr}}
@@ -309,6 +351,68 @@
       <div class="kpi se"><div class="kl">Replay Views</div><div class="kv" id="k-rv">—</div><div class="ks" id="k-rm">— mins</div></div>
     </div>
 
+    <div class="story">
+      <div class="hd"><span class="pt2">Your workforce this quarter</span><span class="tag tgold">The story</span></div>
+      <p id="story-txt">Engagement has climbed for four consecutive months to <b>62%</b> — well above the 5–8% utilisation typical of traditional EAPs. <b>Mindfulness is your fastest-growing pillar</b>, led by Marketing and HR &amp; People, and members who join for physical sessions are crossing into mental wellbeing content within six weeks. The area to watch is <b>Finance</b>, where engagement and wellbeing scores dipped through quarter-end — a classic pressure pattern, and exactly where a targeted intervention pays for itself.</p>
+    </div>
+
+    <div class="ins-grid">
+      <div class="ins win">
+        <div class="ins-k">What's working</div>
+        <div class="ins-t">Mindfulness momentum</div>
+        <div class="ins-d">Live mindfulness attendance is up 34% this quarter — the strongest pillar growth. Marketing and HR &amp; People lead adoption.</div>
+        <div class="ins-a">→ Keep the 08:00 daily slot protected in team calendars</div>
+      </div>
+      <div class="ins watch">
+        <div class="ins-k">Needs attention</div>
+        <div class="ins-t">Finance under pressure</div>
+        <div class="ins-d">Engagement fell to 48% and average wellbeing to 5.9 during quarter-end close — the lowest of any team.</div>
+        <div class="ins-a">→ Recommended: Stress &amp; Resilience workshop (bookable now)</div>
+      </div>
+      <div class="ins act">
+        <div class="ins-k">Opportunity</div>
+        <div class="ins-t">37 members untapped</div>
+        <div class="ins-d">Inactive members are enrolled in automated re-engagement streams. A manager-level nudge alongside typically lifts 1 in 3 back to active.</div>
+        <div class="ins-a">→ Ask your account team for the manager nudge pack</div>
+      </div>
+      <div class="ins trd">
+        <div class="ins-k">Trend spotted</div>
+        <div class="ins-t">Body-to-mind crossover</div>
+        <div class="ins-d">58% of members who joined for workouts attended a mindfulness or therapy session within six weeks — physical health is your gateway to mental health engagement.</div>
+        <div class="ins-a">→ Promote workout sessions in low-engagement teams first</div>
+      </div>
+    </div>
+
+    <div class="gf">
+      <div class="p">
+        <div class="ph"><div><div class="pt">Team view</div><div class="ps">Engagement and wellbeing by team — aggregate only, teams under 8 members are rolled into “Other” to protect anonymity</div></div><span class="tag tt2">Micro view</span></div>
+        <div class="pb" style="overflow-x:auto">
+          <table class="st">
+            <thead><tr><th>Team</th><th>Members</th><th>Engagement</th><th>Avg Wellbeing</th><th>Vs last quarter</th><th>Status</th></tr></thead>
+            <tbody id="team-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="p">
+        <div class="ph"><div><div class="pt">Wellbeing Trend</div><div class="ps">Average weekly check-in score (1–10), company-wide</div></div><span class="tag tg" id="wb-tag">—</span></div>
+        <div class="pb"><div class="trend" id="wb-chart"></div></div>
+      </div>
+      <div class="p">
+        <div class="ph"><div><div class="pt">Pillar Participation</div><div class="ps">Share of all activity by wellbeing pillar</div></div><span class="tag tt2">Mix</span></div>
+        <div class="pb">
+          <div class="pill3">
+            <div class="pl mind"><div class="v">38%</div><div class="l">Mind — mindfulness, therapy, check-ins</div><div class="plbar"><div style="width:38%"></div></div></div>
+            <div class="pl body"><div class="v">44%</div><div class="l">Body — workouts, cardio, yoga</div><div class="plbar"><div style="width:44%"></div></div></div>
+            <div class="pl conn"><div class="v">18%</div><div class="l">Connect — live sessions, community</div><div class="plbar"><div style="width:18%"></div></div></div>
+          </div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);line-height:1.6">A healthy mix. Most platforms skew 90%+ physical; VYVE's three-pillar design keeps mental and social health in daily rotation — that balance is what sustains engagement past the 3-month drop-off most wellbeing tools see.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="g2">
       <div class="p">
         <div class="ph"><div><div class="pt">Activity Breakdown</div><div class="ps">All activity types — all time</div></div><span class="tag tt2" id="total-tag">—</span></div>
@@ -353,6 +457,19 @@
             <div class="er"><span class="el">Peak Month</span><span class="ev" id="e-peak">—</span></div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="gf">
+      <div class="p">
+        <div class="ph"><div><div class="pt">Return on Investment</div><div class="ps">Illustrative model — CIPD 2025 benchmarks, scales with your headcount</div></div><span class="tag tgold">Business case</span></div>
+        <div class="roi-grid">
+          <div class="roi-c"><div class="roi-v" id="roi-days">—</div><div class="roi-l">Estimated sickness days avoided per year</div></div>
+          <div class="roi-c"><div class="roi-v" id="roi-val">—</div><div class="roi-l">Estimated annual value of avoided absence</div></div>
+          <div class="roi-c"><div class="roi-v" id="roi-cost">—</div><div class="roi-l">Annual VYVE investment at £10/member/month</div></div>
+          <div class="roi-c"><div class="roi-v g" id="roi-x">—</div><div class="roi-l">Return on absence alone — before presenteeism &amp; turnover</div></div>
+        </div>
+        <div class="roi-note">Conservative model: UK average sickness absence is 9.4 days/employee/year at a 24-year high (CIPD 2025), 41% driven by mental ill-health. Model assumes engaged members reduce absence by 20% at £160/day fully-loaded cost — absence only. Independent studies including Deloitte's workplace mental health analysis consistently find substantially higher full returns once presenteeism and staff turnover are included.</div>
       </div>
     </div>
 
@@ -525,6 +642,21 @@ const SAMPLE_DATA = {
   ]
 };
 
+/* ---- demo teams (aggregate micro view) ---- */
+const TEAMS = [
+  { t:'Engineering',      n:62, eng:58, wb:6.4, d:-3, st:'Steady' },
+  { t:'Operations',       n:46, eng:63, wb:6.8, d:+2, st:'Steady' },
+  { t:'Sales',            n:38, eng:71, wb:7.1, d:+6, st:'Strong' },
+  { t:'Finance',          n:30, eng:48, wb:5.9, d:-8, st:'Watch' },
+  { t:'Marketing',        n:26, eng:74, wb:7.3, d:+9, st:'Strong' },
+  { t:'Customer Support', n:20, eng:55, wb:6.2, d:+1, st:'Steady' },
+  { t:'HR & People',      n:18, eng:82, wb:7.6, d:+5, st:'Strong' },
+];
+const WB_TREND = [
+  {label:'Jan',v:6.1},{label:'Feb',v:6.3},{label:'Mar',v:6.2},{label:'Apr',v:6.6},
+  {label:'May',v:6.9},{label:'Jun',v:7.1},{label:'Jul',v:7.0}
+];
+
 /* ---- demo experts (illustrative profiles) ---- */
 const EXPERTS = [
   { id:'e1', type:'speaker', gold:true, name:'Dr Amara Osei', role:'Occupational Psychologist', ini:'AO',
@@ -551,6 +683,30 @@ const EXPERTS = [
   { id:'e8', type:'included', gold:false, name:'Weekly Group Therapy', role:'Facilitated safe-space session', ini:'GT',
     ds:'A professionally facilitated weekly group session — open, anonymous-friendly and judgement-free. Attendance is never reported individually.',
     fmt:'Weekly, live', del:'In the VYVE app', price:'Included', incl:true },
+  { id:'e10', type:'workshop', gold:true, name:'Menopause & Women’s Health at Work', role:'Specialist-led workshop', ini:'WH',
+    ds:'Practical, stigma-free education for managers and teams — policy guidance, adjustments that work, and open Q&A with a women’s health specialist.',
+    fmt:'2-hr workshop + manager guide', del:'On-site or virtual', price:'From £850' },
+  { id:'e11', type:'workshop', gold:true, name:'Mental Health First Aid (MHFA)', role:'Accredited 2-day certification', ini:'MH',
+    ds:'Certify a cohort of workplace first-aiders through the accredited MHFA England programme — the foundation of an in-house support network.',
+    fmt:'2 days, up to 16 people', del:'On-site', price:'From £2,400' },
+  { id:'e12', type:'workshop', gold:true, name:'Managing for Wellbeing', role:'Leadership training', ini:'LW',
+    ds:'For line managers: spotting early warning signs, having the first conversation well, and managing workload without burning people out.',
+    fmt:'Half-day, up to 20 managers', del:'On-site or virtual', price:'From £1,400' },
+  { id:'e13', type:'clinic', gold:true, name:'MSK & Desk Health Clinic', role:'1:1 physiotherapist assessments', ini:'PC',
+    ds:'A physiotherapist-led clinic day: posture and workstation assessments, early intervention for aches before they become absence. MSK is the UK’s second-biggest absence driver.',
+    fmt:'Clinic day, 14 slots', del:'On-site or virtual', price:'From £950' },
+  { id:'e14', type:'speaker', gold:true, name:'Men’s Health: The Honest Conversation', role:'Lived-experience speaker session', ini:'MC',
+    ds:'Born from VYVE’s podcast heritage — a candid, no-topic-off-limits session on men’s mental health that consistently reaches the people other formats miss.',
+    fmt:'60-min session + open floor', del:'On-site or virtual', price:'From £750' },
+  { id:'e15', type:'workshop', gold:true, name:'Breathwork & Stress Reset Masterclass', role:'Practitioner-led session', ini:'BW',
+    ds:'A hands-on masterclass in practical breathwork for high-pressure moments — techniques teams use at their desks the same day.',
+    fmt:'75-min masterclass', del:'Virtual', price:'From £550' },
+  { id:'e16', type:'clinic', gold:true, name:'Strength & Conditioning Coach Block', role:'Small-group PT programme', ini:'SB',
+    ds:'A 6-week small-group programme with a qualified S&C coach — form, progression and confidence for members who want more than app workouts.',
+    fmt:'6 weeks, groups of 8', del:'Virtual', price:'From £1,100' },
+  { id:'e17', type:'workshop', gold:true, name:'Mindfulness Foundations Course', role:'6-week guided course', ini:'MF',
+    ds:'A structured six-week mindfulness course for a named cohort — measurable before/after wellbeing scores reported at aggregate level.',
+    fmt:'6 × 45-min sessions', del:'Virtual', price:'From £900' },
   { id:'e9', type:'included', gold:false, name:'Monthly Expert Events', role:'Education &amp; guest series', ini:'EE',
     ds:'A rotating monthly programme of expert talks and education sessions, included for every member — your team joins the whole VYVE community.',
     fmt:'Monthly, live + replays', del:'In the VYVE app', price:'Included', incl:true },
@@ -643,6 +799,48 @@ function renderOverview(d){
   document.getElementById('prog-f').style.width=(c.progressPct||0)+'%';
   const nm=c.nextMilestone||{};
   set('prog-n', nm.remaining?`${nm.remaining} more activities until the next donated month`:'All milestones reached!');
+
+  renderTeams(d._teamScale || 1);
+  renderWbTrend();
+  renderRoi(m.total || 0, m.engagementRate || 0);
+}
+
+function renderTeams(r){
+  document.getElementById('team-body').innerHTML = TEAMS.map(t=>{
+    const arr = t.d > 2 ? `<span class="arr-u">\u25b2 +${t.d}%</span>` : t.d < -2 ? `<span class="arr-d">\u25bc ${t.d}%</span>` : `<span class="arr-f">\u25ac ${t.d>=0?'+':''}${t.d}%</span>`;
+    const cls = t.st==='Strong'?'ts-g':t.st==='Watch'?'ts-a':'ts-n';
+    return `<tr>
+      <td><div class="sn2">${t.t}</div></td>
+      <td class="nc">${Math.round(t.n*r).toLocaleString('en-GB')}</td>
+      <td class="nc">${t.eng}%</td>
+      <td class="wbv" style="color:${t.wb>=7?'var(--green)':t.wb>=6.3?'var(--teal-lt)':'var(--amber)'}">${t.wb.toFixed(1)}</td>
+      <td>${arr}</td>
+      <td><span class="tstat ${cls}">${t.st}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderWbTrend(){
+  const max = 10;
+  document.getElementById('wb-chart').innerHTML = WB_TREND.map(t=>`
+    <div class="tc" title="${t.label}: ${t.v} / 10">
+      <div class="tv">${t.v}</div>
+      <div class="tb2" style="height:${Math.round((t.v/max)*95)}px;background:linear-gradient(180deg,var(--green),#15803d)"></div>
+      <div class="tm">${t.label}</div>
+    </div>`).join('');
+  const last = WB_TREND[WB_TREND.length-1].v, first = WB_TREND[0].v;
+  set('wb-tag', (last>=first?'+':'')+ (last-first).toFixed(1) + ' this year');
+}
+
+function renderRoi(headcount, engRate){
+  const days = Math.round(headcount * (engRate/100) * 9.4 * 0.20);
+  const val = days * 160;
+  const cost = headcount * 10 * 12;
+  const x = cost > 0 ? (val/cost) : 0;
+  set('roi-days', days.toLocaleString('en-GB'));
+  set('roi-val', '\u00a3' + Math.round(val/1000).toLocaleString('en-GB') + 'k');
+  set('roi-cost', '\u00a3' + Math.round(cost/1000).toLocaleString('en-GB') + 'k');
+  set('roi-x', x.toFixed(1) + '\u00d7');
 }
 
 function scaleData(d){
@@ -655,7 +853,8 @@ function scaleData(d){
     sessions:{totalLiveViews:sc(s.totalLiveViews),totalReplayViews:sc(s.totalReplayViews),totalLiveMins:sc(s.totalLiveMins),totalReplayMins:sc(s.totalReplayMins),
       byCategory:(s.byCategory||[]).map(c=>({category:c.category,liveViews:sc(c.liveViews),liveMins:sc(c.liveMins),replayViews:sc(c.replayViews),replayMins:sc(c.replayMins)}))},
     charity:{monthsDonated:Math.floor(total/30),remainder:total%30,progressPct:Math.round((total%30)/30*100),nextMilestone:{remaining:30-(total%30)}},
-    trend:(d.trend||[]).map(t=>({label:t.label,count:sc(t.count)}))
+    trend:(d.trend||[]).map(t=>({label:t.label,count:sc(t.count)})),
+    _teamScale: r
   };
 }
 function rerender(){ if(DATA) renderOverview(projMode?scaleData(DATA):DATA); }
