@@ -260,6 +260,12 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
     <h2 class="mt2">Information &amp; documents we collect</h2>
     <p class="sec-sub">Have these ready before you start — it makes the journey quick.</p>
     <div class="grid g2" id="dataReqs"></div>
+    <div class="mt2" style="background:var(--bg,#F4FAFA);border:1px solid #C8E4E4;border-radius:12px;padding:16px 18px" id="privacyNotice">
+      <h3 style="margin:0 0 8px;font-size:13px;letter-spacing:.5px;text-transform:uppercase">How we handle your information</h3>
+      <p style="font-size:12.5px;margin:0 0 8px;line-height:1.6">We collect the details you enter here — contact information, professional background, ID and qualification documents — solely to review your partner application. Your documents are stored privately and are only visible to the VYVE team.</p>
+      <p style="font-size:12.5px;margin:0 0 8px;line-height:1.6">If you don't finish applying, your draft and any uploads are automatically deleted after 30 days of inactivity. You can also ask us to delete your application at any time at <a href="mailto:team@vyvehealth.co.uk" style="font-weight:600">team@vyvehealth.co.uk</a>.</p>
+      <p style="font-size:12.5px;margin:0;line-height:1.6">Full details in our <a href="privacy.html" target="_blank" rel="noopener" style="font-weight:600">privacy policy</a>.</p>
+    </div>
     <div class="banner mt2">
       <span data-i="shield"></span>
       <div style="flex:1"><h3>Why we vet every partner</h3><p>VYVE carries a duty of care to thousands of employees. Verification, safeguarding and content review protect members and keep partner quality high — it is also what lets us put your name in front of enterprise clients with confidence.</p></div>
@@ -754,7 +760,7 @@ async function efCall(action,body){
     body:JSON.stringify({action,...body})
   });
   const j=await res.json().catch(()=>({}));
-  if(!res.ok) throw new Error(j.error||('http-'+res.status));
+  if(!res.ok){ const err=new Error(j.error||('http-'+res.status)); err.code=j.code||null; throw err; } // PM-747: carry EF code (rate_limited etc.) — EF 429 messages are already human-readable and surface as-is
   online=true; // any successful round-trip heals the offline state (Session-1)
   return j;
 }
