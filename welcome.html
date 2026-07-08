@@ -935,6 +935,22 @@ input[type="range"]::-moz-range-thumb {
 .stream-followups-sub { font-size: 14px; color: var(--text-3); text-align: center; margin-bottom: 22px; }
 
 </style>
+<!-- PM-735: PostHog EU marketing analytics. Cookieless (memory persistence), session recording OFF, no PII sent. -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload group identify setPersonProperties setPersonPropertiesForFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_8gekeZglc1HBDu3d9kMuqOuRWn6HIChhnaiQi6uvonl',{api_host:'https://eu.i.posthog.com',persistence:'memory',disable_session_recording:true,autocapture:true,capture_pageview:true});
+/* PM-735: campaign (?c=) + partner (?partner=) attribution as super-properties; persisted per-tab so they survive the multi-section form. */
+(function(){try{
+  var q=new URLSearchParams(window.location.search);
+  if(q.get('c'))sessionStorage.setItem('vyve-trial-campaign',q.get('c'));
+  if(q.get('partner'))sessionStorage.setItem('vyve-partner-slug',q.get('partner'));
+  var c=sessionStorage.getItem('vyve-trial-campaign')||'';
+  var p=sessionStorage.getItem('vyve-partner-slug')||'';
+  var props={};if(c)props.campaign_code=c;if(p)props.partner_slug=p;
+  if(c||p)posthog.register(props);
+}catch(_){}})();
+function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
+</script>
 </head>
 <body>
 
@@ -1636,6 +1652,7 @@ function goTo(section) {
   if (fn && fn.value) { const nd = document.getElementById('nameDisplay'); if (nd) nd.textContent = fn.value; }
   // Update slider display values when section changes
   initSliders();
+  vyveTrack('welcome_section_view', {section: section}); // PM-735
 }
 
 // ── SLIDERS — min=0 max=10 value=5, thumb at exact centre ──
@@ -2012,6 +2029,7 @@ async function submitQuestionnaire() {
 
   // Store data for retry
   window._lastSubmitData = data;
+  vyveTrack('welcome_submit', {}); // PM-735
 
   try {
     const controller = new AbortController();
@@ -2051,6 +2069,7 @@ async function submitQuestionnaire() {
 
   } catch(err) {
     console.error('Onboarding error:', err);
+    vyveTrack('welcome_error', {message: String(err && err.message || err).slice(0, 120)}); // PM-735
     document.querySelectorAll('.section, .loading-screen').forEach(s => s.classList.remove('active'));
     const errorScreen = document.getElementById('errorScreen');
     if (errorScreen) errorScreen.classList.add('active');
@@ -2082,6 +2101,7 @@ async function retrySubmit() {
   }
   const data = window._lastSubmitData;
   if (!data) return;
+  vyveTrack('welcome_submit', {retry: _retryCount}); // PM-735
 
   // Reset loading screen text
   const sub = document.getElementById('loadingSubtext');
@@ -2134,6 +2154,7 @@ async function retrySubmit() {
 }
 
 function showResults(data, result) {
+  vyveTrack('welcome_success', {}); // PM-735
   // PM-440 — if they signed up via a /welcome?c= trial link, stamp the trial now (fire-and-forget;
   // guarded server-side so it only ever affects this fresh signup). Failure is non-fatal.
   try {
