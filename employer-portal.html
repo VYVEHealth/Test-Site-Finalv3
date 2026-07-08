@@ -195,6 +195,98 @@
     .roi-l{font-size:0.7rem;color:var(--muted);margin-top:6px;line-height:1.4}
     .roi-note{padding:0 20px 18px;font-size:0.73rem;color:rgba(255,255,255,0.45);line-height:1.6}
 
+    /* ---------- wellbeing index hero ---------- */
+    .idx{background:linear-gradient(135deg,rgba(27,120,120,0.16),rgba(13,32,32,0.9));border:1px solid var(--border2);border-radius:14px;padding:26px 30px;margin-bottom:18px;display:grid;grid-template-columns:auto 1fr auto;gap:30px;align-items:center}
+    @media(max-width:960px){.idx{grid-template-columns:1fr;text-align:center}}
+    .idx-ring{position:relative;width:150px;height:150px;margin:0 auto}
+    .idx-ring svg{transform:rotate(-90deg)}
+    .idx-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .idx-num .n{font-family:var(--font-h);font-size:2.6rem;font-weight:800;line-height:1;color:var(--white)}
+    .idx-num .o{font-size:0.66rem;color:var(--muted);margin-top:2px}
+    .idx-mid .eyebrow{font-size:0.64rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+    .idx-mid h2{font-family:var(--font-h);font-size:1.6rem;font-weight:800;letter-spacing:-0.01em}
+    .idx-mid .grade{color:var(--green)}
+    .idx-mid p{font-size:0.82rem;color:rgba(255,255,255,0.6);line-height:1.6;margin-top:8px;max-width:520px}
+    .idx-subs{display:flex;flex-direction:column;gap:10px;min-width:220px}
+    .idx-s .t{display:flex;justify-content:space-between;font-size:0.72rem;margin-bottom:4px}
+    .idx-s .t b{color:var(--white)}
+    .idx-s .t span{color:var(--muted)}
+    .idx-bar{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+    .idx-bar div{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--teal-lt))}
+    .idx-bench{font-size:0.7rem;color:var(--dim);margin-top:4px}
+    .idx-bench b{color:var(--teal-lt)}
+
+    /* ---------- challenges ---------- */
+    .chal-live{background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(27,120,120,0.1));border:1px solid var(--gold-bd);border-radius:var(--r);margin-bottom:18px;overflow:hidden}
+    .cl-hd{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+    .cl-t{font-family:var(--font-h);font-size:1.25rem;font-weight:800}
+    .cl-s{font-size:0.76rem;color:var(--muted);margin-top:4px}
+    .cl-bd{padding:20px 24px;display:grid;grid-template-columns:1fr 1.2fr;gap:24px}
+    @media(max-width:960px){.cl-bd{grid-template-columns:1fr}}
+    .cl-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .cl-st{background:rgba(255,255,255,0.04);border-radius:8px;padding:14px;text-align:center}
+    .cl-sv{font-family:var(--font-h);font-size:1.5rem;font-weight:800;color:var(--gold)}
+    .cl-sl{font-size:0.66rem;color:var(--muted);margin-top:4px}
+    .lb-row{display:flex;align-items:center;gap:10px;padding:7px 0}
+    .lb-rank{width:22px;font-size:0.74rem;font-weight:700;color:var(--muted);text-align:right}
+    .lb-name{width:130px;font-size:0.78rem;font-weight:600;flex-shrink:0}
+    .lb-track{flex:1;height:9px;background:rgba(255,255,255,0.05);border-radius:5px;overflow:hidden}
+    .lb-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#8a6f2a,var(--gold))}
+    .lb-row.top .lb-fill{background:linear-gradient(90deg,var(--teal),var(--teal-lt))}
+    .lb-val{width:64px;font-size:0.74rem;font-weight:700;text-align:right}
+    .chal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+    .cc2{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:10px;transition:transform .2s,border-color .2s}
+    .cc2:hover{transform:translateY(-3px);border-color:var(--border2)}
+    .cc2 .ic{font-size:1.6rem}
+    .cc2 .t{font-size:0.94rem;font-weight:700}
+    .cc2 .d{font-size:0.76rem;color:rgba(255,255,255,0.55);line-height:1.55;flex:1}
+    .cc2 .m{font-size:0.7rem;color:var(--muted)}
+    .cc2 .ft{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+
+    /* ---------- reports ---------- */
+    .rep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+    .rep{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:10px}
+    .rep .ic{width:42px;height:42px;border-radius:9px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+    .rep .t{font-size:0.94rem;font-weight:700}
+    .rep .d{font-size:0.76rem;color:rgba(255,255,255,0.55);line-height:1.55;flex:1}
+    .rep .badge-ready{font-size:0.64rem;font-weight:700;color:var(--green)}
+
+    /* ---------- ask chat ---------- */
+    .chat{display:flex;flex-direction:column;height:480px}
+    .chat-msgs{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+    .msg{display:flex;gap:10px;max-width:85%}
+    .msg .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-lt));display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-weight:800;font-size:0.72rem;flex-shrink:0}
+    .msg .bub{background:var(--panel2);border:1px solid var(--border);border-radius:4px 14px 14px 14px;padding:12px 15px;font-size:0.82rem;line-height:1.55;color:rgba(255,255,255,0.78)}
+    .msg .bub b{color:var(--white)}
+    .msg.me{align-self:flex-end;flex-direction:row-reverse}
+    .msg.me .bub{background:rgba(27,120,120,0.35);border-color:var(--border2);border-radius:14px 4px 14px 14px}
+    .bub .mini-act{display:inline-block;margin-top:8px;font-size:0.74rem;font-weight:700;color:var(--teal-lt);cursor:pointer}
+    .typing{display:flex;gap:4px;padding:6px 2px}
+    .typing span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:ty 1s infinite}
+    .typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+    @keyframes ty{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 20px 12px}
+    .chip{font-size:0.74rem;font-weight:600;padding:7px 14px;border-radius:20px;border:1px solid var(--border2);background:rgba(255,255,255,0.03);color:var(--teal-lt);cursor:pointer;transition:all .15s}
+    .chip:hover{background:var(--teal-dim);border-color:var(--teal-lt)}
+    .chat-in{display:flex;gap:10px;padding:14px 20px;border-top:1px solid var(--border)}
+    .chat-in input{flex:1;background:var(--panel2);border:1px solid var(--border2);border-radius:22px;color:#fff;font-family:var(--font-b);font-size:0.84rem;padding:11px 18px}
+
+    /* ---------- print report ---------- */
+    #print-report{display:none}
+    @media print{
+      body{background:#fff}
+      body > *{display:none !important}
+      #print-report{display:block !important;color:#111;font-family:Georgia,serif;padding:10mm}
+      #print-report h1{font-size:26pt;margin-bottom:2mm}
+      #print-report .sub{color:#555;font-size:10pt;margin-bottom:8mm}
+      #print-report h2{font-size:14pt;margin:8mm 0 3mm;border-bottom:2px solid #1B7878;padding-bottom:2mm;color:#0D2B2B}
+      #print-report table{width:100%;border-collapse:collapse;font-size:9.5pt}
+      #print-report th,#print-report td{border:1px solid #ccc;padding:2mm 3mm;text-align:left}
+      #print-report th{background:#eef5f5}
+      #print-report p{font-size:10pt;line-height:1.6;color:#333}
+      #print-report .big{font-size:30pt;font-weight:bold;color:#1B7878}
+    }
+
     /* ---------- experts ---------- */
     .x-intro{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:20px}
     @media(max-width:960px){.x-intro{grid-template-columns:1fr}}
@@ -321,7 +413,9 @@
 <div class="toptabs" role="tablist">
   <button class="tt-b on" data-v="overview" onclick="go('overview',this)">Overview</button>
   <button class="tt-b" data-v="experts" onclick="go('experts',this)">Book Experts</button>
+  <button class="tt-b" data-v="challenges" onclick="go('challenges',this)">Challenges <span class="n">Live</span></button>
   <button class="tt-b" data-v="events" onclick="go('events',this)">Events <span class="n" id="ev-count">7</span></button>
+  <button class="tt-b" data-v="reports" onclick="go('reports',this)">Reports</button>
   <button class="tt-b" data-v="ask" onclick="go('ask',this)">Ask VYVE</button>
 </div>
 
@@ -339,6 +433,29 @@
       </div>
     </div>
     <div id="proj-badge">&#9888;&#65039; <span><b>Illustrative projection</b> &mdash; sample engagement rates scaled to a <b id="proj-hc-lbl">10,000</b>-person workforce. Not real members; a scale model for illustration.</span></div>
+
+    <div class="idx">
+      <div class="idx-ring">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="64" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="11"/>
+          <circle id="idx-arc" cx="75" cy="75" r="64" fill="none" stroke="url(#idxg)" stroke-width="11" stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="402" style="transition:stroke-dashoffset 1.6s cubic-bezier(.22,1,.36,1)"/>
+          <defs><linearGradient id="idxg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1B7878"/><stop offset="100%" stop-color="#c9a84c"/></linearGradient></defs>
+        </svg>
+        <div class="idx-num"><div class="n" id="idx-n">0</div><div class="o">out of 100</div></div>
+      </div>
+      <div class="idx-mid">
+        <div class="eyebrow">VYVE Wellbeing Index</div>
+        <h2>Your workforce is <span class="grade">Good — and improving</span></h2>
+        <p>A single score for the health of your workforce, blending engagement, wellbeing check-ins, pillar balance and momentum. Up <b style="color:var(--green)">+9 points</b> since January — driven by mindfulness adoption and a rising check-in score.</p>
+        <div class="idx-bench">Illustrative benchmark — typical UK employer with a traditional EAP: <b>54</b></div>
+      </div>
+      <div class="idx-subs">
+        <div class="idx-s"><div class="t"><span>Engagement</span><b>62</b></div><div class="idx-bar"><div style="width:62%"></div></div></div>
+        <div class="idx-s"><div class="t"><span>Wellbeing score</span><b>70</b></div><div class="idx-bar"><div style="width:70%"></div></div></div>
+        <div class="idx-s"><div class="t"><span>Pillar balance</span><b>84</b></div><div class="idx-bar"><div style="width:84%"></div></div></div>
+        <div class="idx-s"><div class="t"><span>Momentum</span><b>78</b></div><div class="idx-bar"><div style="width:78%"></div></div></div>
+      </div>
+    </div>
 
     <div class="kpis">
       <div class="kpi hi"><div class="kl">Total Members</div><div class="kv" id="k-members">—</div><div class="ks">Active subscriptions</div></div>
@@ -539,30 +656,90 @@
     </div>
   </section>
 
+  <!-- ================= CHALLENGES ================= -->
+  <section class="view" id="v-challenges">
+    <div class="chal-live">
+      <div class="cl-hd">
+        <div><div class="cl-t">10K Steps Challenge</div><div class="cl-s">Week 2 of 4 · All teams · Ends 31 July</div></div>
+        <span class="tag tgold">Live now</span>
+      </div>
+      <div class="cl-bd">
+        <div>
+          <div class="cl-stats">
+            <div class="cl-st"><div class="cl-sv" id="ch-part">168</div><div class="cl-sl">Taking part</div></div>
+            <div class="cl-st"><div class="cl-sv">70%</div><div class="cl-sl">Participation rate</div></div>
+            <div class="cl-st"><div class="cl-sv">8.1k</div><div class="cl-sl">Avg daily steps</div></div>
+            <div class="cl-st"><div class="cl-sv">+41%</div><div class="cl-sl">Activity vs pre-challenge</div></div>
+          </div>
+          <div style="font-size:0.76rem;color:rgba(255,255,255,0.5);line-height:1.6;margin-top:14px">Challenges run inside the VYVE app members already use — steps sync automatically from Apple Health and Health Connect. Team totals only; individual counts stay private.</div>
+        </div>
+        <div>
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Team leaderboard — avg daily steps</div>
+          <div id="ch-lb"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph" style="border:none;padding:0 0 14px"><div><div class="pt">Launch your next challenge</div><div class="ps">Pick a template — your account team handles comms, the app handles the rest</div></div></div>
+    <div class="chal-grid" id="chal-grid"></div>
+  </section>
+
+  <!-- ================= REPORTS ================= -->
+  <section class="view" id="v-reports">
+    <div class="ph" style="border:none;padding:0 0 14px"><div><div class="pt">Reports &amp; board packs</div><div class="ps">Aggregate-only reporting, ready to forward — no data team required</div></div></div>
+    <div class="rep-grid">
+      <div class="rep">
+        <div class="ic">📊</div>
+        <div class="t">Q2 2026 Quarterly Wellbeing Report</div>
+        <div class="d">Board-ready pack: Wellbeing Index, engagement trends, team view, insights and ROI model — everything on this portal, formatted for print.</div>
+        <div class="badge-ready">● Ready now</div>
+        <div><button class="btn btn-g" onclick="downloadBoardPack()">Download board pack</button></div>
+      </div>
+      <div class="rep">
+        <div class="ic">📅</div>
+        <div class="t">Monthly Snapshot — June 2026</div>
+        <div class="d">Two-page summary of the month: headline numbers, movers, and one recommended action. Lands in your inbox on the 1st, automatically.</div>
+        <div class="badge-ready">● Auto-delivered monthly</div>
+        <div><button class="btn btn-o" onclick="reportToast(this)">Email me this report</button></div>
+      </div>
+      <div class="rep">
+        <div class="ic">🔒</div>
+        <div class="t">GDPR &amp; Data Processing Summary</div>
+        <div class="d">What we collect, where it lives (EU), who processes it, and what employers can and cannot see. Written for your DPO to say yes to.</div>
+        <div class="badge-ready">● Ready now</div>
+        <div><button class="btn btn-o" onclick="reportToast(this)">Email me this report</button></div>
+      </div>
+      <div class="rep">
+        <div class="ic">🎯</div>
+        <div class="t">Custom report</div>
+        <div class="d">Need a specific cut — a site, a division, a before/after around a challenge or workshop? Your account team builds it within two working days.</div>
+        <div class="badge-ready" style="color:var(--muted)">On request</div>
+        <div><button class="btn btn-o" onclick="go('ask',document.querySelector('[data-v=ask]'))">Ask your account team</button></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ================= ASK VYVE ================= -->
   <section class="view" id="v-ask">
     <div class="ask-cols">
       <div class="p">
-        <div class="ph"><div><div class="pt">Ask us anything</div><div class="ps">Questions about your programme, data, or booking — answered within one working day</div></div></div>
-        <div class="pb">
-          <div id="ask-form">
-            <div class="fld">
-              <label for="ask-topic">Topic</label>
-              <select id="ask-topic">
-                <option>Booking an expert or workshop</option>
-                <option>Understanding our engagement data</option>
-                <option>Adding or removing team members</option>
-                <option>Billing &amp; invoicing</option>
-                <option>Data protection &amp; GDPR</option>
-                <option>Something else</option>
-              </select>
-            </div>
-            <div class="fld">
-              <label for="ask-msg">Your question</label>
-              <textarea id="ask-msg" placeholder="e.g. Could we run a resilience workshop for our engineering team in September?"></textarea>
-            </div>
-            <button class="btn btn-t" onclick="submitAsk()">Send question</button>
+        <div class="ph"><div><div class="pt">Ask VYVE</div><div class="ps">Instant answers on the everyday stuff — a real person for everything else</div></div><span class="tag tt2">Here to help</span></div>
+        <div class="chat">
+          <div class="chat-msgs" id="chat-msgs"></div>
+          <div class="chips" id="chat-chips">
+            <button class="chip" onclick="askChip('book')">How do I book a workshop?</button>
+            <button class="chip" onclick="askChip('quiet')">What does &ldquo;Quiet&rdquo; mean?</button>
+            <button class="chip" onclick="askChip('privacy')">Can I see individual data?</button>
+            <button class="chip" onclick="askChip('index')">How is the Index calculated?</button>
           </div>
+          <div class="chat-in">
+            <input id="chat-input" placeholder="Type a question&hellip;" onkeydown="if(event.key==='Enter')askFree()">
+            <button class="btn btn-t" onclick="askFree()">Send</button>
+          </div>
+        </div>
+        <div style="display:none">
+          <div id="ask-form"></div>
+          <textarea id="ask-msg"></textarea>
           <div class="ask-ok" id="ask-ok">
             <div class="big">✓</div>
             <h3>Question sent</h3>
@@ -742,6 +919,9 @@ window.addEventListener('DOMContentLoaded', () => {
   renderExperts('all');
   renderEvents();
   renderWeekly();
+  renderChallenges();
+  animateIndex();
+  chatGreet();
   setTimeout(()=>document.getElementById('loader').classList.add('gone'), 700);
 });
 
@@ -897,7 +1077,8 @@ function filterX(f,btn){
 /* ---- booking modal ---- */
 let modalExpert=null, modalSlot=null, modalDone=false;
 function openBooking(id){
-  modalExpert = EXPERTS.find(x=>x.id===id); modalSlot=null; modalDone=false;
+  modalExpert = EXPERTS.find(x=>x.id===id); modalSlot=null; modalDone=false; modalChallenge=null;
+  document.getElementById('m-confirm').textContent='Confirm booking';
   document.getElementById('m-title').textContent = modalExpert.name;
   document.getElementById('m-sub').textContent = modalExpert.role+' · '+modalExpert.fmt;
   const slots=[fdate(7),fdate(12),fdate(19)];
@@ -918,6 +1099,7 @@ function pickSlot(i, ds){
   const cf=document.getElementById('m-confirm'); cf.disabled=false; cf.style.opacity=1;
 }
 function confirmBooking(){
+  if(modalChallenge && modalSlot){ confirmChallenge(); return; }
   if(!modalExpert||!modalSlot) return;
   bookings[modalExpert.id]={slot:modalSlot,at:Date.now()};
   localStorage.setItem('vyve_ep_bookings',JSON.stringify(bookings));
@@ -931,7 +1113,21 @@ function confirmBooking(){
   addBookedEvent(modalExpert,d);
   renderExperts(document.querySelector('.xf-b.on').dataset.f);
 }
-function closeModal(){ document.getElementById('modal').classList.remove('on'); }
+function confirmChallenge(){
+  launched[modalChallenge.id]={slot:modalSlot,at:Date.now()};
+  localStorage.setItem('vyve_ep_launched',JSON.stringify(launched));
+  const dt=new Date(modalSlot);
+  document.getElementById('m-body').innerHTML = `<div class="m-done"><div class="big">🎉</div>
+    <h3>Challenge scheduled</h3>
+    <p><b style="color:#fff">${modalChallenge.t}</b><br>Starts Monday ${dt.toLocaleDateString('en-GB',{day:'numeric',month:'long'})}<br><br>
+    Launch comms and a manager pack go out the Friday before. It's on your events calendar.</p></div>`;
+  document.getElementById('m-foot').style.display='none';
+  extraEvents.push({date:dt.toISOString(), t:modalChallenge.t+' — launch', s:modalChallenge.m+' · Company challenge', gold:true, tag:'Scheduled'});
+  localStorage.setItem('vyve_ep_events',JSON.stringify(extraEvents));
+  renderEvents(); renderChallenges();
+  modalChallenge=null;
+}
+function closeModal(){ document.getElementById('modal').classList.remove('on'); modalChallenge=null; }
 document.getElementById('modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 
@@ -974,9 +1170,135 @@ function resetAsk(){
   document.getElementById('ask-ok').style.display='none';
 }
 
+/* ================= WELLBEING INDEX ================= */
+function animateIndex(){
+  const target = 72, C = 402;
+  const arc = document.getElementById('idx-arc');
+  if (arc) setTimeout(()=>{ arc.style.strokeDashoffset = C - (C * target/100); }, 300);
+  const n = document.getElementById('idx-n');
+  if (n){ let cur = 0; const step = ()=>{ cur += Math.max(1, Math.round((target-cur)/8)); if(cur>=target){cur=target;} n.textContent=cur; if(cur<target) requestAnimationFrame(step); }; setTimeout(step, 300); }
+}
+
+/* ================= CHALLENGES ================= */
+const CH_LB = [
+  { t:'HR & People', v:8940 },{ t:'Marketing', v:8610 },{ t:'Sales', v:8220 },
+  { t:'Operations', v:7850 },{ t:'Engineering', v:7410 },{ t:'Customer Support', v:7100 },{ t:'Finance', v:6980 }
+];
+const CH_TEMPLATES = [
+  { id:'c1', ic:'🚶', t:'Step Challenge', d:'The classic. Teams compete on average daily steps — syncs automatically from phones and wearables. Nothing to log.', m:'2–4 weeks · Team vs team' },
+  { id:'c2', ic:'🧘', t:'Mindful Minutes Month', d:'Teams bank minutes of mindfulness, breathwork and therapy sessions. Brilliant follow-up to a stress workshop.', m:'4 weeks · Collective goal' },
+  { id:'c3', ic:'💧', t:'Hydration Week', d:'A light, funny, zero-pressure week of water tracking. High participation, great icebreaker for new cohorts.', m:'1 week · Individual streaks' },
+  { id:'c4', ic:'🏃', t:'Couch to 5K', d:'Six guided weeks from nothing to a 5K, ending in a community run event. Pairs with the Run Club.', m:'6 weeks · Cohort programme' },
+  { id:'c5', ic:'🔥', t:'Team Streak 30', d:'Every team member logs any one activity a day. Simplest rules, strongest habit-building effect in our data.', m:'30 days · Whole-company' },
+  { id:'c6', ic:'🎯', t:'Custom challenge', d:'Tie a challenge to your own moment — wellbeing week, charity drive, seasonal push. Your account team designs it with you.', m:'Any length · Designed together' },
+];
+let launched = JSON.parse(localStorage.getItem('vyve_ep_launched')||'{}');
+
+function renderChallenges(){
+  const max = Math.max(...CH_LB.map(x=>x.v));
+  document.getElementById('ch-lb').innerHTML = CH_LB.map((x,i)=>`
+    <div class="lb-row ${i===0?'top':''}">
+      <span class="lb-rank">${i+1}</span><span class="lb-name">${x.t}</span>
+      <div class="lb-track"><div class="lb-fill" style="width:${Math.round(x.v/max*100)}%"></div></div>
+      <span class="lb-val">${x.v.toLocaleString('en-GB')}</span>
+    </div>`).join('');
+  document.getElementById('chal-grid').innerHTML = CH_TEMPLATES.map(c=>{
+    const isL = !!launched[c.id];
+    const btn = isL ? `<button class="btn booked">Scheduled ✓</button>` : `<button class="btn btn-t" onclick="openChallenge('${c.id}')">Launch</button>`;
+    return `<div class="cc2"><div class="ic">${c.ic}</div><div class="t">${c.t}</div><div class="d">${c.d}</div><div class="ft"><span class="m">${c.m}</span>${btn}</div></div>`;
+  }).join('');
+}
+
+let modalChallenge=null;
+function openChallenge(id){
+  modalChallenge = CH_TEMPLATES.find(c=>c.id===id); modalSlot=null; modalExpert=null;
+  document.getElementById('m-title').textContent = modalChallenge.t;
+  document.getElementById('m-sub').textContent = modalChallenge.m;
+  const mondays = []; let d = new Date();
+  while (mondays.length < 3){ d = new Date(d); d.setDate(d.getDate()+1); if (d.getDay()===1) mondays.push(new Date(d)); }
+  document.getElementById('m-body').innerHTML =
+    `<div style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Choose a start date — challenges start on Mondays</div>`+
+    mondays.map((dt,i)=>`<div class="slot" id="slot-${i}" onclick="pickSlot(${i},'${dt.toDateString()}')">
+      <span class="d">Monday ${dt.toLocaleDateString('en-GB',{day:'numeric',month:'long'})}</span>
+      <span class="h">Launch comms sent the Friday before</span></div>`).join('')+
+    `<div style="font-size:0.74rem;color:rgba(255,255,255,0.45);margin-top:14px;line-height:1.5">Included in your membership — no extra cost. Your account team sends launch comms and a manager pack before the start date.</div>`;
+  document.getElementById('m-foot').style.display='flex';
+  const cf=document.getElementById('m-confirm'); cf.disabled=true; cf.style.opacity=.5; cf.textContent='Launch challenge';
+  document.getElementById('modal').classList.add('on');
+}
+
+/* ================= REPORTS ================= */
+function downloadBoardPack(){ buildPrintReport(); setTimeout(()=>window.print(), 150); }
+function reportToast(btn){ btn.textContent='On its way ✓'; btn.classList.add('booked'); btn.onclick=null; }
+function buildPrintReport(){
+  const co = document.getElementById('co-name').textContent;
+  const d = projMode ? scaleData(SAMPLE_DATA) : SAMPLE_DATA;
+  const m=d.members, a=d.activities, c=d.charity;
+  document.getElementById('print-report').innerHTML = `
+    <h1>VYVE Wellbeing Report — ${co}</h1>
+    <div class="sub">Q2 2026 · Prepared ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})} · All data aggregate only · VYVE Health CIC · ICO 00013608608${projMode?' · ILLUSTRATIVE PROJECTION':''}</div>
+    <h2>Wellbeing Index</h2>
+    <p><span class="big">72 / 100</span> &nbsp; Good — and improving. Up 9 points since January. Sub-scores: Engagement 62 · Wellbeing 70 · Pillar balance 84 · Momentum 78. Illustrative benchmark for a typical UK employer with a traditional EAP: 54.</p>
+    <h2>Headline numbers</h2>
+    <table><tr><th>Members</th><th>Engagement rate</th><th>Activities (all time)</th><th>This month</th><th>Months donated to charity</th></tr>
+    <tr><td>${m.total.toLocaleString('en-GB')}</td><td>${m.engagementRate}%</td><td>${a.total.toLocaleString('en-GB')}</td><td>${a.thisMonth.toLocaleString('en-GB')}</td><td>${c.monthsDonated.toLocaleString('en-GB')}</td></tr></table>
+    <h2>Team view</h2>
+    <table><tr><th>Team</th><th>Members</th><th>Engagement</th><th>Avg wellbeing</th><th>Vs last quarter</th><th>Status</th></tr>
+    ${TEAMS.map(t=>`<tr><td>${t.t}</td><td>${Math.round(t.n*(d._teamScale||1)).toLocaleString('en-GB')}</td><td>${t.eng}%</td><td>${t.wb.toFixed(1)}</td><td>${t.d>=0?'+':''}${t.d}%</td><td>${t.st}</td></tr>`).join('')}</table>
+    <h2>This quarter's insights</h2>
+    <p><b>What's working:</b> Mindfulness attendance up 34%; strongest in Marketing and HR &amp; People. <b>Needs attention:</b> Finance engagement fell to 48% through quarter-end — a targeted Stress &amp; Resilience workshop is recommended. <b>Opportunity:</b> inactive members are in automated re-engagement; a manager nudge typically recovers 1 in 3. <b>Trend:</b> 58% of workout-first joiners cross into mental wellbeing content within six weeks.</p>
+    <h2>Return on investment (illustrative)</h2>
+    <p>Conservative absence-only model (CIPD 2025 benchmarks: 9.4 sickness days/employee/year, 41% mental-health driven; 20% reduction among engaged members at £160/day): see live portal for figures at your current headcount. Independent studies including Deloitte's workplace mental health analysis consistently find substantially higher full returns once presenteeism and turnover are included.</p>
+    <h2>Privacy</h2>
+    <p>Employers see aggregate data only. Individual names, scores and check-in content are never shared. Teams under 8 members are rolled into "Other". All primary data is stored and processed in the EU (Ireland).</p>`;
+}
+
+/* ================= ASK VYVE CHAT ================= */
+const CHAT_ANSWERS = {
+  book:   { q:'How do I book a workshop?', a:`Head to <b>Book Experts</b>, pick a specialist and choose a date — takes about 20 seconds. Nothing is charged until your account team confirms availability with you.<br><span class="mini-act" onclick="go('experts',document.querySelector('[data-v=experts]'))">→ Take me to Book Experts</span>` },
+  quiet:  { q:'What does "Quiet" mean?', a:`We group members by recent activity: <b>Active</b> — logged something in the last 7 days. <b>Quiet</b> — nothing for 8–30 days. <b>Inactive</b> — 30+ days. Quiet members get gentle automated nudges from VYVE before they drift — that's usually where re-engagement works best.` },
+  privacy:{ q:'Can I see individual data?', a:`No — and that's deliberate. You'll never see individual names, scores or check-in content; everything in this portal is aggregate only, and teams under 8 members are rolled into "Other". Members trust VYVE because their check-ins stay private — and that trust is exactly why engagement stays high. All primary data is stored in the EU (Ireland).` },
+  index:  { q:'How is the Index calculated?', a:`The <b>Wellbeing Index</b> blends four signals into one 0–100 score: your engagement rate, average weekly check-in scores, pillar balance (how evenly activity spreads across Mind, Body and Connect) and momentum (direction of travel over the last quarter). One number for the board; the detail lives on the Overview tab.` },
+};
+function chatAdd(who, text){
+  const w = document.getElementById('chat-msgs');
+  const el = document.createElement('div');
+  el.className = 'msg' + (who==='me' ? ' me' : '');
+  el.innerHTML = who==='me' ? `<div class="bub">${text}</div>` : `<div class="av">V</div><div class="bub">${text}</div>`;
+  w.appendChild(el); w.scrollTop = w.scrollHeight;
+  return el;
+}
+function chatTyping(){
+  const w = document.getElementById('chat-msgs');
+  const el = document.createElement('div');
+  el.className='msg'; el.id='chat-typing';
+  el.innerHTML = `<div class="av">V</div><div class="bub"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  w.appendChild(el); w.scrollTop = w.scrollHeight;
+}
+function chatReply(text){
+  chatTyping();
+  setTimeout(()=>{ const t=document.getElementById('chat-typing'); if(t) t.remove(); chatAdd('vyve', text); }, 700);
+}
+function askChip(k){
+  const c = CHAT_ANSWERS[k]; if(!c) return;
+  chatAdd('me', c.q); chatReply(c.a);
+}
+function askFree(){
+  const inp = document.getElementById('chat-input');
+  const v = inp.value.trim(); if(!v) return;
+  inp.value=''; chatAdd('me', v.replace(/</g,'&lt;'));
+  const ref='VYVE-'+Math.floor(1000+Math.random()*9000);
+  chatReply(`Good question — I've passed it straight to your account team (ref <b>${ref}</b>). A real person will come back to your registered email within one working day. Anything else I can help with in the meantime?`);
+}
+function chatGreet(){
+  if (document.getElementById('chat-msgs').children.length) return;
+  chatAdd('vyve', `Hello! I'm here to help you get the most from VYVE. Ask me anything about your programme — or tap a question below to get started.`);
+}
+
 /* ---- utils ---- */
 function set(id,v){ const e=document.getElementById(id); if(e) e.textContent=v; }
 function fmt(n){ return (n||0).toLocaleString('en-GB'); }
 </script>
+<div id="print-report"></div>
 </body>
 </html>
