@@ -886,6 +886,7 @@ const EP_KEY = 'sb_publishable_LvM2gBCqnb5q_h-BHEYT-g_MA11Ybzr';
 let LIVE = false, LIVE_INDEX = 72, LIVE_PAYLOAD = null;
 
 function showLogin(msg){
+  const b=document.getElementById('ep-signin'); if(b){ b.disabled=false; b.textContent='Sign in'; }
   document.getElementById('loader').classList.add('gone');
   document.getElementById('ep-login').classList.add('on');
   if (msg){ const e=document.getElementById('ep-login-err'); e.textContent=msg; e.style.display='block'; }
@@ -925,7 +926,8 @@ async function loadLive(tok, retried){
     if(r.status===403){ localStorage.removeItem('vyve_ep_tok'); showLogin("This account doesn't have employer dashboard access. Contact team@vyvehealth.co.uk."); return; }
     if(!r.ok){ showLogin('Something went wrong loading your dashboard — please try again.'); return; }
     const p=await r.json();
-    applyLive(p);
+    try{ applyLive(p); }
+    catch(e){ console.error('[employer-portal] display error:', e); showLogin('Something went wrong displaying your dashboard — please try again or contact team@vyvehealth.co.uk.'); }
   }catch(e){ showLogin('Could not reach VYVE — check your connection and try again.'); }
 }
 function wkLabel(wk){ return wk ? ('W'+wk.slice(-2)) : ''; }
@@ -1444,6 +1446,7 @@ function renderBenchmarks(){
 }
 
 function renderDeepDive(){
+  if (LIVE) return; // live mode: drilldown hidden, benchmarks handled by applyLiveDeepDive
   document.getElementById('dd-pills').innerHTML = TEAMS.map(t=>
     `<button class="dd-pill ${t.t===ddTeam?'on':''}" onclick="pickTeam('${t.t.replace(/'/g,"\\'")}')">${t.t}</button>`).join('');
   const t = TEAMS.find(x=>x.t===ddTeam), d = DD[ddTeam];
