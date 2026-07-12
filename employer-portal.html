@@ -404,6 +404,21 @@
 
     footer{max-width:1380px;margin:0 auto;padding:20px 28px 40px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:0.72rem;color:var(--dim)}
     footer a{color:var(--teal-lt)}
+    /* ── PM-750 employer login ── */
+    #ep-login{position:fixed;inset:0;background:var(--bg,#0a1220);display:none;align-items:center;justify-content:center;z-index:900}
+    #ep-login.on{display:flex}
+    .ep-card{width:min(400px,92vw);background:var(--panel,rgba(255,255,255,0.03));border:1px solid var(--border,rgba(255,255,255,0.08));border-radius:14px;padding:34px 30px}
+    .ep-card .lg{font-family:var(--font-h);font-weight:800;font-size:1.5rem;letter-spacing:0.14em;color:var(--teal-lt,#2fa5a5);margin-bottom:6px}
+    .ep-card h3{font-size:1.02rem;font-weight:700;margin-bottom:6px}
+    .ep-card .sub{font-size:0.78rem;color:rgba(255,255,255,0.55);line-height:1.55;margin-bottom:20px}
+    .ep-card label{display:block;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin:0 0 6px}
+    .ep-card input{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border,rgba(255,255,255,0.1));border-radius:8px;padding:11px 13px;color:#fff;font-size:0.9rem;margin-bottom:14px;outline:none}
+    .ep-card input:focus{border-color:var(--teal-lt,#2fa5a5)}
+    #ep-signin{width:100%;background:var(--teal,#1B7878);color:#fff;border:none;border-radius:8px;padding:12px;font-size:0.9rem;font-weight:700;cursor:pointer;margin-top:2px}
+    #ep-signin:disabled{opacity:0.6;cursor:default}
+    #ep-login-err{display:none;font-size:0.76rem;color:#f97316;margin:10px 0 0;line-height:1.5}
+    .ep-links{margin-top:18px;font-size:0.74rem;color:rgba(255,255,255,0.45);line-height:1.7}
+    .ep-links a{color:var(--teal-lt,#2fa5a5);text-decoration:none}
   </style>
 </head>
 <body>
@@ -412,6 +427,24 @@
   <div class="l-logo">VYVE</div>
   <div class="l-bar"><div class="l-fill"></div></div>
   <div class="l-txt">Loading your workplace wellbeing portal…</div>
+</div>
+
+<div id="ep-login" role="dialog" aria-label="Employer sign in">
+  <div class="ep-card">
+    <div class="lg">VYVE</div>
+    <h3>Employer dashboard</h3>
+    <div class="sub">Anonymised, aggregate wellbeing insight for your organisation — never individuals.</div>
+    <label for="ep-email">Work email</label>
+    <input id="ep-email" type="email" autocomplete="username" placeholder="you@company.com" onkeydown="if(event.key==='Enter')document.getElementById('ep-pw').focus()">
+    <label for="ep-pw">Password</label>
+    <input id="ep-pw" type="password" autocomplete="current-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')epSignIn()">
+    <button id="ep-signin" onclick="epSignIn()">Sign in</button>
+    <div id="ep-login-err"></div>
+    <div class="ep-links">
+      No access yet? Contact <a href="mailto:team@vyvehealth.co.uk">team@vyvehealth.co.uk</a><br>
+      Or <a href="?demo=1">view the sample dashboard</a>
+    </div>
+  </div>
 </div>
 
 <nav>
@@ -424,7 +457,7 @@
     </div>
     <div class="nav-r">
       <span id="co-name" title="Click to rename" onclick="renameCo()">Your Company</span>
-      <div class="live-pill"><div class="dot"></div><span>Demo environment</span></div>
+      <div class="live-pill"><div class="dot"></div><span id="env-pill">Demo environment</span></div>
     </div>
   </div>
 </nav>
@@ -479,7 +512,7 @@
 
     <div class="kpis">
       <div class="kpi hi"><div class="kl">Total Members</div><div class="kv" id="k-members">—</div><div class="ks">Active subscriptions</div></div>
-      <div class="kpi gr"><div class="kl">Engagement Rate</div><div class="kv" id="k-engage">—</div><div class="ks">Active last 30 days</div></div>
+      <div class="kpi gr"><div class="kl">Engagement Rate</div><div class="kv" id="k-engage">—</div><div class="ks" id="k-engage-sub">Active last 30 days</div></div>
       <div class="kpi pu"><div class="kl">Total Activities</div><div class="kv" id="k-total">—</div><div class="ks">All time</div></div>
       <div class="kpi am"><div class="kl">This Month</div><div class="kv" id="k-month">—</div><div class="ks">Activities</div></div>
       <div class="kpi pk"><div class="kl">Avg / Member</div><div class="kv" id="k-avg">—</div><div class="ks">Activities all time</div></div>
@@ -637,9 +670,9 @@
   <section class="view" id="v-deepdive">
     <div class="gf">
       <div class="p">
-        <div class="ph"><div><div class="pt">How you compare</div><div class="ps">Illustrative benchmarks — indicative industry engagement figures, updated as published research evolves</div></div><span class="tag tgold">Benchmarks</span></div>
+        <div class="ph"><div><div class="pt">How you compare</div><div class="ps" id="bm-sub">Illustrative benchmarks — indicative industry engagement figures, updated as published research evolves</div></div><span class="tag tgold">Benchmarks</span></div>
         <div class="pb">
-          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Engagement rate — % of members active in the last 30 days</div>
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px" id="bm-eng-lbl">Engagement rate — % of members active in the last 30 days</div>
           <div id="bm-eng"></div>
           <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px">Activities per member — all time</div>
           <div id="bm-act"></div>
@@ -838,10 +871,159 @@
 
 <script>
 /* =============================================================
-   VYVE Employer Portal — DEMO. Self-contained, no live data,
-   no API keys. Company name + bookings persist in localStorage
-   so the demo survives a refresh mid-meeting.
+   VYVE Employer Portal (PM-750). Two modes:
+   LIVE — employer sign-in (Supabase Auth) → employer-portal EF;
+   scope is server-derived from the login, never client-supplied.
+   DEMO — ?demo=1 keeps the original self-contained sample data
+   for sales walkthroughs (rename + bookings persist locally).
+   In live mode the fictional surfaces (Book Experts, Challenges
+   leaderboard, Events) are hidden; only real data renders.
    ============================================================= */
+
+/* ── LIVE MODE ─────────────────────────────────────────────── */
+const EP_SUPABASE = 'https://ixjfklpckgxrwjlfsaaz.supabase.co';
+const EP_KEY = 'sb_publishable_LvM2gBCqnb5q_h-BHEYT-g_MA11Ybzr';
+let LIVE = false, LIVE_INDEX = 72, LIVE_PAYLOAD = null;
+
+function showLogin(msg){
+  document.getElementById('loader').classList.add('gone');
+  document.getElementById('ep-login').classList.add('on');
+  if (msg){ const e=document.getElementById('ep-login-err'); e.textContent=msg; e.style.display='block'; }
+}
+async function epSignIn(){
+  const email=document.getElementById('ep-email').value.trim();
+  const pw=document.getElementById('ep-pw').value;
+  const err=document.getElementById('ep-login-err');
+  err.style.display='none';
+  if(!email||!pw){ err.textContent='Enter your email and password.'; err.style.display='block'; return; }
+  const btn=document.getElementById('ep-signin'); btn.disabled=true; btn.textContent='Signing in…';
+  try{
+    const r=await fetch(EP_SUPABASE+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:EP_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
+    const d=await r.json().catch(()=>null);
+    if(!r.ok||!d||!d.access_token){ err.textContent='Sign-in failed — check your email and password.'; err.style.display='block'; btn.disabled=false; btn.textContent='Sign in'; return; }
+    localStorage.setItem('vyve_ep_tok',d.access_token);
+    if(d.refresh_token) localStorage.setItem('vyve_ep_rtok',d.refresh_token);
+    document.getElementById('ep-login').classList.remove('on');
+    document.getElementById('loader').classList.remove('gone');
+    loadLive(d.access_token);
+  }catch(e){ err.textContent='Could not reach VYVE — try again.'; err.style.display='block'; btn.disabled=false; btn.textContent='Sign in'; }
+}
+async function epRefresh(){
+  const rt=localStorage.getItem('vyve_ep_rtok'); if(!rt) return null;
+  try{
+    const r=await fetch(EP_SUPABASE+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:EP_KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:rt})});
+    const d=await r.json().catch(()=>null);
+    if(r.ok&&d&&d.access_token){ localStorage.setItem('vyve_ep_tok',d.access_token); if(d.refresh_token) localStorage.setItem('vyve_ep_rtok',d.refresh_token); return d.access_token; }
+  }catch(e){}
+  return null;
+}
+function epSignOut(){ localStorage.removeItem('vyve_ep_tok'); localStorage.removeItem('vyve_ep_rtok'); location.reload(); }
+async function loadLive(tok, retried){
+  try{
+    const r=await fetch(EP_SUPABASE+'/functions/v1/employer-portal',{headers:{Authorization:'Bearer '+tok}});
+    if(r.status===401&&!retried){ const nt=await epRefresh(); if(nt) return loadLive(nt,true); localStorage.removeItem('vyve_ep_tok'); showLogin('Your session expired — please sign in again.'); return; }
+    if(r.status===403){ localStorage.removeItem('vyve_ep_tok'); showLogin("This account doesn't have employer dashboard access. Contact team@vyvehealth.co.uk."); return; }
+    if(!r.ok){ showLogin('Something went wrong loading your dashboard — please try again.'); return; }
+    const p=await r.json();
+    applyLive(p);
+  }catch(e){ showLogin('Could not reach VYVE — check your connection and try again.'); }
+}
+function wkLabel(wk){ return wk ? ('W'+wk.slice(-2)) : ''; }
+function mapLive(p){
+  const bt=(p.activity&&p.activity.byTypeAllTime)||{};
+  const sess=p.sessions||{byCategory:[]};
+  TEAMS.length=0;
+  (p.teams||[]).forEach(t=>TEAMS.push({t:t.team,n:t.members,eng:t.engagementRate,apm:t.avgPerMember,d:null,st:t.engagementRate>=60?'Strong':t.engagementRate>=35?'Steady':'Watch'}));
+  WB_TREND.length=0;
+  ((p.wellbeing&&p.wellbeing.series)||[]).forEach(w=>WB_TREND.push({label:wkLabel(w.week),v:w.avg}));
+  return {
+    members:{ total:p.members.total, active:p.members.active, quiet:p.members.quiet, inactive:p.members.inactive, engagementRate:p.members.engagementRate7d },
+    activities:{ total:p.activity.allTimeTotal, thisMonth:p.activity.thisMonth,
+      avgPerMember:p.members.total?(p.activity.allTimeTotal/p.members.total).toFixed(1):'0',
+      habits:bt.daily_habits||0, checkins:bt.wellbeing_checkins||0,
+      workouts:(bt.workouts||0)+(bt.movement_activities||0), cardio:bt.cardio||0 },
+    sessions:{ totalLiveViews:sess.totalLiveViews||0, totalReplayViews:sess.totalReplayViews||0,
+      totalLiveMins:sess.totalLiveMins||0, totalReplayMins:sess.totalReplayMins||0, byCategory:sess.byCategory||[] },
+    charity:{ monthsDonated:p.charity.monthsDonated, remainder:p.charity.progressToNext,
+      progressPct:Math.round((p.charity.progressToNext/30)*100), nextMilestone:{remaining:30-p.charity.progressToNext} },
+    trend:(p.activity.trendWeekly||[]).map(t=>({label:wkLabel(t.week),count:t.count}))
+  };
+}
+function applyLive(p){
+  LIVE=true; LIVE_PAYLOAD=p; LIVE_INDEX=(p.index&&p.index.score)||0;
+  document.getElementById('co-name').textContent=p.employer||'Your Company';
+  document.getElementById('co-name').onclick=null;
+  document.getElementById('co-name').removeAttribute('title');
+  const pill=document.getElementById('env-pill'); if(pill) pill.textContent='Live data';
+  const nr=document.querySelector('.nav-r');
+  if(nr&&!document.getElementById('ep-out')){
+    const a=document.createElement('a'); a.id='ep-out'; a.href='#'; a.textContent='Sign out';
+    a.style.cssText='font-size:0.72rem;color:var(--muted);margin-left:14px;text-decoration:none;';
+    a.onclick=(e)=>{ e.preventDefault(); epSignOut(); }; nr.appendChild(a);
+  }
+  ['experts','challenges','events'].forEach(v=>{ const b=document.querySelector('.tt-b[data-v="'+v+'"]'); if(b) b.style.display='none'; });
+  const mb=document.querySelector('.modebar'); if(mb) mb.style.display='none';
+  const pb=document.getElementById('proj-badge'); if(pb) pb.style.display='none';
+  const es=document.getElementById('k-engage-sub'); if(es) es.textContent='Active in the last 7 days';
+  const lv=document.getElementById('k-lv'); if(lv) lv.closest('.kpi').querySelector('.kl').textContent='Live Views (12 wks)';
+  const rv=document.getElementById('k-rv'); if(rv) rv.closest('.kpi').querySelector('.kl').textContent='Replay Views (12 wks)';
+  if(p.empty){ DATA={members:{total:0,active:0,quiet:0,inactive:0,engagementRate:0},activities:{},sessions:{byCategory:[]},charity:{},trend:[]}; }
+  else { DATA=mapLive(p); }
+  renderAll();
+  applyLiveHero(p);
+  renderLiveInsights(p.insights||[]);
+  applyLiveDeepDive(p);
+  hideLoader();
+}
+function applyLiveHero(p){
+  const c=(p.index&&p.index.components)||{};
+  const s=(p.index&&p.index.score)||0;
+  const gr=s>=80?'Excellent':s>=65?'Good':s>=50?'Building':'Early days';
+  const mid=document.querySelector('.idx-mid');
+  if(mid){
+    const supp=p.index&&p.index.wellbeingSuppressed;
+    mid.innerHTML='<div class="eyebrow">VYVE Wellbeing Index</div>'
+      +'<h2>Your workforce is <span class="grade">'+gr+'</span></h2>'
+      +'<p>A single score for the health of your workforce, blending engagement, wellbeing check-ins, pillar balance and momentum.'
+      +(supp?' <b>Company wellbeing is hidden until '+p.minCohort+'+ members have checked in this month</b> — the score is calculated from the remaining components.':'')
+      +'</p>';
+  }
+  const subs=document.querySelector('.idx-subs');
+  if(subs){
+    const row=(l,pts,w)=>{ const v=(pts==null)?null:Math.round((pts/w)*100);
+      return '<div class="idx-s"><div class="t"><span>'+l+'</span><b>'+(v==null?'—':v)+'</b></div><div class="idx-bar"><div style="width:'+(v==null?0:v)+'%"></div></div></div>'; };
+    subs.innerHTML=row('Engagement',c.engagement,30)+row('Wellbeing score',c.wellbeing,30)+row('Pillar balance',c.balance,20)+row('Momentum',c.momentum,20);
+  }
+}
+function renderLiveInsights(list){
+  const grid=document.querySelector('.ins-grid'); if(!grid) return;
+  const story=document.querySelector('.story'); if(story) story.style.display='none';
+  if(!list.length){ grid.style.display='none'; return; }
+  const K={win:'What\'s working',watch:'Needs attention',act:'Recommended'};
+  grid.innerHTML=list.map(i=>{ const cls=i.kind==='action'?'act':i.kind;
+    return '<div class="ins '+cls+'"><div class="ins-k">'+(K[cls]||cls)+'</div><div class="ins-t">'+i.title+'</div><div class="ins-d">'+i.body+'</div></div>'; }).join('');
+}
+function applyLiveDeepDive(p){
+  BM.eng.length=0; BM.act.length=0;
+  const comm=(p.benchmarks&&p.benchmarks.vyveCommunity)||{};
+  BM.eng.push({l:'<b>Your company</b>',v:p.members.engagementRate7d,c:'bm-you'});
+  if(comm.activeRate7d!=null) BM.eng.push({l:'VYVE community average',v:comm.activeRate7d,c:'bm-vyve'});
+  const apm=p.members.total?+(p.activity.allTimeTotal/p.members.total).toFixed(1):0;
+  BM.act.push({l:'<b>Your company</b>',v:apm,c:'bm-you'});
+  ((p.benchmarks&&p.benchmarks.curated)||[]).forEach(f=>{
+    const lbl=(f.scope||'').toUpperCase()+' average <span style="font-size:0.65rem;color:var(--muted)">('+(f.source||'')+')</span>';
+    if(f.metric==='engagement_rate') BM.eng.push({l:lbl,v:Number(f.value),c:'bm-oth'});
+    if(f.metric==='activities_per_member') BM.act.push({l:lbl,v:Number(f.value),c:'bm-oth'});
+  });
+  renderBenchmarks();
+  const bs=document.getElementById('bm-sub'); if(bs) bs.textContent='Live benchmarks — your organisation against the VYVE community. External comparisons appear here as published figures are added.';
+  const bl=document.getElementById('bm-eng-lbl'); if(bl) bl.textContent='Engagement rate — % of members active in the last 7 days';
+  const dd=document.getElementById('v-deepdive');
+  if(dd){
+    dd.querySelectorAll('.dd-pills,.dd-stats,.g2,.dd-rec').forEach(el=>el.style.display='none');
+    dd.querySelectorAll(':scope > .ph').forEach(h=>{ if(h.textContent.indexOf('Department deep dive')>=0) h.style.display='none'; });
+  }
+}
 let projMode = false, projHeadcount = 10000;
 let DATA = null;
 
@@ -957,11 +1139,8 @@ const WEEKLY = [
   { t:'Group Therapy', s:'Wednesdays · 12:00 · Facilitated' },
 ];
 
-/* ---- boot ---- */
-window.addEventListener('DOMContentLoaded', () => {
-  DATA = SAMPLE_DATA;
-  const co = localStorage.getItem('vyve_ep_co');
-  if (co) document.getElementById('co-name').textContent = co;
+/* ---- boot (PM-750: demo vs live fork) ---- */
+function renderAll(){
   renderOverview(DATA);
   renderExperts('all');
   renderEvents();
@@ -969,9 +1148,22 @@ window.addEventListener('DOMContentLoaded', () => {
   renderChallenges();
   renderBenchmarks();
   renderDeepDive();
-  animateIndex();
+  animateIndex(LIVE ? LIVE_INDEX : 72);
   chatGreet();
-  setTimeout(()=>document.getElementById('loader').classList.add('gone'), 700);
+}
+function hideLoader(){ setTimeout(()=>document.getElementById('loader').classList.add('gone'), 700); }
+function bootDemo(){
+  DATA = SAMPLE_DATA;
+  const co = localStorage.getItem('vyve_ep_co');
+  if (co) document.getElementById('co-name').textContent = co;
+  renderAll();
+  hideLoader();
+}
+window.addEventListener('DOMContentLoaded', () => {
+  const qs = new URLSearchParams(location.search);
+  if (qs.has('demo')) { bootDemo(); return; }
+  const tok = localStorage.getItem('vyve_ep_tok');
+  if (tok) { loadLive(tok); } else { showLogin(); }
 });
 
 /* ---- tabs ---- */
@@ -1036,7 +1228,7 @@ function renderOverview(d){
 
 function renderTeams(r){
   document.getElementById('team-body').innerHTML = TEAMS.map(t=>{
-    const arr = t.d > 2 ? `<span class="arr-u">\u25b2 +${t.d}%</span>` : t.d < -2 ? `<span class="arr-d">\u25bc ${t.d}%</span>` : `<span class="arr-f">\u25ac ${t.d>=0?'+':''}${t.d}%</span>`;
+    const arr = t.d==null ? '<span class="arr-f">\u2014</span>' : t.d > 2 ? `<span class="arr-u">\u25b2 +${t.d}%</span>` : t.d < -2 ? `<span class="arr-d">\u25bc ${t.d}%</span>` : `<span class="arr-f">\u25ac ${t.d>=0?'+':''}${t.d}%</span>`;
     const cls = t.st==='Strong'?'ts-g':t.st==='Watch'?'ts-a':'ts-n';
     return `<tr>
       <td><div class="sn2">${t.t}</div></td>
@@ -1053,12 +1245,13 @@ function renderWbTrend(){
   const max = 10;
   document.getElementById('wb-chart').innerHTML = WB_TREND.map(t=>`
     <div class="tc" title="${t.label}: ${t.v} / 10">
-      <div class="tv">${t.v}</div>
-      <div class="tb2" style="height:${Math.round((t.v/max)*95)}px;background:linear-gradient(180deg,var(--green),#15803d)"></div>
+      <div class="tv">${t.v==null?'—':t.v}</div>
+      <div class="tb2" style="height:${t.v==null?3:Math.round((t.v/max)*95)}px;background:linear-gradient(180deg,var(--green),#15803d)"></div>
       <div class="tm">${t.label}</div>
     </div>`).join('');
-  const last = WB_TREND[WB_TREND.length-1].v, first = WB_TREND[0].v;
-  set('wb-tag', (last>=first?'+':'')+ (last-first).toFixed(1) + ' this year');
+  const vals = WB_TREND.map(t=>t.v).filter(v=>v!=null);
+  if (vals.length >= 2){ const last=vals[vals.length-1], first=vals[0]; set('wb-tag', (last>=first?'+':'')+ (last-first).toFixed(1) + ' recently'); }
+  else { set('wb-tag', LIVE ? 'Awaiting check-ins' : '—'); }
 }
 
 function renderRoi(headcount, engRate){
@@ -1220,8 +1413,8 @@ function resetAsk(){
 }
 
 /* ================= WELLBEING INDEX ================= */
-function animateIndex(){
-  const target = 72, C = 402;
+function animateIndex(target = 72){
+  const C = 402;
   const arc = document.getElementById('idx-arc');
   if (arc) setTimeout(()=>{ arc.style.strokeDashoffset = C - (C * target/100); }, 300);
   const n = document.getElementById('idx-n');
