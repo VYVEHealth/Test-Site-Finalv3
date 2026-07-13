@@ -16,17 +16,17 @@
     --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  body{font-family:var(--font);background:radial-gradient(circle at 15% -10%,#16323a 0%,#0d1117 55%);color:var(--white);font-size:14px;min-height:100vh;-webkit-font-smoothing:antialiased}
+  body{font-family:var(--font);background:radial-gradient(circle at 15% -10%,#16323a 0%,#0d1117 55%);color:var(--white);font-size:16px;min-height:100vh;-webkit-font-smoothing:antialiased}
   ::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:6px}
   svg{display:block}
   a{color:var(--mint)}
 
   .top{display:flex;align-items:center;gap:12px;padding:16px 30px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(13,17,23,.82);backdrop-filter:blur(10px);z-index:40}
-  .mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--mint),var(--teal));display:flex;align-items:center;justify-content:center;font-weight:800;color:#05201d;font-size:18px}
-  .logo{font-weight:800;letter-spacing:3px;font-size:17px}.logo b{color:var(--mint)}
-  .top .sub{font-size:10px;color:var(--muted);letter-spacing:1.3px}
+  .mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--mint),var(--teal));display:flex;align-items:center;justify-content:center;font-weight:800;color:#05201d;font-size:20.5px}
+  .logo{font-weight:800;letter-spacing:3px;font-size:19.5px}.logo b{color:var(--mint)}
+  .top .sub{font-size:11.5px;color:var(--muted);letter-spacing:1.3px}
   .top .right{margin-left:auto;display:flex;gap:9px;align-items:center}
-  .btn{border:none;border-radius:11px;padding:11px 18px;font-family:var(--font);font-size:13.5px;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+  .btn{border:none;border-radius:11px;padding:11px 18px;font-family:var(--font);font-size:15.5px;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
   .btn svg,.bic svg{width:15px;height:15px}.bic{display:inline-flex;width:15px;height:15px}
   .btn-primary{background:linear-gradient(135deg,var(--mint),var(--teal));color:#05201d}
   .btn-primary:hover{filter:brightness(1.05)}
@@ -38,10 +38,10 @@
   .screen{display:none;animation:fade .35s ease}.screen.active{display:block}
   @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-  h1{font-size:30px;font-weight:800;letter-spacing:-.5px}
-  .lead{color:var(--muted-light);font-size:15px;max-width:680px;line-height:1.6;margin-top:10px}
-  h2{font-size:19px;font-weight:800;margin-bottom:4px}
-  .sec-sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+  h1{font-size:34px;font-weight:800;letter-spacing:-.5px}
+  .lead{color:var(--muted-light);font-size:17px;max-width:680px;line-height:1.6;margin-top:10px}
+  h2{font-size:21.5px;font-weight:800;margin-bottom:4px}
+  .sec-sub{color:var(--muted);font-size:15px;margin-bottom:18px}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
   .grid{display:grid;gap:16px}
@@ -51,60 +51,60 @@
   .flowline{position:relative;margin-top:24px}
   .flowstep{display:flex;gap:18px;padding-bottom:26px;position:relative}
   .flowstep:not(:last-child)::before{content:"";position:absolute;left:21px;top:44px;bottom:-4px;width:2px;background:linear-gradient(var(--mint),var(--line))}
-  .flownum{width:44px;height:44px;border-radius:13px;flex:none;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:var(--mint);z-index:2}
-  .flowstep h3{font-size:15.5px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .flowstep p{color:var(--muted-light);font-size:13px;line-height:1.55;margin-top:5px}
-  .who-tag{font-size:10px;font-weight:700;letter-spacing:.4px;padding:3px 9px;border-radius:20px;text-transform:uppercase}
+  .flownum{width:44px;height:44px;border-radius:13px;flex:none;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:var(--mint);z-index:2}
+  .flowstep h3{font-size:17.5px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .flowstep p{color:var(--muted-light);font-size:15px;line-height:1.55;margin-top:5px}
+  .who-tag{font-size:11.5px;font-weight:700;letter-spacing:.4px;padding:3px 9px;border-radius:20px;text-transform:uppercase}
   .who-partner{background:rgba(94,196,176,.15);color:var(--mint)}
   .who-vyve{background:rgba(232,168,85,.15);color:var(--social)}
-  .collects{margin-top:9px;font-size:12px;color:var(--muted)}
+  .collects{margin-top:9px;font-size:13.5px;color:var(--muted)}
   .collects b{color:var(--muted-light)}
 
   .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
-  .stat .v{font-size:24px;font-weight:800}.stat .l{font-size:12px;color:var(--muted);margin-top:3px}
-  .info-pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--mint);background:rgba(94,196,176,.12);padding:6px 12px;border-radius:20px}
+  .stat .v{font-size:27.5px;font-weight:800}.stat .l{font-size:13.5px;color:var(--muted);margin-top:3px}
+  .info-pill{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--mint);background:rgba(94,196,176,.12);padding:6px 12px;border-radius:20px}
   .info-pill svg{width:14px;height:14px}
 
   .dreq{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:14px}
-  .dreq-h{background:var(--surface);padding:12px 16px;font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:10px}
+  .dreq-h{background:var(--surface);padding:12px 16px;font-weight:700;font-size:15.5px;display:flex;align-items:center;gap:10px}
   .dreq-h svg{width:16px;height:16px;color:var(--mint)}
   .dreq-b{padding:6px 16px}
-  .dreq-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .dreq-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
   .dreq-row:last-child{border:none}.dreq-row .f{flex:1}
-  .req-yes{font-size:10px;font-weight:700;color:var(--social);background:rgba(232,168,85,.14);padding:2px 8px;border-radius:10px}
-  .req-opt{font-size:10px;font-weight:700;color:var(--muted);background:var(--surface2);padding:2px 8px;border-radius:10px}
+  .req-yes{font-size:11.5px;font-weight:700;color:var(--social);background:rgba(232,168,85,.14);padding:2px 8px;border-radius:10px}
+  .req-opt{font-size:11.5px;font-weight:700;color:var(--muted);background:var(--surface2);padding:2px 8px;border-radius:10px}
 
   .journey{display:grid;grid-template-columns:280px 1fr;gap:26px;align-items:start}
   .rail{position:sticky;top:90px}
-  .rail .pct{font-size:12px;color:var(--muted);margin-bottom:6px}
+  .rail .pct{font-size:13.5px;color:var(--muted);margin-bottom:6px}
   .progress{height:8px;background:var(--surface);border-radius:6px;overflow:hidden;margin-bottom:20px}
   .progress .fill{height:100%;background:linear-gradient(90deg,var(--mint),var(--mint-light));border-radius:6px;transition:.4s;width:0}
   .rstep{display:flex;gap:12px;align-items:flex-start;padding:9px 0;cursor:pointer}
-  .rdot{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+  .rdot{width:26px;height:26px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
   .rdot svg{width:13px;height:13px}
   .rstep.done .rdot{background:var(--mint);color:#05201d;border-color:var(--mint)}
   .rstep.active .rdot{background:rgba(94,196,176,.18);border:2px solid var(--mint);color:var(--mint)}
-  .rstep .rt{font-size:13px;font-weight:600;color:var(--muted)}
+  .rstep .rt{font-size:15px;font-weight:600;color:var(--muted)}
   .rstep.active .rt{color:var(--white);font-weight:700}.rstep.done .rt{color:var(--muted-light)}
 
   .panel{min-height:480px}
   .step{display:none}.step.active{display:block;animation:fade .3s}
-  .step .eyebrow{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mint)}
-  .step h2{font-size:22px;margin-top:6px}
-  .step .intro{color:var(--muted-light);font-size:13.5px;line-height:1.55;margin-top:8px;max-width:640px}
+  .step .eyebrow{font-size:12.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mint)}
+  .step h2{font-size:25px;margin-top:6px}
+  .step .intro{color:var(--muted-light);font-size:15.5px;line-height:1.55;margin-top:8px;max-width:640px}
 
   .field{margin-top:16px}
-  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--muted-light);margin-bottom:7px}
+  .field label{display:block;font-size:14px;font-weight:600;color:var(--muted-light);margin-bottom:7px}
   .field label .req{color:var(--social);margin-left:3px}
   input[type=text],input[type=email],input[type=tel],input[type=date],input[type=time],input[type=number],select,textarea{
-    width:100%;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:12px 14px;color:var(--white);font-family:var(--font);font-size:13.5px;outline:none;transition:.15s}
+    width:100%;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:12px 14px;color:var(--white);font-family:var(--font);font-size:15.5px;outline:none;transition:.15s}
   input:focus,select:focus,textarea:focus{border-color:var(--mint)}
   textarea{resize:vertical;min-height:84px;line-height:1.5}
-  .hint{font-size:11px;color:var(--muted);margin-top:6px}
+  .hint{font-size:12.5px;color:var(--muted);margin-top:6px}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
   .field.err input,.field.err textarea,.field.err select,.field.err .upload{border-color:var(--danger)}
-  .err-msg{color:#f0a5a5;font-size:11px;margin-top:6px;display:none}
+  .err-msg{color:#f0a5a5;font-size:12.5px;margin-top:6px;display:none}
   .field.err .err-msg{display:block}
 
   .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px;border-radius:13px}
@@ -113,18 +113,18 @@
   .opt:hover{border-color:var(--mint-light)}
   .opt.sel{border-color:var(--mint);background:rgba(94,196,176,.08)}
   .opt .dot{width:11px;height:11px;border-radius:50%;display:inline-block;margin-bottom:8px}
-  .opt .ot{font-weight:700;font-size:13.5px}.opt .os{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+  .opt .ot{font-weight:700;font-size:15.5px}.opt .os{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.4}
 
   .upload{border:1.5px dashed rgba(138,172,172,.35);border-radius:13px;padding:18px;text-align:center;cursor:pointer;transition:.15s;background:var(--surface);display:block}
   .upload:hover{border-color:var(--mint);background:rgba(94,196,176,.05)}
   .upload svg{width:22px;height:22px;color:var(--mint);margin:0 auto 7px}
-  .upload .ut{font-size:13px;font-weight:600}.upload .us{font-size:11px;color:var(--muted);margin-top:3px}
+  .upload .ut{font-size:15px;font-weight:600}.upload .us{font-size:12.5px;color:var(--muted);margin-top:3px}
   .upload input{display:none}
-  .uploaded{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin-top:9px;font-size:12.5px}
+  .uploaded{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin-top:9px;font-size:14px}
   .uploaded svg{width:16px;height:16px;color:var(--mint);flex:none}
   .uploaded img{width:40px;height:40px;border-radius:8px;object-fit:cover;flex:none}
-  .uploaded .un{font-weight:600}.uploaded .usz{color:var(--muted);font-size:11px}
-  .uploaded .x{margin-left:auto;color:var(--muted);cursor:pointer;font-size:18px;line-height:1}
+  .uploaded .un{font-weight:600}.uploaded .usz{color:var(--muted);font-size:12.5px}
+  .uploaded .x{margin-left:auto;color:var(--muted);cursor:pointer;font-size:20.5px;line-height:1}
   .uploaded.reattach{border-color:var(--warning)}
   .uploaded.reattach svg{color:var(--warning)}
   .uploaded.uploading{opacity:.7}
@@ -135,7 +135,7 @@
   .vmod:hover{border-color:var(--mint-light)}
   .vmod .vth{width:74px;height:50px;border-radius:9px;flex:none;display:flex;align-items:center;justify-content:center}
   .vmod .vth svg{width:18px;height:18px;color:#fff}
-  .vmod .vt{font-size:13.5px;font-weight:700}.vmod .vs{font-size:11px;color:var(--muted);margin-top:2px}
+  .vmod .vt{font-size:15.5px;font-weight:700}.vmod .vs{font-size:12.5px;color:var(--muted);margin-top:2px}
   .vmod .vchk{margin-left:auto;width:24px;height:24px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted)}
   .vmod.watched .vchk{background:var(--mint);color:#05201d;border-color:var(--mint)}
   .vmod.watched .vchk svg{width:13px;height:13px}
@@ -144,26 +144,26 @@
   .lesson:last-child{border:none}
   .lesson .lchk{width:22px;height:22px;border-radius:50%;flex:none;background:var(--mint);color:#05201d;display:flex;align-items:center;justify-content:center}
   .lesson .lchk svg{width:12px;height:12px}
-  .lesson .lt{font-size:13px;font-weight:600}.lesson .ls{font-size:11px;color:var(--muted)}
-  .quiz{margin-top:8px}.q{margin-bottom:18px}.q .qt{font-size:13.5px;font-weight:700;margin-bottom:10px}
-  .qa{border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-bottom:8px;cursor:pointer;font-size:13px;transition:.15s;display:flex;align-items:center;gap:10px}
+  .lesson .lt{font-size:15px;font-weight:600}.lesson .ls{font-size:12.5px;color:var(--muted)}
+  .quiz{margin-top:8px}.q{margin-bottom:18px}.q .qt{font-size:15.5px;font-weight:700;margin-bottom:10px}
+  .qa{border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-bottom:8px;cursor:pointer;font-size:15px;transition:.15s;display:flex;align-items:center;gap:10px}
   .qa:hover{border-color:var(--mint-light)}
   .qa .mk{width:18px;height:18px;border-radius:50%;border:1px solid var(--muted);flex:none}
   .qa.sel{border-color:var(--mint);background:rgba(94,196,176,.07)}
   .qa.correct{border-color:var(--success);background:rgba(94,196,176,.12)}
   .qa.wrong{border-color:var(--danger);background:rgba(224,96,96,.1)}
-  .quiz-result{padding:13px 16px;border-radius:12px;font-size:13px;font-weight:600;margin-top:6px;display:none}
+  .quiz-result{padding:13px 16px;border-radius:12px;font-size:15px;font-weight:600;margin-top:6px;display:none}
   .quiz-result.show{display:block}
   .pass{background:rgba(94,196,176,.14);color:var(--mint)}
   .fail{background:rgba(224,96,96,.12);color:#f0a5a5}
 
-  .terms{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;max-height:200px;overflow-y:auto;font-size:12.5px;color:var(--muted-light);line-height:1.6}
-  .terms h4{color:var(--white);font-size:13px;margin:10px 0 4px}
+  .terms{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;max-height:200px;overflow-y:auto;font-size:14px;color:var(--muted-light);line-height:1.6}
+  .terms h4{color:var(--white);font-size:15px;margin:10px 0 4px}
   .check{display:flex;gap:11px;align-items:flex-start;margin-top:13px;cursor:pointer}
   .check .box{width:20px;height:20px;border-radius:6px;border:1px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;background:var(--surface);transition:.15s}
   .check.on .box{background:var(--mint);border-color:var(--mint);color:#05201d}
   .check .box svg{width:12px;height:12px;opacity:0}.check.on .box svg{opacity:1}
-  .check .ct{font-size:13px;line-height:1.5}
+  .check .ct{font-size:15px;line-height:1.5}
   .sign{margin-top:14px;display:flex;gap:14px;align-items:flex-end}.sign .field{flex:1;margin:0}
 
   .done-wrap{display:grid;grid-template-columns:1fr 320px;gap:30px;align-items:start}
@@ -171,43 +171,43 @@
   .ph-not{height:22px;background:#05080c;width:112px;margin:0 auto;border-radius:0 0 14px 14px}
   .ph-scroll{flex:1;overflow-y:auto}.ph-scroll::-webkit-scrollbar{width:0}
   .ph-banner{height:84px;position:relative}
-  .ph-av{width:60px;height:60px;border-radius:17px;border:3px solid var(--dark);position:absolute;left:16px;bottom:-24px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#05201d;font-weight:800;background-size:cover;background-position:center}
-  .ph-info{padding:32px 16px 0}.ph-info h4{font-size:15px;font-weight:800}.ph-info .r{font-size:11px;color:var(--mint);font-weight:600}
-  .ph-sec{padding:12px 16px;border-top:1px solid var(--line)}.ph-sec h5{font-size:11px;font-weight:700;margin-bottom:6px}
-  .ph-sec p{font-size:11px;color:var(--muted);line-height:1.5}
+  .ph-av{width:60px;height:60px;border-radius:17px;border:3px solid var(--dark);position:absolute;left:16px;bottom:-24px;display:flex;align-items:center;justify-content:center;font-size:21.5px;color:#05201d;font-weight:800;background-size:cover;background-position:center}
+  .ph-info{padding:32px 16px 0}.ph-info h4{font-size:17px;font-weight:800}.ph-info .r{font-size:12.5px;color:var(--mint);font-weight:600}
+  .ph-sec{padding:12px 16px;border-top:1px solid var(--line)}.ph-sec h5{font-size:12.5px;font-weight:700;margin-bottom:6px}
+  .ph-sec p{font-size:12.5px;color:var(--muted);line-height:1.5}
 
-  .summary-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .summary-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
   .summary-row:last-child{border:none}.summary-row .k{color:var(--muted)}.summary-row .v{font-weight:600;text-align:right;max-width:60%}
 
   .foot{display:flex;align-items:center;gap:12px;margin-top:30px;padding-top:20px;border-top:1px solid var(--line);flex-wrap:wrap}
   .foot .links{margin-left:auto;display:flex;gap:18px}
-  .foot .lnk{font-size:12px;color:var(--muted);cursor:pointer}.foot .lnk:hover{color:var(--mint)}
+  .foot .lnk{font-size:13.5px;color:var(--muted);cursor:pointer}.foot .lnk:hover{color:var(--mint)}
 
   .banner{background:linear-gradient(120deg,var(--teal-deep),var(--card));border:1px solid rgba(94,196,176,.25);border-radius:16px;padding:18px 20px;display:flex;align-items:center;gap:16px;margin-bottom:8px}
   .banner svg{width:26px;height:26px;color:var(--mint);flex:none}
-  .banner h3{font-size:15px;font-weight:800}.banner p{font-size:12.5px;color:var(--muted-light);margin-top:3px}
-  .resume{display:none;align-items:center;gap:12px;background:rgba(232,168,85,.1);border:1px solid rgba(232,168,85,.3);border-radius:12px;padding:11px 15px;margin-bottom:18px;font-size:12.5px}
+  .banner h3{font-size:17px;font-weight:800}.banner p{font-size:14px;color:var(--muted-light);margin-top:3px}
+  .resume{display:none;align-items:center;gap:12px;background:rgba(232,168,85,.1);border:1px solid rgba(232,168,85,.3);border-radius:12px;padding:11px 15px;margin-bottom:18px;font-size:14px}
   .resume.show{display:flex}
 
   .muted{color:var(--muted)}.hl{color:var(--mint)}
-  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid rgba(94,196,176,.35);color:var(--white);font-size:13px;font-weight:600;padding:12px 22px;border-radius:30px;opacity:0;transition:.3s;z-index:200;pointer-events:none}
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid rgba(94,196,176,.35);color:var(--white);font-size:15px;font-weight:600;padding:12px 22px;border-radius:30px;opacity:0;transition:.3s;z-index:200;pointer-events:none}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
   /* auth overlay */
   .ov{position:fixed;inset:0;background:rgba(5,8,12,.72);backdrop-filter:blur(6px);z-index:120;display:none;align-items:center;justify-content:center;padding:20px}
   .ov.show{display:flex}
   .ov-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;max-width:420px;width:100%;animation:fade .25s}
-  .ov-card h3{font-size:18px;font-weight:800}
-  .ov-card p{font-size:13px;color:var(--muted-light);margin-top:6px;line-height:1.55}
+  .ov-card h3{font-size:20.5px;font-weight:800}
+  .ov-card p{font-size:15px;color:var(--muted-light);margin-top:6px;line-height:1.55}
   .ov-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
-  .ov-skip{font-size:12px;color:var(--muted);cursor:pointer;align-self:center}
-  .otp-in{letter-spacing:6px;text-align:center;font-size:18px;font-weight:700}
+  .ov-skip{font-size:13.5px;color:var(--muted);cursor:pointer;align-self:center}
+  .otp-in{letter-spacing:6px;text-align:center;font-size:20.5px;font-weight:700}
   @media(max-width:900px){.journey{grid-template-columns:1fr}.rail{position:static}.done-wrap{grid-template-columns:1fr}.g4,.g3{grid-template-columns:1fr 1fr}.row3{grid-template-columns:1fr}}
   @media(max-width:640px){
     .top{flex-wrap:wrap;gap:10px;padding:13px 16px}
-    .top .btn{padding:9px 13px;font-size:12px}
+    .top .btn{padding:9px 13px;font-size:13.5px}
     .wrap{padding:20px 15px 60px}
-    h1{font-size:23px}
+    h1{font-size:26px}
     .row2,.row3,.opts,.g4,.g3{grid-template-columns:1fr}
     .sign{flex-direction:column;align-items:stretch;gap:13px}
     .sign .field{max-width:none!important}
@@ -215,7 +215,7 @@
     #railSteps{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
     #railSteps::-webkit-scrollbar{display:none}
     .rstep{flex:0 0 auto;flex-direction:column;align-items:center;gap:6px;padding:9px 8px;min-width:66px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
-    .rt{font-size:10px;line-height:1.25;text-align:center;white-space:normal}
+    .rt{font-size:11.5px;line-height:1.25;text-align:center;white-space:normal}
     .phone{width:100%;max-width:280px;height:560px}
     .foot{gap:12px}
     .foot .btn{flex:1 1 auto;justify-content:center}
@@ -257,14 +257,11 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
     <h2 class="mt2">The onboarding process</h2>
     <p class="sec-sub">Each step shows who actions it and what we collect.</p>
     <div class="flowline" id="flowline"></div>
-    <h2 class="mt2">Information &amp; documents we collect</h2>
-    <p class="sec-sub">Have these ready before you start — it makes the journey quick.</p>
-    <div class="grid g2" id="dataReqs"></div>
     <div class="mt2" style="background:var(--bg,#F4FAFA);border:1px solid #C8E4E4;border-radius:12px;padding:16px 18px" id="privacyNotice">
-      <h3 style="margin:0 0 8px;font-size:13px;letter-spacing:.5px;text-transform:uppercase">How we handle your information</h3>
-      <p style="font-size:12.5px;margin:0 0 8px;line-height:1.6">We collect the details you enter here — contact information, professional background, ID and qualification documents — solely to review your partner application. Your documents are stored privately and are only visible to the VYVE team.</p>
-      <p style="font-size:12.5px;margin:0 0 8px;line-height:1.6">If you don't finish applying, your draft and any uploads are automatically deleted after 30 days of inactivity. You can also ask us to delete your application at any time at <a href="mailto:team@vyvehealth.co.uk" style="font-weight:600">team@vyvehealth.co.uk</a>.</p>
-      <p style="font-size:12.5px;margin:0;line-height:1.6">Full details in our <a href="privacy.html" target="_blank" rel="noopener" style="font-weight:600">privacy policy</a>.</p>
+      <h3 style="margin:0 0 8px;font-size:15px;letter-spacing:.5px;text-transform:uppercase">How we handle your information</h3>
+      <p style="font-size:14px;margin:0 0 8px;line-height:1.6">We collect the details you enter here — contact information, professional background, ID and qualification documents — solely to review your partner application. Your documents are stored privately and are only visible to the VYVE team.</p>
+      <p style="font-size:14px;margin:0 0 8px;line-height:1.6">If you don't finish applying, your draft and any uploads are automatically deleted after 30 days of inactivity. You can also ask us to delete your application at any time at <a href="mailto:team@vyvehealth.co.uk" style="font-weight:600">team@vyvehealth.co.uk</a>.</p>
+      <p style="font-size:14px;margin:0;line-height:1.6">Full details in our <a href="privacy.html" target="_blank" rel="noopener" style="font-weight:600">privacy policy</a>.</p>
     </div>
     <div class="banner mt2">
       <span data-i="shield"></span>
@@ -340,36 +337,36 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
           <style>
             .doc-wrap{border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:hidden;box-shadow:0 18px 50px -28px rgba(0,0,0,.7)}
             .doc-head{display:flex;align-items:center;gap:12px;padding:15px 20px;background:linear-gradient(135deg,rgba(94,196,176,.14),rgba(26,107,107,.05));border-bottom:1px solid var(--line)}
-            .doc-head .dh-mark{width:34px;height:34px;border-radius:9px;flex:none;background:linear-gradient(135deg,var(--mint),var(--teal));display:flex;align-items:center;justify-content:center;font-weight:800;color:#05201d;font-size:15px;letter-spacing:1px}
-            .doc-head .dh-t{font-weight:800;font-size:14px;letter-spacing:.3px}
-            .doc-head .dh-s{font-size:11px;color:var(--muted);margin-top:1px}
-            .doc-head .dh-badge{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--mint);background:rgba(94,196,176,.13);border:1px solid rgba(94,196,176,.3);padding:4px 10px;border-radius:20px;white-space:nowrap}
-            .contract{max-height:420px;overflow-y:auto;padding:22px 24px;font-size:13px;line-height:1.72;color:var(--muted-light);scroll-behavior:smooth}
+            .doc-head .dh-mark{width:34px;height:34px;border-radius:9px;flex:none;background:linear-gradient(135deg,var(--mint),var(--teal));display:flex;align-items:center;justify-content:center;font-weight:800;color:#05201d;font-size:17px;letter-spacing:1px}
+            .doc-head .dh-t{font-weight:800;font-size:16px;letter-spacing:.3px}
+            .doc-head .dh-s{font-size:12.5px;color:var(--muted);margin-top:1px}
+            .doc-head .dh-badge{margin-left:auto;font-size:12px;font-weight:700;color:var(--mint);background:rgba(94,196,176,.13);border:1px solid rgba(94,196,176,.3);padding:4px 10px;border-radius:20px;white-space:nowrap}
+            .contract{max-height:420px;overflow-y:auto;padding:22px 24px;font-size:15px;line-height:1.72;color:var(--muted-light);scroll-behavior:smooth}
             .contract::-webkit-scrollbar{width:9px}.contract::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:6px}.contract::-webkit-scrollbar-track{background:transparent}
-            .contract .agdate{font-weight:700;font-size:14px;color:var(--white);margin:0 0 16px}
-            .contract h3{font-size:11.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--mint);margin:24px 0 9px;padding-bottom:7px;border-bottom:1px solid var(--line)}
-            .contract h4{font-size:13px;font-weight:700;color:var(--white);margin:18px 0 5px}
+            .contract .agdate{font-weight:700;font-size:16px;color:var(--white);margin:0 0 16px}
+            .contract h3{font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--mint);margin:24px 0 9px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+            .contract h4{font-size:15px;font-weight:700;color:var(--white);margin:18px 0 5px}
             .contract p{margin:0 0 9px}
             .contract ol,.contract ul{margin:2px 0 10px 4px;padding:0;list-style:none}
             .contract ol li,.contract ul li{position:relative;padding-left:20px;margin:0 0 6px}
             .contract ul li::before{content:"";position:absolute;left:4px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--mint)}
             .contract ol{counter-reset:abc}
             .contract ol li{counter-increment:abc}
-            .contract ol li::before{content:"("counter(abc,lower-alpha)")";position:absolute;left:0;top:0;color:var(--mint);font-weight:700;font-size:12px}
+            .contract ol li::before{content:"("counter(abc,lower-alpha)")";position:absolute;left:0;top:0;color:var(--mint);font-weight:700;font-size:13.5px}
             .contract b.hl{color:var(--mint)}
             .mf{display:inline-block;min-width:54px;padding:1px 7px;border-radius:5px;background:rgba(94,196,176,.12);border:1px solid rgba(94,196,176,.32);color:var(--mint);font-weight:700;line-height:1.4}
             .sigblock{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
-            .sigcol{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:12.5px}
-            .sigcol .sc-h{font-weight:800;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-light);margin-bottom:10px}
-            .sigcol .sl{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em;margin-top:10px}
-            .sigcol .sv{color:var(--white);font-size:12.5px;margin-top:2px}
-            .sig-name{font-family:"Snell Roundhand","Brush Script MT","Segoe Script",cursive;font-size:26px;color:var(--mint);min-height:30px;line-height:1.1;border-bottom:1px solid var(--line);padding-bottom:3px;margin-top:3px}
-            .sig-pending{color:var(--muted);font-size:12.5px;font-family:var(--font);font-style:italic}
+            .sigcol{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:14px}
+            .sigcol .sc-h{font-weight:800;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-light);margin-bottom:10px}
+            .sigcol .sl{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;margin-top:10px}
+            .sigcol .sv{color:var(--white);font-size:14px;margin-top:2px}
+            .sig-name{font-family:"Snell Roundhand","Brush Script MT","Segoe Script",cursive;font-size:29.5px;color:var(--mint);min-height:30px;line-height:1.1;border-bottom:1px solid var(--line);padding-bottom:3px;margin-top:3px}
+            .sig-pending{color:var(--muted);font-size:14px;font-family:var(--font);font-style:italic}
             .dl-row{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
-            .dl-btn{background:var(--card);border:1px solid var(--mint);color:var(--mint);border-radius:11px;padding:11px 18px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+            .dl-btn{background:var(--card);border:1px solid var(--mint);color:var(--mint);border-radius:11px;padding:11px 18px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s}
             .dl-btn:hover:not(:disabled){background:rgba(94,196,176,.12)}
             .dl-btn:disabled{opacity:.4;cursor:not-allowed;border-color:var(--line);color:var(--muted)}
-            .dl-hint{font-size:11.5px;color:var(--muted)}
+            .dl-hint{font-size:13px;color:var(--muted)}
             @media(max-width:560px){.sigblock{grid-template-columns:1fr}}
           </style>
           <div class="doc-wrap">
@@ -557,7 +554,7 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
                 <div class="sl">Date</div><div class="sv"><span class="mf" data-mf="date">&nbsp;</span></div>
               </div>
             </div>
-            <p class="muted" style="margin-top:12px;font-size:11px">Your typed name below is your electronic signature and fills the signature block above. This Agreement may be signed electronically and in counterparts.</p>
+            <p class="muted" style="margin-top:12px;font-size:12.5px">Your typed name below is your electronic signature and fills the signature block above. This Agreement may be signed electronically and in counterparts.</p>
           </div></div>
           <div class="check" data-check="agree" onclick="toggleCheck(this)"><span class="box" data-i="check"></span><span class="ct">I have read and accept the <b>VYVE Partner Agreement</b> and <b>Code of Conduct</b>.<span class="req">*</span></span></div>
           <div class="check" data-check="revshare" onclick="toggleCheck(this)"><span class="box" data-i="check"></span><span class="ct">I acknowledge the <b>50% revenue share</b> and monthly payout terms.<span class="req">*</span></span></div>
@@ -588,8 +585,8 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
           <p class="intro">A short curriculum on working safely and inclusively on VYVE. The Safeguarding and GDPR assessment is required and must be passed before go-live.</p>
           <div class="card" style="padding:16px"><div id="lessons"></div></div>
           <div class="card mt" style="border-left:3px solid var(--social)">
-            <h3 style="font-size:14px;font-weight:800;margin-bottom:4px">Required assessment — Safeguarding &amp; data</h3>
-            <p class="muted" style="font-size:12.5px">Answer all questions correctly to pass. You can retake it.</p>
+            <h3 style="font-size:16px;font-weight:800;margin-bottom:4px">Required assessment — Safeguarding &amp; data</h3>
+            <p class="muted" style="font-size:14px">Answer all questions correctly to pass. You can retake it.</p>
             <div class="quiz" id="quiz"></div>
             <button class="btn btn-ghost" onclick="gradeQuiz()">Submit assessment</button>
             <div class="quiz-result" id="quizResult"></div>
@@ -634,13 +631,13 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
           <h2>Schedule your launch</h2>
           <p class="intro">Set your first live session and (optionally) a welcome program. Then submit your space for final VYVE review — most are approved within 48 hours.</p>
           <div class="card" style="padding:16px">
-            <h3 style="font-size:14px;font-weight:700;margin-bottom:4px">Your first live session</h3>
+            <h3 style="font-size:16px;font-weight:700;margin-bottom:4px">Your first live session</h3>
             <div class="row2 mt"><div class="field" style="margin:0"><label>Session title<span class="req">*</span></label><input type="text" data-k="sessionTitle" data-req placeholder="e.g. Lunchtime Mobility Flow"><div class="err-msg">Required</div></div><div class="field" style="margin:0"><label>Format</label><select data-k="sessionFormat"><option>Live class</option><option>Workshop</option><option>Talk / Q&A</option><option>Sound bath</option></select></div></div>
             <div class="row3 mt"><div class="field" style="margin:0"><label>Date<span class="req">*</span></label><input type="date" data-k="sessionDate" data-req><div class="err-msg">Required</div></div><div class="field" style="margin:0"><label>Time<span class="req">*</span></label><input type="time" data-k="sessionTime" data-req><div class="err-msg">Required</div></div><div class="field" style="margin:0"><label>Duration (min)</label><input type="number" data-k="sessionDuration" placeholder="25"></div></div>
           </div>
           <div class="card mt" style="padding:16px">
-            <h3 style="font-size:14px;font-weight:700;margin-bottom:4px">Welcome program (optional)</h3>
-            <p class="muted" style="font-size:12.5px;margin-bottom:6px">Members who complete a program are far more likely to stay. Start from a template or skip for now.</p>
+            <h3 style="font-size:16px;font-weight:700;margin-bottom:4px">Welcome program (optional)</h3>
+            <p class="muted" style="font-size:14px;margin-bottom:6px">Members who complete a program are far more likely to stay. Start from a template or skip for now.</p>
             <div class="opts" id="progOpts" style="grid-template-columns:1fr 1fr">
               <div class="opt" data-prog="template" onclick="pickProg(this)"><div class="ot">Use a template</div><div class="os">e.g. 21-Day Foundations Challenge</div></div>
               <div class="opt" data-prog="skip" onclick="pickProg(this)"><div class="ot">Skip for now</div><div class="os">Add one after launch</div></div>
@@ -798,16 +795,8 @@ const flow=[
   {n:5,t:'Add your welcome video',who:'partner',d:'Upload a short welcome video introducing who you are and what your community is about. Reviewed before publishing.',collects:['Welcome video','Welcome post']},
   {n:6,t:'Schedule launch & submit',who:'partner',d:'Set your first live session, optionally add a welcome program, and submit for final review.',collects:['First session','Welcome program']},
 ];
-const dataReqs=[
-  {icon:'user',h:'About you',rows:[['Lead contact name',1],['Business / trading name',0],['Email & phone',1],['Location',0],['Website / socials',0],['Pillar & specialism',1],['Years of experience',0],['Description of your offer',1]]},
-  {icon:'shield',h:'Identity verification',rows:[['Photo ID',1],['Governing body & membership no.',0]]},
-  {icon:'card',h:'Agreement & commercials',rows:[['Signed partner agreement',1],['Code of Conduct acceptance',1],['Revenue share acknowledgement',1],['Payout / bank details (later)',0]]},
-  {icon:'award',h:'Your public profile',rows:[['Profile photo',1],['Display name & tagline',1],['Member-facing bio',1],['Reason for being here',1],['Community feel',0]]},
-  {icon:'film',h:'Content & launch',rows:[['Welcome video — who you are & your community',1],['Welcome post',0],['First live session',1],['Welcome program',0]]},
-];
 function renderOverview(){
   document.getElementById('flowline').innerHTML=flow.map(f=>`<div class="flowstep"><div class="flownum">${f.n}</div><div style="flex:1"><h3>${f.t}<span class="who-tag ${f.who==='vyve'?'who-vyve':'who-partner'}">${f.who==='vyve'?'VYVE actions':'You complete'}</span></h3><p>${f.d}</p><div class="collects"><b>Collected:</b> ${f.collects.join(' · ')}</div></div></div>`).join('');
-  document.getElementById('dataReqs').innerHTML=dataReqs.map(d=>`<div class="dreq"><div class="dreq-h"><span data-i="${d.icon}"></span>${d.h}</div><div class="dreq-b">${d.rows.map(r=>`<div class="dreq-row"><span class="f">${r[0]}</span>${r[1]?'<span class="req-yes">Required</span>':'<span class="req-opt">Optional</span>'}</div>`).join('')}</div></div>`).join('');
   setIcons(document.getElementById('screen-overview'));
 }
 
@@ -1143,7 +1132,7 @@ function renderContent(){
     {n:2,req:false,head:'Extra video 2 (optional)',ph:'e.g. Morning Flow (10 min)',dlabel:'Short description',desc:'One line members will see'},
     {n:3,req:false,head:'Extra video 3 (optional)',ph:'e.g. Breathwork basics',dlabel:'Short description',desc:'One line members will see'}
   ];
-  document.getElementById('contentSlots').innerHTML=slots.map(s=>`<div class="card" style="padding:15px;margin-bottom:12px"><div style="font-weight:700;font-size:13px;margin-bottom:6px">${s.head}${s.req?'<span class="req" style="color:var(--social)">*</span>':''}</div><div class="row2"><div class="field" style="margin:0"><label>Title</label><input type="text" data-k="cTitle${s.n}" placeholder="${s.ph}"></div><div class="field" style="margin:0"><label>Level</label><select data-k="cLevel${s.n}"><option>Beginner</option><option>Intermediate</option><option>All levels</option></select></div></div><div class="field"><label>${s.dlabel}</label><input type="text" data-k="cDesc${s.n}" placeholder="${s.desc}"></div><div class="field" style="margin-bottom:0"><label class="upload" data-file="cVideo${s.n}" data-slot="starter-${s.n}" data-kind="content"><div data-i="upload"></div><div class="ut">Upload video file</div><div class="us">MP4 · we transcode for the app</div><input type="file" accept="video/*"></label><div class="err-msg">A video file is required</div></div></div>`).join('');
+  document.getElementById('contentSlots').innerHTML=slots.map(s=>`<div class="card" style="padding:15px;margin-bottom:12px"><div style="font-weight:700;font-size:15px;margin-bottom:6px">${s.head}${s.req?'<span class="req" style="color:var(--social)">*</span>':''}</div><div class="row2"><div class="field" style="margin:0"><label>Title</label><input type="text" data-k="cTitle${s.n}" placeholder="${s.ph}"></div><div class="field" style="margin:0"><label>Level</label><select data-k="cLevel${s.n}"><option>Beginner</option><option>Intermediate</option><option>All levels</option></select></div></div><div class="field"><label>${s.dlabel}</label><input type="text" data-k="cDesc${s.n}" placeholder="${s.desc}"></div><div class="field" style="margin-bottom:0"><label class="upload" data-file="cVideo${s.n}" data-slot="starter-${s.n}" data-kind="content"><div data-i="upload"></div><div class="ut">Upload video file</div><div class="us">MP4 · we transcode for the app</div><input type="file" accept="video/*"></label><div class="err-msg">A video file is required</div></div></div>`).join('');
   setIcons(document.getElementById('contentSlots'));
 }
 
@@ -1198,13 +1187,13 @@ function showSubmitFail(msg){
     ov=document.createElement('div');ov.id='submitFailOverlay';
     ov.style.cssText='position:fixed;inset:0;background:rgba(6,16,22,.72);backdrop-filter:blur(3px);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;';
     ov.innerHTML='<div style="background:var(--card);border:1px solid var(--line);border-radius:18px;max-width:440px;width:100%;padding:30px 28px;text-align:center;">'
-      +'<div style="width:52px;height:52px;border-radius:50%;background:rgba(240,180,90,.12);border:1px solid rgba(240,180,90,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;">&#9888;&#65039;</div>'
-      +'<h3 style="color:var(--white);font-family:Georgia,serif;font-size:21px;margin:0 0 10px;">We couldn\'t submit your application</h3>'
-      +'<p id="submitFailMsg" style="color:var(--muted);font-size:14px;line-height:1.55;margin:0 0 6px;"></p>'
-      +'<p style="color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 22px;">Nothing is lost — your answers are saved on this device.</p>'
-      +'<button onclick="hideSubmitFail();doSubmit();" style="display:block;width:100%;background:var(--mint);color:#07211d;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;">Try again</button>'
-      +'<button onclick="downloadRecord();" style="display:block;width:100%;background:transparent;color:var(--white);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:14px;cursor:pointer;margin-bottom:14px;">Download my application</button>'
-      +'<p style="color:var(--muted);font-size:12.5px;margin:0;">Still stuck? Email your downloaded application to <a href="mailto:team@vyvehealth.co.uk" style="color:var(--mint);">team@vyvehealth.co.uk</a> and we\'ll take it from there.</p>'
+      +'<div style="width:52px;height:52px;border-radius:50%;background:rgba(240,180,90,.12);border:1px solid rgba(240,180,90,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:27.5px;">&#9888;&#65039;</div>'
+      +'<h3 style="color:var(--white);font-family:Georgia,serif;font-size:24px;margin:0 0 10px;">We couldn\'t submit your application</h3>'
+      +'<p id="submitFailMsg" style="color:var(--muted);font-size:16px;line-height:1.55;margin:0 0 6px;"></p>'
+      +'<p style="color:var(--muted);font-size:15px;line-height:1.5;margin:0 0 22px;">Nothing is lost — your answers are saved on this device.</p>'
+      +'<button onclick="hideSubmitFail();doSubmit();" style="display:block;width:100%;background:var(--mint);color:#07211d;border:none;border-radius:12px;padding:13px;font-size:17px;font-weight:700;cursor:pointer;margin-bottom:10px;">Try again</button>'
+      +'<button onclick="downloadRecord();" style="display:block;width:100%;background:transparent;color:var(--white);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px;cursor:pointer;margin-bottom:14px;">Download my application</button>'
+      +'<p style="color:var(--muted);font-size:14px;margin:0;">Still stuck? Email your downloaded application to <a href="mailto:team@vyvehealth.co.uk" style="color:var(--mint);">team@vyvehealth.co.uk</a> and we\'ll take it from there.</p>'
       +'</div>';
     document.body.appendChild(ov);
   }
