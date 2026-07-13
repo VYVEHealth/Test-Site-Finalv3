@@ -1744,8 +1744,40 @@ function openChallenge(id){
 /* ================= REPORTS ================= */
 function downloadBoardPack(){ buildPrintReport(); setTimeout(()=>window.print(), 150); }
 function reportToast(btn){ btn.textContent='On its way ✓'; btn.classList.add('booked'); btn.onclick=null; }
+function buildPrintReportLive(co){
+  const p=LIVE_PAYLOAD, d=DATA;
+  const m=d.members||{}, a=d.activities||{}, c=d.charity||{};
+  const idx=p.index||{}, comp=idx.components||{};
+  const s=idx.score||0;
+  const gr=s>=80?'Excellent':s>=65?'Good':s>=50?'Building':'Early days';
+  const sub=(pts,w)=>pts==null?'—':Math.round((pts/w)*100);
+  const deltaLine=idx.delta!=null?(' '+(idx.delta>=0?'Up +':'Down ')+idx.delta+' points on last week.'):'';
+  const suppLine=idx.wellbeingSuppressed?' Company wellbeing is hidden until '+(p.minCohort||8)+'+ members have checked in this month; the index is calculated from the remaining components.':'';
+  const insights=(p.insights||[]);
+  const K={win:"What's working",watch:'Needs attention',action:'Recommended'};
+  const insHtml=insights.length?insights.map(i=>'<b>'+(K[i.kind]||i.kind)+':</b> '+epEsc(i.title)+' — '+epEsc(i.body)).join(' '):'Insights appear here as engagement data builds.';
+  const teamRows=TEAMS.map(t=>'<tr><td>'+epEsc(t.t)+'</td><td>'+t.n.toLocaleString('en-GB')+'</td><td>'+t.eng+'%</td><td>'+Number(t.apm).toFixed(1)+'</td><td>'+(t.d==null?'—':(t.d>=0?'+':'')+t.d+'%')+'</td><td>'+t.st+'</td></tr>').join('');
+  document.getElementById('print-report').innerHTML = `
+    <h1>VYVE Wellbeing Report — ${epEsc(co)}</h1>
+    <div class="sub">Prepared ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})} · Live data · All data aggregate only · VYVE Health CIC · ICO 00013608608</div>
+    <h2>Wellbeing Index</h2>
+    <p><span class="big">${s} / 100</span> &nbsp; ${gr}.${deltaLine}${suppLine} Sub-scores: Engagement ${sub(comp.engagement,30)} · Wellbeing ${sub(comp.wellbeing,30)} · Pillar balance ${sub(comp.balance,20)} · Momentum ${sub(comp.momentum,20)}.</p>
+    <h2>Headline numbers</h2>
+    <table><tr><th>Members</th><th>Engagement rate (7d)</th><th>Activities (all time)</th><th>This month</th><th>Months donated to charity</th></tr>
+    <tr><td>${(m.total||0).toLocaleString('en-GB')}</td><td>${m.engagementRate||0}%</td><td>${(a.total||0).toLocaleString('en-GB')}</td><td>${(a.thisMonth||0).toLocaleString('en-GB')}</td><td>${(c.monthsDonated||0).toLocaleString('en-GB')}</td></tr></table>
+    <h2>Team view</h2>
+    <table><tr><th>Team</th><th>Members</th><th>Engagement (7d)</th><th>Activities / member (30d)</th><th>Vs last week</th><th>Status</th></tr>
+    ${teamRows}</table>
+    <h2>Insights</h2>
+    <p>${insHtml}</p>
+    <h2>Return on investment</h2>
+    <p>Conservative absence-only model (CIPD 2025 benchmarks: 9.4 sickness days/employee/year, 41% mental-health driven; 20% reduction among engaged members at £160/day): see the live portal ROI section for figures at your current headcount. Independent studies including Deloitte's workplace mental health analysis consistently find substantially higher full returns once presenteeism and turnover are included.</p>
+    <h2>Privacy</h2>
+    <p>Employers see aggregate data only. Individual names, scores, check-in content and health data are never shared — in either direction. Wellbeing figures are reported at company level only; team views show activity counts. Teams under ${p.minCohort||8} members are rolled into "Other". All primary data is stored and processed in the EU (Frankfurt, Germany).</p>`;
+}
 function buildPrintReport(){
   const co = document.getElementById('co-name').textContent;
+  if (LIVE && LIVE_PAYLOAD && DATA){ buildPrintReportLive(co); return; }
   const d = projMode ? scaleData(SAMPLE_DATA) : SAMPLE_DATA;
   const m=d.members, a=d.activities, c=d.charity;
   document.getElementById('print-report').innerHTML = `
@@ -1764,14 +1796,14 @@ function buildPrintReport(){
     <h2>Return on investment (illustrative)</h2>
     <p>Conservative absence-only model (CIPD 2025 benchmarks: 9.4 sickness days/employee/year, 41% mental-health driven; 20% reduction among engaged members at £160/day): see live portal for figures at your current headcount. Independent studies including Deloitte's workplace mental health analysis consistently find substantially higher full returns once presenteeism and turnover are included.</p>
     <h2>Privacy</h2>
-    <p>Employers see aggregate data only. Individual names, scores, check-in content and health data are never shared — in either direction. Wellbeing figures are reported at company level only; team views show activity counts. Teams under 8 members are rolled into "Other". All primary data is stored and processed in the EU (Ireland).</p>`;
+    <p>Employers see aggregate data only. Individual names, scores, check-in content and health data are never shared — in either direction. Wellbeing figures are reported at company level only; team views show activity counts. Teams under 8 members are rolled into "Other". All primary data is stored and processed in the EU (Frankfurt, Germany).</p>`;
 }
 
 /* ================= ASK VYVE CHAT ================= */
 const CHAT_ANSWERS = {
   book:   { q:'How do I book a workshop?', a:`Head to <b>Book Experts</b>, pick a specialist and choose a date — takes about 20 seconds. Nothing is charged until your account team confirms availability with you.<br><span class="mini-act" onclick="go('experts',document.querySelector('[data-v=experts]'))">→ Take me to Book Experts</span>` },
   quiet:  { q:'What does "Quiet" mean?', a:`We group members by recent activity: <b>Active</b> — logged something in the last 7 days. <b>Quiet</b> — nothing for 8–30 days. <b>Inactive</b> — 30+ days. Quiet members get gentle automated nudges from VYVE before they drift — that's usually where re-engagement works best.` },
-  privacy:{ q:'Can I see individual data?', a:`No — and that's deliberate. You'll never see individual names, scores or check-in content; everything in this portal is aggregate only, and teams under 8 members are rolled into "Other". Members trust VYVE because their check-ins stay private — and that trust is exactly why engagement stays high. All primary data is stored in the EU (Ireland).` },
+  privacy:{ q:'Can I see individual data?', a:`No — and that's deliberate. You'll never see individual names, scores or check-in content; everything in this portal is aggregate only, and teams under 8 members are rolled into "Other". Members trust VYVE because their check-ins stay private — and that trust is exactly why engagement stays high. All primary data is stored in the EU (Frankfurt, Germany).` },
   index:  { q:'How is the Index calculated?', a:`The <b>Wellbeing Index</b> blends four signals into one 0–100 score: your engagement rate, average weekly check-in scores, pillar balance (how evenly activity spreads across Mind, Body and Connect) and momentum (direction of travel over the last quarter). One number for the board; the detail lives on the Overview tab.` },
 };
 function chatAdd(who, text){
