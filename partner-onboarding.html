@@ -5,12 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VYVE · Partner Onboarding</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>(function(){var t=localStorage.getItem('vyve-theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);})();</script>
 <style>
   :root{
     --font:'DM Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;
-    --font-display:'Playfair Display',Georgia,serif;
   }
   :root, html[data-theme="dark"]{
     --teal:#1B7878; --teal-rgb:27,120,120;
@@ -70,7 +69,6 @@
   .screen{display:none;animation:fade .35s ease}.screen.active{display:block}
   @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-  h1,h2{font-family:var(--font-display)}
   h1{font-size:34px;font-weight:800;letter-spacing:-.5px}
   .lead{color:var(--muted-light);font-size:17px;max-width:680px;line-height:1.6;margin-top:10px}
   h2{font-size:21.5px;font-weight:800;margin-bottom:4px}
@@ -130,8 +128,9 @@
   .panel{min-height:480px}
   .step{display:none}.step.active{display:block;animation:fade .3s}
   .step .eyebrow{font-size:12.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mint)}
-  .step h2{font-size:25px;margin-top:6px}
-  .step .intro{color:var(--muted-light);font-size:15.5px;line-height:1.55;margin-top:8px;max-width:640px}
+  .step h2{font-size:31px;font-weight:800;letter-spacing:-.5px;margin-top:8px;position:relative;padding-bottom:14px}
+  .step h2::after{content:"";position:absolute;left:0;bottom:0;width:46px;height:3px;border-radius:2px;background:var(--gold)}
+  .step .intro{color:var(--white);opacity:.82;font-size:17px;line-height:1.6;margin-top:12px;max-width:680px;padding-bottom:20px;border-bottom:1px solid var(--line)}
 
   .field{margin-top:16px}
   .field label{display:block;font-size:14px;font-weight:600;color:var(--muted-light);margin-bottom:7px}
