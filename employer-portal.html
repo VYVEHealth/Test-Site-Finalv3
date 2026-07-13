@@ -467,6 +467,7 @@
   <button class="tt-b" data-v="deepdive" onclick="go('deepdive',this)">Deep Dive</button>
   <button class="tt-b" data-v="timetable" onclick="go('timetable',this)" id="tt-timetable" style="display:none">Timetable</button>
   <button class="tt-b" data-v="impact" onclick="go('impact',this)" id="tt-impact" style="display:none">Your Impact</button>
+  <button class="tt-b" data-v="comms" onclick="go('comms',this)">Comms</button>
   <button class="tt-b" data-v="experts" onclick="go('experts',this)">Book Experts</button>
   <button class="tt-b" data-v="challenges" onclick="go('challenges',this)">Challenges <span class="n">Live</span></button>
   <button class="tt-b" data-v="events" onclick="go('events',this)">Events <span class="n" id="ev-count">7</span></button>
@@ -726,6 +727,19 @@
     <div class="p" style="margin-top:16px">
       <div class="pb" style="font-size:0.78rem;color:rgba(255,255,255,0.55);line-height:1.7">
         Donated memberships go to people referred by VYVE&rsquo;s charity partners across addiction recovery, homelessness and reintegration, mental health, social mobility and physical health access &mdash; at no cost to the charity or the recipient. As a Community Interest Company, giving back is written into how VYVE operates.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= COMMS & ENGAGEMENT (PM-800) ================= -->
+  <section class="view" id="v-comms">
+    <div class="p">
+      <div class="ph"><div><div class="pt">Comms &amp; engagement</div><div class="ps">The record of every communication VYVE has pushed into your internal channels &mdash; intranet, Workplace, Teams, email and beyond</div></div><span class="tag tt2" id="cm-tag">&mdash;</span></div>
+      <div class="pb"><div id="cm-list" class="empty">Loading&hellip;</div></div>
+    </div>
+    <div class="p" style="margin-top:16px">
+      <div class="pb" style="font-size:0.78rem;color:rgba(255,255,255,0.55);line-height:1.7">
+        Want something pushed to your people &mdash; a launch moment, a challenge announcement, a session spotlight? Ask your VYVE account team via the <b>Ask VYVE</b> tab and it lands here once it&rsquo;s live. This tab is the shared record, so your comms team always knows exactly what has gone out and when.
       </div>
     </div>
   </section>
@@ -1010,6 +1024,7 @@ function applyLive(p){
   renderLiveInsights(p.insights||[]);
   applyLiveDeepDive(p);
   renderTimetable(p.timetable||[]);
+  renderComms(p.comms||[]);
   renderImpact(p);
   renderLiveChallenges(p.challenges||{launched:[],templates:[]});
   liveAskForm();
@@ -1066,6 +1081,36 @@ function applyLiveDeepDive(p){
   }
 }
 function epEsc(x){ return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+/* ---- Comms & engagement (PM-800) ---- */
+const CM_CH={intranet:'Intranet',email:'Email',workplace:'Workplace',teams:'Teams',slack:'Slack',poster:'Poster',event:'Event',other:'Other'};
+const DEMO_COMMS=[
+  {posted_at:'2026-07-10',channel:'intranet',title:'July challenge: Move Together',summary:'Launch post for the company-wide movement challenge \u2014 how to opt in, prize draw details and week-one targets.',audience:'All members'},
+  {posted_at:'2026-07-03',channel:'workplace',title:'Session spotlight: Managing pressure in busy periods',summary:'Workplace post promoting Wednesday\u2019s live group session with sign-up link and replay details.',audience:'All members'},
+  {posted_at:'2026-06-26',channel:'email',title:'Your June wellbeing digest',summary:'Monthly round-up: most-watched sessions, community activity milestones and what\u2019s coming in July.',audience:'All members'},
+  {posted_at:'2026-06-18',channel:'teams',title:'New starters welcome pack',summary:'Teams announcement introducing VYVE to the June intake with app install steps and first-week suggestions.',audience:'New joiners'},
+  {posted_at:'2026-06-12',channel:'poster',title:'Break-room campaign: 30 activities = 1 donated month',summary:'Print assets for office break-rooms explaining the charity mechanic and the company\u2019s months donated so far.',audience:'All offices'}
+];
+function renderComms(list){
+  const el=document.getElementById('cm-list'), tag=document.getElementById('cm-tag');
+  if(!el) return;
+  if(tag) tag.textContent=list.length+' post'+(list.length===1?'':'s');
+  if(!list.length){ el.className='empty'; el.textContent='Nothing logged yet \u2014 every mass communication VYVE runs with your people will be recorded here.'; return; }
+  el.className='';
+  el.innerHTML=list.map(c=>{
+    const d=new Date(c.posted_at+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    return '<div style="padding:12px 0;border-bottom:1px solid var(--border)">'
+      +'<div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:3px">'
+      +'<span class="tag tt2">'+epEsc(CM_CH[c.channel]||c.channel||'')+'</span>'
+      +'<span style="font-size:0.85rem;font-weight:600;flex:1">'+epEsc(c.title)+'</span>'
+      +'<span style="font-size:0.7rem;color:var(--muted)">'+d+'</span></div>'
+      +(c.summary?'<div style="font-size:0.76rem;color:var(--muted);line-height:1.6">'+epEsc(c.summary)+'</div>':'')
+      +((c.audience||c.asset_url)?('<div style="font-size:0.7rem;color:var(--muted);margin-top:4px">'
+        +(c.audience?('Audience: '+epEsc(c.audience)):'')
+        +(c.asset_url?((c.audience?' \u00b7 ':'')+'<a href="'+epEsc(c.asset_url)+'" target="_blank" rel="noopener" style="color:var(--teal-lt)">View asset</a>'):'')
+        +'</div>'):'')
+      +'</div>';
+  }).join('');
+}
 function renderTimetable(list){
   const el=document.getElementById('tt-list'), cnt=document.getElementById('tt-count');
   if(!el) return;
@@ -1375,6 +1420,7 @@ function bootDemo(){
   const co = localStorage.getItem('vyve_ep_co');
   if (co) document.getElementById('co-name').textContent = co;
   renderAll();
+  renderComms(DEMO_COMMS);
   hideLoader();
 }
 window.addEventListener('DOMContentLoaded', () => {
