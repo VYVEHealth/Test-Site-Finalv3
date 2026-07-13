@@ -465,6 +465,8 @@
 <div class="toptabs" role="tablist">
   <button class="tt-b on" data-v="overview" onclick="go('overview',this)">Overview</button>
   <button class="tt-b" data-v="deepdive" onclick="go('deepdive',this)">Deep Dive</button>
+  <button class="tt-b" data-v="timetable" onclick="go('timetable',this)" id="tt-timetable" style="display:none">Timetable</button>
+  <button class="tt-b" data-v="impact" onclick="go('impact',this)" id="tt-impact" style="display:none">Your Impact</button>
   <button class="tt-b" data-v="experts" onclick="go('experts',this)">Book Experts</button>
   <button class="tt-b" data-v="challenges" onclick="go('challenges',this)">Challenges <span class="n">Live</span></button>
   <button class="tt-b" data-v="events" onclick="go('events',this)">Events <span class="n" id="ev-count">7</span></button>
@@ -695,6 +697,37 @@
       </div>
     </div>
     <div class="dd-rec" id="dd-rec">—</div>
+  </section>
+
+  <!-- ================= TIMETABLE (live mode) ================= -->
+  <section class="view" id="v-timetable">
+    <div class="p">
+      <div class="ph"><div><div class="pt">This week&rsquo;s live timetable</div><div class="ps">The sessions your members can join over the next 7 days &mdash; the same schedule they see in the app</div></div><span class="tag tt2" id="tt-count">&mdash;</span></div>
+      <div class="pb"><div id="tt-list" class="empty">Loading&hellip;</div></div>
+    </div>
+  </section>
+
+  <!-- ================= YOUR IMPACT (live mode) ================= -->
+  <section class="view" id="v-impact">
+    <div class="g2">
+      <div class="p">
+        <div class="ph"><div><div class="pt">Your collective impact</div><div class="ps">Every 30 activities your members complete donates one free month of VYVE to someone in need via our charity partners</div></div><span class="tag tgold">Give back</span></div>
+        <div class="pb">
+          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:10px"><span id="im-months" style="font-size:2.6rem;font-weight:700;color:var(--gold)">&mdash;</span><span style="font-size:0.9rem;color:var(--muted)">months donated so far</span></div>
+          <div style="height:10px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden;margin:14px 0 8px"><div id="im-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--teal-lt),var(--gold));border-radius:6px;transition:width 1s"></div></div>
+          <div id="im-next" style="font-size:0.74rem;color:var(--muted)">&mdash;</div>
+        </div>
+      </div>
+      <div class="p">
+        <div class="ph"><div><div class="pt">Where the activity comes from</div><div class="ps">All-time totals across your workforce &mdash; aggregate only</div></div></div>
+        <div class="pb"><div id="im-types"></div></div>
+      </div>
+    </div>
+    <div class="p" style="margin-top:16px">
+      <div class="pb" style="font-size:0.78rem;color:rgba(255,255,255,0.55);line-height:1.7">
+        Donated memberships go to people referred by VYVE&rsquo;s charity partners across addiction recovery, homelessness and reintegration, mental health, social mobility and physical health access &mdash; at no cost to the charity or the recipient. As a Community Interest Company, giving back is written into how VYVE operates.
+      </div>
+    </div>
   </section>
 
   <!-- ================= BOOK EXPERTS ================= -->
@@ -935,7 +968,7 @@ function mapLive(p){
   const bt=(p.activity&&p.activity.byTypeAllTime)||{};
   const sess=p.sessions||{byCategory:[]};
   TEAMS.length=0;
-  (p.teams||[]).forEach(t=>TEAMS.push({t:t.team,n:t.members,eng:t.engagementRate,apm:t.avgPerMember,d:null,st:t.engagementRate>=60?'Strong':t.engagementRate>=35?'Steady':'Watch'}));
+  (p.teams||[]).forEach(t=>TEAMS.push({t:t.team,n:t.members,eng:t.engagementRate,apm:t.avgPerMember,d:(t.delta==null?null:t.delta),st:t.engagementRate>=60?'Strong':t.engagementRate>=35?'Steady':'Watch'}));
   WB_TREND.length=0;
   ((p.wellbeing&&p.wellbeing.series)||[]).forEach(w=>WB_TREND.push({label:wkLabel(w.week),v:w.avg}));
   return {
@@ -964,6 +997,7 @@ function applyLive(p){
     a.onclick=(e)=>{ e.preventDefault(); epSignOut(); }; nr.appendChild(a);
   }
   ['experts','challenges','events'].forEach(v=>{ const b=document.querySelector('.tt-b[data-v="'+v+'"]'); if(b) b.style.display='none'; });
+  ['tt-timetable','tt-impact'].forEach(id=>{ const b=document.getElementById(id); if(b) b.style.display=''; });
   const mb=document.querySelector('.modebar'); if(mb) mb.style.display='none';
   const pb=document.getElementById('proj-badge'); if(pb) pb.style.display='none';
   const es=document.getElementById('k-engage-sub'); if(es) es.textContent='Active in the last 7 days';
@@ -975,6 +1009,9 @@ function applyLive(p){
   applyLiveHero(p);
   renderLiveInsights(p.insights||[]);
   applyLiveDeepDive(p);
+  renderTimetable(p.timetable||[]);
+  renderImpact(p);
+  liveAskForm();
   hideLoader();
 }
 function applyLiveHero(p){
@@ -988,6 +1025,7 @@ function applyLiveHero(p){
       +'<h2>Your workforce is <span class="grade">'+gr+'</span></h2>'
       +'<p>A single score for the health of your workforce, blending engagement, wellbeing check-ins, pillar balance and momentum.'
       +(supp?' <b>Company wellbeing is hidden until '+p.minCohort+'+ members have checked in this month</b> — the score is calculated from the remaining components.':'')
+      +(p.index&&p.index.delta!=null?' <b style="color:var(--'+(p.index.delta>=0?'green':'amber')+')">'+(p.index.delta>=0?'+':'')+p.index.delta+' points</b> on last week.':'')
       +'</p>';
   }
   const subs=document.querySelector('.idx-subs');
@@ -1026,6 +1064,85 @@ function applyLiveDeepDive(p){
     dd.querySelectorAll(':scope > .ph').forEach(h=>{ if(h.textContent.indexOf('Department deep dive')>=0) h.style.display='none'; });
   }
 }
+function epEsc(x){ return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function renderTimetable(list){
+  const el=document.getElementById('tt-list'), cnt=document.getElementById('tt-count');
+  if(!el) return;
+  if(cnt) cnt.textContent=list.length+' session'+(list.length===1?'':'s');
+  if(!list.length){ el.className='empty'; el.textContent='No sessions scheduled in the next 7 days.'; return; }
+  el.className='';
+  const days={};
+  list.forEach(s=>{ const d=new Date(s.startsAt); const k=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}); (days[k]=days[k]||[]).push(s); });
+  el.innerHTML=Object.entries(days).map(([day,ss])=>
+    '<div style="margin-bottom:18px"><div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">'+day+'</div>'
+    +ss.map(s=>{ const t=new Date(s.startsAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      return '<div style="display:flex;gap:14px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border)">'
+        +'<span style="font-size:0.78rem;font-weight:700;min-width:48px;color:var(--teal-lt)">'+t+'</span>'
+        +'<span style="font-size:0.85rem;font-weight:600;flex:1">'+epEsc(s.name)+'</span>'
+        +'<span style="font-size:0.72rem;color:var(--muted)">'+epEsc(s.category)+(s.host?' · '+epEsc(s.host):'')+'</span></div>'; }).join('')
+    +'</div>').join('');
+}
+function renderImpact(p){
+  const c=p.charity||{}; const bt=(p.activity&&p.activity.byTypeAllTime)||{};
+  const m=document.getElementById('im-months'); if(m) m.textContent=(c.monthsDonated!=null?c.monthsDonated:'—');
+  const prog=c.progressToNext||0;
+  const bar=document.getElementById('im-bar'); if(bar) setTimeout(()=>{ bar.style.width=Math.round((prog/30)*100)+'%'; },100);
+  const nx=document.getElementById('im-next'); if(nx) nx.textContent=prog+' of 30 activities logged toward your next donated month — '+(30-prog)+' to go';
+  const L={daily_habits:'Daily habits',workouts:'Workouts',cardio:'Cardio',movement_activities:'Movement',mind_activities:'Mind sessions',session_views:'Live sessions',replay_views:'Replays',connect_checkins:'Connect check-ins',wellbeing_checkins:'Wellbeing check-ins'};
+  const rows=Object.entries(bt).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  const mx=rows.length?rows[0][1]:1;
+  const el=document.getElementById('im-types');
+  if(el) el.innerHTML=rows.length?rows.map(([k,v])=>
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span style="font-size:0.74rem;color:var(--muted);min-width:140px">'+(L[k]||k)+'</span>'
+    +'<div style="flex:1;height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden"><div style="height:100%;width:'+Math.max(4,Math.round(v/mx*100))+'%;background:var(--teal-lt);border-radius:4px"></div></div>'
+    +'<span style="font-size:0.76rem;font-weight:700;min-width:48px;text-align:right">'+v.toLocaleString()+'</span></div>').join('')
+    :'<div class="empty">No activity yet.</div>';
+}
+/* live Ask VYVE — real relay to team@ via the employer-portal EF (replaces the canned demo chat in live mode) */
+function liveAskForm(){
+  const chat=document.querySelector('#v-ask .chat'); if(!chat||document.getElementById('ep-ask-live')) return;
+  chat.style.display='none';
+  const wrap=document.createElement('div'); wrap.id='ep-ask-live';
+  wrap.innerHTML='<label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 8px">Topic (optional)</label>'
+    +'<input id="ep-ask-topic" placeholder="e.g. Reporting, billing, sessions" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:#fff;font-size:0.85rem;box-sizing:border-box">'
+    +'<label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 8px">Your question</label>'
+    +'<textarea id="ep-ask-body" rows="5" placeholder="Ask us anything — a real person replies to your registered email within one working day." style="width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;color:#fff;font-size:0.85rem;resize:vertical;box-sizing:border-box"></textarea>'
+    +'<div id="ep-ask-err" style="display:none;color:var(--amber);font-size:0.76rem;margin-top:8px"></div>'
+    +'<button class="btn btn-g" id="ep-ask-send" onclick="epAsk()" style="margin-top:14px">Send to the VYVE team</button>';
+  chat.parentElement.insertBefore(wrap, chat);
+}
+async function epAsk(){
+  const msg=(document.getElementById('ep-ask-body').value||'').trim();
+  const topic=(document.getElementById('ep-ask-topic').value||'').trim();
+  const err=document.getElementById('ep-ask-err');
+  err.style.display='none';
+  if(msg.length<3){ err.textContent='Type your question first.'; err.style.display='block'; return; }
+  const btn=document.getElementById('ep-ask-send'); btn.disabled=true; btn.textContent='Sending…';
+  const send=async(tok)=>fetch(EP_SUPABASE+'/functions/v1/employer-portal',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({message:msg,topic:topic})});
+  try{
+    let r=await send(localStorage.getItem('vyve_ep_tok'));
+    if(r.status===401){ const nt=await epRefresh(); if(nt) r=await send(nt); }
+    const d=await r.json().catch(()=>null);
+    if(r.ok&&d&&d.ok){
+      document.getElementById('ep-ask-live').style.display='none';
+      const ok=document.getElementById('ask-ok');
+      ok.parentElement.style.display=''; ok.style.display='block';
+      document.getElementById('ask-ref').textContent=d.ref;
+    } else {
+      err.textContent='Could not send — please try again or email team@vyvehealth.co.uk.'; err.style.display='block';
+      btn.disabled=false; btn.textContent='Send to the VYVE team';
+    }
+  }catch(e){
+    err.textContent='Could not send — please try again or email team@vyvehealth.co.uk.'; err.style.display='block';
+    btn.disabled=false; btn.textContent='Send to the VYVE team';
+  }
+}
+function resetAsk(){
+  const ok=document.getElementById('ask-ok'); if(ok){ ok.style.display='none'; ok.parentElement.style.display='none'; }
+  const f=document.getElementById('ep-ask-live');
+  if(f){ f.style.display=''; const b=document.getElementById('ep-ask-body'); if(b) b.value=''; const t=document.getElementById('ep-ask-topic'); if(t) t.value=''; const s=document.getElementById('ep-ask-send'); if(s){ s.disabled=false; s.textContent='Send to the VYVE team'; } }
+}
+
 let projMode = false, projHeadcount = 10000;
 let DATA = null;
 
