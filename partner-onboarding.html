@@ -656,7 +656,7 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
           <p class="intro">This is what members see in the app. Make it personal — your bio, your reason for being here, and the feel of your community. The preview updates as you type.</p>
           <div class="done-wrap" style="margin-top:14px">
             <div>
-              <div class="field" style="margin-top:0"><label>Profile photo</label><label class="upload" data-file="profilePhoto" data-slot="profile-photo" data-kind="doc"><div data-i="upload"></div><div class="ut">Upload a clear, friendly photo</div><input type="file" accept="image/*"></label></div>
+              <div class="row2" style="margin-top:0"><div class="field" style="margin:0"><label>Profile photo</label><label class="upload" data-file="profilePhoto" data-slot="profile-photo" data-kind="doc"><div data-i="upload"></div><div class="ut">Upload a clear, friendly photo</div><input type="file" accept="image/*"></label></div><div class="field" style="margin:0"><label>Cover photo</label><label class="upload" data-file="coverPhoto" data-slot="cover-photo" data-kind="doc"><div data-i="upload"></div><div class="ut">Wide banner image for your space</div><input type="file" accept="image/*"></label></div></div>
               <div class="row2">
                 <div class="field"><label>Display name<span class="req">*</span></label><input type="text" id="pf-name" data-k="pfName" data-req placeholder="Maya Thompson"><div class="err-msg">Required</div></div>
                 <div class="field"><label>Tagline / role<span class="req">*</span></label><input type="text" id="pf-role" data-k="pfRole" data-req placeholder="Yoga & Mobility Coach"><div class="err-msg">Required</div></div>
@@ -1115,10 +1115,10 @@ function renderUploaded(box,key,reattach){
   const chip=document.createElement('div');chip.className='uploaded'+(reattach?' reattach':'');chip.setAttribute('data-for',key);
   const img=(f.previewUrl||(f.type&&f.type.startsWith('image/')&&f.path?null:null));
   chip.innerHTML=(f.previewUrl?`<img src="${f.previewUrl}">`:`<span>${I.doc}</span>`)+`<div><div class="un">${f.name}</div><div class="usz">${reattach?'Saved earlier — click to re-attach':humanSize(f.size)}</div></div><span class="x">×</span>`;
-  chip.querySelector('.x').onclick=()=>{delete state.files[key];chip.remove();box.style.display='block';saveState();};
+  chip.querySelector('.x').onclick=()=>{delete state.files[key];chip.remove();box.style.display='block';saveState();if(key==='profilePhoto'||key==='coverPhoto')syncPreview();};
   if(reattach)chip.onclick=(ev)=>{if(ev.target.classList.contains('x'))return;chip.remove();box.style.display='block';box.querySelector('input').click();};
   box.parentElement.insertBefore(chip,box.nextSibling);
-  if(key==='profilePhoto')syncPreview();
+  if(key==='profilePhoto'||key==='coverPhoto')syncPreview();
 }
 
 /* ===== VIDEO MODULES ===== */
@@ -1169,12 +1169,13 @@ function syncPreview(){
   const feel=g('pfFeel');
   const c=({physical:'var(--physical)',mental:'var(--mental)',social:'var(--social)'})[state.pillar||'physical'];
   const photo=state.files.profilePhoto&&state.files.profilePhoto.previewUrl;
+  const cover=state.files.coverPhoto&&state.files.coverPhoto.previewUrl;
   const init=(name.replace(/[^a-zA-Z ]/g,' ').split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('')||'Y').toUpperCase();
-  const html=document.getElementById('pfPhone');if(html)html.innerHTML=phoneHtml(name,role,bio,why,feel,c,init,photo);
+  const html=document.getElementById('pfPhone');if(html)html.innerHTML=phoneHtml(name,role,bio,why,feel,c,init,photo,cover);
 }
-function phoneHtml(name,role,bio,why,feel,c,init,photo){
+function phoneHtml(name,role,bio,why,feel,c,init,photo,cover){
   const avInner=photo?`<img src="${photo}" style="width:100%;height:100%;object-fit:cover;border-radius:14px;display:block">`:init;
-  const banner=photo?`background:linear-gradient(120deg,rgba(var(--teal-rgb),.30),rgba(13,43,43,.22)),url('${photo}') center/cover no-repeat`:`background:linear-gradient(120deg,${c},var(--teal-deep))`;
+  const banner=cover?`background:linear-gradient(120deg,rgba(var(--teal-rgb),.22),rgba(13,43,43,.16)),url('${cover}') center/cover no-repeat`:`background:linear-gradient(120deg,${c},var(--teal-deep))`;
   return `<div class="ph-banner" style="${banner}"><div class="ph-av" style="background:${c}">${avInner}</div></div>
     <div class="ph-info"><h4>${esc(name)}</h4><div class="r">${esc(role)}</div></div>
     <div class="ph-sec" style="border-top:none"><h5>About</h5><p>${esc(bio)}</p></div>
@@ -1210,7 +1211,7 @@ function buildRecord(){
     starterContent:[1,2,3].map(n=>({title:f['cTitle'+n]||'',level:f['cLevel'+n]||'',description:f['cDesc'+n]||'',file:fileRef('cVideo'+n)})),
     welcomePost:f.welcomePost||'',
     launch:{sessionTitle:f.sessionTitle||'',format:f.sessionFormat||'',date:f.sessionDate||'',time:f.sessionTime||'',durationMin:f.sessionDuration||'',welcomeProgram:state.program||'none'},
-    documents:{photoId:fileRef('idDoc'),qualifications:fileRef('qualDoc'),profilePhoto:fileRef('profilePhoto')}
+    documents:{photoId:fileRef('idDoc'),qualifications:fileRef('qualDoc'),profilePhoto:fileRef('profilePhoto'),coverPhoto:fileRef('coverPhoto')}
   };
 }
 function submitJourney(){
@@ -1281,7 +1282,7 @@ async function doSubmit(){
         starterContent:[1,2,3].map(n=>({title:f['cTitle'+n]||'',level:f['cLevel'+n]||'',description:f['cDesc'+n]||'',file:fileRef('cVideo'+n)})).filter(x=>x.file),
         welcomePost:f.welcomePost||'',
         launch:{sessionTitle:f.sessionTitle||'',format:f.sessionFormat||'',date:f.sessionDate||'',time:f.sessionTime||'',durationMin:f.sessionDuration||'',welcomeProgram:state.program||'none'},
-        documents:{photoId:fileRef('idDoc'),qualifications:fileRef('qualDoc'),profilePhoto:fileRef('profilePhoto')} // PM-748: qualifications was missing — uploaded certs landed in storage but were never referenced in the application record
+        documents:{photoId:fileRef('idDoc'),qualifications:fileRef('qualDoc'),profilePhoto:fileRef('profilePhoto'),coverPhoto:fileRef('coverPhoto')} // PM-748: qualifications was missing — uploaded certs landed in storage but were never referenced in the application record
       });
   }catch(e){
     vyveTrack('partner_submit_error',{reason:String((e&&e.message)||e).slice(0,120)});
@@ -1303,7 +1304,8 @@ function buildSummary(){
   const c=({physical:'var(--physical)',mental:'var(--mental)',social:'var(--social)'})[state.pillar||'physical'];
   const init=((f.pfName||'Y').replace(/[^a-zA-Z ]/g,' ').split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('')||'Y').toUpperCase();
   const photo=state.files.profilePhoto&&state.files.profilePhoto.previewUrl;
-  document.getElementById('donePhone').innerHTML=phoneHtml(f.pfName||'Your name',f.pfRole||'Your role',f.pfBio||'A new VYVE partner space.',f.pfWhy||'',f.pfFeel||'',c,init,photo);
+  const cover=state.files.coverPhoto&&state.files.coverPhoto.previewUrl;
+  document.getElementById('donePhone').innerHTML=phoneHtml(f.pfName||'Your name',f.pfRole||'Your role',f.pfBio||'A new VYVE partner space.',f.pfWhy||'',f.pfFeel||'',c,init,photo,cover);
   setIcons(document.getElementById('screen-done'));
 }
 function downloadRecord(){
