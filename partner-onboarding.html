@@ -66,6 +66,13 @@
   .info-pill svg{width:14px;height:14px}
 
   .dreq{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:14px}
+  .why{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:18px 20px;display:flex;gap:13px;align-items:flex-start}
+  .why .wic{width:38px;height:38px;border-radius:11px;flex:none;background:rgba(94,196,176,.12);color:var(--mint);display:flex;align-items:center;justify-content:center}
+  .why .wic svg{width:19px;height:19px}
+  .why h3{font-size:16px;font-weight:700}
+  .why p{color:var(--muted-light);font-size:14px;line-height:1.6;margin-top:5px}
+  .mission{border:1px solid var(--line);border-left:3px solid var(--mint);border-radius:14px;background:var(--card);padding:18px 22px}
+  .mission p{color:var(--muted-light);font-size:15px;line-height:1.65}
   .dreq-h{background:var(--surface);padding:12px 16px;font-weight:700;font-size:15.5px;display:flex;align-items:center;gap:10px}
   .dreq-h svg{width:16px;height:16px;color:var(--mint)}
   .dreq-b{padding:6px 16px}
@@ -254,14 +261,30 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
       <div class="stat"><div class="v">48h</div><div class="l">Review turnaround</div></div>
       <div class="stat"><div class="v">50%</div><div class="l">Standard revenue share</div></div>
     </div>
+    <h2 class="mt2">Our mission</h2>
+    <p class="sec-sub">Who VYVE is and why partners matter.</p>
+    <div class="mission">
+      <p><b class="hl">VYVE Health</b> is a Community Interest Company on a mission to make proactive wellbeing part of everyday life — building physical, mental and social health before it breaks, not after. <b class="hl">Help yourself. Help others. Change the world.</b></p>
+      <p style="margin-top:10px">Our members get live sessions, workouts, AI coaching, nutrition and community in one app — and every 30 activities they log donates a free month of wellbeing to someone in need through our charity partners. Partners are how we bring real, human expertise into that ecosystem.</p>
+    </div>
+    <h2 class="mt2">Why partner with VYVE</h2>
+    <p class="sec-sub">What you get as a VYVE partner.</p>
+    <div class="grid g2">
+      <div class="why"><span class="wic" data-i="card"></span><div><h3>50% revenue share</h3><p>Earn half of the subscription revenue from every member who joins through you — paid monthly, tracked automatically.</p></div></div>
+      <div class="why"><span class="wic" data-i="user"></span><div><h3>Your own space in the app</h3><p>A branded community space with your profile, live sessions, videos and posts — your audience, inside VYVE.</p></div></div>
+      <div class="why"><span class="wic" data-i="play"></span><div><h3>We run the platform</h3><p>Payments, hosting, scheduling, streaming and member management are all handled for you. You focus on your craft.</p></div></div>
+      <div class="why"><span class="wic" data-i="award"></span><div><h3>Enterprise reach</h3><p>Vetted partner status means we can put your name in front of individual members and enterprise clients with confidence.</p></div></div>
+      <div class="why"><span class="wic" data-i="shield"></span><div><h3>Social impact built in</h3><p>As a CIC, VYVE turns member activity into donated memberships for people in need — your work directly funds access for others.</p></div></div>
+      <div class="why"><span class="wic" data-i="party"></span><div><h3>Grow with us</h3><p>Early partners shape the platform. Launch in days, not months, with a guided journey and a real team behind you.</p></div></div>
+    </div>
     <h2 class="mt2">The onboarding process</h2>
     <p class="sec-sub">Each step shows who actions it and what we collect.</p>
     <div class="flowline" id="flowline"></div>
-    <div class="mt2" style="background:var(--bg,#F4FAFA);border:1px solid #C8E4E4;border-radius:12px;padding:16px 18px" id="privacyNotice">
-      <h3 style="margin:0 0 8px;font-size:15px;letter-spacing:.5px;text-transform:uppercase">How we handle your information</h3>
-      <p style="font-size:14px;margin:0 0 8px;line-height:1.6">We collect the details you enter here — contact information, professional background, ID and qualification documents — solely to review your partner application. Your documents are stored privately and are only visible to the VYVE team.</p>
-      <p style="font-size:14px;margin:0 0 8px;line-height:1.6">If you don't finish applying, your draft and any uploads are automatically deleted after 30 days of inactivity. You can also ask us to delete your application at any time at <a href="mailto:team@vyvehealth.co.uk" style="font-weight:600">team@vyvehealth.co.uk</a>.</p>
-      <p style="font-size:14px;margin:0;line-height:1.6">Full details in our <a href="privacy.html" target="_blank" rel="noopener" style="font-weight:600">privacy policy</a>.</p>
+    <div class="mt2" style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px" id="privacyNotice">
+      <h3 style="margin:0 0 8px;font-size:15px;letter-spacing:.5px;text-transform:uppercase;color:var(--mint)">How we handle your information</h3>
+      <p style="font-size:14px;margin:0 0 8px;line-height:1.6;color:var(--muted-light)">We collect the details you enter here — contact information, professional background, ID and qualification documents — solely to review your partner application. Your documents are stored privately and are only visible to the VYVE team.</p>
+      <p style="font-size:14px;margin:0 0 8px;line-height:1.6;color:var(--muted-light)">If you don't finish applying, your draft and any uploads are automatically deleted after 30 days of inactivity. You can also ask us to delete your application at any time at <a href="mailto:team@vyvehealth.co.uk" style="font-weight:600;color:var(--mint)">team@vyvehealth.co.uk</a>.</p>
+      <p style="font-size:14px;margin:0;line-height:1.6;color:var(--muted-light)">Full details in our <a href="privacy.html" target="_blank" rel="noopener" style="font-weight:600;color:var(--mint)">privacy policy</a>.</p>
     </div>
     <div class="banner mt2">
       <span data-i="shield"></span>
