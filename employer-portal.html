@@ -996,7 +996,7 @@ function applyLive(p){
     a.style.cssText='font-size:0.72rem;color:var(--muted);margin-left:14px;text-decoration:none;';
     a.onclick=(e)=>{ e.preventDefault(); epSignOut(); }; nr.appendChild(a);
   }
-  ['experts','challenges','events'].forEach(v=>{ const b=document.querySelector('.tt-b[data-v="'+v+'"]'); if(b) b.style.display='none'; });
+  ['experts','events'].forEach(v=>{ const b=document.querySelector('.tt-b[data-v="'+v+'"]'); if(b) b.style.display='none'; });
   ['tt-timetable','tt-impact'].forEach(id=>{ const b=document.getElementById(id); if(b) b.style.display=''; });
   const mb=document.querySelector('.modebar'); if(mb) mb.style.display='none';
   const pb=document.getElementById('proj-badge'); if(pb) pb.style.display='none';
@@ -1011,6 +1011,7 @@ function applyLive(p){
   applyLiveDeepDive(p);
   renderTimetable(p.timetable||[]);
   renderImpact(p);
+  renderLiveChallenges(p.challenges||{launched:[],templates:[]});
   liveAskForm();
   hideLoader();
 }
@@ -1141,6 +1142,104 @@ function resetAsk(){
   const ok=document.getElementById('ask-ok'); if(ok){ ok.style.display='none'; ok.parentElement.style.display='none'; }
   const f=document.getElementById('ep-ask-live');
   if(f){ f.style.display=''; const b=document.getElementById('ep-ask-body'); if(b) b.value=''; const t=document.getElementById('ep-ask-topic'); if(t) t.value=''; const s=document.getElementById('ep-ask-send'); if(s){ s.disabled=false; s.textContent='Send to the VYVE team'; } }
+}
+
+/* live Challenges — real templates from challenge_library + launched employer challenges
+   (opt-in team aggregates; honest zeros until member-side surfacing ships) */
+let LIVE_CH = null;
+function renderLiveChallenges(ch){
+  LIVE_CH = ch;
+  const liveBlock=document.querySelector('#v-challenges .chal-live');
+  if(liveBlock){
+    const launched=ch.launched||[];
+    if(!launched.length){
+      liveBlock.innerHTML='<div class="cl-hd"><div><div class="cl-t">No workplace challenges yet</div>'
+        +'<div class="cl-s">Launch your first below — it appears here with live team totals as your people opt in</div></div>'
+        +'<span class="tag tt2">Ready when you are</span></div>';
+    } else {
+      liveBlock.innerHTML=launched.map(l=>{
+        const st=l.status==='active'?'<span class="tag tgold">Live now</span>':l.status==='scheduled'?'<span class="tag tt2">Scheduled</span>':'<span class="tag ts-n">Ended</span>';
+        const dates=new Date(l.startsOn+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' – '+new Date(l.endsOn+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+        const teams=(l.teams||[]);
+        const maxA=teams.length?Math.max.apply(null,teams.map(t=>t.activities).concat([1])):1;
+        const lb=teams.length?teams.map((t,i)=>'<div class="lb-row '+(i===0?'top':'')+'"><span class="lb-rank">'+(i+1)+'</span><span class="lb-name">'+epEsc(t.team)+'</span>'
+            +'<div class="lb-track"><div class="lb-fill" style="width:'+Math.max(4,Math.round(t.activities/maxA*100))+'%"></div></div>'
+            +'<span class="lb-val">'+t.activities.toLocaleString('en-GB')+'</span></div>').join('')
+          :'<div class="empty" style="padding:14px 0">No members have opted in yet — team totals appear here as your people join in the app.</div>';
+        return '<div class="cl-hd"><div><div class="cl-t">'+epEsc(l.title)+'</div><div class="cl-s">'+dates+' · '+epEsc(l.pillar||'')+'</div></div>'+st+'</div>'
+          +'<div class="cl-bd"><div><div class="cl-stats">'
+          +'<div class="cl-st"><div class="cl-sv">'+l.participants+'</div><div class="cl-sl">Opted in</div></div>'
+          +'<div class="cl-st"><div class="cl-sv">'+(l.teams?l.teams.reduce((a,t)=>a+t.activities,0):0)+'</div><div class="cl-sl">Activities logged</div></div>'
+          +'</div>'
+          +'<div style="font-size:0.76rem;color:rgba(255,255,255,0.5);line-height:1.6;margin-top:14px">Members opt in when they join a company challenge, and only team-level aggregates ever leave the app — individual counts stay private to the member.</div></div>'
+          +'<div><div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Team totals — activities during the challenge</div>'+lb+'</div></div>';
+      }).join('<div style="height:18px"></div>');
+    }
+  }
+  const grid=document.getElementById('chal-grid');
+  if(grid){
+    const launchedSlugs={}; (ch.launched||[]).forEach(l=>{ if(l.status==='active'||l.status==='scheduled') launchedSlugs[l.slug]=true; });
+    grid.innerHTML=(ch.templates||[]).map(c=>{
+      const meta=c.durationDays+' days · '+epEsc(c.pillar)+' · '+epEsc(c.difficulty);
+      const btn=launchedSlugs[c.slug]?'<button class="btn booked">Scheduled ✓</button>'
+        :'<button class="btn btn-t" onclick="openChallengeLive(\''+c.slug+'\')">Launch</button>';
+      return '<div class="cc2"><div class="t">'+epEsc(c.title)+'</div><div class="d">'+epEsc(c.description)+'</div><div class="ft"><span class="m">'+meta+'</span>'+btn+'</div></div>';
+    }).join('');
+  }
+}
+let liveChSlug=null, liveChStart=null;
+function openChallengeLive(slug){
+  const c=(LIVE_CH&&LIVE_CH.templates||[]).find(x=>x.slug===slug); if(!c) return;
+  liveChSlug=slug; liveChStart=null;
+  document.getElementById('m-title').textContent=c.title;
+  document.getElementById('m-sub').textContent=c.durationDays+' days · '+c.pillar+' · '+c.difficulty;
+  const mondays=[]; let d=new Date();
+  while(mondays.length<3){ d=new Date(d); d.setDate(d.getDate()+1); if(d.getDay()===1) mondays.push(new Date(d)); }
+  document.getElementById('m-body').innerHTML=
+    '<div style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Choose a start date — challenges start on Mondays</div>'
+    +mondays.map((dt,i)=>'<div class="slot" id="lslot-'+i+'" onclick="pickSlotLive('+i+',\''+dt.toISOString().slice(0,10)+'\')">'
+      +'<span class="d">Monday '+dt.toLocaleDateString('en-GB',{day:'numeric',month:'long'})+'</span>'
+      +'<span class="h">Launch comms sent the Friday before</span></div>').join('')
+    +'<div id="lch-err" style="display:none;color:var(--amber);font-size:0.76rem;margin-top:10px"></div>'
+    +'<div style="font-size:0.74rem;color:rgba(255,255,255,0.45);margin-top:14px;line-height:1.5">Included in your membership — no extra cost. Your account team sends launch comms and a manager pack before the start date.</div>';
+  document.getElementById('m-foot').style.display='flex';
+  const cf=document.getElementById('m-confirm'); cf.disabled=true; cf.style.opacity=.5; cf.textContent='Launch challenge';
+  cf.onclick=launchLiveChallenge;
+  document.getElementById('modal').classList.add('on');
+}
+function pickSlotLive(i, iso){
+  liveChStart=iso;
+  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('sel'));
+  document.getElementById('lslot-'+i).classList.add('sel');
+  const cf=document.getElementById('m-confirm'); cf.disabled=false; cf.style.opacity=1;
+}
+async function launchLiveChallenge(){
+  if(!liveChSlug||!liveChStart) return;
+  const cf=document.getElementById('m-confirm'); cf.disabled=true; cf.textContent='Launching…';
+  const send=async(tok)=>fetch(EP_SUPABASE+'/functions/v1/employer-portal',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({action:'launch_challenge',slug:liveChSlug,starts_on:liveChStart})});
+  try{
+    let r=await send(localStorage.getItem('vyve_ep_tok'));
+    if(r.status===401){ const nt=await epRefresh(); if(nt) r=await send(nt); }
+    const d=await r.json().catch(()=>null);
+    if(r.ok&&d&&d.ok){
+      const c=(LIVE_CH.templates||[]).find(x=>x.slug===liveChSlug);
+      LIVE_CH.launched=LIVE_CH.launched||[];
+      LIVE_CH.launched.unshift({id:d.id,slug:liveChSlug,title:c?c.title:liveChSlug,pillar:c?c.pillar:'',startsOn:d.startsOn,endsOn:d.endsOn,status:'scheduled',participants:0,teams:[]});
+      const dt=new Date(liveChStart+'T00:00:00');
+      document.getElementById('m-body').innerHTML='<div class="m-done"><div class="big">✓</div><h3>Challenge scheduled</h3>'
+        +'<p><b style="color:#fff">'+epEsc(c?c.title:liveChSlug)+'</b><br>Starts Monday '+dt.toLocaleDateString('en-GB',{day:'numeric',month:'long'})
+        +'<br><br>Your account team has been notified and will send launch comms and a manager pack before the start date. Team totals appear on this tab as members opt in.</p></div>';
+      document.getElementById('m-foot').style.display='none';
+      renderLiveChallenges(LIVE_CH);
+    } else {
+      const msg=(d&&d.error==='already_running')?'This challenge is already scheduled or running for your company.':'Could not launch — please try again or email team@vyvehealth.co.uk.';
+      const e=document.getElementById('lch-err'); if(e){ e.textContent=msg; e.style.display='block'; }
+      cf.disabled=false; cf.textContent='Launch challenge';
+    }
+  }catch(err){
+    const e=document.getElementById('lch-err'); if(e){ e.textContent='Could not launch — check your connection and try again.'; e.style.display='block'; }
+    cf.disabled=false; cf.textContent='Launch challenge';
+  }
 }
 
 let projMode = false, projHeadcount = 10000;
