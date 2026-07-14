@@ -49,6 +49,9 @@
     .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;flex-shrink:0}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 
+    .bk-l{font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+    .bk-i{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:#fff;font-family:inherit;font-size:0.85rem}
+    .bk-i:focus{outline:none;border-color:var(--teal,#4DAAAA)}
     /* ---------- top tabs ---------- */
     .toptabs{max-width:1380px;margin:0 auto;padding:16px 28px 0;display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
     .tt-b{font-size:0.84rem;font-weight:600;padding:10px 20px 12px;border:none;background:none;color:var(--muted);cursor:pointer;position:relative;transition:color .18s}
@@ -762,6 +765,11 @@
       </div>
     </div>
 
+    <div class="p" id="x-live-requests" style="display:none;margin-bottom:22px">
+      <div class="ph"><div><div class="pt">Your booking requests</div><div class="ps">Confirmed dates and fees come from your VYVE account team</div></div></div>
+      <div id="x-req-list"></div>
+    </div>
+
     <div class="xf" id="x-filters">
       <button class="xf-b on" data-f="all" onclick="filterX('all',this)">All</button>
       <button class="xf-b" data-f="speaker" onclick="filterX('speaker',this)">Guest Speakers</button>
@@ -1010,7 +1018,7 @@ function applyLive(p){
     a.style.cssText='font-size:0.72rem;color:var(--muted);margin-left:14px;text-decoration:none;';
     a.onclick=(e)=>{ e.preventDefault(); epSignOut(); }; nr.appendChild(a);
   }
-  ['experts','events'].forEach(v=>{ const b=document.querySelector('.tt-b[data-v="'+v+'"]'); if(b) b.style.display='none'; });
+  ['events'].forEach(v=>{ const b=document.querySelector('.tt-b[data-v="'+v+'"]'); if(b) b.style.display='none'; });
   ['tt-timetable','tt-impact'].forEach(id=>{ const b=document.getElementById(id); if(b) b.style.display=''; });
   const mb=document.querySelector('.modebar'); if(mb) mb.style.display='none';
   const pb=document.getElementById('proj-badge'); if(pb) pb.style.display='none';
@@ -1027,6 +1035,7 @@ function applyLive(p){
   renderComms(p.comms||[]);
   renderImpact(p);
   renderLiveChallenges(p.challenges||{launched:[],templates:[]});
+  renderLiveExperts(p.bookableExperts||[], p.bookings||[]);
   liveAskForm();
   hideLoader();
 }
@@ -1284,6 +1293,97 @@ async function launchLiveChallenge(){
   }catch(err){
     const e=document.getElementById('lch-err'); if(e){ e.textContent='Could not launch — check your connection and try again.'; e.style.display='block'; }
     cf.disabled=false; cf.textContent='Launch challenge';
+  }
+}
+
+/* ================= LIVE BOOK-AN-EXPERT (PM-813 B3) ================= */
+let LIVE_EXPERTS=[], LIVE_BOOKINGS=[], liveBkExpert=null;
+const BK_FORMATS=[['workshop','Workshop'],['talk','Talk / guest speaker'],['one_to_one_block','1:1 session block'],['series','Session series'],['other','Something else']];
+const BK_PILLAR={body:'Body',mind:'Mind',connect:'Connect'};
+function renderLiveExperts(experts, bookings){
+  if(!LIVE) return;
+  LIVE_EXPERTS=experts; LIVE_BOOKINGS=bookings;
+  const filters=document.getElementById('x-filters'); if(filters) filters.style.display='none';
+  const grid=document.getElementById('x-grid');
+  if(grid){
+    grid.innerHTML = experts.length ? experts.map(x=>{
+      const ini=(x.name||'?').split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      return '<div class="xc">'
+        +'<div class="xc-top"><div class="xc-av">'+epEsc(ini)+'</div><div><div class="xc-nm">'+epEsc(x.name)+'</div><div class="xc-rl">'+epEsc(x.role_title||'')+'</div></div></div>'
+        +'<div class="xc-bd"><div class="xc-mt"><span>Pillar: <b>'+epEsc(BK_PILLAR[x.pillar]||x.pillar||'—')+'</b></span><span>Delivery: <b>Arranged with you</b></span></div></div>'
+        +'<div class="xc-ft"><span class="xc-pr">Quoted on request</span><button class="btn btn-g" onclick="openBookingLive(\''+x.id+'\')">Request booking</button></div></div>';
+    }).join('') : '<div class="empty" style="padding:20px 0">No bookable experts right now — email team@vyvehealth.co.uk and we\u2019ll arrange something.</div>';
+  }
+  const wrap=document.getElementById('x-live-requests'), list=document.getElementById('x-req-list');
+  if(wrap&&list){
+    if(!bookings.length){ wrap.style.display='none'; }
+    else{
+      wrap.style.display='';
+      const chip=st=>({requested:'<span class="tag tt2">Requested</span>',confirmed:'<span class="tag tgold">Confirmed</span>',completed:'<span class="tag tg">Completed</span>',cancelled:'<span class="tag ts-n">Cancelled</span>'})[st]||('<span class="tag ts-n">'+epEsc(st)+'</span>');
+      list.innerHTML=bookings.map(b=>{
+        const d=new Date(b.startsAt);
+        const fmt=(BK_FORMATS.find(f=>f[0]===b.format)||[,b.format||''])[1];
+        return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.82rem">'
+          +'<span style="min-width:110px;font-weight:600">'+d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+'</span>'
+          +'<span style="flex:1">'+epEsc(b.partner)+' \u00b7 '+epEsc(fmt||'')+(b.feePence!=null?' \u00b7 \u00a3'+(b.feePence/100).toFixed(0):'')+' <span style="color:var(--muted)">('+epEsc(b.ref)+')</span></span>'
+          +chip(b.status)+'</div>';
+      }).join('');
+    }
+  }
+}
+function openBookingLive(id){
+  liveBkExpert=LIVE_EXPERTS.find(x=>x.id===id); if(!liveBkExpert) return;
+  document.getElementById('m-title').textContent=liveBkExpert.name;
+  document.getElementById('m-sub').textContent=(liveBkExpert.role_title||'')+' \u00b7 booking request';
+  const min=new Date(Date.now()+2*86400000).toISOString().slice(0,10);
+  document.getElementById('m-body').innerHTML=
+    '<div style="display:grid;gap:12px">'
+    +'<div><div class="bk-l">What would you like?</div><select id="bk-format" class="bk-i">'+BK_FORMATS.map(f=>'<option value="'+f[0]+'">'+f[1]+'</option>').join('')+'</select></div>'
+    +'<div style="display:flex;gap:10px"><div style="flex:1"><div class="bk-l">Preferred date</div><input type="date" id="bk-date" class="bk-i" min="'+min+'"/></div>'
+    +'<div><div class="bk-l">Time</div><input type="time" id="bk-time" class="bk-i" value="10:00"/></div></div>'
+    +'<div><div class="bk-l">Approx. headcount (optional)</div><input type="number" id="bk-head" class="bk-i" min="1" step="5" placeholder="e.g. 40"/></div>'
+    +'<div><div class="bk-l">Anything we should know? (optional)</div><input type="text" id="bk-notes" class="bk-i" maxlength="2000" placeholder="Topic, location, occasion\u2026"/></div>'
+    +'</div>'
+    +'<div id="bk-err" style="display:none;color:var(--amber);font-size:0.76rem;margin-top:10px"></div>'
+    +'<div style="font-size:0.74rem;color:rgba(255,255,255,0.45);margin-top:14px;line-height:1.5">Your VYVE account team confirms the final date, time and fee \u2014 usually within two working days. Nothing is charged today; corporate bookings are invoiced.</div>';
+  document.getElementById('m-foot').style.display='flex';
+  const cf=document.getElementById('m-confirm'); cf.disabled=false; cf.style.opacity=1; cf.textContent='Send request';
+  cf.onclick=sendBookingLive;
+  document.getElementById('modal').classList.add('on');
+}
+async function sendBookingLive(){
+  if(!liveBkExpert) return;
+  const date=document.getElementById('bk-date').value;
+  const err=document.getElementById('bk-err');
+  if(!date){ err.textContent='Pick a preferred date.'; err.style.display='block'; return; }
+  err.style.display='none';
+  const cf=document.getElementById('m-confirm'); cf.disabled=true; cf.textContent='Sending\u2026';
+  const hcRaw=parseInt(document.getElementById('bk-head').value,10);
+  const body={ action:'book_expert_request', partner_id:liveBkExpert.id,
+    format:document.getElementById('bk-format').value,
+    preferred_date:date, preferred_time:document.getElementById('bk-time').value||'10:00',
+    headcount:isNaN(hcRaw)?undefined:hcRaw,
+    notes:document.getElementById('bk-notes').value.trim()||undefined };
+  const send=async(tok)=>fetch(EP_SUPABASE+'/functions/v1/employer-portal',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  try{
+    let r=await send(localStorage.getItem('vyve_ep_tok'));
+    if(r.status===401){ const nt=await epRefresh(); if(nt) r=await send(nt); }
+    const d=await r.json().catch(()=>null);
+    if(r.ok&&d&&d.ok){
+      const dt=new Date(date+'T00:00:00');
+      document.getElementById('m-body').innerHTML='<div class="m-done"><div class="big">\u2713</div><h3>Request sent</h3>'
+        +'<p><b style="color:#fff">'+epEsc(liveBkExpert.name)+'</b><br>Preferred '+dt.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})
+        +'<br><br>Your reference is <b>'+epEsc(d.ref)+'</b>. The VYVE team will confirm the final date, time and fee \u2014 we\u2019ve emailed you a copy.</p></div>';
+      document.getElementById('m-foot').style.display='none';
+      LIVE_BOOKINGS.unshift({ id:d.id, ref:d.ref, partner:liveBkExpert.name, startsAt:date+'T'+(document.getElementById('bk-time')?document.getElementById('bk-time').value||'10:00':'10:00')+':00', status:'requested', format:body.format, feePence:null });
+      renderLiveExperts(LIVE_EXPERTS, LIVE_BOOKINGS);
+    } else {
+      err.textContent='Could not send \u2014 please try again or email team@vyvehealth.co.uk.'; err.style.display='block';
+      cf.disabled=false; cf.textContent='Send request';
+    }
+  }catch(e){
+    err.textContent='Could not send \u2014 check your connection and try again.'; err.style.display='block';
+    cf.disabled=false; cf.textContent='Send request';
   }
 }
 
