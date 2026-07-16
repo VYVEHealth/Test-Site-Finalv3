@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VYVE Work Styles — Discover how you work best</title>
+<meta name="description" content="A free 10-minute personality assessment from VYVE Health. Discover your work style across four dimensions and how you contribute to your team.">
+<meta name="robots" content="noindex">
+<style>
+/* PM-817 — self-contained palette per §23.123 (marketing pages carry no portal theme tokens) */
+:root{
+  --dark:#0D2B2B; --teal:#1B7878; --teal-lt:#4DAAAA; --gold:#c9a84c;
+  --bg:#F4F7F6; --card:#FFFFFF; --text:#132B2B; --muted:#44615F;
+  --line:rgba(13,43,43,.14); --track:rgba(13,43,43,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0A1F1F; --card:#10302E; --text:#EAF4F2; --muted:#9DBBB7;
+    --line:rgba(234,244,242,.16); --track:rgba(234,244,242,.12);
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:24px 20px 64px}
+header{display:flex;align-items:center;justify-content:space-between;padding:4px 0 20px}
+.brand{font-weight:700;letter-spacing:.16em;font-size:15px;color:var(--teal)}
+.orgbadge{font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;display:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 24px;box-shadow:0 6px 24px rgba(13,43,43,.06)}
+h1{font-size:27px;line-height:1.2;font-weight:700;margin-bottom:12px}
+h2{font-size:20px;font-weight:700;margin-bottom:8px}
+p{font-size:15px;line-height:1.6;color:var(--muted)}
+.lead{margin-bottom:18px}
+.dims{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 22px}
+.dim{border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13px;color:var(--muted)}
+.dim b{display:block;color:var(--text);font-size:14px;margin-bottom:2px}
+label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
+input[type=text],input[type=email]{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-size:15px;font-family:inherit}
+.hint{font-size:12.5px;color:var(--muted);margin-top:6px}
+.btn{display:inline-block;width:100%;text-align:center;background:var(--teal);color:#fff;border:none;border-radius:12px;padding:15px 20px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:22px;transition:opacity .15s}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:transparent;color:var(--teal);border:1.5px solid var(--teal);margin-top:12px}
+.progress{height:6px;background:var(--track);border-radius:999px;margin:6px 0 22px;overflow:hidden}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-lt));border-radius:999px;width:0;transition:width .3s}
+.pcount{font-size:12.5px;color:var(--muted);text-align:right;margin-bottom:4px}
+.q{padding:18px 0;border-bottom:1px solid var(--line)}
+.q:last-of-type{border-bottom:none}
+.q p{color:var(--text);font-size:16px;font-weight:600;line-height:1.45;margin-bottom:14px}
+.scale{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.scale button{flex:1;aspect-ratio:1;max-width:44px;border-radius:50%;border:2px solid var(--line);background:transparent;cursor:pointer;transition:all .12s;padding:0}
+.scale button:nth-child(1),.scale button:nth-child(2){border-color:rgba(200,120,70,.5)}
+.scale button:nth-child(6),.scale button:nth-child(7){border-color:rgba(27,120,120,.55)}
+.scale button.sel{background:var(--teal);border-color:var(--teal);transform:scale(1.12)}
+.scale button:nth-child(1).sel,.scale button:nth-child(2).sel{background:#C8784636;border-color:#C87846;background:#C87846}
+.slabels{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:8px}
+.center{text-align:center}
+.spinner{width:38px;height:38px;border:4px solid var(--track);border-top-color:var(--teal);border-radius:50%;margin:30px auto;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* result */
+.typecode{font-size:46px;font-weight:800;letter-spacing:.08em;color:var(--teal);text-align:center;margin:6px 0 2px}
+.typename{font-size:21px;font-weight:700;text-align:center;margin-bottom:4px}
+.forname{font-size:13.5px;color:var(--muted);text-align:center;margin-bottom:20px}
+.axis{margin:16px 0}
+.axis .lbls{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px}
+.axis .lbls span.won{color:var(--teal)}
+.axis .bar{height:10px;background:var(--track);border-radius:999px;position:relative;overflow:hidden}
+.axis .bar i{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,var(--teal),var(--teal-lt));border-radius:999px}
+.axis .pct{font-size:12px;color:var(--muted);margin-top:5px}
+.strengths{margin:16px 0 6px;padding-left:2px}
+.strengths li{list-style:none;font-size:14.5px;color:var(--text);padding:7px 0 7px 26px;position:relative;line-height:1.4}
+.strengths li::before{content:'';position:absolute;left:0;top:12px;width:14px;height:14px;border-radius:50%;background:var(--gold)}
+.teamline{border-left:3px solid var(--gold);padding:10px 14px;margin-top:16px;font-size:14px;color:var(--muted);font-style:italic;line-height:1.55}
+.cta{background:var(--dark);border-radius:18px;padding:26px 24px;margin-top:20px;color:#EAF4F2;text-align:center}
+.cta h2{color:#fff}
+.cta p{color:#B9D4D1;margin:8px 0 4px}
+.cta .btn{background:var(--gold);color:#0D2B2B}
+.err{background:#B4553420;border:1px solid #B45534;color:#B45534;border-radius:10px;padding:12px 14px;font-size:14px;margin-top:16px;display:none}
+footer{text-align:center;font-size:12px;color:var(--muted);margin-top:36px;line-height:1.6}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">VYVE&nbsp;WORK&nbsp;STYLES</div>
+    <div class="orgbadge" id="orgBadge"></div>
+  </header>
+
+  <!-- INTRO -->
+  <div class="card" id="scrIntro">
+    <h1>Discover how you work best</h1>
+    <p class="lead">48 quick statements, about 10 minutes. There are no right or wrong answers — respond with how you genuinely are, not how you'd like to be. You'll get your four-letter work style, where you sit on each dimension, and what you bring to a team.</p>
+    <div class="dims">
+      <div class="dim"><b>Energy</b>Where you draw energy — people and activity, or reflection and depth</div>
+      <div class="dim"><b>Information</b>How you take in the world — concrete facts, or patterns and possibilities</div>
+      <div class="dim"><b>Decisions</b>How you decide — objective logic, or people and values</div>
+      <div class="dim"><b>Structure</b>How you organise life — planned and settled, or open and adaptable</div>
+    </div>
+    <label for="fName">Your name <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+    <input type="text" id="fName" autocomplete="name" placeholder="First name is fine">
+    <label for="fEmail">Your email <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+    <input type="email" id="fEmail" autocomplete="email" placeholder="you@example.com">
+    <p class="hint">Your individual answers and result are never shown to your employer. Only anonymous, aggregated team patterns are ever shared — and only once at least 5 people have taken part.</p>
+    <div class="err" id="introErr"></div>
+    <button class="btn" id="btnStart">Start the assessment</button>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div class="card" id="scrQuiz" style="display:none">
+    <div class="pcount" id="pCount"></div>
+    <div class="progress"><i id="pBar"></i></div>
+    <div id="qList"></div>
+    <div class="err" id="quizErr">Please answer every statement on this page before continuing.</div>
+    <button class="btn" id="btnNext">Next</button>
+  </div>
+
+  <!-- SUBMITTING -->
+  <div class="card center" id="scrWait" style="display:none">
+    <h2>Working out your style…</h2>
+    <div class="spinner"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="scrResult" style="display:none">
+    <div class="card">
+      <p class="center" style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700">Your work style</p>
+      <div class="typecode" id="rCode"></div>
+      <div class="typename" id="rName"></div>
+      <div class="forname" id="rFor"></div>
+      <p class="center" id="rBlurb" style="color:var(--text)"></p>
+      <ul class="strengths" id="rStrengths"></ul>
+      <div class="teamline" id="rTeam"></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h2>Where you sit on each dimension</h2>
+      <div id="rAxes"></div>
+    </div>
+    <div class="cta">
+      <h2>This is just the start</h2>
+      <p>VYVE Health builds on your style with personalised coaching, workouts, mindfulness and habit programmes — proactive wellbeing that fits how you actually work.</p>
+      <a href="https://www.vyvehealth.co.uk/individual.html"><button class="btn">Explore VYVE Health</button></a>
+    </div>
+  </div>
+
+  <!-- NO TOKEN -->
+  <div class="card center" id="scrNoToken" style="display:none">
+    <h1>This link needs a company code</h1>
+    <p>VYVE Work Styles is shared by employers with their teams. Ask whoever sent you here for the full link, or find out how your organisation can offer VYVE.</p>
+    <a href="https://www.vyvehealth.co.uk/"><button class="btn ghost">Visit VYVE Health</button></a>
+  </div>
+
+  <footer>VYVE Health CIC · ICO 00013608608 · Your answers are stored securely and never shared individually.<br>This assessment is a general reflection tool, not a clinical or diagnostic instrument.</footer>
+</div>
+
+<script>
+// PM-817 — item order contract with workstyle-submit EF:
+// index i -> axis i%4 (EI,SN,TF,JP), occurrence floor(i/4);
+// EVEN occurrence keyed to first pole (E/S/T/J), ODD occurrence reverse-keyed.
+const EI=[
+"I feel energised after spending time with a large group of people.",
+"I need quiet time alone to recharge after a busy day.",
+"I tend to think out loud, talking through ideas as they come to me.",
+"I prefer to reflect carefully before sharing my thoughts.",
+"At social events, I usually introduce myself rather than wait to be approached.",
+"I prefer a few deep friendships over a wide circle of acquaintances.",
+"I'm quick to jump into group discussions at work.",
+"Working alone for long stretches suits me well.",
+"I often seek out busy, lively environments.",
+"I find small talk draining.",
+"People would describe me as outgoing and easy to approach.",
+"I do my best thinking in solitude."];
+const SN=[
+"I trust facts and direct experience more than theories.",
+"I enjoy exploring abstract ideas even when they have no immediate use.",
+"I focus on the details of a task before considering the bigger picture.",
+"I often notice patterns and connections that others miss.",
+"I prefer clear, step-by-step instructions.",
+"I'm more interested in what could be than what currently is.",
+"Practical, hands-on work appeals to me more than conceptual work.",
+"My mind often wanders to future possibilities.",
+"I value common sense over imagination.",
+"I like to question the way things have always been done.",
+"I remember specific facts and details easily.",
+"I often rely on gut instinct about where things are heading."];
+const TF=[
+"When making decisions, logic matters more to me than people's feelings.",
+"I find it easy to sense how others are feeling.",
+"I'd rather be truthful than tactful.",
+"Maintaining harmony in a group is very important to me.",
+"I enjoy debating a point, even if it creates friction.",
+"Criticism affects me deeply, even when it's fair.",
+"I judge ideas on evidence, not on who proposed them.",
+"I make decisions with my heart as much as my head.",
+"I stay objective in emotionally charged situations.",
+"I go out of my way to make people feel included.",
+"Efficiency matters more to me than pleasing everyone.",
+"I often put others' needs ahead of my own."];
+const JP=[
+"I like to have a detailed plan before starting anything.",
+"I enjoy keeping my options open rather than committing early.",
+"I feel uneasy when things are left undecided.",
+"I work best in bursts of energy rather than a steady routine.",
+"I finish tasks well before the deadline.",
+"I'm comfortable improvising when plans change suddenly.",
+"A tidy, organised environment helps me think.",
+"Spontaneous changes of plan excite me.",
+"I make to-do lists and actually follow them.",
+"Rules and procedures often feel unnecessarily restrictive to me.",
+"I like clear deadlines and defined responsibilities.",
+"I prefer to adapt as I go rather than follow a fixed plan."];
+const AXES=[EI,SN,TF,JP];
+const ITEMS=Array.from({length:48},(_,i)=>AXES[i%4][Math.floor(i/4)]);
+
+const TYPES={
+ISTJ:{n:"The Steward",b:"Grounded, thorough and quietly dependable, you build trust by doing exactly what you said you would. You bring order to complexity and take responsibility seriously.",s:["Reliable follow-through on commitments","Careful, accurate work under pressure","Strong sense of duty and standards"],t:"On a team, you're the one who makes sure the important things actually get done — properly, on time, every time."},
+ISFJ:{n:"The Protector",b:"Warm, attentive and steady, you notice what people need before they ask. You combine practical skill with genuine care for the people around you.",s:["Quiet, consistent supportiveness","Superb attention to practical detail","Loyalty that builds lasting trust"],t:"On a team, you're the safety net — the person who remembers, prepares, and looks after the people doing the work."},
+INFJ:{n:"The Counsel",b:"Insightful and principled, you read people and situations with unusual depth. You're driven by meaning, and you quietly move things toward a better version of themselves.",s:["Deep insight into people and motives","Long-range, values-led vision","Calm, thoughtful influence"],t:"On a team, you're the conscience and the compass — connecting today's work to why it matters."},
+INTJ:{n:"The Strategist",b:"Independent and analytical, you see the whole board several moves ahead. You set high standards and pursue them with quiet, relentless focus.",s:["Long-term strategic thinking","Independent, rigorous problem-solving","High standards that lift the work"],t:"On a team, you're the architect of the plan — spotting the flaw in the system before anyone else feels it."},
+ISTP:{n:"The Troubleshooter",b:"Calm, practical and hands-on, you're at your best when something needs figuring out right now. You cut through noise and work the problem.",s:["Cool head in a crisis","Rapid, practical problem-solving","Efficiency without fuss"],t:"On a team, you're the one everyone wants nearby when things break — unflappable, capable, straight to the fix."},
+ISFP:{n:"The Artisan",b:"Gentle, observant and quietly creative, you express yourself through what you make and do rather than what you say. You value authenticity above show.",s:["A strong aesthetic and quality instinct","Flexibility and grace under change","Genuine, unforced kindness"],t:"On a team, you're the craft — the care in the details that makes the work feel human."},
+INFP:{n:"The Idealist",b:"Imaginative and deeply principled, you're guided by an inner compass of values. You bring empathy, originality and a belief that work should mean something.",s:["Strong personal values and integrity","Creative, original thinking","Empathy that makes others feel understood"],t:"On a team, you're the heart — keeping the work honest and reminding everyone who it's really for."},
+INTP:{n:"The Analyst",b:"Curious and inventive, you take ideas apart to see how they really work. You prize precision of thought and are rarely satisfied with a shallow answer.",s:["Original, first-principles thinking","Intellectual honesty and rigour","Comfort with complex, ambiguous problems"],t:"On a team, you're the sharpest question in the room — the one that saves everyone from building the wrong thing."},
+ESTP:{n:"The Dynamo",b:"Energetic, alert and pragmatic, you live in the moment and act decisively. You read situations fast and thrive where others hesitate.",s:["Decisive action under pressure","Sharp situational awareness","Persuasive, energising presence"],t:"On a team, you're momentum — the push that turns talk into movement."},
+ESFP:{n:"The Energiser",b:"Warm, spontaneous and fun, you make work feel lighter for everyone around you. You're practical, people-smart and generous with your energy.",s:["Lifting team morale naturally","Adaptability and hands-on practicality","Making people feel welcome"],t:"On a team, you're the spark — the reason the room has energy and the work has joy."},
+ENFP:{n:"The Catalyst",b:"Enthusiastic, imaginative and genuinely interested in people, you see potential everywhere — in ideas and in colleagues. You start things that matter.",s:["Infectious enthusiasm for new ideas","Connecting people and possibilities","Championing others' potential"],t:"On a team, you're ignition — the one who gets people believing something better is possible."},
+ENTP:{n:"The Innovator",b:"Quick, inventive and intellectually fearless, you challenge assumptions as a way of improving them. You're at your best exploring what nobody has tried yet.",s:["Rapid idea generation","Challenging assumptions constructively","Thriving on change and debate"],t:"On a team, you're the disruptor in the best sense — the reason the group never settles for 'that's how it's always been'."},
+ESTJ:{n:"The Organiser",b:"Direct, structured and results-driven, you turn goals into plans and plans into delivery. People know exactly where they stand with you.",s:["Turning ambiguity into clear structure","Decisive, accountable leadership","Getting things over the line"],t:"On a team, you're the engine of execution — the standards, the schedule, and the follow-up."},
+ESFJ:{n:"The Connector",b:"Sociable, conscientious and tuned in to others, you hold groups together. You take care of both the work and the people doing it.",s:["Building team cohesion","Reliable, organised support","Reading and meeting people's needs"],t:"On a team, you're the glue — the person who makes a group of individuals feel like a team."},
+ENFJ:{n:"The Mentor",b:"Charismatic and genuinely invested in people's growth, you bring out the best in others. You lead with warmth, vision and encouragement.",s:["Developing and motivating others","Communicating vision persuasively","Building trust quickly"],t:"On a team, you're the multiplier — everyone does better work because you're in it with them."},
+ENTJ:{n:"The Driver",b:"Confident, strategic and decisive, you naturally take charge and raise the bar. You see inefficiency as a challenge and progress as the point.",s:["Bold, strategic decision-making","Mobilising people around a goal","Relentless focus on results"],t:"On a team, you're direction and drive — the one who decides where the group is going and gets it there."}};
+
+const AXINFO=[
+ {first:"Extraverted",second:"Introverted",dim:"Energy"},
+ {first:"Observant",second:"Intuitive",dim:"Information"},
+ {first:"Thinking",second:"Feeling",dim:"Decisions"},
+ {first:"Judging",second:"Prospecting",dim:"Structure"}];
+
+const EF_URL="https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/workstyle-submit";
+const token=(new URLSearchParams(location.search).get('c')||'').trim();
+const answers=new Array(48).fill(0);
+const PER_PAGE=6, PAGES=8;
+let page=0;
+
+const $=id=>document.getElementById(id);
+const show=id=>{['scrIntro','scrQuiz','scrWait','scrResult','scrNoToken'].forEach(s=>$(s).style.display=s===id?'':'none');window.scrollTo({top:0});};
+
+async function boot(){
+  if(!token){show('scrNoToken');return;}
+  try{
+    const r=await fetch(EF_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'check',token})});
+    const j=await r.json();
+    if(j.ok){$('orgBadge').textContent='Shared by '+j.org_name;$('orgBadge').style.display='block';}
+    else{show('scrNoToken');}
+  }catch(e){/* offline check failure — allow start, submit will validate */}
+}
+boot();
+
+$('btnStart').onclick=()=>{page=0;renderPage();show('scrQuiz');};
+
+function renderPage(){
+  $('pCount').textContent='Page '+(page+1)+' of '+PAGES;
+  $('pBar').style.width=Math.round(page/PAGES*100)+'%';
+  $('quizErr').style.display='none';
+  $('btnNext').textContent=page===PAGES-1?'See my result':'Next';
+  const start=page*PER_PAGE;
+  let html='';
+  for(let i=start;i<start+PER_PAGE;i++){
+    html+='<div class="q"><p>'+ITEMS[i]+'</p><div class="scale" data-i="'+i+'">';
+    for(let v=1;v<=7;v++)html+='<button type="button" data-v="'+v+'" class="'+(answers[i]===v?'sel':'')+'" aria-label="'+v+' of 7"></button>';
+    html+='</div><div class="slabels"><span>Disagree</span><span>Neutral</span><span>Agree</span></div></div>';
+  }
+  $('qList').innerHTML=html;
+  document.querySelectorAll('.scale').forEach(sc=>{
+    sc.addEventListener('click',e=>{
+      const b=e.target.closest('button');if(!b)return;
+      const i=+sc.dataset.i;answers[i]=+b.dataset.v;
+      sc.querySelectorAll('button').forEach(x=>x.classList.toggle('sel',x===b));
+    });
+  });
+}
+
+$('btnNext').onclick=async()=>{
+  const start=page*PER_PAGE;
+  for(let i=start;i<start+PER_PAGE;i++)if(!answers[i]){$('quizErr').style.display='block';return;}
+  if(page<PAGES-1){page++;renderPage();return;}
+  // submit
+  show('scrWait');
+  try{
+    const r=await fetch(EF_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      token,answers,name:$('fName').value,email:$('fEmail').value})});
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.error||'submit_failed');
+    renderResult(j);
+  }catch(e){
+    show('scrQuiz');
+    $('quizErr').textContent='Something went wrong sending your answers. Please check your connection and try again.';
+    $('quizErr').style.display='block';
+  }
+};
+
+function renderResult(j){
+  const t=TYPES[j.type_code]||{n:'',b:'',s:[],t:''};
+  $('rCode').textContent=j.type_code;
+  $('rName').textContent=t.n;
+  const nm=$('fName').value.trim();
+  $('rFor').textContent=nm?('for '+nm):'';
+  $('rBlurb').textContent=t.b;
+  $('rStrengths').innerHTML=t.s.map(x=>'<li>'+x+'</li>').join('');
+  $('rTeam').textContent=t.t;
+  const pcts=[j.pcts.e,j.pcts.s,j.pcts.t,j.pcts.j];
+  $('rAxes').innerHTML=AXINFO.map((ax,k)=>{
+    const p=pcts[k],firstWins=p>=50,winPct=firstWins?p:100-p;
+    return '<div class="axis"><div class="lbls"><span class="'+(firstWins?'won':'')+'">'+ax.first+'</span><span style="color:var(--muted);font-weight:400;font-size:12px">'+ax.dim+'</span><span class="'+(!firstWins?'won':'')+'">'+ax.second+'</span></div>'+
+    '<div class="bar"><i style="'+(firstWins?'left:0;width:'+p+'%':'right:0;width:'+(100-p)+'%')+'"></i></div>'+
+    '<div class="pct" style="text-align:'+(firstWins?'left':'right')+'">'+winPct+'% '+(firstWins?ax.first:ax.second)+'</div></div>';
+  }).join('');
+  show('scrResult');
+}
+</script>
+</body>
+</html>
