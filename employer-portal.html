@@ -52,6 +52,8 @@
     .bk-l{font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
     .bk-i{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:#fff;font-family:inherit;font-size:0.85rem}
     .bk-i:focus{outline:none;border-color:var(--teal,#4DAAAA)}
+    .bk-btn{background:var(--teal);border:none;color:#fff;font-weight:700;font-size:0.8rem;padding:10px 18px;border-radius:8px;cursor:pointer;font-family:inherit}
+    .bk-btn:disabled{opacity:0.5;cursor:default}
     /* ---------- top tabs ---------- */
     .toptabs{max-width:1380px;margin:0 auto;padding:16px 28px 0;display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--border)}
     .tt-b{font-size:0.84rem;font-weight:600;padding:10px 20px 12px;border:none;background:none;color:var(--muted);cursor:pointer;position:relative;transition:color .18s}
@@ -470,6 +472,7 @@
   <button class="tt-b" data-v="deepdive" onclick="go('deepdive',this)">Deep Dive</button>
   <button class="tt-b" data-v="timetable" onclick="go('timetable',this)" id="tt-timetable" style="display:none">Timetable</button>
   <button class="tt-b" data-v="impact" onclick="go('impact',this)" id="tt-impact" style="display:none">Your Impact</button>
+  <button class="tt-b" data-v="epmembers" onclick="go('epmembers',this)" id="tt-epmembers" style="display:none">Members</button>
   <button class="tt-b" data-v="comms" onclick="go('comms',this)">Comms</button>
   <button class="tt-b" data-v="experts" onclick="go('experts',this)">Book Experts</button>
   <button class="tt-b" data-v="challenges" onclick="go('challenges',this)">Challenges <span class="n">Live</span></button>
@@ -730,6 +733,55 @@
     <div class="p" style="margin-top:16px">
       <div class="pb" style="font-size:0.78rem;color:rgba(255,255,255,0.55);line-height:1.7">
         Donated memberships go to people referred by VYVE&rsquo;s charity partners across addiction recovery, homelessness and reintegration, mental health, social mobility and physical health access &mdash; at no cost to the charity or the recipient. As a Community Interest Company, giving back is written into how VYVE operates.
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MEMBERS (PM-819 S2 / PM-829) ================= -->
+  <section class="view" id="v-epmembers">
+    <div class="p">
+      <div class="ph"><div><div class="pt">Your VYVE seats</div><div class="ps">Who has access under your agreement &mdash; add, invite, or remove below</div></div><span class="tag" id="mt-seats">&mdash;</span></div>
+      <div class="pb">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+          <span id="mt-seatnum" style="font-family:var(--font-h);font-size:1.6rem;font-weight:800;color:var(--teal-lt)">&mdash;</span>
+          <div style="flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden"><div id="mt-seatbar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--teal-lt));border-radius:3px;transition:width .6s"></div></div>
+          <span id="mt-seattxt" style="font-size:0.72rem;color:var(--muted);white-space:nowrap">&mdash;</span>
+        </div>
+        <div class="bk-l">Add your people</div>
+        <div style="border:1px dashed var(--border2);border-radius:8px;padding:20px;text-align:center;background:rgba(255,255,255,0.02);margin-bottom:14px">
+          <div style="font-size:0.85rem;font-weight:600">Upload a CSV of names and emails</div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-top:4px">We create their accounts and email each person a link to set their password &mdash; no payment details, ever</div>
+          <input type="file" id="mt-csv" accept=".csv,text/csv" style="display:none" onchange="mtCsvPicked(this)">
+          <button class="bk-btn" id="mt-csv-btn" style="margin-top:12px" onclick="document.getElementById('mt-csv').click()">Choose CSV file</button>
+          <div style="font-size:0.66rem;color:var(--dim);margin-top:8px">Format: name, email &mdash; one person per line. Header row optional.</div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:8px">
+          <div style="flex:1;min-width:220px">
+            <div class="bk-l">Or add one person</div>
+            <input class="bk-i" type="email" id="mt-one-email" placeholder="colleague@company.com">
+          </div>
+          <div style="flex:1;min-width:160px">
+            <div class="bk-l">Name (optional)</div>
+            <input class="bk-i" type="text" id="mt-one-name" placeholder="First Last">
+          </div>
+          <button class="bk-btn" id="mt-one-btn" onclick="mtAddOne()">Add &amp; send invite</button>
+        </div>
+        <div id="mt-action-msg" style="display:none;font-size:0.76rem;line-height:1.6;margin-top:10px;padding:10px 14px;border-radius:8px;background:rgba(77,170,170,0.08);border:1px solid var(--border2)"></div>
+        <div class="bk-l" style="margin-top:16px">Shareable link</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <div id="mt-link" style="flex:1;min-width:240px;font-size:0.74rem;color:var(--teal-lt);background:rgba(255,255,255,0.04);border:1px dashed var(--border2);border-radius:8px;padding:10px 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">&mdash;</div>
+          <button class="bk-btn" onclick="mtCopyLink(this)">Copy link</button>
+        </div>
+        <div style="font-size:0.68rem;color:var(--muted);margin-top:8px">Share this link in your internal comms &mdash; anyone joining through it takes a seat automatically.</div>
+      </div>
+    </div>
+    <div class="p" style="margin-top:16px">
+      <div class="ph"><div><div class="pt">Enrolled members</div><div class="ps">Everyone on your agreement &mdash; names, emails and join dates only. What people do in VYVE is never shown here.</div></div><span class="tag tt2" id="mt-count">&mdash;</span></div>
+      <div class="pb"><div id="mt-roster" class="empty">Loading&hellip;</div></div>
+    </div>
+    <div class="p" style="margin-top:16px">
+      <div class="pb" style="font-size:0.78rem;color:rgba(255,255,255,0.55);line-height:1.7">
+        <b style="color:rgba(255,255,255,0.75)">What you can and can&rsquo;t see here.</b> This tab shows who is enrolled under your agreement &mdash; names, emails and join dates only. It never shows what anyone does in VYVE: activity, wellbeing and check-in data stay anonymous and aggregate-only across the rest of this portal. Removing an active member keeps their access until the end of the current billing month; their personal data stays theirs.
       </div>
     </div>
   </section>
@@ -1036,6 +1088,7 @@ function applyLive(p){
   renderImpact(p);
   renderLiveChallenges(p.challenges||{launched:[],templates:[]});
   renderLiveExperts(p.bookableExperts||[], p.bookings||[]);
+  renderMembersTab(p.membersTab||null);
   liveAskForm();
   hideLoader();
 }
@@ -1521,6 +1574,14 @@ function bootDemo(){
   if (co) document.getElementById('co-name').textContent = co;
   renderAll();
   renderComms(DEMO_COMMS);
+  renderMembersTab({ org:{ status:'active', seatCap:50, seatsUsed:12, inviteLink:'https://online.vyvehealth.co.uk/signup.html?c=emp_demo' },
+    roster:[
+      {firstName:'Louise',lastName:'Hollingsworth',email:'louise.h@example.com',joinedAt:'2026-07-18',state:'active',leaveDate:null},
+      {firstName:'Ross',lastName:'Green',email:'ross.green@example.com',joinedAt:'2026-07-18',state:'active',leaveDate:null},
+      {firstName:'India',lastName:'Dixon',email:'india.dixon@example.com',joinedAt:'2026-07-15',state:'leaving',leaveDate:'2026-07-31'},
+      {firstName:'Owen',lastName:'Barrett',email:'owen.barrett@example.com',joinedAt:'2026-07-22',state:'invited',leaveDate:null},
+      {firstName:'Connor',lastName:'Grieveson',email:'connor.g@example.com',joinedAt:'2026-07-12',state:'active',leaveDate:null}
+    ]});
   hideLoader();
 }
 window.addEventListener('DOMContentLoaded', () => {
@@ -1529,6 +1590,150 @@ window.addEventListener('DOMContentLoaded', () => {
   const tok = localStorage.getItem('vyve_ep_tok');
   if (tok) { loadLive(tok); } else { showLogin(); }
 });
+
+/* ---- Members tab (PM-819 S2 / PM-829) ---- */
+let MT = null; /* last membersTab payload */
+function mtEsc(x){ return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function mtDate(d){ try{ return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }catch(_){ return ''; } }
+function renderMembersTab(mt){
+  MT = mt || null;
+  const tab = document.getElementById('tt-epmembers');
+  if (!mt || !mt.org){ if(tab) tab.style.display='none'; return; }
+  if (tab) tab.style.display='';
+  const org = mt.org, roster = mt.roster || [];
+  const cap = org.seatCap, used = org.seatsUsed || 0;
+  document.getElementById('mt-seats').textContent = cap==null ? (used+' seats used') : (used+' of '+cap+' seats used');
+  document.getElementById('mt-seatnum').textContent = used;
+  document.getElementById('mt-seatbar').style.width = cap ? Math.min(100, Math.round((used/cap)*100))+'%' : '0%';
+  document.getElementById('mt-seattxt').textContent = cap==null ? 'No seat cap' : Math.max(0,cap-used)+' seats available';
+  document.getElementById('mt-link').textContent = org.inviteLink || '';
+  const box = document.getElementById('mt-roster');
+  document.getElementById('mt-count').textContent = roster.length + (roster.length===1?' member':' members');
+  if (!roster.length){ box.className='empty'; box.textContent='No members yet — upload a CSV or share your link to get started.'; return; }
+  box.className='';
+  const chip = (st, leave) => {
+    if (st==='invited') return '<span style="font-size:0.64rem;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--gold-dim);color:var(--gold)">Invited</span>';
+    if (st==='leaving') return '<span style="font-size:0.64rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(249,115,22,0.12);color:var(--amber)">Leaves '+mtDate(leave)+'</span>';
+    if (st==='removed') return '<span style="font-size:0.64rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,0.08);color:var(--muted)">Removed</span>';
+    return '<span style="font-size:0.64rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(34,197,94,0.12);color:var(--green)">Active</span>';
+  };
+  const act = (m) => {
+    const e = mtEsc(m.email), btn = 'style="font-size:0.68rem;color:var(--muted);background:none;border:1px solid var(--border2);border-radius:6px;padding:4px 10px;cursor:pointer;margin-left:6px"';
+    if (m.state==='invited') return '<button '+btn+' onclick="mtResend(\''+e+'\')">Resend</button><button '+btn+' onclick="mtRemove(\''+e+'\',true)">Remove</button>';
+    if (m.state==='leaving') return '<button '+btn+' onclick="mtCancelRemoval(\''+e+'\')">Cancel removal</button>';
+    if (m.state==='removed') return '';
+    return '<button '+btn+' onclick="mtRemove(\''+e+'\',false)">Remove</button>';
+  };
+  box.innerHTML = roster.map(m =>
+    '<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)">'
+    + '<div style="flex:1;min-width:0"><div style="font-size:0.82rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+mtEsc(((m.firstName||'')+' '+(m.lastName||'')).trim()||m.email)+'</div>'
+    + '<div style="font-size:0.68rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+mtEsc(m.email)+' &middot; joined '+mtDate(m.joinedAt)+'</div></div>'
+    + chip(m.state, m.leaveDate)
+    + '<div style="white-space:nowrap">'+act(m)+'</div>'
+    + '</div>').join('');
+}
+function mtMsg(html, bad){
+  const el = document.getElementById('mt-action-msg');
+  el.innerHTML = html; el.style.display = 'block';
+  el.style.borderColor = bad ? 'rgba(239,68,68,0.4)' : 'var(--border2)';
+}
+async function mtPost(body){
+  if (!LIVE){ alert('Demo mode — member management is available on your live dashboard.'); return null; }
+  const send = (tok) => fetch(EP_SUPABASE+'/functions/v1/employer-portal',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  let tok = localStorage.getItem('vyve_ep_tok');
+  let r = await send(tok);
+  if (r.status===401){ const nt = await epRefresh(); if (nt) r = await send(nt); }
+  let j = null; try{ j = await r.json(); }catch(_){}
+  return { ok: r.ok, status: r.status, j };
+}
+async function mtRefresh(){
+  try{
+    const send = (tok) => fetch(EP_SUPABASE+'/functions/v1/employer-portal',{headers:{Authorization:'Bearer '+tok}});
+    let tok = localStorage.getItem('vyve_ep_tok');
+    let r = await send(tok);
+    if (r.status===401){ const nt = await epRefresh(); if (nt) r = await send(nt); }
+    if (r.ok){ const p = await r.json(); LIVE_PAYLOAD = p; renderMembersTab(p.membersTab); }
+  }catch(_){}
+}
+function mtProvisionResultSummary(res){
+  const rs = (res && res.results) || [];
+  const n = (k) => rs.filter(x=>x.result===k).length;
+  const bits = [];
+  if (n('invited')) bits.push('<b>'+n('invited')+' invited</b> — set-password emails on the way');
+  if (n('already_enrolled')) bits.push(n('already_enrolled')+' already enrolled (skipped)');
+  if (n('exists_elsewhere')) bits.push(n('exists_elsewhere')+' already have a VYVE account outside your organisation — contact team@vyvehealth.co.uk to move them');
+  if (n('seat_cap_reached')) bits.push('<b>'+n('seat_cap_reached')+' not added — seat cap reached.</b> Ask VYVE to raise your cap');
+  if (n('invalid_email')) bits.push(n('invalid_email')+' invalid email'+(n('invalid_email')>1?'s':''));
+  if (n('duplicate_in_upload')) bits.push(n('duplicate_in_upload')+' duplicate row'+(n('duplicate_in_upload')>1?'s':'')+' skipped');
+  if (n('failed')||n('auth_exists')) bits.push((n('failed')+n('auth_exists'))+' could not be added — try again or contact team@vyvehealth.co.uk');
+  return bits.join(' &middot; ') || 'Nothing to do.';
+}
+async function mtProvision(rows, btn, busyLabel, idleLabel){
+  if (!rows.length){ mtMsg('No valid rows found — check the file has name, email columns.', true); return; }
+  if (btn){ btn.disabled = true; btn.textContent = busyLabel; }
+  const res = await mtPost({ action:'provision_members', rows: rows });
+  if (btn){ btn.disabled = false; btn.textContent = idleLabel; }
+  if (!res) return;
+  if (!res.ok){ mtMsg('Something went wrong ('+((res.j&&res.j.error)||res.status)+') — try again or contact team@vyvehealth.co.uk.', true); return; }
+  mtMsg(mtProvisionResultSummary(res.j), false);
+  mtRefresh();
+}
+function mtParseCsv(text){
+  const rows = [];
+  const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  text.split(/\r?\n/).forEach(line => {
+    if (!line.trim()) return;
+    const cells = line.split(',').map(c => c.trim().replace(/^"|"$/g,''));
+    let email = null, name = [];
+    cells.forEach(c => { if (!email && emailRe.test(c)) email = c; else if (c) name.push(c); });
+    if (!email) return; /* header row / junk line */
+    rows.push({ email: email, name: name.join(' ') });
+  });
+  return rows.slice(0, 200);
+}
+function mtCsvPicked(input){
+  const f = input.files && input.files[0];
+  input.value = '';
+  if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => mtProvision(mtParseCsv(String(rd.result||'')), document.getElementById('mt-csv-btn'), 'Adding\u2026', 'Choose CSV file');
+  rd.readAsText(f);
+}
+function mtAddOne(){
+  const email = document.getElementById('mt-one-email').value.trim();
+  const name = document.getElementById('mt-one-name').value.trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ mtMsg('Enter a valid email address.', true); return; }
+  mtProvision([{ email: email, name: name }], document.getElementById('mt-one-btn'), 'Adding\u2026', 'Add & send invite');
+  document.getElementById('mt-one-email').value=''; document.getElementById('mt-one-name').value='';
+}
+async function mtResend(email){
+  const res = await mtPost({ action:'resend_invite', email: email });
+  if (!res) return;
+  mtMsg(res.ok ? 'Invite re-sent to <b>'+mtEsc(email)+'</b>.' : 'Could not resend ('+((res.j&&res.j.error)||res.status)+').', !res.ok);
+}
+async function mtRemove(email, invitedOnly){
+  const q = invitedOnly
+    ? 'Remove '+email+'? They have not signed in yet, so their invite and account are deleted immediately and the seat is freed.'
+    : 'Remove '+email+'? They keep access until the end of the current billing month, then their access ends. Their personal data is untouched.';
+  if (!confirm(q)) return;
+  const res = await mtPost({ action:'remove_member', email: email });
+  if (!res) return;
+  if (res.ok){ mtMsg(res.j && res.j.mode==='unprovisioned' ? 'Removed — seat freed immediately.' : 'Removal scheduled for the end of the billing month.', false); mtRefresh(); }
+  else mtMsg('Could not remove ('+((res.j&&res.j.error)||res.status)+').', true);
+}
+async function mtCancelRemoval(email){
+  const res = await mtPost({ action:'cancel_removal', email: email });
+  if (!res) return;
+  if (res.ok){ mtMsg('Removal cancelled — '+mtEsc(email)+' stays on your agreement.', false); mtRefresh(); }
+  else mtMsg('Could not cancel ('+((res.j&&res.j.error)||res.status)+').', true);
+}
+function mtCopyLink(btn){
+  const t = document.getElementById('mt-link').textContent;
+  if (!t || t==='\u2014') return;
+  (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(
+    () => { btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy link', 1600); },
+    () => { prompt('Copy your invite link:', t); });
+}
 
 /* ---- tabs ---- */
 function go(v, btn){
