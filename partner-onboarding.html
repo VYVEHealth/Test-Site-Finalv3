@@ -287,10 +287,10 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
   <section class="screen active" id="screen-overview">
     <div class="info-pill"><span data-i="info"></span>For prospective VYVE partners — yoga teachers, speakers, educators, workshop &amp; session hosts</div>
     <h1 style="margin-top:14px">Becoming a VYVE partner</h1>
-    <p class="lead">Everything you need to go from application to live community space inside the VYVE app. Applying takes about <b class="hl">10 minutes</b> across 5 guided steps — recording your welcome video and scheduling your launch happen <b class="hl">after you're approved</b>, with our team alongside you. Here is exactly what happens and what we will ask you for.</p>
+    <p class="lead">Everything you need to go from application to live community space inside the VYVE app. Applying takes about <b class="hl">10 minutes</b> across 4 guided steps — recording your welcome video, adding your content and scheduling your launch all happen <b class="hl">after you're approved</b>, from your partner portal, with our team alongside you. Here is exactly what happens and what we will ask you for.</p>
     <div class="grid g4 mt2">
       <div class="stat"><div class="v">~10 min</div><div class="l">To apply</div></div>
-      <div class="stat"><div class="v">5</div><div class="l">Guided steps</div></div>
+      <div class="stat"><div class="v">4</div><div class="l">Guided steps</div></div>
       <div class="stat"><div class="v">48h</div><div class="l">Review turnaround</div></div>
       <div class="stat"><div class="v">50%</div><div class="l">Standard revenue share</div></div>
     </div>
@@ -676,6 +676,11 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
               <div class="phone"><div class="ph-not"></div><div class="ph-scroll" id="pfPhone"></div></div>
             </div>
           </div>
+          <div class="card mt" style="padding:16px">
+            <h3 style="font-size:16px;font-weight:700;margin-bottom:4px">After you're approved</h3>
+            <p class="muted" style="font-size:14px;margin:0">We review applications within 48 hours. Then, from your partner portal, you'll record your welcome video, add your content, polish your space and schedule your launch session — with the VYVE team alongside you.</p>
+          </div>
+          <div class="check mt" data-check="final" onclick="toggleCheck(this)" style="margin-top:18px"><span class="box" data-i="check"></span><span class="ct">Everything is accurate and I am ready to submit my application for VYVE review.<span class="req">*</span></span></div>
         </div>
 
         <!-- STEP 7 -->
@@ -685,11 +690,7 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
           <p class="intro">Keen to get ahead? You can upload a short welcome video now — it becomes the first thing members see in your space. <b>Most partners record this after they're approved</b>, with our guidance, from their partner portal. Skipping it here won't hold up your application.</p>
           <div id="contentSlots"></div>
           <div class="field"><label>Optional — a welcome post for your community feed</label><textarea data-k="welcomePost" placeholder="Say hello, tell members where to start, and what you'll run each week."></textarea></div>
-          <div class="card mt" style="padding:16px">
-            <h3 style="font-size:16px;font-weight:700;margin-bottom:4px">After you're approved</h3>
-            <p class="muted" style="font-size:14px;margin:0">We review applications within 48 hours. Then, from your partner portal, you'll record your welcome video (if you haven't already), polish your space and schedule your launch session — with the VYVE team alongside you.</p>
-          </div>
-          <div class="check mt" data-check="final" onclick="toggleCheck(this)" style="margin-top:18px"><span class="box" data-i="check"></span><span class="ct">Everything is accurate and I am ready to submit my application for VYVE review.<span class="req">*</span></span></div>
+          <!-- PM-856: submit-confirm + after-approval card moved to step 5 (Build your space). Pane dormant — welcome video now happens post-approval in the partner portal. -->
         </div>
 
         <!-- STEP 8 -->
@@ -723,7 +724,7 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
 
   <!-- ============ DONE ============ -->
   <section class="screen" id="screen-done">
-    <div class="banner"><span data-i="party"></span><div style="flex:1"><h3>Your space has been submitted</h3><p>Nice work. The VYVE team will review your profile and starter content — you will be notified within 48 hours, then your community goes live in the Connect area.</p></div></div>
+    <div class="banner"><span data-i="party"></span><div style="flex:1"><h3>Your space has been submitted</h3><p>Nice work. The VYVE team will review your profile and documents — you will be notified within 48 hours, then your community goes live in the Connect area.</p></div></div>
     <div class="done-wrap mt2">
       <div>
         <h2>Your partner record</h2>
@@ -731,7 +732,7 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
         <button class="btn btn-primary" onclick="downloadRecord()"><span class="bic" data-i="download"></span>Download submission (.json)</button>
         <h2 class="mt2">What happens next</h2>
         <div class="card mt" style="padding:18px">
-          <div class="lesson"><span class="lchk" data-i="check"></span><div><div class="lt">Final review by VYVE</div><div class="ls">We check your profile, documents and starter content</div></div></div>
+          <div class="lesson"><span class="lchk" data-i="check"></span><div><div class="lt">Final review by VYVE</div><div class="ls">We check your profile and documents</div></div></div>
           <div class="lesson"><span class="lchk" style="background:var(--surface);border:1px solid var(--line);color:var(--muted)">2</span><div><div class="lt">Approval &amp; go-live</div><div class="ls">Your space appears in Connect for members to join</div></div></div>
           <div class="lesson"><span class="lchk" style="background:var(--surface);border:1px solid var(--line);color:var(--muted)">3</span><div><div class="lt">Your first session</div><div class="ls">We help promote your launch session to relevant members</div></div></div>
         </div>
@@ -805,7 +806,7 @@ const KEY='vyve_partner_onboarding_v1';
 const state={fields:{},files:{},checks:{agree:false,revshare:false,payoutlater:false,final:false},pillar:null,program:null,watched:0,quizPassed:false,quizScore:0,step:0,partnerId:null};
 const stepTitles=['About you','Verification','Agreement','Video modules','Education','Build your space','Welcome video (optional)','Launch'];
 // Steps hidden: 3 'Video modules' + 4 'Education' (PM-659) + 7 'Launch' (PM-844 — post-approval task). Re-enable by adding back (sorted). Step 6 video is OPTIONAL as of PM-844.
-const ACTIVE=[0,1,2,5,6];
+const ACTIVE=[0,1,2,5]; /* PM-856: welcome video/starter content OUT of apply — post-approval in the partner portal (panes 3,4,6,7 dormant) */
 const MODULES_DEFERRED=!(ACTIVE.includes(3)&&ACTIVE.includes(4));
 const total=ACTIVE.length;
 const activePos=(x)=>ACTIVE.indexOf(x);
@@ -873,8 +874,7 @@ const flow=[
   {n:1,t:'Apply & introduce yourself',who:'partner',d:'Submit your details, discipline and what you offer. Takes about 5 minutes.',collects:['Contact details','Pillar & specialism','Experience','Description']},
   {n:2,t:'Identity verification',who:'vyve',d:'VYVE verifies your identity before going live. Upload a government-issued photo ID — stored privately, never shown to members.',collects:['Photo ID','Governing body (optional)']},
   {n:3,t:'Agreement & commercials',who:'partner',d:'Review and e-sign the partner agreement and acknowledge the revenue share. Payout details are collected securely later.',collects:['E-signature','Revenue share consent']},
-  {n:4,t:'Build your space',who:'partner',d:'Create your public, member-facing profile: photo, bio, your reason for being here and your community feel.',collects:['Profile photo','Bio & mission','Community feel']},
-  {n:5,t:'Welcome video (optional) & submit',who:'partner',d:'Keen partners can upload a welcome video now — most record it after approval, with our guidance. Then submit for review.',collects:['Welcome video (optional)','Welcome post (optional)']},
+  {n:4,t:'Build your space & submit',who:'partner',d:'Create your public, member-facing profile — photo, bio, your reason for being here and your community feel — then submit for review.',collects:['Profile photo','Bio & mission','Community feel']},
 ];
 const afterApproval={t:'After approval — go live',d:'We review within 48 hours. Then, from your partner portal: record your welcome video, polish your space and schedule your launch session — we help promote it to relevant members.'};
 function renderOverview(){
@@ -1064,8 +1064,8 @@ function isStepComplete(i){
     case 2: return state.checks.agree&&state.checks.revshare&&has('signName');
     case 3: return state.watched>=4;
     case 4: return state.quizPassed;
-    case 5: return has('pfName')&&has('pfRole')&&has('pfBio')&&has('pfWhy');
-    case 6: return state.checks.final; /* PM-844: video optional; submit-confirm lives here now */
+    case 5: return has('pfName')&&has('pfRole')&&has('pfBio')&&has('pfWhy')&&state.checks.final; /* PM-856: submit-confirm lives here now */
+    case 6: return true; /* dormant PM-856: welcome video post-approval; submit-confirm moved to step 5 */
     case 7: return has('sessionTitle')&&has('sessionDate')&&has('sessionTime'); /* dormant */
     default: return true;
   }
@@ -1082,7 +1082,7 @@ function validateStep(i){
   if(i===2){if(!state.checks.agree||!state.checks.revshare){ok=false;toast('Please accept the agreement and revenue share');}}
   if(i===3){if(state.watched<4){ok=false;toast('Watch all four modules to continue');}}
   if(i===4){if(!state.quizPassed){ok=false;toast('Pass the required assessment to continue');}}
-  if(i===6){if(!state.checks.final){ok=false;toast('Please confirm before submitting');}}
+  if(i===5){if(!state.checks.final){ok=false;toast('Please confirm before submitting');}}
   if(!ok&&stepEl.querySelector('.field.err'))toast('Please complete the required fields');
   return ok;
 }
@@ -1322,7 +1322,7 @@ function buildSummary(){
   const pillar=({physical:'Physical',mental:'Mental',social:'Social'})[state.pillar]||'—';
   const rows=[['Partner',f.pfName||f.contactName||'New partner'],['Role',f.pfRole||'—'],['Pillar',pillar],['Email',f.email||'—'],['Photo ID',state.files.idDoc?'Attached':'—']];
   if(!MODULES_DEFERRED){rows.push(['Assessment',state.quizPassed?('Passed ('+state.quizScore+'%)'):'Pending'],['Modules',state.watched+'/4 watched']);}
-  const _vids=[1,2,3].filter(n=>state.files['cVideo'+n]).length;rows.push(['Starter content',_vids?_vids+' video'+(_vids===1?'':'s'):'None yet — add after approval']);
+  /* PM-856: starter-content summary row removed — welcome video is a post-approval portal step */
   rows.push(['Status','Awaiting VYVE approval']);
   document.getElementById('summaryCard').innerHTML=rows.map(r=>`<div class="summary-row"><span class="k">${r[0]}</span><span class="v">${esc(String(r[1]))}</span></div>`).join('');
   const c=({physical:'var(--physical)',mental:'var(--mental)',social:'var(--social)'})[state.pillar||'physical'];
