@@ -47,6 +47,10 @@
   }
   input::placeholder,textarea::placeholder{color:var(--placeholder)}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  /* PM-858: html painted + overflow-x clamped — horizontal pan/overscroll on mobile was
+     exposing the unpainted (white) html element behind the body gradient. */
+  html{background:var(--dark)}
+  html,body{overflow-x:hidden;overflow-x:clip}
   body{font-family:var(--font);background:radial-gradient(circle at 15% -10%,var(--bg-hi) 0%,var(--dark) 55%);color:var(--white);font-size:16px;min-height:100vh;-webkit-font-smoothing:antialiased}
   ::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:6px}
   svg{display:block}
@@ -243,11 +247,28 @@
   .otp-in{letter-spacing:6px;text-align:center;font-size:20.5px;font-weight:700}
   @media(max-width:900px){.journey{grid-template-columns:1fr}.rail{position:static}.done-wrap{grid-template-columns:1fr}.g4,.g3{grid-template-columns:1fr 1fr}.row3{grid-template-columns:1fr}}
   @media(max-width:640px){
+    /* PM-858 mobile overhaul: 16px form controls stop the iOS focus-zoom (the zoomed viewport
+       was what let members pan sideways into white); grids collapse fully; landing tightened. */
+    input[type=text],input[type=email],input[type=tel],input[type=date],input[type=time],input[type=number],select,textarea{font-size:16px;padding:12px 13px}
     .top{flex-wrap:wrap;gap:10px;padding:13px 16px}
-    .top .btn{padding:9px 13px;font-size:13.5px}
+    .top .btn{padding:10px 13px;font-size:13.5px}
     .wrap{padding:20px 15px 60px}
     h1{font-size:26px}
-    .row2,.row3,.opts,.g4,.g3{grid-template-columns:1fr}
+    h2{font-size:19px}
+    .lead{font-size:15.5px}
+    .card{padding:16px}
+    .row2,.row3,.opts,.g2,.g4,.g3{grid-template-columns:1fr}
+    #screen-overview .g4{grid-template-columns:1fr 1fr;gap:10px}
+    .stat{padding:12px 13px}
+    .stat .v{font-size:21px}
+    .stat .l{font-size:12px}
+    .flowstep{gap:13px;padding-bottom:22px}
+    .flownum{width:38px;height:38px;font-size:16px;border-radius:11px}
+    .flowstep:not(:last-child)::before{left:18px;top:40px}
+    .flowstep h3{font-size:16px}
+    .flowstep p{font-size:14.5px}
+    .contract{padding:16px 14px;font-size:14.5px}
+    .contract,.terms,.flowstep p,.collects,.card{overflow-wrap:break-word}
     .sign{flex-direction:column;align-items:stretch;gap:13px}
     .sign .field{max-width:none!important}
     .rail{margin-bottom:4px}
@@ -831,16 +852,25 @@ async function efCall(action,body){
   online=true; // any successful round-trip heals the offline state (Session-1)
   return j;
 }
+/* PM-858: in-flight lock — a second ensureDraft while the first start is pending AWAITS it
+   instead of firing a second create (this exact race made two partner rows 1.7s apart).
+   EF v15 + the uq_partner_applied_email index are the server-side belt-and-braces. */
+let _draftInflight=null;
 async function ensureDraft(force){
   if(state.partnerId){ renderResumeLink(); return; }
   if(!online&&!force) return;
-  try{
-    const r=await efCall('start',{
-      contact:{name:state.fields.contactName,business:state.fields.businessName,email:state.fields.email,phone:state.fields.phone,location:state.fields.location,website:state.fields.website},
-      practice:{pillar:state.pillar,specialism:state.fields.specialism,yearsExperience:state.fields.years,description:state.fields.description}
-    });
-    state.partnerId=r.partner_id; saveLocal(); renderResumeLink();
-  }catch(e){ markOffline(); }
+  if(_draftInflight) return _draftInflight;
+  _draftInflight=(async()=>{
+    try{
+      const r=await efCall('start',{
+        contact:{name:state.fields.contactName,business:state.fields.businessName,email:state.fields.email,phone:state.fields.phone,location:state.fields.location,website:state.fields.website},
+        practice:{pillar:state.pillar,specialism:state.fields.specialism,yearsExperience:state.fields.years,description:state.fields.description}
+      });
+      state.partnerId=r.partner_id; saveLocal(); renderResumeLink();
+    }catch(e){ markOffline(); }
+    finally{ _draftInflight=null; }
+  })();
+  return _draftInflight;
 }
 /* PM-844: surface the resume link on screen, not just by email */
 function resumeUrl(){ return location.origin+location.pathname+'?resume='+state.partnerId; }
