@@ -54,21 +54,17 @@
     return;
   }
 
-  // /join/[slug] and optional /join/[slug]/[tier] — pay NOW via Stripe Checkout.
-  // tier is one of 20 | 15 | 10 (the member price point); anything else is ignored
-  // and the partner's default (legacy) link behaviour applies.
-  var joinMatch = path.match(/\/join\/([^/?#]+)(?:\/([^/?#]+))?/);
+  // /join/[slug] — PM-869 (spec v2.1 Piece 3): partner links now land on ACCOUNT
+  // CREATION, not Stripe. join.html validates the slug (hard stop when invalid),
+  // creates the account with the partner locked in server-side, and hands over to
+  // the app stores. No payment, no price — the deal lives in email after the free
+  // week. Tier params from old printed links are deliberately ignored (identical
+  // price on every route). partner-join-redirect EF stays deployed but unused —
+  // soft-kill later.
+  var joinMatch = path.match(/\/join\/([^/?#]+)/);
   if (!joinMatch) { showError(); return; }
   var slug = joinMatch[1];
-  var tier = joinMatch[2];
-
-  // Hit the server-side redirect EF — it mints a discounted Stripe Checkout Session
-  // and 303s to it. window.location.replace follows the redirect seamlessly.
-  var target = EF_URL + '?slug=' + encodeURIComponent(slug);
-  if (tier === '20' || tier === '15' || tier === '10') {
-    target += '&tier=' + tier;
-  }
-  window.location.replace(target);
+  window.location.replace('/join.html?p=' + encodeURIComponent(slug));
 })();
 
 function showError(){
