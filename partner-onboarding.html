@@ -295,10 +295,13 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
 <div class="top">
   <div class="mark">V</div>
   <div><div class="logo">V<b>Y</b>VE</div><div class="sub">PARTNER ONBOARDING</div></div>
+  <!-- PM-881 (Alan feedback): the landing header is quiet — no nav buttons competing with
+       the pitch. The theme toggle is icon-only; the Overview back-link only appears once
+       you're inside the wizard (the one place it means anything). CTAs live in-flow:
+       after the process section and at the page bottom. -->
   <div class="right">
-    <button class="btn btn-ghost" id="themeBtn" onclick="toggleTheme()">Light mode</button>
-    <button class="btn btn-ghost" onclick="showScreen('overview')">Process overview</button>
-    <button class="btn btn-primary" onclick="showScreen('journey')"><span class="bic" data-i="arrow"></span>Start onboarding</button>
+    <button class="btn btn-ghost" id="hdrBack" style="display:none" onclick="showScreen('overview')">&larr; Overview</button>
+    <button class="btn btn-ghost" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode" style="min-width:44px;padding:10px 12px;font-size:16px;line-height:1">&#9789;</button>
   </div>
 </div>
 
@@ -334,6 +337,10 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
     <h2 class="mt2">The onboarding process</h2>
     <p class="sec-sub">Each step shows who actions it and what we collect.</p>
     <div class="flowline" id="flowline"></div>
+    <div class="mt2" style="text-align:center">
+      <button class="btn btn-primary" style="padding:14px 34px;font-size:15.5px" onclick="showScreen('journey')"><span class="bic" data-i="arrow"></span>Start onboarding</button>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:8px">~10 minutes &middot; save and resume any time</div>
+    </div>
     <div class="mt2" style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px" id="privacyNotice">
       <h3 style="margin:0 0 8px;font-size:15px;letter-spacing:.5px;text-transform:uppercase;color:var(--mint)">How we handle your information</h3>
       <p style="font-size:14px;margin:0 0 8px;line-height:1.6;color:var(--muted-light)">We collect the details you enter here — contact information, professional background, ID and qualification documents — solely to review your partner application. Your documents are stored privately and are only visible to the VYVE team.</p>
@@ -343,7 +350,7 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
     <div class="banner mt2">
       <span data-i="shield"></span>
       <div style="flex:1"><h3>Why we vet every partner</h3><p>VYVE carries a duty of care to thousands of employees. Verification, safeguarding and content review protect members and keep partner quality high — it is also what lets us put your name in front of enterprise clients with confidence.</p></div>
-      <button class="btn btn-primary" onclick="showScreen('journey')">Begin</button>
+      <button class="btn btn-primary" onclick="showScreen('journey')">Start onboarding</button>
     </div>
   </section>
 
@@ -817,7 +824,7 @@ const I={
   party:S+'<path d="M3 21l5-13 8 8z"/><path d="M14 4c1.5 0 2 1.5 1 2.5M18 7c1.5 0 2.5 1 2 2.5M20 13c1 0 1.5.7 1.2 1.6"/></svg>'
 };
 function toggleTheme(){var h=document.documentElement,t=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',t);try{localStorage.setItem('vyve-theme',t)}catch(_){}syncThemeBtn();}
-function syncThemeBtn(){var b=document.getElementById('themeBtn');if(b)b.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'Light mode':'Dark mode';}
+function syncThemeBtn(){var b=document.getElementById('themeBtn');if(b){var d=document.documentElement.getAttribute('data-theme')==='dark';b.innerHTML=d?'&#9788;':'&#9789;';b.title=d?'Switch to light mode':'Switch to dark mode';}}
 document.addEventListener('DOMContentLoaded',syncThemeBtn);
 function setIcons(scope){(scope||document).querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i');if(I[k]){el.innerHTML=I[k];el.removeAttribute('data-i');}});}
 let toastT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);}
@@ -1375,6 +1382,7 @@ function downloadRecord(){
 function showScreen(s){
   document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
   document.getElementById('screen-'+s).classList.add('active');
+  var hb=document.getElementById('hdrBack');if(hb)hb.style.display=(s==='overview')?'none':'';
   if(s==='journey'){renderRail();showStepDom();syncPreview();}
   window.scrollTo({top:0,behavior:'smooth'});
 }
