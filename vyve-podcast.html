@@ -599,9 +599,7 @@ footer {
         <div class="guest-inner">
             <h3>I'd Like to Be a Guest</h3>
             <p>Got a story worth sharing? We're always looking for honest voices who can help others through their own experiences. Whether it's mental health, addiction, physical wellbeing, or just life — we want to hear from you.</p>
-            <form class="guest-form" action="https://formspree.io/f/team@vyvehealth.co.uk" method="POST" onsubmit="setTimeout(() => { this.querySelector('button').textContent='Thanks! We\'ll be in touch'; this.querySelector('button').disabled=true; this.querySelector('button').style.background='var(--teal-lt)'; }, 100);">
-                <input type="hidden" name="_subject" value="New VYVE Podcast Guest Interest">
-                <input type="hidden" name="_replyto" value="">
+            <form class="guest-form" onsubmit="submitGuest(event)"> { this.querySelector('button').textContent='Thanks! We\'ll be in touch'; this.querySelector('button').disabled=true; this.querySelector('button').style.background='var(--teal-lt)'; }, 100);">
                 <input type="text" name="name" placeholder="Your name" required>
                 <input type="email" name="email" placeholder="Your email" required>
                 <input type="text" name="topic" placeholder="What would you talk about?">
@@ -1254,5 +1252,27 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+
+  <script>
+    /* PM-929: guest interest goes into the VYVE Command Centre (was Formspree email) */
+    async function submitGuest(e){
+      e.preventDefault();
+      const f = e.target, btn = f.querySelector('button');
+      btn.disabled = true; btn.textContent = 'Sending…';
+      try {
+        const r = await fetch('https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/inbound-intake', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+          kind:'podcast_guest', source:'vyve-podcast.html', website:'',
+          name: f.querySelector('[name=name]').value, email: f.querySelector('[name=email]').value,
+          subject: 'Podcast guest interest',
+          body: (f.querySelector('[name=topic]')||{}).value || ''
+        })});
+        if (!(await r.json()).ok) throw new Error('failed');
+        btn.textContent = "Thanks! We'll be in touch"; btn.style.background = 'var(--teal-lt)';
+      } catch(_) {
+        btn.disabled = false; btn.textContent = 'Express Interest';
+        alert('Something went wrong — please email team@vyvehealth.co.uk');
+      }
+    }
+  </script>
 </body>
 </html>

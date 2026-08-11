@@ -1116,8 +1116,8 @@
             </div>
             <div class="job-header-right">
               <a class="btn btn-teal-outline job-apply-quick" style="padding:10px 20px;font-size:0.83rem;"
-                href="mailto:${job.apply_email}?subject=${encodeURIComponent(job.apply_subject)}"
-                onclick="event.stopPropagation()">Apply Now</a>
+                href="#" data-role="${job.title}"
+                onclick="event.stopPropagation();event.preventDefault();openApply(this.dataset.role)">Apply Now</a>
               <div class="job-chevron">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
               </div>
@@ -1141,8 +1141,8 @@
               <div class="job-apply-row-info">
                 Posted <strong>${formatDate(job.posted)}</strong> · ${job.type} · ${job.location}
               </div>
-              <a class="btn btn-primary"
-                href="mailto:${job.apply_email}?subject=${encodeURIComponent(job.apply_subject)}">
+              <a class="btn btn-primary" href="#" data-role="${job.title}"
+                onclick="event.preventDefault();openApply(this.dataset.role)">
                 Apply for This Role →
               </a>
             </div>
@@ -1168,6 +1168,56 @@
       renderFilters();
       renderJobs();
     });
+  </script>
+
+  <!-- PM-929: in-page application form (replaces mailto) — submits to the VYVE Command Centre -->
+  <div id="apply-overlay" style="display:none;position:fixed;inset:0;background:rgba(13,43,43,.55);z-index:1000;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#fff;border-radius:16px;max-width:480px;width:100%;padding:32px 28px;max-height:90vh;overflow:auto;">
+      <h3 id="apply-title" style="font-family:var(--font-head);font-size:1.4rem;color:var(--dark);margin:0 0 6px;">Apply</h3>
+      <p style="color:var(--grey);font-size:.92rem;margin:0 0 18px;">We'll come back to you by email.</p>
+      <form id="apply-form" onsubmit="submitApply(event)">
+        <input type="text" name="website" value="" style="display:none" tabindex="-1" autocomplete="off"/>
+        <div style="display:grid;gap:12px;">
+          <input required name="name" type="text" placeholder="Full name" style="padding:12px 14px;border:1.5px solid #d8e2e2;border-radius:10px;font-size:.95rem;font-family:inherit;"/>
+          <input required name="email" type="email" placeholder="Email address" style="padding:12px 14px;border:1.5px solid #d8e2e2;border-radius:10px;font-size:.95rem;font-family:inherit;"/>
+          <input name="cv" type="url" placeholder="Link to CV or LinkedIn (optional)" style="padding:12px 14px;border:1.5px solid #d8e2e2;border-radius:10px;font-size:.95rem;font-family:inherit;"/>
+          <textarea name="message" rows="4" placeholder="Tell us briefly why you're a great fit" style="padding:12px 14px;border:1.5px solid #d8e2e2;border-radius:10px;font-size:.95rem;font-family:inherit;resize:vertical;"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:18px;">
+          <button type="submit" class="btn btn-primary" id="apply-submit" style="flex:1;">Submit application</button>
+          <button type="button" class="btn btn-teal-outline" onclick="closeApply()">Cancel</button>
+        </div>
+        <p id="apply-msg" style="font-size:.85rem;color:var(--grey);margin:12px 0 0;min-height:1em;"></p>
+      </form>
+    </div>
+  </div>
+  <script>
+    /* PM-929: applications go into the VYVE Command Centre (cc_inbound) instead of email */
+    let applyRole = '';
+    function openApply(role){
+      applyRole = role || 'General application';
+      document.getElementById('apply-title').textContent = 'Apply — ' + applyRole;
+      document.getElementById('apply-overlay').style.display = 'flex';
+    }
+    function closeApply(){ document.getElementById('apply-overlay').style.display = 'none'; }
+    async function submitApply(e){
+      e.preventDefault();
+      const f = e.target, btn = document.getElementById('apply-submit'), msg = document.getElementById('apply-msg');
+      btn.disabled = true; btn.textContent = 'Sending…';
+      try {
+        const r = await fetch('https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/inbound-intake', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+          kind:'role_application', source:'careers.html',
+          name: f.name.value, email: f.email.value, website: f.website.value,
+          subject: 'Application: ' + applyRole, body: f.message.value,
+          payload: { role: applyRole, cv_link: f.cv.value }
+        })});
+        if (!(await r.json()).ok) throw new Error('failed');
+        f.innerHTML = '<div style="text-align:center;padding:24px 8px;"><div style="font-size:2.4rem;margin-bottom:10px;">&#x2713;</div><h4 style="font-family:var(--font-head);color:var(--dark);margin:0 0 8px;">Application received</h4><p style="color:var(--grey);font-size:.92rem;">Thanks — the VYVE team will be in touch by email.</p><button type="button" class="btn btn-teal-outline" style="margin-top:14px;" onclick="closeApply()">Close</button></div>';
+      } catch(_) {
+        btn.disabled = false; btn.textContent = 'Submit application';
+        msg.textContent = "Something went wrong — please email team@vyvehealth.co.uk with the role name.";
+      }
+    }
   </script>
 </body>
 </html>

@@ -187,7 +187,24 @@
     function closeMobileMenu() { document.getElementById('mobileMenu').classList.remove('open'); document.body.style.overflow = ''; }
     function handleSubmit(e) {
       e.preventDefault();
-      document.getElementById('contactForm').innerHTML = '<div style="text-align:center;padding:40px 20px;"><div style="font-size:3rem;margin-bottom:16px;">&#x2713;</div><h3 style="font-family:var(--font-head);font-size:1.6rem;color:var(--dark);margin-bottom:10px;">Message received!</h3><p style="color:var(--grey);font-size:1rem;line-height:1.7;">Thank you for getting in touch. A member of the VYVE team will be in contact within 24 hours to arrange your demo.</p><div style="margin-top:24px;"><a href="roi-calculator.html" style="color:var(--teal);font-weight:600;font-size:0.95rem;">While you wait, calculate your potential ROI &#x2192;</a></div></div>';
+      /* PM-929: previously this showed success without sending anything — submissions now go to the VYVE Command Centre */
+      const form = document.getElementById('contactForm');
+      const vals = Array.from(form.querySelectorAll('input, select, textarea')).map(el => (el.value || '').trim());
+      const btn = form.querySelector('button[type="submit"], button');
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+      fetch('https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/inbound-intake', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+        kind: 'contact', source: 'contact.html',
+        name: (vals[0] + ' ' + vals[1]).trim(), email: vals[2], website: '',
+        subject: 'Website contact — ' + (vals[3] || 'individual'),
+        body: vals[6] || '',
+        payload: { organisation: vals[3] || '', team_size: vals[4] || '', industry: vals[5] || '' }
+      })}).then(r => r.json()).then(d => {
+        if (!d.ok) throw new Error('failed');
+        form.innerHTML = '<div style="text-align:center;padding:40px 20px;"><div style="font-size:3rem;margin-bottom:16px;">&#x2713;</div><h3 style="font-family:var(--font-head);font-size:1.6rem;color:var(--dark);margin-bottom:10px;">Message received!</h3><p style="color:var(--grey);font-size:1rem;line-height:1.7;">Thank you for getting in touch. A member of the VYVE team will be in contact within 24 hours to arrange your demo.</p><div style="margin-top:24px;"><a href="roi-calculator.html" style="color:var(--teal);font-weight:600;font-size:0.95rem;">While you wait, calculate your potential ROI &#x2192;</a></div></div>';
+      }).catch(() => {
+        if (btn) { btn.disabled = false; btn.textContent = 'Send message'; }
+        alert('Something went wrong sending your message. Please email team@vyvehealth.co.uk directly.');
+      });
     }
   </script>
 </body>
