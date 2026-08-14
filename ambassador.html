@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VYVE · Become an Ambassador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>(function(){var t=localStorage.getItem('vyve-theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);})();</script>
+<style>
+  :root{--font:'DM Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;}
+  :root, html[data-theme="dark"]{
+    --teal:#1B7878; --teal-rgb:27,120,120; --mint:#4DAAAA; --mint-rgb:77,170,170; --mint-light:#6FC2C2;
+    --gold:#C9A84C; --dark:#0D2B2B; --bg-hi:#134240; --card:#10393A; --surface:#164342; --surface2:#1C4F4E;
+    --white:#EDF6F5; --muted:#8FB5B3; --muted-light:#BCD8D5; --muted-rgb:143,181,179;
+    --social:#E8A855; --social-rgb:232,168,85; --danger:#E06060; --line:rgba(141,180,178,.16);
+    --on-accent:#04201E; --top-bg:rgba(10,34,34,.85); --err-text:#f0a5a5; --placeholder:rgba(237,246,245,.42);
+  }
+  html[data-theme="light"]{
+    --teal:#1B7878; --teal-rgb:27,120,120; --mint:#1B7878; --mint-rgb:27,120,120; --mint-light:#4DAAAA;
+    --gold:#A8873A; --dark:#EDF4F3; --bg-hi:#D8E9E6; --card:#FFFFFF; --surface:#EDF5F4; --surface2:#E0EDEB;
+    --white:#0D2B2B; --muted:#44615F; --muted-light:#2E504E; --muted-rgb:68,97,95;
+    --social:#B9762A; --social-rgb:185,118,42; --danger:#C24747; --line:rgba(13,43,43,.22);
+    --on-accent:#FFFFFF; --top-bg:rgba(247,252,251,.88); --err-text:#B03A3A; --placeholder:rgba(13,43,43,.48);
+  }
+  input::placeholder,textarea::placeholder{color:var(--placeholder)}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{background:var(--dark)}html,body{overflow-x:hidden;overflow-x:clip}
+  body{font-family:var(--font);background:radial-gradient(circle at 15% -10%,var(--bg-hi) 0%,var(--dark) 55%);color:var(--white);font-size:16px;min-height:100vh;-webkit-font-smoothing:antialiased}
+  a{color:var(--mint)}
+  .top{display:flex;align-items:center;gap:12px;padding:16px 30px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--top-bg);backdrop-filter:blur(10px);z-index:40}
+  .mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--mint),var(--teal));display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--on-accent);font-size:20.5px}
+  .logo{font-weight:800;letter-spacing:3px;font-size:19.5px}.logo b{color:var(--mint)}
+  .top .sub{font-size:11.5px;color:var(--muted);letter-spacing:1.3px}
+  .wrap{max-width:820px;margin:0 auto;padding:34px 24px 90px}
+  h1{font-size:33px;font-weight:800;letter-spacing:-.5px}
+  .lead{color:var(--muted-light);font-size:17px;line-height:1.6;margin-top:10px}
+  h2{font-size:21px;font-weight:800;margin:34px 0 4px}
+  .sec-sub{color:var(--muted);font-size:15px;margin-bottom:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .how{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+  .how .h-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .how .hn{width:34px;height:34px;border-radius:10px;background:rgba(var(--mint-rgb),.14);color:var(--mint);display:flex;align-items:center;justify-content:center;font-weight:800;margin-bottom:10px}
+  .how h3{font-size:15.5px;font-weight:700}
+  .how p{color:var(--muted-light);font-size:13.5px;line-height:1.5;margin-top:5px}
+  @media(max-width:640px){.how{grid-template-columns:1fr}}
+  .field{margin-top:14px}
+  .field label{display:block;font-size:13.5px;font-weight:700;color:var(--muted-light);margin-bottom:6px}
+  .req{color:var(--social);margin-left:2px}
+  input[type=text],input[type=email],input[type=tel],textarea{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:12px 14px;color:var(--white);font-family:var(--font);font-size:15.5px;outline:none;transition:.15s}
+  input:focus,textarea:focus{border-color:var(--mint)}
+  textarea{min-height:96px;resize:vertical}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:600px){.row2{grid-template-columns:1fr}}
+  .field.bad input,.field.bad textarea{border-color:var(--danger)}
+  .err-msg{display:none;color:var(--err-text);font-size:12.5px;margin-top:5px}
+  .field.bad .err-msg{display:block}
+  .hp{position:absolute;left:-9999px;top:-9999px;height:0;overflow:hidden}
+  .doc-wrap{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:16px}
+  .doc-head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--surface);border-bottom:1px solid var(--line)}
+  .dh-mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--mint),var(--teal));display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--on-accent)}
+  .dh-t{font-weight:800;font-size:15.5px}.dh-s{font-size:12.5px;color:var(--muted)}
+  .dh-badge{margin-left:auto;font-size:11.5px;font-weight:700;color:var(--mint);background:rgba(var(--mint-rgb),.12);padding:4px 10px;border-radius:16px}
+  .contract{max-height:420px;overflow-y:auto;padding:20px 22px;font-size:14px;line-height:1.65;color:var(--muted-light)}
+  .contract h3{font-size:16px;font-weight:800;color:var(--white);margin:18px 0 8px}
+  .contract h4{font-size:14.5px;font-weight:800;color:var(--white);margin:16px 0 6px}
+  .contract p{margin:0 0 9px}
+  .contract ul{margin:2px 0 10px 4px;padding:0;list-style:none}
+  .contract ul li{position:relative;padding-left:20px;margin:0 0 6px}
+  .contract ul li::before{content:"";position:absolute;left:4px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--mint)}
+  .contract ol{margin:2px 0 10px 4px;padding:0;list-style:none;counter-reset:abc}
+  .contract ol li{counter-increment:abc;position:relative;padding-left:24px;margin:0 0 6px}
+  .contract ol li::before{content:"("counter(abc,lower-alpha)")";position:absolute;left:0;top:0;color:var(--mint);font-weight:700;font-size:13.5px}
+  .contract b.hl{color:var(--mint)}
+  .mf{display:inline-block;min-width:54px;padding:1px 7px;border-radius:5px;background:rgba(var(--mint-rgb),.12);border:1px solid rgba(var(--mint-rgb),.32);color:var(--mint);font-weight:700;line-height:1.4}
+  .sigblock{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+  .sigcol{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:14px}
+  .sigcol .sc-h{font-weight:800;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-light);margin-bottom:10px}
+  .sigcol .sl{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;margin-top:10px}
+  .sigcol .sv{color:var(--white);font-size:14px;margin-top:2px}
+  .sig-name{font-family:"Snell Roundhand","Brush Script MT","Segoe Script",cursive;font-size:29.5px;color:var(--mint);min-height:30px;line-height:1.1;border-bottom:1px solid var(--line);padding-bottom:3px;margin-top:3px}
+  .sig-pending{color:var(--muted);font-size:14px;font-family:var(--font);font-style:italic}
+  @media(max-width:560px){.sigblock{grid-template-columns:1fr}}
+  .check{display:flex;gap:11px;align-items:flex-start;margin-top:14px;cursor:pointer;font-size:14.5px;color:var(--muted-light);line-height:1.5}
+  .check .box{width:21px;height:21px;border-radius:6px;border:1.5px solid var(--line);background:var(--surface);flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:.15s}
+  .check.on .box{background:linear-gradient(135deg,var(--mint),var(--teal));border-color:transparent}
+  .check.on .box::after{content:"";width:6px;height:10px;border:solid var(--on-accent);border-width:0 2.5px 2.5px 0;transform:rotate(45deg);margin-top:-2px}
+  .check b{color:var(--white)}
+  .check.bad .box{border-color:var(--danger)}
+  .sign{display:flex;gap:14px;margin-top:18px;flex-wrap:wrap}
+  .sign .field{flex:1;min-width:220px;margin:0}
+  .btn{border:none;border-radius:12px;padding:14px 24px;font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px}
+  .btn-primary{background:linear-gradient(135deg,var(--mint),var(--teal));color:var(--on-accent)}
+  .btn-primary:hover{filter:brightness(1.05)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .submit-row{margin-top:26px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .form-err{display:none;color:var(--err-text);font-size:14px}
+  .form-err.show{display:block}
+  .done{display:none;text-align:center;padding:60px 20px}
+  .done.show{display:block}
+  .done .tick{width:74px;height:74px;border-radius:22px;background:linear-gradient(135deg,var(--mint),var(--teal));display:flex;align-items:center;justify-content:center;margin:0 auto 22px}
+  .done .tick::after{content:"";width:20px;height:36px;border:solid var(--on-accent);border-width:0 4px 4px 0;transform:rotate(45deg);margin-top:-8px}
+  .done h2{margin-top:0}
+  .done p{color:var(--muted-light);font-size:16px;line-height:1.65;max-width:520px;margin:12px auto 0}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="mark">V</div>
+  <div><div class="logo">VY<b>VE</b></div><div class="sub">AMBASSADOR PROGRAMME</div></div>
+</div>
+
+<div class="wrap">
+  <div id="formScreen">
+    <h1>Become a VYVE Ambassador</h1>
+    <p class="lead">Run a community, a club, or an audience that cares about their health? Share VYVE with them and earn <b style="color:var(--mint)">50% of the subscription revenue</b> from every member you introduce — for the lifetime of their membership. No content to make, nothing to manage.</p>
+
+    <div class="how">
+      <div class="h-card"><div class="hn">1</div><h3>Apply below</h3><p>Tell us who you are and who you reach, and e-sign the ambassador agreement. Takes about 3 minutes.</p></div>
+      <div class="h-card"><div class="hn">2</div><h3>Get your link &amp; QR</h3><p>Once approved, you'll receive a personal sign-up link and QR code, plus a login to track your sign-ups.</p></div>
+      <div class="h-card"><div class="hn">3</div><h3>Earn every month</h3><p>50% revenue share on every member you introduce, paid monthly, guaranteed for the lifetime of their membership.</p></div>
+    </div>
+
+    <h2>About you</h2>
+    <p class="sec-sub">Just the essentials — we review every application personally.</p>
+    <div class="card">
+      <div class="hp" aria-hidden="true"><label>Website<input type="text" id="website_hp" name="website_hp" tabindex="-1" autocomplete="off"></label></div>
+      <div class="row2">
+        <div class="field" id="f-name"><label>Full name<span class="req">*</span></label><input type="text" id="in-name" placeholder="Jamie Robson"><div class="err-msg">Your name is required</div></div>
+        <div class="field" id="f-email"><label>Email<span class="req">*</span></label><input type="email" id="in-email" placeholder="you@example.com"><div class="err-msg">A valid email is required</div></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Community / business name</label><input type="text" id="in-business" placeholder="Quayside Run Club"></div>
+        <div class="field"><label>Phone</label><input type="tel" id="in-phone" placeholder="Optional"></div>
+      </div>
+      <div class="field"><label>Location</label><input type="text" id="in-location" placeholder="e.g. Newcastle upon Tyne"></div>
+      <div class="field"><label>Tell us about your community or audience</label><textarea id="in-audience" placeholder="e.g. Weekly run club, around 40 regulars, plus an Instagram following of ~2,000 local runners."></textarea></div>
+    </div>
+
+    <h2>The Ambassador Agreement</h2>
+    <p class="sec-sub">Read it, then type your name to e-sign. You'll get a copy by email, and payout details are collected securely later — never on this page.</p>
+
+    <div class="doc-wrap">
+      <div class="doc-head">
+        <div class="dh-mark">V</div>
+        <div><div class="dh-t">VYVE Ambassador Agreement</div><div class="dh-s">Terms governing your referral partnership with VYVE</div></div>
+        <div class="dh-badge">Ready to e-sign</div>
+      </div>
+      <div class="contract" id="contractPane">
+        <p class="agdate">This Agreement is dated <span class="mf" data-mf="date">&nbsp;</span></p>
+        <h3>Parties</h3>
+        <p>(1)&nbsp; VYVE Health CIC (company number 16449796) whose registered office is at 25 Quantock Close, NE29 9QD (&ldquo;VYVE&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;); and</p>
+        <p>(2)&nbsp; <span class="mf" data-mf="pname">[Ambassador full legal name]</span> (the &ldquo;Ambassador&rdquo;, &ldquo;you&rdquo;, &ldquo;your&rdquo;),</p>
+        <p>each a &ldquo;party&rdquo; and together the &ldquo;parties&rdquo;.</p>
+        <h3>Background</h3>
+        <p>(A)&nbsp; VYVE operates a proactive wellbeing platform and mobile application through which qualified experts provide wellbeing content, programmes and sessions to VYVE&rsquo;s customers (the &ldquo;Platform&rdquo;).</p>
+        <p>(B)&nbsp; The Ambassador wishes to introduce new customers to the Platform in return for a share of subscription revenue, and VYVE wishes to engage the Ambassador for that purpose, on the terms set out in this Agreement.</p>
+        <p><b>IT IS AGREED as follows:</b></p>
+
+        <h4>1.&nbsp; Definitions and interpretation</h4>
+        <p>1.1&nbsp; In this Agreement, the following definitions apply:</p>
+        <p>&ldquo;Ambassador Materials&rdquo; means the personal sign-up link, QR code, referral code and any promotional assets that VYVE issues to the Ambassador.</p>
+        <p>&ldquo;Commencement Date&rdquo; means the date VYVE approves the Ambassador&rsquo;s application and issues the Ambassador Materials.</p>
+        <p>&ldquo;Confidential Information&rdquo; means all information of a confidential nature disclosed by one party to the other, including business, commercial and financial information, and the terms of this Agreement.</p>
+        <p>&ldquo;Customer&rdquo; means any individual or organisation that accesses, subscribes to, or uses the Platform, however and by whomever introduced.</p>
+        <p>&ldquo;Introduced Customer&rdquo; means a Customer who is first onboarded to the Platform through the Ambassador (whether by the Ambassador&rsquo;s referral code, link, sign-up attribution or other method recorded by VYVE), as determined by VYVE&rsquo;s records.</p>
+        <p>&ldquo;Subscription Revenue&rdquo; means the subscription fees actually received by VYVE from a Customer for their VYVE membership, net of VAT, refunds, chargebacks and third-party payment-processing fees.</p>
+        <p>&ldquo;Term&rdquo; means the term of this Agreement, as set out in clause 3.</p>
+        <p>1.2&nbsp; Clause headings are for convenience only. References to &ldquo;including&rdquo; mean &ldquo;including without limitation&rdquo;. A reference to a statute includes any amendment to it.</p>
+
+        <h4>2.&nbsp; Appointment and status</h4>
+        <p>2.1&nbsp; VYVE appoints the Ambassador, on a non-exclusive basis, to introduce new Customers to the Platform, and the Ambassador accepts that appointment, on the terms of this Agreement.</p>
+        <p>2.2&nbsp; The appointment is non-exclusive. VYVE may engage any number of other ambassadors and partners, and the Ambassador may work with others, subject to the Ambassador&rsquo;s obligations under this Agreement.</p>
+        <p>2.3&nbsp; The Ambassador is an independent contractor. Nothing in this Agreement creates a partnership, joint venture, agency or employment relationship between the parties. The Ambassador has no authority to bind VYVE or to make any representation, promise or commitment on VYVE&rsquo;s behalf. The Ambassador is solely responsible for its own taxes, National Insurance and VAT.</p>
+        <p>2.4&nbsp; This Agreement does not oblige the Ambassador to create, upload or provide any content, sessions or services on the Platform. Any such arrangement, if wanted, would be agreed separately under VYVE&rsquo;s partner terms.</p>
+
+        <h4>3.&nbsp; Term</h4>
+        <p>3.1&nbsp; This Agreement begins on the Commencement Date and continues until terminated in accordance with clause 10.</p>
+
+        <h4>4.&nbsp; Ambassador Materials and promotion</h4>
+        <p>4.1&nbsp; VYVE will issue the Ambassador with Ambassador Materials, including a personal sign-up link and QR code, and access to a dashboard showing the Ambassador&rsquo;s Introduced Customers and Revenue Share.</p>
+        <p>4.2&nbsp; The Ambassador may share the Ambassador Materials with its community and audience in an honest, accurate and lawful way. The Ambassador shall not: make misleading claims about VYVE or the Platform; describe VYVE membership as free where it is not; use spam, bulk unsolicited messaging, paid search bidding on VYVE&rsquo;s name, or any deceptive practice; or offer unauthorised inducements funded by the Revenue Share without VYVE&rsquo;s prior written consent.</p>
+        <p>4.3&nbsp; Attribution of Introduced Customers is determined by VYVE&rsquo;s records (referral link, code or sign-up attribution). VYVE&rsquo;s records are final save for manifest error.</p>
+        <p>4.4&nbsp; The Ambassador may use the VYVE name and logo only in the form provided in the Ambassador Materials and in accordance with VYVE&rsquo;s brand guidelines. All goodwill from such use accrues to VYVE.</p>
+
+        <h4>5.&nbsp; Revenue share and payment</h4>
+        <p>5.1&nbsp; In consideration of the Ambassador&rsquo;s introductions, VYVE will pay the Ambassador a revenue share equal to <b class="hl">50% of the Subscription Revenue</b> received by VYVE from each Introduced Customer (the &ldquo;Revenue Share&rdquo;).</p>
+        <p>5.2&nbsp; <b>Lifetime guarantee.</b> The 50% Revenue Share is guaranteed for the lifetime of each Introduced Customer&rsquo;s membership. It shall continue for as long as that Introduced Customer remains a paying Customer of VYVE, and until that Customer makes their final payment to VYVE &mdash; including after this Agreement ends &mdash; subject only to clauses 5.5 and 11.2.</p>
+        <p>5.3&nbsp; The Revenue Share percentage for an Introduced Customer will not be reduced during that Customer&rsquo;s lifetime on the Platform; it is fixed at 50% for each Introduced Customer.</p>
+        <p>5.4&nbsp; VYVE will provide the Ambassador with a monthly statement of Revenue Share and will pay the Revenue Share monthly in arrears, within 30 days of the end of each calendar month, to the account notified by the Ambassador. Payout details are collected securely after approval and before first payout. Where the Ambassador is VAT-registered, the Ambassador shall issue a valid VAT invoice. The Revenue Share is exclusive of VAT, which will be added where applicable.</p>
+        <p>5.5&nbsp; No Revenue Share is payable in respect of amounts not actually received by VYVE, or that are refunded or charged back, or in respect of sign-ups that VYVE reasonably determines to be fraudulent, self-referrals, or generated in breach of clause 4.2. VYVE may set off any such amounts against future payments.</p>
+
+        <h4>6.&nbsp; Customers and data</h4>
+        <p>6.1&nbsp; All Customers are, and shall remain, customers of VYVE. The Ambassador acquires no right, title or interest in or to any Customer or Customer relationship, regardless of how the Customer was introduced.</p>
+        <p>6.2&nbsp; The Ambassador will not receive, and shall not seek to obtain, Customer personal data from the Platform. The Ambassador&rsquo;s dashboard shows aggregate sign-up counts and Revenue Share figures only.</p>
+        <p>6.3&nbsp; During the Term and for 24 months after it ends, the Ambassador shall not, directly or indirectly, solicit, entice, induce or encourage any Introduced Customer to cease, reduce or not take up use of the Platform, or divert any Customer or potential Customer away from VYVE to a competing product or service.</p>
+        <p>6.4&nbsp; Each party shall comply with applicable data protection laws in respect of any personal data it processes in connection with this Agreement.</p>
+
+        <h4>7.&nbsp; Conduct</h4>
+        <p>7.1&nbsp; The Ambassador shall act with integrity at all times and shall not do anything that brings, or is likely to bring, VYVE, the Platform, its Customers or its mission into disrepute.</p>
+        <p>7.2&nbsp; The Ambassador shall promptly notify VYVE of any matter that may materially affect its suitability to act as an ambassador for a health and wellbeing brand.</p>
+
+        <h4>8.&nbsp; Confidentiality</h4>
+        <p>8.1&nbsp; Each party shall keep the other&rsquo;s Confidential Information confidential, use it only for the purposes of this Agreement, and not disclose it except to those who need to know it and are bound by equivalent obligations, or where required by law. This clause survives termination.</p>
+
+        <h4>9.&nbsp; Warranties and liability</h4>
+        <p>9.1&nbsp; Each party warrants that it has the authority to enter into and perform this Agreement.</p>
+        <p>9.2&nbsp; The Ambassador shall indemnify VYVE against all losses, damages, costs and expenses (including reasonable legal fees) arising out of any breach of clause 4.2 (promotion standards), clause 6 (customers and data) or any unlawful promotional activity by the Ambassador.</p>
+        <p>9.3&nbsp; Nothing in this Agreement limits or excludes either party&rsquo;s liability for death or personal injury caused by negligence, for fraud, or for any liability that cannot lawfully be limited or excluded. Subject to that, neither party is liable for any indirect or consequential loss, and VYVE&rsquo;s total aggregate liability under this Agreement shall not exceed the total Revenue Share paid or payable to the Ambassador in the 12 months before the claim arose.</p>
+
+        <h4>10.&nbsp; Termination</h4>
+        <p>10.1&nbsp; Either party may terminate this Agreement for convenience on 30 days&rsquo; written notice.</p>
+        <p>10.2&nbsp; VYVE may terminate this Agreement immediately by written notice if the Ambassador: breaches clause 4.2, 6 or 7; does anything that brings, or is in VYVE&rsquo;s reasonable opinion likely to bring, VYVE into disrepute; or becomes insolvent or ceases to carry on business.</p>
+        <p>10.3&nbsp; VYVE may suspend the Ambassador Materials while it investigates any suspected ground for termination.</p>
+
+        <h4>11.&nbsp; Consequences of termination</h4>
+        <p>11.1&nbsp; On termination, the Ambassador shall stop using the Ambassador Materials and the VYVE name and logo.</p>
+        <p>11.2&nbsp; <b>Survival of Revenue Share.</b> Subject to the next sentence, the Revenue Share in respect of Introduced Customers onboarded before termination shall continue in accordance with clause 5.2 (i.e., for the lifetime of each such Customer, until their final payment to VYVE), notwithstanding termination. Where VYVE terminates under clause 10.2, VYVE may, acting reasonably, suspend or cease future Revenue Share.</p>
+        <p>11.3&nbsp; Clauses 6 (for the stated period), 8, 9, 11 and 12, and any accrued rights and remedies, survive termination.</p>
+
+        <h4>12.&nbsp; General</h4>
+        <p>12.1&nbsp; This Agreement is the entire agreement between the parties in respect of its subject matter and supersedes any prior arrangement. Any variation must be in writing and signed by both parties. No failure or delay in exercising a right is a waiver of it. If any provision is found invalid or unenforceable, it shall be modified to the minimum extent necessary, or severed, without affecting the rest.</p>
+        <p>12.2&nbsp; VYVE may assign, novate or sub-contract its rights and obligations. The Ambassador may not do so without VYVE&rsquo;s prior written consent. Neither party is liable for failure caused by events beyond its reasonable control. No term is enforceable by any third party under the Contracts (Rights of Third Parties) Act 1999. This Agreement may be signed electronically and in counterparts.</p>
+        <p>12.3&nbsp; This Agreement and any dispute arising out of it are governed by the law of England and Wales, and the parties submit to the exclusive jurisdiction of the courts of England and Wales.</p>
+
+        <h3>Schedule &mdash; Revenue Share Summary</h3>
+        <p>This Schedule summarises the commercial terms for convenience. In the event of conflict, the body of this Agreement prevails.</p>
+        <ul>
+          <li><b>Revenue Share:</b> 50% of Subscription Revenue from each Introduced Customer.</li>
+          <li><b>Guarantee:</b> fixed at 50% for the lifetime of each Introduced Customer, until their final payment to VYVE &mdash; surviving termination, subject to clause 11.2.</li>
+          <li><b>Payment:</b> monthly in arrears, within 30 days of month end, against a VYVE statement.</li>
+          <li><b>Content obligations:</b> none &mdash; this is a referral-only agreement.</li>
+        </ul>
+
+        <h3>Agreed by the parties</h3>
+        <div class="sigblock">
+          <div class="sigcol">
+            <div class="sc-h">For and on behalf of VYVE</div>
+            <div class="sl">Signature</div>
+            <div class="sig-pending">To be countersigned by VYVE on acceptance</div>
+            <div class="sl">Name</div><div class="sv">VYVE Health CIC</div>
+            <div class="sl">Date</div><div class="sv">On acceptance</div>
+          </div>
+          <div class="sigcol">
+            <div class="sc-h">The Ambassador</div>
+            <div class="sl">Signature</div>
+            <div class="sig-name" data-mf="sig"><span class="sig-pending">Type your name below to sign</span></div>
+            <div class="sl">Name</div><div class="sv"><span class="mf" data-mf="pname">[Ambassador]</span></div>
+            <div class="sl">Date</div><div class="sv"><span class="mf" data-mf="date">&nbsp;</span></div>
+          </div>
+        </div>
+        <p style="margin-top:12px;font-size:12.5px;color:var(--muted)">Your typed name below is your electronic signature and fills the signature block above. This Agreement may be signed electronically and in counterparts.</p>
+      </div>
+    </div>
+
+    <div class="check" id="ck-agree" onclick="toggleCheck(this)"><span class="box"></span><span>I have read and accept the <b>VYVE Ambassador Agreement</b>.<span class="req">*</span></span></div>
+    <div class="check" id="ck-rev" onclick="toggleCheck(this)"><span class="box"></span><span>I acknowledge the <b>50% revenue share</b> and monthly payout terms.<span class="req">*</span></span></div>
+    <div class="check on" id="ck-payout" onclick="toggleCheck(this)"><span class="box"></span><span>I understand payout/bank details are collected securely later, before my first payout — not in this application.</span></div>
+
+    <div class="sign">
+      <div class="field" id="f-sign"><label>Type your full name to e-sign<span class="req">*</span></label><input type="text" id="in-sign" placeholder="Full legal name" oninput="fillContract()"><div class="err-msg">Signature required</div></div>
+      <div class="field" style="max-width:170px"><label>Date</label><input type="text" id="in-date" readonly style="cursor:default"></div>
+    </div>
+
+    <div class="submit-row">
+      <button class="btn btn-primary" id="btnSubmit" onclick="submitApplication()">Submit application</button>
+      <span class="form-err" id="formErr"></span>
+    </div>
+  </div>
+
+  <div class="done" id="doneScreen">
+    <div class="tick"></div>
+    <h2>Application received</h2>
+    <p>Thanks — we review every ambassador application personally and we'll be in touch by email, usually within a few days. Once approved, you'll receive your personal sign-up link and QR code, plus a login to track your sign-ups and revenue share. A copy of your signed agreement is on its way to your inbox.</p>
+  </div>
+</div>
+
+<script>
+const EF_URL = "https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/partner-onboarding";
+const todayStr = new Date().toISOString().slice(0,10);
+document.getElementById('in-date').value = todayStr;
+
+function toggleCheck(el){ el.classList.toggle('on'); el.classList.remove('bad'); }
+
+function fillContract(){
+  const name = document.getElementById('in-sign').value.trim();
+  document.querySelectorAll('#contractPane [data-mf="pname"]').forEach(el=>{ el.textContent = name || '[Ambassador]'; });
+  document.querySelectorAll('#contractPane [data-mf="date"]').forEach(el=>{ el.textContent = todayStr; });
+  const sig = document.querySelector('#contractPane [data-mf="sig"]');
+  if (sig) sig.innerHTML = name ? name.replace(/[<>&]/g,'') : '<span class="sig-pending">Type your name below to sign</span>';
+  document.getElementById('f-sign').classList.remove('bad');
+}
+fillContract();
+
+function bad(fieldId){ document.getElementById(fieldId).classList.add('bad'); }
+['in-name','in-email'].forEach(id=>{ document.getElementById(id).addEventListener('input', e=>e.target.closest('.field').classList.remove('bad')); });
+
+let submitting = false;
+async function submitApplication(){
+  if (submitting) return;
+  const err = document.getElementById('formErr');
+  err.classList.remove('show'); err.textContent='';
+  const name = document.getElementById('in-name').value.trim();
+  const email = document.getElementById('in-email').value.trim();
+  const sign = document.getElementById('in-sign').value.trim();
+  const okAgree = document.getElementById('ck-agree').classList.contains('on');
+  const okRev = document.getElementById('ck-rev').classList.contains('on');
+  let ok = true;
+  if (!name){ bad('f-name'); ok=false; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ bad('f-email'); ok=false; }
+  if (!sign){ bad('f-sign'); ok=false; }
+  if (!okAgree){ document.getElementById('ck-agree').classList.add('bad'); ok=false; }
+  if (!okRev){ document.getElementById('ck-rev').classList.add('bad'); ok=false; }
+  if (!ok){ err.textContent='Please complete the highlighted fields.'; err.classList.add('show'); return; }
+
+  submitting = true;
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+  try{
+    const res = await fetch(EF_URL, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action:'ambassador_apply',
+        website_hp: document.getElementById('website_hp').value || '',
+        contact:{
+          name, email,
+          business: document.getElementById('in-business').value.trim(),
+          phone: document.getElementById('in-phone').value.trim(),
+          location: document.getElementById('in-location').value.trim(),
+        },
+        audience: document.getElementById('in-audience').value.trim(),
+        agreement:{
+          partnerAgreement:true, revenueShareAccepted:true, revenueSharePct:50,
+          partnerLegalName: sign, signature: sign, signedDate: todayStr,
+        },
+      }),
+    });
+    const data = await res.json().catch(()=>({}));
+    if (res.ok && data.ok){
+      document.getElementById('formScreen').style.display='none';
+      document.getElementById('doneScreen').classList.add('show');
+      window.scrollTo({top:0,behavior:'smooth'});
+      return;
+    }
+    if (res.status === 429){
+      err.textContent = data.error || 'Too many attempts from this connection — please wait a few minutes and try again.';
+    } else {
+      err.textContent = data.error || 'Something went wrong — please try again, or email team@vyvehealth.co.uk.';
+    }
+    err.classList.add('show');
+  } catch(e){
+    err.textContent = 'Connection problem — please check your internet and try again.';
+    err.classList.add('show');
+  } finally {
+    submitting = false;
+    btn.disabled = false; btn.textContent = 'Submit application';
+  }
+}
+</script>
+</body>
+</html>
