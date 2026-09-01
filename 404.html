@@ -54,6 +54,15 @@
     return;
   }
 
+  // /start/[code] — PM-954i: coaching-client invite. Permanent pretty link; the coach-join EF
+  // mints a FRESH magic link per click (single-use/expiry solved) and 302s into set-password.
+  // Dead codes (already-activated clients) bounce to login.
+  var startMatch = path.match(/\/start\/([a-z0-9]{8,20})/i);
+  if (startMatch) {
+    window.location.replace('https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/coach-join?c=' + encodeURIComponent(startMatch[1].toLowerCase()));
+    return;
+  }
+
   // /join/[slug] — PM-869 (spec v2.1 Piece 3): partner links now land on ACCOUNT
   // CREATION, not Stripe. join.html validates the slug (hard stop when invalid),
   // creates the account with the partner locked in server-side, and hands over to
