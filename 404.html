@@ -54,6 +54,13 @@
     return;
   }
 
+  // /lead/[slug] — PM-959: coach public lead-capture form.
+  var leadMatch = path.match(/\/lead\/([a-z0-9-]{2,60})/i);
+  if (leadMatch) {
+    window.location.replace('/lead.html?c=' + encodeURIComponent(leadMatch[1].toLowerCase()));
+    return;
+  }
+
   // /start/[code] — PM-954i: coaching-client invite. Permanent pretty link; the coach-join EF
   // mints a FRESH magic link per click (single-use/expiry solved) and 302s into set-password.
   // Dead codes (already-activated clients) bounce to login.

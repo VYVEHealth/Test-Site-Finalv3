@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex"/>
+<title>Work with a VYVE coach</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Helvetica Neue",Arial,sans-serif;background:#F0F9F9;color:#0D2B2B;min-height:100vh;}
+.top{background:#0D2B2B;padding:20px 24px;}
+.logo{font-family:Georgia,serif;font-size:20px;letter-spacing:6px;color:#fff;}
+.wrap{max-width:520px;margin:0 auto;padding:28px 20px 60px;}
+h1{font-family:Georgia,serif;font-weight:400;font-size:26px;margin-bottom:6px;}
+.sub{font-size:14px;color:#4A7F7F;margin-bottom:22px;line-height:1.6;}
+.card{background:#fff;border:1px solid rgba(27,120,120,.15);border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:0 2px 16px rgba(13,43,43,.06);}
+label{display:block;font-size:13.5px;font-weight:600;margin-bottom:9px;}
+.req{color:#E8834A;}
+input[type=text],input[type=email],input[type=number],textarea,select{width:100%;background:#F0F9F9;border:1px solid rgba(27,120,120,.2);border-radius:9px;font-size:14px;font-family:inherit;padding:11px 13px;outline:none;color:#0D2B2B;}
+textarea{resize:none;min-height:80px;}
+.row-btns{display:flex;gap:7px;}
+.row-btns button{flex:1;padding:11px 0;border-radius:9px;border:1px solid rgba(27,120,120,.2);background:#F0F9F9;color:#4A7F7F;font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;}
+.row-btns button.sel{background:#1B7878;border-color:#1B7878;color:#fff;}
+.stars button{font-size:19px;}
+.stars button.sel{background:#fff7e2;border-color:#C9A84C;color:#C9A84C;}
+.send{width:100%;padding:15px;border-radius:11px;border:none;background:#0D2B2B;color:#fff;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer;margin-top:6px;}
+.send:disabled{opacity:.6;}
+.err{color:#c05050;font-size:13px;text-align:center;margin-top:10px;min-height:17px;}
+.done{text-align:center;padding:50px 16px;}
+.done .tick{width:64px;height:64px;border-radius:50%;background:rgba(61,184,159,.15);border:1.5px solid #3DB89F;color:#3DB89F;font-size:28px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.done h2{font-family:Georgia,serif;font-weight:400;font-size:22px;margin-bottom:8px;}
+.done p{font-size:14px;color:#4A7F7F;line-height:1.65;}
+.priv{font-size:11.5px;color:#7A9A9A;text-align:center;margin-top:14px;line-height:1.6;}
+.skel{text-align:center;color:#4A7F7F;font-size:14px;padding:50px 0;}
+.hp{position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden;}
+</style>
+</head>
+<body>
+<div class="top"><div class="logo">VYVE</div></div>
+<div class="wrap" id="app"><div class="skel">Loading…</div></div>
+<script>
+(function(){
+  'use strict';
+  var EF='https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/coach-lead-submit';
+  var slug=(new URLSearchParams(location.search).get('c')||'').toLowerCase().trim();
+  var app=document.getElementById('app');
+  var answers={}, coachName='';
+  function esc(x){return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function fail(msg){app.innerHTML='<div class="done"><h2>'+esc(msg)+'</h2><p>Check the link you were given, or head to <a href="https://www.vyvehealth.co.uk" style="color:#1B7878;">vyvehealth.co.uk</a>.</p></div>';}
+  if(!slug){fail('That link doesn\u2019t look right');return;}
+  function qHtml(q){
+    var lab='<label>'+esc(q.label)+(q.required?' <span class="req">*</span>':'')+'</label>';
+    var t=q.type||'text', inner='';
+    if(t==='textarea') inner='<textarea data-a></textarea>';
+    else if(t==='number') inner='<input type="number" inputmode="decimal" data-a/>';
+    else if(t==='select') inner='<select data-a><option value="">Choose…</option>'+(q.options||[]).map(function(o){return '<option>'+esc(o)+'</option>';}).join('')+'</select>';
+    else if(t==='scale'){var b='';for(var n=1;n<=10;n++)b+='<button type="button" data-v="'+n+'">'+n+'</button>';inner='<div class="row-btns" data-pick>'+b+'</div>';}
+    else if(t==='stars'){var s='';for(var m=1;m<=5;m++)s+='<button type="button" data-v="'+m+'">\u2605</button>';inner='<div class="row-btns stars" data-stars>'+s+'</div>';}
+    else if(t==='yesno') inner='<div class="row-btns" data-pick><button type="button" data-v="yes">Yes</button><button type="button" data-v="no">No</button></div>';
+    else if(t==='photo'||t==='video') return '';
+    else inner='<input type="text" data-a/>';
+    return '<div class="card q" data-qid="'+esc(q.id)+'" data-req="'+(q.required?'1':'')+'">'+lab+inner+'</div>';
+  }
+  function wire(form){
+    document.querySelectorAll('.q').forEach(function(div){
+      var qid=div.dataset.qid;
+      var a=div.querySelector('[data-a]');
+      if(a){
+        var isNum=a.type==='number';
+        var ev=a.tagName==='SELECT'?'change':'input';
+        a.addEventListener(ev,function(){answers[qid]=isNum&&a.value!==''?parseFloat(a.value):a.value;});
+      }
+      var pick=div.querySelector('[data-pick]');
+      if(pick) pick.querySelectorAll('button').forEach(function(btn){btn.addEventListener('click',function(){pick.querySelectorAll('button').forEach(function(x){x.classList.remove('sel');});btn.classList.add('sel');var v=btn.dataset.v;answers[qid]=(v==='yes'||v==='no')?v:parseInt(v);});});
+      var st=div.querySelector('[data-stars]');
+      if(st) st.querySelectorAll('button').forEach(function(btn){btn.addEventListener('click',function(){var v=parseInt(btn.dataset.v);st.querySelectorAll('button').forEach(function(x,i){x.classList.toggle('sel',i<v);});answers[qid]=v;});});
+    });
+    document.getElementById('send').addEventListener('click',async function(){
+      var err=document.getElementById('err'); err.textContent='';
+      var name=document.getElementById('f-name').value.trim();
+      var email=document.getElementById('f-email').value.trim();
+      if(!name){err.textContent='Add your name.';return;}
+      if(!email||email.indexOf('@')<0){err.textContent='Add a valid email.';return;}
+      var missing=false;
+      document.querySelectorAll('.q').forEach(function(div){
+        if(div.dataset.req!=='1')return;
+        var v=answers[div.dataset.qid];
+        if(v===undefined||v===null||v===''){missing=true;div.querySelector('label').style.color='#c05050';}
+        else div.querySelector('label').style.color='';
+      });
+      if(missing){err.textContent='A couple of required answers are missing.';return;}
+      var btn=this; btn.disabled=true; btn.textContent='Sending…';
+      try{
+        var r=await fetch(EF,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({slug:slug,name:name,email:email,answers:answers,website:document.getElementById('f-web').value})});
+        if(!r.ok)throw new Error('http '+r.status);
+        app.innerHTML='<div class="done"><div class="tick">\u2713</div><h2>Sent to '+esc(coachName)+'</h2><p>They\u2019ve got your details and will be in touch. Fancy a look around while you wait? The VYVE app is where your coaching will live.</p><p style="margin-top:16px;"><a href="https://www.vyvehealth.co.uk" style="color:#1B7878;font-weight:600;">Explore VYVE Health \u2192</a></p></div>';
+        window.scrollTo(0,0);
+      }catch(e){err.textContent='Couldn\u2019t send \u2014 give it another try.';btn.disabled=false;btn.textContent='Send';}
+    });
+  }
+  (async function(){
+    try{
+      var r=await fetch(EF+'?slug='+encodeURIComponent(slug));
+      if(!r.ok){fail(r.status===404?'This coach page isn\u2019t live yet':'Something went wrong');return;}
+      var d=await r.json();
+      coachName=d.coach_name||'the coach';
+      var qs=(d.form&&d.form.questions||[]).map(qHtml).join('');
+      app.innerHTML='<h1>Work with '+esc(coachName)+'</h1><div class="sub">'+esc(d.form&&d.form.title||'Tell us a little about you')+' \u2014 takes a minute, no account needed.</div>'+
+        '<div class="card"><label>Your name <span class="req">*</span></label><input type="text" id="f-name" maxlength="120"/></div>'+
+        '<div class="card"><label>Your email <span class="req">*</span></label><input type="email" id="f-email" maxlength="200"/></div>'+
+        '<input type="text" id="f-web" class="hp" tabindex="-1" autocomplete="off"/>'+qs+
+        '<button class="send" id="send" type="button">Send</button><div class="err" id="err"></div>'+
+        '<div class="priv">Your details go to '+esc(coachName)+' via VYVE Health CIC and are used only to get back to you about coaching.</div>';
+      wire(d.form);
+    }catch(e){fail('Something went wrong');}
+  })();
+})();
+</script>
+</body>
+</html>
