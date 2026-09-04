@@ -281,6 +281,23 @@
     .foot .btn{flex:1 1 auto;justify-content:center}
     .links{width:100%;margin-left:0;justify-content:space-between;gap:12px}
   }
+  /* ── PM-997 (W6): crop / reposition — PM-860 portal parity, at source ── */
+  .crop-back{position:fixed;inset:0;background:var(--scrim,rgba(4,10,10,.72));display:none;align-items:center;justify-content:center;z-index:9500;padding:18px;}
+  .crop-back.show{display:flex;}
+  .crop-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;width:100%;max-width:420px;}
+  .crop-box h3{font-size:17px;margin:0 0 4px;color:var(--white);font-family:Georgia,serif;}
+  .crop-box .crop-hint{font-size:12.5px;color:var(--muted);margin-bottom:14px;}
+  .crop-stage{position:relative;width:100%;background:#05080c;border-radius:10px;overflow:hidden;touch-action:none;cursor:grab;margin:0 auto;}
+  .crop-stage:active{cursor:grabbing;}
+  .crop-stage canvas{display:block;}
+  .crop-mask{position:absolute;inset:0;pointer-events:none;box-shadow:0 0 0 9999px rgba(4,10,10,.55);}
+  .crop-mask.circle{border-radius:50%;}
+  .crop-zoom-row{display:flex;align-items:center;gap:10px;margin:14px 0;}
+  .crop-zoom-row input[type=range]{flex:1;accent-color:var(--mint);}
+  .crop-actions{display:flex;gap:10px;justify-content:flex-end;}
+  .crop-actions button{padding:9px 18px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;}
+  #crop-cancel{background:transparent;color:var(--muted);border:1px solid var(--line);}
+  #crop-apply{background:var(--mint);color:var(--dark,#06110f);border:0;}
 </style>
 <!-- PostHog — mirrors PM-735 welcome.html config exactly: EU host, cookieless (memory persistence), session recording OFF, no PII. -->
 <script>
@@ -774,6 +791,16 @@ function vyveTrack(n,p){try{window.posthog&&posthog.capture(n,p||{})}catch(_){}}
 
 </div>
 
+<div class="crop-back" id="crop-back">
+  <div class="crop-box">
+    <h3 id="crop-title">Position your photo</h3>
+    <div class="crop-hint" id="crop-hint"></div>
+    <div class="crop-stage" id="crop-stage"><canvas id="crop-canvas"></canvas><div class="crop-mask" id="crop-mask"></div></div>
+    <div class="crop-zoom-row"><span style="font-size:12px;color:var(--muted)">Zoom</span><input type="range" id="crop-zoom" min="1" max="4" step="0.01" value="1"></div>
+    <div class="crop-actions"><button type="button" id="crop-cancel">Cancel</button><button type="button" id="crop-apply">Use this photo</button></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -825,6 +852,23 @@ function syncThemeBtn(){var b=document.getElementById('themeBtn');if(b){var d=do
 document.addEventListener('DOMContentLoaded',syncThemeBtn);
 function setIcons(scope){(scope||document).querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i');if(I[k]){el.innerHTML=I[k];el.removeAttribute('data-i');}});}
 let toastT;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);}
+
+/* PM-997 (W6): tell VYVE when something breaks in the wizard — the PM-902 portal reporter,
+   now at the application's front door (every prior wizard failure reached us days later
+   from the applicant, if at all). Fire-and-forget; capped so a render loop can't spam. */
+let _reCount=0;
+function reportError(context,message,detail,severity){
+  try{
+    if(_reCount++>=5)return;
+    fetch(CONFIG.url+'/functions/v1/report-error',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,
+      body:JSON.stringify({surface:'partner-wizard',context:context,severity:severity||'critical',
+        message:String(message||'').slice(0,500),detail:detail||null,
+        actor_email:(state&&state.fields&&state.fields.email)||null,partner_id:(state&&state.partnerId)||null})
+    }).catch(function(){});
+  }catch(_){}
+}
+window.addEventListener('error',function(e){ reportError('window-error',(e&&e.message)||'script error',{src:(e&&e.filename)||'',line:(e&&e.lineno)||0},'critical'); });
+window.addEventListener('unhandledrejection',function(e){ var r=e&&e.reason; reportError('unhandled-rejection',(r&&r.message)||String(r||''),null,'critical'); });
 
 /* ===== STATE ===== */
 const KEY='vyve_partner_onboarding_v1';
@@ -1131,8 +1175,21 @@ function humanSize(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFix
 function bindUploads(){
   document.querySelectorAll('.upload[data-file] input[type=file]').forEach(inp=>{
     inp.addEventListener('change',e=>{
-      const file=e.target.files[0];if(!file)return;
+      const file=e.target.files[0];e.target.value='';if(!file)return;
       const box=inp.closest('.upload');const key=box.dataset.file;const kind=box.dataset.kind||'doc';const slot=box.dataset.slot||key;
+      /* PM-997 (W6): profile/cover photos go through the cropper — PM-860 parity at source.
+         Nothing reaches storage un-framed, and the export is a small canvas JPEG so huge
+         camera-roll originals stop mattering. */
+      if(key==='profilePhoto'||key==='coverPhoto'){
+        if(!/^image\//.test(file.type||'')){toast('Please choose an image file');return;}
+        if(file.size>40*1024*1024){toast('Image too large \u2014 40MB max');return;}
+        openCropper(key==='profilePhoto'?'avatar':'cover',file,function(cropped){handleFile(box,key,kind,slot,cropped);});
+        return;
+      }
+      /* Honest pre-flight for documents: a wrong type or oversize file will NEVER succeed
+         later — say so now instead of "will retry at submit". */
+      if(!/^(image\/|application\/pdf)/.test(file.type||'')){toast('That file type isn\u2019t supported \u2014 use a PDF or an image');return;}
+      if(file.size>15*1024*1024){toast('File too large \u2014 15MB max for documents');return;}
       handleFile(box,key,kind,slot,file);
     });
   });
@@ -1154,13 +1211,28 @@ async function handleFile(box,key,kind,slot,file){
       const ud=await efCall('upload-url',{partner_id:state.partnerId,kind,slot,filename:file.name});
       const {error}=await sb.storage.from(ud.bucket).uploadToSignedUrl(ud.path,ud.token,file);
       if(error) throw error;
-      rec.path=ud.path;rec.bucket=ud.bucket;rec.needsReattach=false;
+      rec.path=ud.path;rec.bucket=ud.bucket;rec.url=ud.public_url||null;rec.needsReattach=false;
       if(chip){chip.classList.remove('uploading');const bar=chip.querySelector('.upbar i');if(bar)bar.style.width='100%';}
       saveState();
     }catch(e){
       if(chip)chip.classList.remove('uploading');
-      rec.pendingUpload=true;
-      toast('Upload didn\'t reach the server yet — it will retry when you submit'); markOffline();
+      /* PM-997 (W6): honest errors. A hard reject (size/type at the storage layer, or a
+         rate limit with its own human message) will not fix itself at submit — say what
+         happened and report it. Only genuine connectivity keeps the retry-at-submit path. */
+      var msg=String((e&&e.message)||'');
+      var hard=/413|payload too large|exceeded the maximum|invalid|mime|not allowed/i.test(msg);
+      if(e&&e.code==='rate_limited'){
+        rec.pendingUpload=true;toast(msg||'Too many uploads \u2014 give it a minute');
+      }else if(hard){
+        rec.pendingUpload=false;delete state.files[key];
+        var ch2=box.parentElement.querySelector('.uploaded[data-for="'+key+'"]');if(ch2)ch2.remove();box.style.display='block';
+        toast('That file was rejected \u2014 '+(/413|large|exceeded/i.test(msg)?'it\u2019s too big. Try a smaller file.':'try a different file.'));
+      }else{
+        rec.pendingUpload=true;
+        toast('Upload didn\'t reach the server yet \u2014 it will retry when you submit'); markOffline();
+      }
+      reportError('wizard-upload',msg,{key:key,slot:slot,file_mb:+(file.size/1048576).toFixed(1),file_type:file.type,hard:hard},hard?'critical':'warn');
+      saveState();
     }
   }else{
     rec.pendingUpload=true; // no draft / offline — retried at submit
@@ -1178,6 +1250,83 @@ function renderUploaded(box,key,reattach){
   box.parentElement.insertBefore(chip,box.nextSibling);
   if(key==='profilePhoto'||key==='coverPhoto')syncPreview();
 }
+
+/* ===== PM-997 (W6): CROP / REPOSITION — PM-860 portal parity at source =====
+   Output geometry is dictated by the APP: avatar exports 1:1 512px (masked to a circle
+   member-side), cover exports 3:1 1200x400 (between the app's 2.4:1 grid and 3.3:1
+   featured crops). Raw camera-roll uploads were the bug — a landscape photo became an
+   off-centre circle with the partner in the corner, unfixable downstream. */
+const CROP_SPEC={
+  avatar:{ratio:1,outW:512,outH:512,circle:true,title:'Position your profile photo',hint:'Drag to move, slide to zoom. Members see this as a circle in the app.'},
+  cover:{ratio:3,outW:1200,outH:400,circle:false,title:'Position your cover photo',hint:'Drag to move, slide to zoom. This is the banner across the top of your space.'}
+};
+const crop={kind:null,img:null,scale:1,min:1,x:0,y:0,dragging:false,lastX:0,lastY:0,spec:null,cb:null};
+function cropEl(id){return document.getElementById(id);}
+function cropDraw(){const cv=cropEl('crop-canvas'),ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(crop.img,crop.x,crop.y,crop.img.width*crop.scale,crop.img.height*crop.scale);}
+function cropClamp(){const cv=cropEl('crop-canvas');const w=crop.img.width*crop.scale,h=crop.img.height*crop.scale;crop.x=Math.min(0,Math.max(cv.width-w,crop.x));crop.y=Math.min(0,Math.max(cv.height-h,crop.y));}
+function openCropper(kind,file,cb){
+  const spec=CROP_SPEC[kind];if(!spec)return;
+  const img=new Image();
+  img.onload=function(){
+    crop.kind=kind;crop.img=img;crop.spec=spec;crop.cb=cb;
+    const stage=cropEl('crop-stage'),cv=cropEl('crop-canvas'),mask=cropEl('crop-mask');
+    /* size the STAGE explicitly to the crop ratio — a stretched canvas renders a square
+       frame as an ellipse (the exact PM-860 portal lesson). */
+    const boxW=stage.parentElement.clientWidth-40;
+    const cw=Math.max(240,Math.min(360,boxW)),ch=Math.round(cw/spec.ratio);
+    stage.style.width=cw+'px';stage.style.height=ch+'px';
+    cv.width=cw;cv.height=ch;cv.style.width=cw+'px';cv.style.height=ch+'px';
+    mask.className='crop-mask'+(spec.circle?' circle':'');
+    crop.min=Math.max(cw/img.width,ch/img.height);
+    crop.scale=crop.min;
+    crop.x=(cw-img.width*crop.scale)/2;crop.y=(ch-img.height*crop.scale)/2;
+    const z=cropEl('crop-zoom');z.value='1';
+    cropEl('crop-title').textContent=spec.title;cropEl('crop-hint').textContent=spec.hint;
+    cropDraw();cropEl('crop-back').classList.add('show');
+  };
+  img.onerror=function(){toast('Could not read that image');};
+  img.src=URL.createObjectURL(file);
+}
+function closeCropper(){cropEl('crop-back').classList.remove('show');if(crop.img&&crop.img.src.indexOf('blob:')===0)URL.revokeObjectURL(crop.img.src);crop.img=null;crop.kind=null;crop.cb=null;}
+cropEl('crop-zoom').addEventListener('input',function(){
+  if(!crop.img)return;
+  const cv=cropEl('crop-canvas'),cx=cv.width/2,cy=cv.height/2,prev=crop.scale;
+  crop.scale=crop.min*parseFloat(this.value);
+  crop.x=cx-(cx-crop.x)*(crop.scale/prev);crop.y=cy-(cy-crop.y)*(crop.scale/prev);
+  cropClamp();cropDraw();
+});
+(function wireCropDrag(){
+  const stage=cropEl('crop-stage');
+  function down(e){if(!crop.img)return;crop.dragging=true;const p=e.touches?e.touches[0]:e;crop.lastX=p.clientX;crop.lastY=p.clientY;}
+  function move(e){
+    if(!crop.dragging||!crop.img)return;
+    e.preventDefault();
+    const p=e.touches?e.touches[0]:e;
+    const cv=cropEl('crop-canvas'),k=cv.width/cv.getBoundingClientRect().width;
+    crop.x+=(p.clientX-crop.lastX)*k;crop.y+=(p.clientY-crop.lastY)*k;
+    crop.lastX=p.clientX;crop.lastY=p.clientY;
+    cropClamp();cropDraw();
+  }
+  function up(){crop.dragging=false;}
+  stage.addEventListener('mousedown',down);window.addEventListener('mousemove',move);window.addEventListener('mouseup',up);
+  stage.addEventListener('touchstart',down,{passive:true});stage.addEventListener('touchmove',move,{passive:false});stage.addEventListener('touchend',up);
+})();
+cropEl('crop-cancel').addEventListener('click',closeCropper);
+cropEl('crop-apply').addEventListener('click',function(){
+  if(!crop.img)return;
+  const spec=crop.spec,cv=cropEl('crop-canvas');
+  const out=document.createElement('canvas');out.width=spec.outW;out.height=spec.outH;
+  const k=spec.outW/cv.width,octx=out.getContext('2d');
+  octx.fillStyle='#0D2B2B';octx.fillRect(0,0,out.width,out.height);
+  octx.drawImage(crop.img,crop.x*k,crop.y*k,crop.img.width*crop.scale*k,crop.img.height*crop.scale*k);
+  const kind=crop.kind,cb=crop.cb;
+  out.toBlob(function(blob){
+    if(!blob){toast('Could not process that image');return;}
+    const f=new File([blob],(kind==='avatar'?'profile':'cover')+'.jpg',{type:'image/jpeg'});
+    closeCropper();
+    if(cb)cb(f);
+  },'image/jpeg',0.9);
+});
 
 /* ===== VIDEO MODULES ===== */
 const vmodData=[{t:'Welcome to VYVE',d:'4:20',c:'var(--teal)'},{t:'Building your space',d:'7:10',c:'var(--mental)'},{t:'Recording great sessions',d:'9:45',c:'var(--physical)'},{t:'Growing your community',d:'6:30',c:'var(--social)'}];
@@ -1255,7 +1404,7 @@ function renderContent(){
 }
 
 /* ===== SUBMIT / RECORD ===== */
-function fileRef(k){const f=state.files[k];if(!f)return null;return {name:f.name,size:f.size,type:f.type,path:f.path||null,bucket:f.bucket||null};}
+function fileRef(k){const f=state.files[k];if(!f)return null;return {name:f.name,size:f.size,type:f.type,path:f.path||null,bucket:f.bucket||null,url:f.url||null};}
 function buildRecord(){
   const f=state.fields;
   return {
@@ -1293,7 +1442,7 @@ async function retryPendingUploads(){
       const ud=await efCall('upload-url',{partner_id:state.partnerId,kind,slot,filename:rec._file.name});
       const {error}=await sb.storage.from(ud.bucket).uploadToSignedUrl(ud.path,ud.token,rec._file);
       if(error) throw error;
-      rec.path=ud.path;rec.bucket=ud.bucket;rec.pendingUpload=false;rec.needsReattach=false;
+      rec.path=ud.path;rec.bucket=ud.bucket;rec.url=ud.public_url||null;rec.pendingUpload=false;rec.needsReattach=false;
     }catch(e){ /* leave pending — submit still proceeds; content can follow via the moderation queue */ }
   }
   saveLocal();
