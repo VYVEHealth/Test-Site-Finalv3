@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="robots" content="noindex"/>
-<title>Work with a VYVE coach</title>
+<title>Work together on VYVE</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:"Helvetica Neue",Arial,sans-serif;background:#F0F9F9;color:#0D2B2B;min-height:100vh;}
@@ -93,7 +93,7 @@ textarea{resize:none;min-height:80px;}
       try{
         var r=await fetch(EF,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({slug:slug,name:name,email:email,answers:answers,website:document.getElementById('f-web').value})});
         if(!r.ok)throw new Error('http '+r.status);
-        app.innerHTML='<div class="done"><div class="tick">\u2713</div><h2>Sent to '+esc(coachName)+'</h2><p>They\u2019ve got your details and will be in touch. Fancy a look around while you wait? The VYVE app is where your coaching will live.</p><p style="margin-top:16px;"><a href="https://www.vyvehealth.co.uk" style="color:#1B7878;font-weight:600;">Explore VYVE Health \u2192</a></p></div>';
+        app.innerHTML='<div class="done"><div class="tick">\u2713</div><h2>Sent to '+esc(coachName)+'</h2><p>They\u2019ve got your details and will be in touch. Fancy a look around while you wait? The VYVE app is where it all happens.</p><p style="margin-top:16px;"><a href="https://www.vyvehealth.co.uk" style="color:#1B7878;font-weight:600;">Explore VYVE Health \u2192</a></p></div>';
         window.scrollTo(0,0);
       }catch(e){err.textContent='Couldn\u2019t send \u2014 give it another try.';btn.disabled=false;btn.textContent='Send';}
     });
@@ -101,9 +101,10 @@ textarea{resize:none;min-height:80px;}
   (async function(){
     try{
       var r=await fetch(EF+'?slug='+encodeURIComponent(slug));
-      if(!r.ok){fail(r.status===404?'This coach page isn\u2019t live yet':'Something went wrong');return;}
+      if(!r.ok){fail(r.status===404?'This page isn\u2019t live yet':'Something went wrong');return;}
       var d=await r.json();
-      coachName=d.coach_name||'the coach';
+      coachName=d.coach_name||'them';
+      var isCoach=(d.partner_type||'coach')==='coach'; /* PM-996: v2 sends partner_type; coaches keep coach wording */
       var qs=(d.form&&d.form.questions||[]).map(qHtml).join('');
       app.innerHTML='<h1>Work with '+esc(coachName)+'</h1><div class="sub">'+esc(d.form&&d.form.title||'Tell us a little about you')+' \u2014 takes a minute, no account needed.</div>'+
         '<div class="card"><label>Your name <span class="req">*</span></label><input type="text" id="f-name" maxlength="120"/></div>'+

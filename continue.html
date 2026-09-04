@@ -41,32 +41,54 @@
   </div>
 <script>
 (function(){
-  // ── Dean: paste the NEW conversion Payment Link here (the £20/mo link variant
-  //    that redirects back to the app, with VYVE10 valid). Replaces the placeholder. ──
+  /* PM-996 (attribution spec Piece 2): EF-minted Checkout Session first — partner coupon
+     pre-applied + subscription metadata for the webhook's metadata-first rail. The old
+     fixed Payment Link (VYVE10 prefilled) stays as the fallback for ANY failure —
+     payment is never blocked on the new path. */
   var CONVERSION_LINK = 'https://buy.stripe.com/bJeeVe0Cs1Em53D5oh93y01';
   var PROMO = 'VYVE10';
+  var EF = 'https://ixjfklpckgxrwjlfsaaz.supabase.co/functions/v1/checkout-session';
 
   function qp(n){ try { return new URLSearchParams(location.search).get(n); } catch(_) { return null; } }
   var cid = qp('cid');                       // members.id, passed by the app wall
-  var configured = CONVERSION_LINK.indexOf('http') === 0;
 
-  if (!configured) {
+  function linkTarget(){
+    try {
+      var u = new URL(CONVERSION_LINK);
+      u.searchParams.set('prefilled_promo_code', PROMO);
+      if (cid) u.searchParams.set('client_reference_id', cid);
+      return u.toString();
+    } catch (_) { return CONVERSION_LINK; }
+  }
+  function goLink(){
+    var target = linkTarget();
+    var fb = document.getElementById('fallback');
+    fb.href = target; fb.style.display = 'inline-block';
+    setTimeout(function(){ location.replace(target); }, 400);
+  }
+  function showMsg(text){
     document.getElementById('spinner').style.display = 'none';
-    document.getElementById('msg').textContent = 'Checkout is being set up — please try again shortly.';
-    return;
+    document.getElementById('msg').textContent = text;
   }
 
-  var target;
-  try {
-    var u = new URL(CONVERSION_LINK);
-    u.searchParams.set('prefilled_promo_code', PROMO);   // £10 applied, nothing to type
-    if (cid) u.searchParams.set('client_reference_id', cid); // binds payment -> member for the webhook
-    target = u.toString();
-  } catch (_) { target = CONVERSION_LINK; }
+  if (!cid) { goLink(); return; } // no member binding — the link path handles it as before
 
-  var fb = document.getElementById('fallback');
-  fb.href = target; fb.style.display = 'inline-block';
-  setTimeout(function(){ location.replace(target); }, 800);
+  var settled = false;
+  var safety = setTimeout(function(){ if (!settled) { settled = true; goLink(); } }, 6000);
+
+  fetch(EF, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cid: cid }) })
+    .then(function(r){ return r.json().then(function(j){ return { status: r.status, j: j }; }); })
+    .then(function(res){
+      if (settled) return;
+      settled = true; clearTimeout(safety);
+      if (res.j && res.j.ok && res.j.url) { location.replace(res.j.url); return; }
+      if (res.status === 409 && res.j && res.j.error === 'already_converted') {
+        showMsg('Good news — your membership is already active. Just open the VYVE app and sign in.');
+        return;
+      }
+      goLink(); // any other failure: the payment link never blocks payment
+    })
+    .catch(function(){ if (!settled) { settled = true; clearTimeout(safety); goLink(); } });
 })();
 </script>
 </body>
